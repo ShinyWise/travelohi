@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # --- Infrastructure ---
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secretpassword
+      POSTGRES_DB: travelohi
+    ports:
+      - "5432:5432"
+    networks:
+      - travelohi_net
+
+  memcached:
+    image: memcached:alpine
+    networks:
+      - travelohi_net
+
+  # --- Microservices ---
+  auth-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: auth
+    environment:
+      - DB_HOST=postgres
+      - MEMCACHED_HOST=memcached:11211
+    networks:
+      - travelohi_net
+
+  hotel-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: hotel
+    environment:
+      - DB_HOST=postgres
+      - AUTH_SERVICE_URL=auth-service:50051
+    networks:
+      - travelohi_net
+
+networks:
+  travelohi_net:
+    driver: bridge
