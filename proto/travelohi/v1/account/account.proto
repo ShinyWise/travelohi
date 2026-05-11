@@ -85,7 +85,7 @@ message GetETicketRequest {
 
 message GetETicketResponse {
   BookingItem booking_details = 1;
-  string qr_code_data = 2; =
+  string qr_code_data = 2;
   string issue_date = 3;
   string passenger_or_guest_name = 4;
 }

@@ -20,9 +20,9 @@ func main() {
 	// Depedency injection
 	// nanti bikin repository -> usecase/service -> handler
 	// trs register ke handler pake grpcserver
-	userRepo := repository.NewPostgresUserRepository(dbConn)
-	userUseCase := usecase.NewUserUseCase(userRepo)
-	userHandler := handler.NewUserHandler(userUserCase)
+	// userRepo := repository.NewPostgresUserRepository(dbConn)
+	// userUseCase := usecase.NewUserUseCase(userRepo)
+	// userHandler := handler.NewUserHandler(userUserCase)
 
 	// userpb.RegisterUserServiceServer(gRPCServer, userHandler)
 	log.Printf("UserService is running on %v", listener.Addr())
