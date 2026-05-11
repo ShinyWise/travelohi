@@ -1,6 +1,8 @@
 package account
 
-import "context"
+import (
+	"context"
+)
 
 type Account struct {
 	ID                   string
@@ -27,9 +29,9 @@ type AccountRepository interface {
 }
 
 type AccountUseCase interface {
-	Create(ctx context.Context, account *Account) error
+	InitProfile(ctx context.Context, account *Account) error
 	GetProfile(ctx context.Context, id string) (*Account, error)
-	UpdateProfile(ctx context.Context, account *Account) error
+	UpdateProfile(ctx context.Context, account *Account) (*Account, error)
 
 	// add interface related method for hotel and flight later
 	// get booking history
