@@ -2,10 +2,12 @@ package handler
 
 import (
 	"context"
-	"errors"
 
 	"github.com/travelohi/backend/internal/account"
+	utils "github.com/travelohi/backend/pkg/utils"
 	accountpb "github.com/travelohi/backend/proto/account/v1"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type AccountGrpcHandler struct {
@@ -21,11 +23,12 @@ func NewUserGrpcHandler(usecase account.AccountUseCase) *AccountGrpcHandler {
 }
 
 func (h *AccountGrpcHandler) GetProfile(ctx context.Context, req *accountpb.GetProfileRequest) (*accountpb.GetProfileResponse, error) {
-	if req.GetUserId() == "" {
-		return nil, errors.New("id is required")
+	secureUserID, err := utils.ExtractUserID(ctx)
+	if err != nil {
+		return nil, err
 	}
 
-	domainAccount, err := h.userUsecase.GetProfile(ctx, req.GetUserId())
+	domainAccount, err := h.userUsecase.GetProfile(ctx, secureUserID)
 	if err != nil {
 		return nil, err
 	}
@@ -45,4 +48,45 @@ func (h *AccountGrpcHandler) GetProfile(ctx context.Context, req *accountpb.GetP
 			Address:              domainAccount.Address,
 		},
 	}, nil
+}
+
+func (h *AccountGrpcHandler) UpdateProfile(ctx context.Context, req *accountpb.UpdateProfileRequest) (*accountpb.UpdateProfileResponse, error) {
+	secureUserID, err := utils.ExtractUserID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// translate protobuf request jadi domain
+	updateData := &account.Account{
+		ID:                   secureUserID,
+		FirstName:            req.GetFirstName(),
+		LastName:             req.GetLastName(),
+		ProfilePictureURL:    req.GetProfilePictureUrl(),
+		NewsletterSubscribed: req.GetNewsletterSubscribed(),
+		PhoneNumber:          req.GetPhoneNumber(),
+		Address:              req.GetAddress(),
+	}
+
+	updatedAccount, err := h.userUsecase.UpdateProfile(ctx, updateData)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Failed to update profile: %v", err)
+	}
+
+	return &accountpb.UpdateProfileResponse{
+		Success: true,
+		UpdatedProfile: &accountpb.UserProfile{
+			Id:                   updatedAccount.ID,
+			Email:                updatedAccount.Email,
+			FirstName:            updatedAccount.FirstName,
+			LastName:             updatedAccount.LastName,
+			Gender:               updatedAccount.Gender,
+			Dob:                  updatedAccount.DOB,
+			ProfilePictureUrl:    updatedAccount.ProfilePictureURL,
+			NewsletterSubscribed: updatedAccount.NewsletterSubscribed,
+			HiWalletBalance:      updatedAccount.HiWalletBalance,
+			PhoneNumber:          updatedAccount.PhoneNumber,
+			Address:              updatedAccount.Address,
+		},
+	}, nil
+
 }
