@@ -26,3 +26,10 @@ type UserRepository interface {
 	Update(ctx context.Context, user *User) error
 	Delete(ctx context.Context, user *User) error
 }
+
+type UserUseCase interface {
+	CreateUser(ctx context.Context, user *User) (*User, error)
+	GetUser(ctx context.Context, id string) (*User, error)
+	UpdateUser(ctx context.Context, user *User) error
+	DeleteUser(ctx context.Context, id string) error
+}
