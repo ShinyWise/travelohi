@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package travelohi.v1.account;
+
+option go_package = "github.com/travelohi/backend/proto/account/v1;accountpb";
+
+service AccountService {
+  // profile related
+  rpc GetProfile(GetProfileRequest) returns (GetProfileResponse) {}
+  rpc UpdateProfile(UpdateProfileRequest) returns (UpdateProfileResponse) {}
+  
+  // booking and history related
+  rpc GetBookingHistory(GetBookingHistoryRequest) returns (GetBookingHistoryResponse) {}
+  rpc GetETicket(GetETicketRequest) returns (GetETicketResponse) {}
+}
+
+
+message UserProfile {
+  string id = 1;
+  string email = 2;
+  string first_name = 3;
+  string last_name = 4;
+  string gender = 5;
+  string dob = 6;
+  string profile_picture_url = 7;
+  bool newsletter_subscribed = 8;
+  int64 hi_wallet_balance = 9;
+
+  string phone_number = 10;
+  string address = 11;
+}
+
+message BookingItem {
+  string booking_id = 1;
+  string transaction_id = 2;
+  string item_type = 3; // "hotel_room" or "flight_seat"
+  string display_name = 4;
+  string check_in_date = 5; // Date or Departure Time
+  string check_out_date = 6; // Date or Arrival Time
+  string status = 7; // "ongoing", "completed", "cancelled"
+  string booking_reference_code = 8; // e.g., PNR "XYZ123"
+}
+
+// request and response
+message GetProfileRequest {
+  string user_id = 1; // id diambil dari jwt token
+}
+
+message GetProfileResponse {
+  UserProfile profile = 1;
+}
+
+message UpdateProfileRequest {
+  string user_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string profile_picture_url = 4;
+  bool newsletter_subscribed = 5;
+  
+  string phone_number = 6;
+  string address = 7;
+}
+
+message UpdateProfileResponse {
+  bool success = 1;
+  UserProfile updated_profile = 2;
+}
+
+message GetBookingHistoryRequest {
+  string user_id = 1;
+  string filter_status = 2; // all, ongoing, sama past 
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message GetBookingHistoryResponse {
+  repeated BookingItem bookings = 1;
+  int32 total_results = 2;
+}
+
+message GetETicketRequest {
+  string user_id = 1;
+  string booking_id = 2;
+}
+
+message GetETicketResponse {
+  BookingItem booking_details = 1;
+  string qr_code_data = 2; =
+  string issue_date = 3;
+  string passenger_or_guest_name = 4;
+}

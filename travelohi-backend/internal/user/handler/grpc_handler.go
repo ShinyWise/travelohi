@@ -79,6 +79,7 @@ func (h *UserGrpcHandler) CreateUser(ctx context.Context, req *userpb.CreateUser
 	}
 
 	// 4. balikin lagi ke bentuk proto response
+	return &userpb.UserResponse{
 		User: &userpb.User{
 			Id:                createdUser.ID,
 			Email:             createdUser.Email,
