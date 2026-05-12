@@ -17,7 +17,6 @@ type AccountModel struct {
 	DOB                  string  `gorm:"column:dob"`
 	ProfilePictureURL    *string `gorm:"column:profile_picture_url"`
 	IsActive             bool    `gorm:"column:is_active"`
-	IsBanned             bool    `gorm:"column:is_banned"`
 	NewsletterSubscribed bool    `gorm:"column:newsletter_subscribed"`
 
 	HiWalletBalance int64  `gorm:"column:hi_wallet_balance"`
@@ -38,7 +37,6 @@ func (m *AccountModel) ToDomain() *account.Account {
 		FirstName:            m.FirstName,
 		LastName:             m.LastName,
 		IsActive:             m.IsActive,
-		IsBanned:             m.IsBanned,
 		Gender:               m.Gender,
 		DOB:                  m.DOB,
 		ProfilePictureURL:    picURL,

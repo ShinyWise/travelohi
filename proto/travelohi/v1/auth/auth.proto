@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package travelohi.v1.auth;
+
+option go_package = "github.com/travelohi/backend/proto/auth/v1;authpb";
+
+service AuthService {
+  rpc Login(LoginRequest) returns (AuthResponse) {}
+
+  rpc SendOTP(SendOTPRequest) returns (SendOTPResponse) {}
+  rpc LoginWithOTP(LoginWithOTPRequest) returns (AuthResponse) {}
+
+  rpc Register(RegisterRequest) returns (AuthResponse) {}
+
+  rpc Logout(LogoutRequest) returns (LogoutResponse) {}
+}
+
+message RegisterRequest {
+  string email = 1;
+  string password = 2;
+  string confirm_password = 3;
+  string first_name = 4;
+  string last_name = 5;
+  string dob = 6;
+  string gender = 7;
+  string profile_picture_url = 8;
+  bool subscribe_newsletter = 9;
+  string captcha_token = 10;
+  int32 security_question_id = 11;
+  string security_answer = 12;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+  string captcha_token = 3;
+}
+
+message SendOTPRequest {
+  string email = 1;
+}
+
+message SendOTPResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message LoginWithOTPRequest {
+  string email = 1;
+  string otp_code = 2;
+}
+
+// shared responses
+message AuthResponse {
+  string access_token = 1; // jwt disimpen disini buat frontend
+  string user_id = 2;
+  string message = 3;
+}
+
+message LogoutRequest {
+  string user_id = 1;
+}
+
+message LogoutResponse {
+  bool success = 1;
+  string message = 2;
+}

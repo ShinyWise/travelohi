@@ -13,7 +13,6 @@ type Account struct {
 	DOB                  string
 	ProfilePictureURL    string
 	IsActive             bool
-	IsBanned             bool
 	NewsletterSubscribed bool
 	HiWalletBalance      int64
 	PhoneNumber          string
