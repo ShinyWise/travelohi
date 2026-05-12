@@ -2,10 +2,14 @@ package hash
 
 import "golang.org/x/crypto/bcrypt"
 
-// BcryptHasher implements the usecase.PasswordHasher interface
+type PasswordHasher interface {
+	Hash(password string) (string, error)
+	Compare(hash, password string) error
+}
+
 type BcryptHasher struct{}
 
-func NewBcryptHasher() *BcryptHasher {
+func NewBcryptHasher() PasswordHasher {
 	return &BcryptHasher{}
 }
 
