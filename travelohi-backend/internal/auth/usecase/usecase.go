@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/travelohi/backend/internal/auth"
 	"github.com/travelohi/backend/pkg/hash"
@@ -102,7 +103,42 @@ func (uc *authUseCase) Register(ctx context.Context, req *auth.RegisterData) (*a
 }
 
 func (uc *authUseCase) Login(ctx context.Context, email, password string) (*auth.AuthResult, error) {
-	return nil, nil
+	user, err := uc.repo.GetByEmail(ctx, email)
+	if err != nil {
+		return nil, err
+	}
+
+	if user.IsBanned {
+		return nil, errors.New("Your account has been suspended")
+	}
+
+	// crypto check
+	if err := uc.hasher.Compare(user.PasswordHash, password); err != nil {
+		return nil, auth.ErrInvalidCreds
+	}
+
+	// validasi session
+	sessionID := uc.idGen.Generate()
+
+	sessionKey := "session:" + user.ID
+
+	// expired 24 jam
+	if err := uc.cache.Set(ctx, sessionKey, []byte(sessionID), 86400); err != nil {
+		return nil, auth.ErrInternal
+	}
+
+	// create accesstoken for validating login access.
+	accessToken, err := uc.tokenMaker.CreateToken(user.ID, sessionID, 24*time.Hour)
+	if err != nil {
+		return nil, auth.ErrInternal
+	}
+
+	return &auth.AuthResult{
+		UserID:      user.ID,
+		AccessToken: accessToken,
+		Message:     "Login successful!",
+	}, nil
+
 }
 
 func (uc *authUseCase) LoginWithOTP(ctx context.Context, email, otp string) (*auth.AuthResult, error) {
