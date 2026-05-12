@@ -2,7 +2,11 @@ package usecase
 
 import (
 	"context"
+	"crypto/rand"
 	"errors"
+	"fmt"
+	"log"
+	"math/big"
 	"time"
 
 	"github.com/travelohi/backend/internal/auth"
@@ -41,7 +45,7 @@ func NewAuthUseCase(
 
 var _ auth.AuthUseCase = (*authUseCase)(nil)
 
-func (uc *authUseCase) Register(ctx context.Context, req *auth.RegisterData) (*auth.AuthResult, error) {
+func (uc *authUseCase) RegisterUser(ctx context.Context, req *auth.RegisterData) (*auth.AuthResult, error) {
 	if req.Password != req.ConfirmPassword {
 		return nil, errors.New("Password do not match")
 	}
@@ -146,12 +150,30 @@ func (uc *authUseCase) LoginWithOTP(ctx context.Context, email, otp string) (*au
 }
 
 func (uc *authUseCase) SendOTP(ctx context.Context, email string) error {
+	_, err := uc.repo.GetByEmail(ctx, email)
+	if err != nil {
+		if errors.Is(err, auth.ErrInvalidCreds) {
+			return nil
+		}
+		return auth.ErrInternal
+	}
+
+	// generate otp
+	maxNumber := big.NewInt(1000000)
+	randNumber, _ := rand.Int(rand.Reader, maxNumber)
+	otpcode := fmt.Sprintf("%06d", randNumber.Int64())
+
+	// simpen otp ke memcached
+	otpKey := "otp:" + email
+
+	if err := uc.cache.Set(ctx, otpKey, []byte(otpcode), 300); err != nil {
+		return auth.ErrInternal
+	}
+	log.Printf("📧 EMAIL SENT TO %s: Your OTP Code is %s (Valid for 5 mins)\n", email, otpcode)
+
 	return nil
 }
 
-func (uc *authUseCase) RegisterUser(ctx context.Context, req *auth.RegisterData) (*auth.AuthResult, error) {
-	return nil, nil
-}
 func (uc *authUseCase) Logout(ctx context.Context, token string) error {
 	return nil
 }
