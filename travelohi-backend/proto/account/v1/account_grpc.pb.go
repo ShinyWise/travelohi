@@ -19,6 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	AccountService_InitProfile_FullMethodName       = "/travelohi.v1.account.AccountService/InitProfile"
 	AccountService_GetProfile_FullMethodName        = "/travelohi.v1.account.AccountService/GetProfile"
 	AccountService_UpdateProfile_FullMethodName     = "/travelohi.v1.account.AccountService/UpdateProfile"
 	AccountService_GetBookingHistory_FullMethodName = "/travelohi.v1.account.AccountService/GetBookingHistory"
@@ -29,6 +30,8 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AccountServiceClient interface {
+	// internal microservice  calls
+	InitProfile(ctx context.Context, in *InitProfileRequest, opts ...grpc.CallOption) (*InitProfileResponse, error)
 	// profile related
 	GetProfile(ctx context.Context, in *GetProfileRequest, opts ...grpc.CallOption) (*GetProfileResponse, error)
 	UpdateProfile(ctx context.Context, in *UpdateProfileRequest, opts ...grpc.CallOption) (*UpdateProfileResponse, error)
@@ -43,6 +46,16 @@ type accountServiceClient struct {
 
 func NewAccountServiceClient(cc grpc.ClientConnInterface) AccountServiceClient {
 	return &accountServiceClient{cc}
+}
+
+func (c *accountServiceClient) InitProfile(ctx context.Context, in *InitProfileRequest, opts ...grpc.CallOption) (*InitProfileResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(InitProfileResponse)
+	err := c.cc.Invoke(ctx, AccountService_InitProfile_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *accountServiceClient) GetProfile(ctx context.Context, in *GetProfileRequest, opts ...grpc.CallOption) (*GetProfileResponse, error) {
@@ -89,6 +102,8 @@ func (c *accountServiceClient) GetETicket(ctx context.Context, in *GetETicketReq
 // All implementations must embed UnimplementedAccountServiceServer
 // for forward compatibility.
 type AccountServiceServer interface {
+	// internal microservice  calls
+	InitProfile(context.Context, *InitProfileRequest) (*InitProfileResponse, error)
 	// profile related
 	GetProfile(context.Context, *GetProfileRequest) (*GetProfileResponse, error)
 	UpdateProfile(context.Context, *UpdateProfileRequest) (*UpdateProfileResponse, error)
@@ -105,6 +120,9 @@ type AccountServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedAccountServiceServer struct{}
 
+func (UnimplementedAccountServiceServer) InitProfile(context.Context, *InitProfileRequest) (*InitProfileResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method InitProfile not implemented")
+}
 func (UnimplementedAccountServiceServer) GetProfile(context.Context, *GetProfileRequest) (*GetProfileResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetProfile not implemented")
 }
@@ -136,6 +154,24 @@ func RegisterAccountServiceServer(s grpc.ServiceRegistrar, srv AccountServiceSer
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&AccountService_ServiceDesc, srv)
+}
+
+func _AccountService_InitProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InitProfileRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountServiceServer).InitProfile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AccountService_InitProfile_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountServiceServer).InitProfile(ctx, req.(*InitProfileRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _AccountService_GetProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -217,6 +253,10 @@ var AccountService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "travelohi.v1.account.AccountService",
 	HandlerType: (*AccountServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "InitProfile",
+			Handler:    _AccountService_InitProfile_Handler,
+		},
 		{
 			MethodName: "GetProfile",
 			Handler:    _AccountService_GetProfile_Handler,

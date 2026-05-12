@@ -21,6 +21,150 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type InitProfileRequest struct {
+	state                protoimpl.MessageState `protogen:"open.v1"`
+	Id                   string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Email                string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
+	FirstName            string                 `protobuf:"bytes,3,opt,name=first_name,json=firstName,proto3" json:"first_name,omitempty"`
+	LastName             string                 `protobuf:"bytes,4,opt,name=last_name,json=lastName,proto3" json:"last_name,omitempty"`
+	Gender               string                 `protobuf:"bytes,5,opt,name=gender,proto3" json:"gender,omitempty"`
+	Dob                  string                 `protobuf:"bytes,6,opt,name=dob,proto3" json:"dob,omitempty"`
+	NewsletterSubscribed bool                   `protobuf:"varint,7,opt,name=newsletter_subscribed,json=newsletterSubscribed,proto3" json:"newsletter_subscribed,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
+}
+
+func (x *InitProfileRequest) Reset() {
+	*x = InitProfileRequest{}
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *InitProfileRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InitProfileRequest) ProtoMessage() {}
+
+func (x *InitProfileRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InitProfileRequest.ProtoReflect.Descriptor instead.
+func (*InitProfileRequest) Descriptor() ([]byte, []int) {
+	return file_proto_travelohi_v1_account_account_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *InitProfileRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *InitProfileRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *InitProfileRequest) GetFirstName() string {
+	if x != nil {
+		return x.FirstName
+	}
+	return ""
+}
+
+func (x *InitProfileRequest) GetLastName() string {
+	if x != nil {
+		return x.LastName
+	}
+	return ""
+}
+
+func (x *InitProfileRequest) GetGender() string {
+	if x != nil {
+		return x.Gender
+	}
+	return ""
+}
+
+func (x *InitProfileRequest) GetDob() string {
+	if x != nil {
+		return x.Dob
+	}
+	return ""
+}
+
+func (x *InitProfileRequest) GetNewsletterSubscribed() bool {
+	if x != nil {
+		return x.NewsletterSubscribed
+	}
+	return false
+}
+
+type InitProfileResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *InitProfileResponse) Reset() {
+	*x = InitProfileResponse{}
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *InitProfileResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InitProfileResponse) ProtoMessage() {}
+
+func (x *InitProfileResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InitProfileResponse.ProtoReflect.Descriptor instead.
+func (*InitProfileResponse) Descriptor() ([]byte, []int) {
+	return file_proto_travelohi_v1_account_account_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *InitProfileResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *InitProfileResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 type UserProfile struct {
 	state                protoimpl.MessageState `protogen:"open.v1"`
 	Id                   string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -40,7 +184,7 @@ type UserProfile struct {
 
 func (x *UserProfile) Reset() {
 	*x = UserProfile{}
-	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[0]
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -52,7 +196,7 @@ func (x *UserProfile) String() string {
 func (*UserProfile) ProtoMessage() {}
 
 func (x *UserProfile) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[0]
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -65,7 +209,7 @@ func (x *UserProfile) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserProfile.ProtoReflect.Descriptor instead.
 func (*UserProfile) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_account_account_proto_rawDescGZIP(), []int{0}
+	return file_proto_travelohi_v1_account_account_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *UserProfile) GetId() string {
@@ -161,7 +305,7 @@ type BookingItem struct {
 
 func (x *BookingItem) Reset() {
 	*x = BookingItem{}
-	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[1]
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -173,7 +317,7 @@ func (x *BookingItem) String() string {
 func (*BookingItem) ProtoMessage() {}
 
 func (x *BookingItem) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[1]
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -186,7 +330,7 @@ func (x *BookingItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BookingItem.ProtoReflect.Descriptor instead.
 func (*BookingItem) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_account_account_proto_rawDescGZIP(), []int{1}
+	return file_proto_travelohi_v1_account_account_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *BookingItem) GetBookingId() string {
@@ -255,7 +399,7 @@ type GetProfileRequest struct {
 
 func (x *GetProfileRequest) Reset() {
 	*x = GetProfileRequest{}
-	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[2]
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -267,7 +411,7 @@ func (x *GetProfileRequest) String() string {
 func (*GetProfileRequest) ProtoMessage() {}
 
 func (x *GetProfileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[2]
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -280,7 +424,7 @@ func (x *GetProfileRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetProfileRequest.ProtoReflect.Descriptor instead.
 func (*GetProfileRequest) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_account_account_proto_rawDescGZIP(), []int{2}
+	return file_proto_travelohi_v1_account_account_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GetProfileRequest) GetUserId() string {
@@ -299,7 +443,7 @@ type GetProfileResponse struct {
 
 func (x *GetProfileResponse) Reset() {
 	*x = GetProfileResponse{}
-	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[3]
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -311,7 +455,7 @@ func (x *GetProfileResponse) String() string {
 func (*GetProfileResponse) ProtoMessage() {}
 
 func (x *GetProfileResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[3]
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -324,7 +468,7 @@ func (x *GetProfileResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetProfileResponse.ProtoReflect.Descriptor instead.
 func (*GetProfileResponse) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_account_account_proto_rawDescGZIP(), []int{3}
+	return file_proto_travelohi_v1_account_account_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *GetProfileResponse) GetProfile() *UserProfile {
@@ -349,7 +493,7 @@ type UpdateProfileRequest struct {
 
 func (x *UpdateProfileRequest) Reset() {
 	*x = UpdateProfileRequest{}
-	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[4]
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -361,7 +505,7 @@ func (x *UpdateProfileRequest) String() string {
 func (*UpdateProfileRequest) ProtoMessage() {}
 
 func (x *UpdateProfileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[4]
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -374,7 +518,7 @@ func (x *UpdateProfileRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateProfileRequest.ProtoReflect.Descriptor instead.
 func (*UpdateProfileRequest) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_account_account_proto_rawDescGZIP(), []int{4}
+	return file_proto_travelohi_v1_account_account_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *UpdateProfileRequest) GetUserId() string {
@@ -436,7 +580,7 @@ type UpdateProfileResponse struct {
 
 func (x *UpdateProfileResponse) Reset() {
 	*x = UpdateProfileResponse{}
-	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[5]
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -448,7 +592,7 @@ func (x *UpdateProfileResponse) String() string {
 func (*UpdateProfileResponse) ProtoMessage() {}
 
 func (x *UpdateProfileResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[5]
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -461,7 +605,7 @@ func (x *UpdateProfileResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateProfileResponse.ProtoReflect.Descriptor instead.
 func (*UpdateProfileResponse) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_account_account_proto_rawDescGZIP(), []int{5}
+	return file_proto_travelohi_v1_account_account_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *UpdateProfileResponse) GetSuccess() bool {
@@ -490,7 +634,7 @@ type GetBookingHistoryRequest struct {
 
 func (x *GetBookingHistoryRequest) Reset() {
 	*x = GetBookingHistoryRequest{}
-	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[6]
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -502,7 +646,7 @@ func (x *GetBookingHistoryRequest) String() string {
 func (*GetBookingHistoryRequest) ProtoMessage() {}
 
 func (x *GetBookingHistoryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[6]
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -515,7 +659,7 @@ func (x *GetBookingHistoryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetBookingHistoryRequest.ProtoReflect.Descriptor instead.
 func (*GetBookingHistoryRequest) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_account_account_proto_rawDescGZIP(), []int{6}
+	return file_proto_travelohi_v1_account_account_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GetBookingHistoryRequest) GetUserId() string {
@@ -556,7 +700,7 @@ type GetBookingHistoryResponse struct {
 
 func (x *GetBookingHistoryResponse) Reset() {
 	*x = GetBookingHistoryResponse{}
-	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[7]
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -568,7 +712,7 @@ func (x *GetBookingHistoryResponse) String() string {
 func (*GetBookingHistoryResponse) ProtoMessage() {}
 
 func (x *GetBookingHistoryResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[7]
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -581,7 +725,7 @@ func (x *GetBookingHistoryResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetBookingHistoryResponse.ProtoReflect.Descriptor instead.
 func (*GetBookingHistoryResponse) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_account_account_proto_rawDescGZIP(), []int{7}
+	return file_proto_travelohi_v1_account_account_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *GetBookingHistoryResponse) GetBookings() []*BookingItem {
@@ -608,7 +752,7 @@ type GetETicketRequest struct {
 
 func (x *GetETicketRequest) Reset() {
 	*x = GetETicketRequest{}
-	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[8]
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -620,7 +764,7 @@ func (x *GetETicketRequest) String() string {
 func (*GetETicketRequest) ProtoMessage() {}
 
 func (x *GetETicketRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[8]
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -633,7 +777,7 @@ func (x *GetETicketRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetETicketRequest.ProtoReflect.Descriptor instead.
 func (*GetETicketRequest) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_account_account_proto_rawDescGZIP(), []int{8}
+	return file_proto_travelohi_v1_account_account_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *GetETicketRequest) GetUserId() string {
@@ -662,7 +806,7 @@ type GetETicketResponse struct {
 
 func (x *GetETicketResponse) Reset() {
 	*x = GetETicketResponse{}
-	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[9]
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -674,7 +818,7 @@ func (x *GetETicketResponse) String() string {
 func (*GetETicketResponse) ProtoMessage() {}
 
 func (x *GetETicketResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[9]
+	mi := &file_proto_travelohi_v1_account_account_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -687,7 +831,7 @@ func (x *GetETicketResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetETicketResponse.ProtoReflect.Descriptor instead.
 func (*GetETicketResponse) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_account_account_proto_rawDescGZIP(), []int{9}
+	return file_proto_travelohi_v1_account_account_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *GetETicketResponse) GetBookingDetails() *BookingItem {
@@ -722,7 +866,19 @@ var File_proto_travelohi_v1_account_account_proto protoreflect.FileDescriptor
 
 const file_proto_travelohi_v1_account_account_proto_rawDesc = "" +
 	"\n" +
-	"(proto/travelohi/v1/account/account.proto\x12\x14travelohi.v1.account\"\xe7\x02\n" +
+	"(proto/travelohi/v1/account/account.proto\x12\x14travelohi.v1.account\"\xd5\x01\n" +
+	"\x12InitProfileRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
+	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1d\n" +
+	"\n" +
+	"first_name\x18\x03 \x01(\tR\tfirstName\x12\x1b\n" +
+	"\tlast_name\x18\x04 \x01(\tR\blastName\x12\x16\n" +
+	"\x06gender\x18\x05 \x01(\tR\x06gender\x12\x10\n" +
+	"\x03dob\x18\x06 \x01(\tR\x03dob\x123\n" +
+	"\x15newsletter_subscribed\x18\a \x01(\bR\x14newsletterSubscribed\"I\n" +
+	"\x13InitProfileResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"\xe7\x02\n" +
 	"\vUserProfile\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1d\n" +
@@ -781,8 +937,9 @@ const file_proto_travelohi_v1_account_account_proto_rawDesc = "" +
 	"qrCodeData\x12\x1d\n" +
 	"\n" +
 	"issue_date\x18\x03 \x01(\tR\tissueDate\x125\n" +
-	"\x17passenger_or_guest_name\x18\x04 \x01(\tR\x14passengerOrGuestName2\xba\x03\n" +
-	"\x0eAccountService\x12a\n" +
+	"\x17passenger_or_guest_name\x18\x04 \x01(\tR\x14passengerOrGuestName2\xa0\x04\n" +
+	"\x0eAccountService\x12d\n" +
+	"\vInitProfile\x12(.travelohi.v1.account.InitProfileRequest\x1a).travelohi.v1.account.InitProfileResponse\"\x00\x12a\n" +
 	"\n" +
 	"GetProfile\x12'.travelohi.v1.account.GetProfileRequest\x1a(.travelohi.v1.account.GetProfileResponse\"\x00\x12j\n" +
 	"\rUpdateProfile\x12*.travelohi.v1.account.UpdateProfileRequest\x1a+.travelohi.v1.account.UpdateProfileResponse\"\x00\x12v\n" +
@@ -802,37 +959,41 @@ func file_proto_travelohi_v1_account_account_proto_rawDescGZIP() []byte {
 	return file_proto_travelohi_v1_account_account_proto_rawDescData
 }
 
-var file_proto_travelohi_v1_account_account_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_proto_travelohi_v1_account_account_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_proto_travelohi_v1_account_account_proto_goTypes = []any{
-	(*UserProfile)(nil),               // 0: travelohi.v1.account.UserProfile
-	(*BookingItem)(nil),               // 1: travelohi.v1.account.BookingItem
-	(*GetProfileRequest)(nil),         // 2: travelohi.v1.account.GetProfileRequest
-	(*GetProfileResponse)(nil),        // 3: travelohi.v1.account.GetProfileResponse
-	(*UpdateProfileRequest)(nil),      // 4: travelohi.v1.account.UpdateProfileRequest
-	(*UpdateProfileResponse)(nil),     // 5: travelohi.v1.account.UpdateProfileResponse
-	(*GetBookingHistoryRequest)(nil),  // 6: travelohi.v1.account.GetBookingHistoryRequest
-	(*GetBookingHistoryResponse)(nil), // 7: travelohi.v1.account.GetBookingHistoryResponse
-	(*GetETicketRequest)(nil),         // 8: travelohi.v1.account.GetETicketRequest
-	(*GetETicketResponse)(nil),        // 9: travelohi.v1.account.GetETicketResponse
+	(*InitProfileRequest)(nil),        // 0: travelohi.v1.account.InitProfileRequest
+	(*InitProfileResponse)(nil),       // 1: travelohi.v1.account.InitProfileResponse
+	(*UserProfile)(nil),               // 2: travelohi.v1.account.UserProfile
+	(*BookingItem)(nil),               // 3: travelohi.v1.account.BookingItem
+	(*GetProfileRequest)(nil),         // 4: travelohi.v1.account.GetProfileRequest
+	(*GetProfileResponse)(nil),        // 5: travelohi.v1.account.GetProfileResponse
+	(*UpdateProfileRequest)(nil),      // 6: travelohi.v1.account.UpdateProfileRequest
+	(*UpdateProfileResponse)(nil),     // 7: travelohi.v1.account.UpdateProfileResponse
+	(*GetBookingHistoryRequest)(nil),  // 8: travelohi.v1.account.GetBookingHistoryRequest
+	(*GetBookingHistoryResponse)(nil), // 9: travelohi.v1.account.GetBookingHistoryResponse
+	(*GetETicketRequest)(nil),         // 10: travelohi.v1.account.GetETicketRequest
+	(*GetETicketResponse)(nil),        // 11: travelohi.v1.account.GetETicketResponse
 }
 var file_proto_travelohi_v1_account_account_proto_depIdxs = []int32{
-	0, // 0: travelohi.v1.account.GetProfileResponse.profile:type_name -> travelohi.v1.account.UserProfile
-	0, // 1: travelohi.v1.account.UpdateProfileResponse.updated_profile:type_name -> travelohi.v1.account.UserProfile
-	1, // 2: travelohi.v1.account.GetBookingHistoryResponse.bookings:type_name -> travelohi.v1.account.BookingItem
-	1, // 3: travelohi.v1.account.GetETicketResponse.booking_details:type_name -> travelohi.v1.account.BookingItem
-	2, // 4: travelohi.v1.account.AccountService.GetProfile:input_type -> travelohi.v1.account.GetProfileRequest
-	4, // 5: travelohi.v1.account.AccountService.UpdateProfile:input_type -> travelohi.v1.account.UpdateProfileRequest
-	6, // 6: travelohi.v1.account.AccountService.GetBookingHistory:input_type -> travelohi.v1.account.GetBookingHistoryRequest
-	8, // 7: travelohi.v1.account.AccountService.GetETicket:input_type -> travelohi.v1.account.GetETicketRequest
-	3, // 8: travelohi.v1.account.AccountService.GetProfile:output_type -> travelohi.v1.account.GetProfileResponse
-	5, // 9: travelohi.v1.account.AccountService.UpdateProfile:output_type -> travelohi.v1.account.UpdateProfileResponse
-	7, // 10: travelohi.v1.account.AccountService.GetBookingHistory:output_type -> travelohi.v1.account.GetBookingHistoryResponse
-	9, // 11: travelohi.v1.account.AccountService.GetETicket:output_type -> travelohi.v1.account.GetETicketResponse
-	8, // [8:12] is the sub-list for method output_type
-	4, // [4:8] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	2,  // 0: travelohi.v1.account.GetProfileResponse.profile:type_name -> travelohi.v1.account.UserProfile
+	2,  // 1: travelohi.v1.account.UpdateProfileResponse.updated_profile:type_name -> travelohi.v1.account.UserProfile
+	3,  // 2: travelohi.v1.account.GetBookingHistoryResponse.bookings:type_name -> travelohi.v1.account.BookingItem
+	3,  // 3: travelohi.v1.account.GetETicketResponse.booking_details:type_name -> travelohi.v1.account.BookingItem
+	0,  // 4: travelohi.v1.account.AccountService.InitProfile:input_type -> travelohi.v1.account.InitProfileRequest
+	4,  // 5: travelohi.v1.account.AccountService.GetProfile:input_type -> travelohi.v1.account.GetProfileRequest
+	6,  // 6: travelohi.v1.account.AccountService.UpdateProfile:input_type -> travelohi.v1.account.UpdateProfileRequest
+	8,  // 7: travelohi.v1.account.AccountService.GetBookingHistory:input_type -> travelohi.v1.account.GetBookingHistoryRequest
+	10, // 8: travelohi.v1.account.AccountService.GetETicket:input_type -> travelohi.v1.account.GetETicketRequest
+	1,  // 9: travelohi.v1.account.AccountService.InitProfile:output_type -> travelohi.v1.account.InitProfileResponse
+	5,  // 10: travelohi.v1.account.AccountService.GetProfile:output_type -> travelohi.v1.account.GetProfileResponse
+	7,  // 11: travelohi.v1.account.AccountService.UpdateProfile:output_type -> travelohi.v1.account.UpdateProfileResponse
+	9,  // 12: travelohi.v1.account.AccountService.GetBookingHistory:output_type -> travelohi.v1.account.GetBookingHistoryResponse
+	11, // 13: travelohi.v1.account.AccountService.GetETicket:output_type -> travelohi.v1.account.GetETicketResponse
+	9,  // [9:14] is the sub-list for method output_type
+	4,  // [4:9] is the sub-list for method input_type
+	4,  // [4:4] is the sub-list for extension type_name
+	4,  // [4:4] is the sub-list for extension extendee
+	0,  // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_proto_travelohi_v1_account_account_proto_init() }
@@ -846,7 +1007,7 @@ func file_proto_travelohi_v1_account_account_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_travelohi_v1_account_account_proto_rawDesc), len(file_proto_travelohi_v1_account_account_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
