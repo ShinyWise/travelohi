@@ -146,7 +146,43 @@ func (uc *authUseCase) Login(ctx context.Context, email, password string) (*auth
 }
 
 func (uc *authUseCase) LoginWithOTP(ctx context.Context, email, otp string) (*auth.AuthResult, error) {
-	return nil, nil
+	otpKey := "otp:" + email
+	cachedOTPBytes, err := uc.cache.Get(ctx, otpKey)
+	if err != nil {
+		return nil, errors.New("OTP code is invalid or has expired")
+	}
+
+	if string(cachedOTPBytes) != otp {
+		return nil, errors.New("incorrect OTP code")
+	}
+	_ = uc.cache.Delete(ctx, otpKey)
+	user, err := uc.repo.GetByEmail(ctx, email)
+	if err != nil {
+		return nil, auth.ErrInternal
+	}
+
+	if user.IsBanned {
+		return nil, errors.New("your account has been suspended")
+	}
+
+	sessionID := uc.idGen.Generate()
+	sessionKey := "session:" + user.ID
+
+	if err := uc.cache.Set(ctx, sessionKey, []byte(sessionID), 86400); err != nil {
+		return nil, auth.ErrInternal
+	}
+
+	accessToken, err := uc.tokenMaker.CreateToken(user.ID, sessionID, 24*time.Hour)
+	if err != nil {
+		return nil, auth.ErrInternal
+	}
+
+	return &auth.AuthResult{
+		UserID:      user.ID,
+		AccessToken: accessToken,
+		Message:     "OTP Login successful!",
+	}, nil
+
 }
 
 func (uc *authUseCase) SendOTP(ctx context.Context, email string) error {
@@ -175,5 +211,14 @@ func (uc *authUseCase) SendOTP(ctx context.Context, email string) error {
 }
 
 func (uc *authUseCase) Logout(ctx context.Context, token string) error {
+	userID, _, err := uc.tokenMaker.VerifyToken(token)
+	if err != nil {
+		return nil
+	}
+
+	sessionKey := "session:" + userID
+	if err := uc.cache.Delete(ctx, sessionKey); err != nil {
+		return auth.ErrInternal
+	}
 	return nil
 }
