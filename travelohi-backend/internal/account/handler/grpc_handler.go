@@ -22,6 +22,28 @@ func NewUserGrpcHandler(usecase account.AccountUseCase) *AccountGrpcHandler {
 	}
 }
 
+func (h *AccountGrpcHandler) InitProfile(ctx context.Context, req *accountpb.InitProfileRequest) (*accountpb.InitProfileResponse, error) {
+	newAccount := &account.Account{
+		ID:                   req.GetId(),
+		Email:                req.GetEmail(),
+		FirstName:            req.GetFirstName(),
+		LastName:             req.GetLastName(),
+		Gender:               req.GetGender(),
+		DOB:                  req.GetDob(),
+		NewsletterSubscribed: req.GetNewsletterSubscribed(),
+	}
+
+	err := h.userUsecase.InitProfile(ctx, newAccount)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Failed to initialize profile: %v", err)
+	}
+
+	return &accountpb.InitProfileResponse{
+		Success: true,
+		Message: "Profile initialized successfully",
+	}, nil
+}
+
 func (h *AccountGrpcHandler) GetProfile(ctx context.Context, req *accountpb.GetProfileRequest) (*accountpb.GetProfileResponse, error) {
 	secureUserID, err := utils.ExtractUserID(ctx)
 	if err != nil {
