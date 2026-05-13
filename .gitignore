@@ -1,0 +1,38 @@
+# Binaries and executables
+*.exe
+*-binary
+main
+/travelohi-backend/auth-binary
+/travelohi-backend/account-binary
+
+# IDE - VS Code
+.vscode/
+*.code-workspace
+
+# IDE - IntelliJ/Goland
+.idea/
+
+# OS specific files
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+
+# Go specific
+vendor/
+go.work
+go.work.sum
+*.test
+*.out
+cover.out
+
+# Docker and Database
+pgdata/
+*.log
+
+# Environment variables
+.env
+*.env
+auth.env
+account.env

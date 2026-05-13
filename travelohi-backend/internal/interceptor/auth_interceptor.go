@@ -28,6 +28,8 @@ func NewAuthInterceptor(tokenMaker token.Maker, cache auth.CacheRepository) *Aut
 		"/travelohi.v1.auth.AuthService/Register":     true,
 		"/travelohi.v1.auth.AuthService/SendOTP":      true,
 		"/travelohi.v1.auth.AuthService/LoginWithOTP": true,
+		// internal microservice call: perlu dipake buat authService pas register
+		"/travelohi.v1.account.AccountService/InitProfile": true,
 	}
 
 	return &AuthInterceptor{
