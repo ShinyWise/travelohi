@@ -1,12 +1,37 @@
 # Makefile
 
-# Start docker services
+# Start docker services normally
 up:
 	docker-compose up -d
 
-# Stop docker services
+# Start docker services AND force a rebuild of the Go containers
+# jalanin kalo go file di modif
+up-build:
+	docker-compose up --build -d
+
+# stop docker
 down:
 	docker-compose down
+
+# stop docker services and wipe the database volume
+down-clean:
+	docker-compose down -v
+
+# view docker logs
+logs:
+	docker-compose logs -f
+
+# view docker logs auth service
+logs-auth:
+	docker-compose logs -f auth-service
+
+# view docker logs account service
+logs-account:
+	docker-compose logs -f account-service
+
+# tidy go
+tidy:
+	go mod tidy
 
 # Generate Go gRPC code
 .PHONY: generate-protos
