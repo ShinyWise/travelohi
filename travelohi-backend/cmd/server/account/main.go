@@ -3,32 +3,72 @@ package main
 import (
 	"log"
 	"net"
+	"os"
 
+	"github.com/bradfitz/gomemcache/memcache"
 	"google.golang.org/grpc"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+
+	// account services
+	"github.com/travelohi/backend/internal/account/handler"
+	"github.com/travelohi/backend/internal/account/repository"
+	"github.com/travelohi/backend/internal/account/usecase"
+
+	authrepo "github.com/travelohi/backend/internal/auth/repository"
+	"github.com/travelohi/backend/internal/interceptor"
+	"github.com/travelohi/backend/pkg/token"
+	accountpb "github.com/travelohi/backend/proto/account/v1"
 )
 
 func main() {
-	// tcp listener di port 50051
-	listener, err := net.Listen("tcp", ":50051")
+
+	dbURL := os.Getenv("DB_URL")
+	memcachedURL := os.Getenv("MEMCACHED_URL")
+	jwtSecret := os.Getenv("JWT_SECRET")
+
+	// infrastructure connections
+	dbConn, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 	if err != nil {
-		log.Fatalf("error, failed to listen : %v", err)
+		log.Fatalf("Failed to connect to Postgres: %v", err)
 	}
 
-	// bikin gRPC server
-	gRPCServer := grpc.NewServer()
+	// memcached connection
+	memcachedClient := memcache.New(memcachedURL)
 
-	// Depedency injection
-	// nanti bikin repository -> usecase/service -> handler
-	// trs register ke handler pake grpcserver
-	// userRepo := repository.NewPostgresUserRepository(dbConn)
-	// userUseCase := usecase.NewUserUseCase(userRepo)
-	// userHandler := handler.NewUserHandler(userUserCase)
+	// Dependency Injection
 
-	// userpb.RegisterUserServiceServer(gRPCServer, userHandler)
-	log.Printf("UserService is running on %v", listener.Addr())
+	tokenMaker := token.NewJWTMaker(jwtSecret)
 
-	//jalananiun gRPC
+	// repository
+	accountRepo := repository.NewPostgresAccountRepository(dbConn) // Adjust name if your constructor is different
+	cacheRepo := authrepo.NewMemcachedRepository(memcachedClient)  // Reusing the Auth cache repo
+
+	// usecase
+	accountUseCase := usecase.NewAccountUseCase(accountRepo)
+
+	// handler
+	accountHandler := handler.NewUserGrpcHandler(accountUseCase)
+
+	// the bouncer (interceptor)
+	authInterceptor := interceptor.NewAuthInterceptor(tokenMaker, cacheRepo)
+
+	// grpc server
+	gRPCServer := grpc.NewServer(
+		grpc.UnaryInterceptor(authInterceptor.Unary()),
+	)
+	accountpb.RegisterAccountServiceServer(gRPCServer, accountHandler)
+
+	// start listening
+	listener, err := net.Listen("tcp", ":50052")
+	if err != nil {
+		log.Fatalf("Failed to listen on port 50052: %v", err)
+	}
+
+	log.Printf("✅ Account Service is running on %v", listener.Addr())
+
 	if err := gRPCServer.Serve(listener); err != nil {
-		log.Fatalf("error, failed to serve : %v", err)
+		log.Fatalf("Failed to serve gRPC server: %v", err)
 	}
 }
