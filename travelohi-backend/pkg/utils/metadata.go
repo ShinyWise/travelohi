@@ -1,24 +1,17 @@
-package auth // or utils
+package utils
 
 import (
 	"context"
+	"errors"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/metadata"
-	"google.golang.org/grpc/status"
+	"github.com/travelohi/backend/internal/interceptor"
 )
 
-// asumsi interceptor udah handle security dan inject id
 func ExtractUserID(ctx context.Context) (string, error) {
-	md, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		return "", status.Error(codes.Unauthenticated, "Unauthorized: metadata missing")
+	userID, ok := ctx.Value(interceptor.UserIDKey).(string)
+	if !ok || userID == "" {
+		return "", errors.New("unauthorized: missing or invalid user session in context")
 	}
 
-	userIDs := md.Get("x-user-id")
-	if len(userIDs) == 0 || userIDs[0] == "" {
-		return "", status.Error(codes.Unauthenticated, "Unauthorized: invalid or missing user session")
-	}
-
-	return userIDs[0], nil
+	return userID, nil
 }

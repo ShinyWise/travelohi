@@ -2,12 +2,11 @@ package handler
 
 import (
 	"context"
-	"strings"
 
 	"github.com/travelohi/backend/internal/auth"
+	"github.com/travelohi/backend/pkg/token"
 	authpb "github.com/travelohi/backend/proto/auth/v1"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 )
 
@@ -91,27 +90,13 @@ func (h *authHandler) SendOTP(ctx context.Context, req *authpb.SendOTPRequest) (
 }
 
 func (h *authHandler) Logout(ctx context.Context, req *authpb.LogoutRequest) (*authpb.LogoutResponse, error) {
-	md, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		return nil, status.Error(codes.Unauthenticated, "Unauthorized: metadata missing")
+	tokenString, err := token.ExtractTokenFromContext(ctx)
+	if err != nil {
+		return nil, status.Error(codes.Unauthenticated, "authorization token is not provided")
 	}
-
-	authHeaders := md.Get("authorization")
-	if len(authHeaders) == 0 || authHeaders[0] == "" {
-		return nil, status.Error(codes.Unauthenticated, "Unauthorized: invalid or missing user session")
-	}
-
-	// split header buat ambil access token
-	authHeader := authHeaders[0]
-	parts := strings.Split(authHeader, " ")
-	if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
-		return nil, status.Error(codes.Unauthenticated, "invalid authorization header format")
-	}
-
-	tokenString := parts[1]
 
 	// kasih token ke logout auth usecase
-	err := h.usecase.Logout(ctx, tokenString)
+	err = h.usecase.Logout(ctx, tokenString)
 	if err != nil {
 		return nil, status.Error(codes.Internal, "failed to process logout")
 	}
