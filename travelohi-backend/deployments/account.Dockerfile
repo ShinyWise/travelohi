@@ -1,4 +1,4 @@
-FROM golang:1.21-alpine AS builder
+FROM golang:1.26-alpine AS builder
 
 WORKDIR /app
 
@@ -7,7 +7,7 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o account-binary ./cmd/account/main.go 
+RUN go build -o account-binary ./cmd/server/account/main.go 
 
 FROM alpine:latest
 

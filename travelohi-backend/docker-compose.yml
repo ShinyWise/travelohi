@@ -1,48 +1,74 @@
-version: '3.8'
-
 services:
-  # --- Infrastructure ---
   postgres:
     image: postgres:15-alpine
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: secretpassword
-      POSTGRES_DB: travelohi
+      POSTGRES_DB: travelohi_db
     ports:
       - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
-      - travelohi_net
+      - travelohi-net
 
   memcached:
-    image: memcached:alpine
+    image: memcached:1.6-alpine
+    ports:
+      - "11211:11211"
     networks:
-      - travelohi_net
+      - travelohi-net
 
-  # --- Microservices ---
+  # Microservices
   auth-service:
     build:
       context: .
-      dockerfile: Dockerfile
-      args:
-        SERVICE_NAME: auth
+      dockerfile: deployments/auth.Dockerfile
+    ports:
+      - "50051:50051"
     environment:
-      - DB_HOST=postgres
-      - MEMCACHED_HOST=memcached:11211
+      - DB_URL=postgres://root:secretpassword@postgres:5432/travelohi_db?sslmode=disable
+      - MEMCACHED_URL=memcached:11211
+      - JWT_SECRET=your-super-secret-key
+    depends_on:
+      - postgres
+      - memcached
     networks:
-      - travelohi_net
+      - travelohi-net
 
-  hotel-service:
+  account-service:
     build:
       context: .
-      dockerfile: Dockerfile
-      args:
-        SERVICE_NAME: hotel
+      dockerfile: deployments/account.Dockerfile
+    ports:
+      - "50052:50052"
     environment:
-      - DB_HOST=postgres
-      - AUTH_SERVICE_URL=auth-service:50051
+      - DB_URL=postgres://root:secretpassword@postgres:5432/travelohi_db?sslmode=disable
+      - MEMCACHED_URL=memcached:11211
+      - JWT_SECRET=your-super-secret-key
+    depends_on:
+      - postgres
+      - memcached
     networks:
-      - travelohi_net
+      - travelohi-net
+
+  # Envoy / API Gateway
+  envoy:
+    image: envoyproxy/envoy:v1.27-latest
+    ports:
+      - "8080:8080"
+      - "9901:9901" #  for admin
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
+    depends_on:
+      - auth-service
+      - account-service
+    networks:
+      - travelohi-net
 
 networks:
-  travelohi_net:
+  travelohi-net:
     driver: bridge
+volumes:
+  pgdata:
