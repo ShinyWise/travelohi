@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+package travelohi.v1.hotel;
+
+option go_package = "github.com/travelohi/backend/proto/hotel/v1;hotelpb";
+
+service HotelService {
+  rpc SearchHotels(SearchHotelsRequest) returns (SearchHotelsResponse) {}
+  rpc GetHotelDetails(GetHotelDetailsRequest) returns (GetHotelDetailsResponse) {}
+  rpc AddHotelReview(AddHotelReviewRequest) returns (AddHotelReviewResponse) {}
+}
+
+message Hotel {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string address = 4;
+  repeated string picture_urls = 5;
+  repeated string facilities = 6; // e.g., "Swimming Pool", "WiFi"
+  
+  float rating_cleanliness = 7;
+  float rating_comfort = 8;
+  float rating_location = 9;
+  float rating_service = 10;
+  float rating_average = 11;
+  
+  int32 total_reviews = 12;
+  int64 starting_price = 13;
+}
+
+message HotelRoom {
+  string id = 1;
+  string hotel_id = 2;
+  string name = 3; // e.g., "Deluxe King"
+  int64 price_per_night = 4;
+  int32 capacity = 5;
+  repeated string facilities = 6; // e.g., "Bathtub", "Non-smoking"
+  int32 available_count = 7;
+}
+
+message HotelReview {
+  string id = 1;
+  string hotel_id = 2;
+  string user_id = 3;
+  string user_name = 4;
+  float rating_average = 5;
+  string comment = 6;
+  string created_at = 7;
+}
+
+message SearchHotelsRequest {
+  string query = 1; // name/city
+  string check_in_date = 2;
+  string check_out_date = 3;
+  
+  // filter related
+  int64 min_price = 4;
+  int64 max_price = 5;
+  float min_rating = 6;
+  repeated string facilities = 7;
+  
+  // sort, pagination
+  string sort_by = 8; // "rating", "price", "reviews", "availability"
+  string sort_order = 9; // "asc", "desc"
+  int32 limit = 10; // Must be 20, 25, or 30
+  int32 offset = 11;
+}
+
+message SearchHotelsResponse {
+  repeated Hotel hotels = 1;
+  int32 total_results = 2;
+}
+
+message GetHotelDetailsRequest {
+  string hotel_id = 1;
+  string check_in_date = 2;
+  string check_out_date = 3;
+}
+
+message GetHotelDetailsResponse {
+  Hotel hotel = 1;
+  repeated HotelRoom available_rooms = 2;
+  repeated HotelReview recent_reviews = 3;
+}
+
+message AddHotelReviewRequest {
+  string hotel_id = 1;
+  float rating_cleanliness = 2;
+  float rating_comfort = 3;
+  float rating_location = 4;
+  float rating_service = 5;
+  string comment = 6;
+  bool is_anonymous = 7;
+}
+
+message AddHotelReviewResponse {
+  bool success = 1;
+  string message = 2;
+}
