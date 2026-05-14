@@ -46,9 +46,6 @@ func NewAuthUseCase(
 var _ auth.AuthUseCase = (*authUseCase)(nil)
 
 func (uc *authUseCase) RegisterUser(ctx context.Context, req *auth.RegisterData) (*auth.AuthResult, error) {
-	if req.Password != req.ConfirmPassword {
-		return nil, errors.New("Password do not match")
-	}
 
 	_, err := uc.repo.GetByEmail(ctx, req.Email)
 	if err == nil {

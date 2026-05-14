@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"errors"
+
 	"github.com/travelohi/backend/internal/auth"
 	"gorm.io/gorm"
 )
@@ -17,7 +18,7 @@ type AuthModel struct {
 }
 
 func (AuthModel) TableName() string {
-	return "auth_credentials"
+	return "auths"
 }
 
 func (m *AuthModel) ToDomain() *auth.Auth {

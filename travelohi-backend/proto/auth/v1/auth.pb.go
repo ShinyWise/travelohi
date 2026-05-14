@@ -25,16 +25,14 @@ type RegisterRequest struct {
 	state               protoimpl.MessageState `protogen:"open.v1"`
 	Email               string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
 	Password            string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
-	ConfirmPassword     string                 `protobuf:"bytes,3,opt,name=confirm_password,json=confirmPassword,proto3" json:"confirm_password,omitempty"`
-	FirstName           string                 `protobuf:"bytes,4,opt,name=first_name,json=firstName,proto3" json:"first_name,omitempty"`
-	LastName            string                 `protobuf:"bytes,5,opt,name=last_name,json=lastName,proto3" json:"last_name,omitempty"`
-	Dob                 string                 `protobuf:"bytes,6,opt,name=dob,proto3" json:"dob,omitempty"`
-	Gender              string                 `protobuf:"bytes,7,opt,name=gender,proto3" json:"gender,omitempty"`
-	ProfilePictureUrl   string                 `protobuf:"bytes,8,opt,name=profile_picture_url,json=profilePictureUrl,proto3" json:"profile_picture_url,omitempty"`
-	SubscribeNewsletter bool                   `protobuf:"varint,9,opt,name=subscribe_newsletter,json=subscribeNewsletter,proto3" json:"subscribe_newsletter,omitempty"`
-	CaptchaToken        string                 `protobuf:"bytes,10,opt,name=captcha_token,json=captchaToken,proto3" json:"captcha_token,omitempty"`
-	SecurityQuestionId  int32                  `protobuf:"varint,11,opt,name=security_question_id,json=securityQuestionId,proto3" json:"security_question_id,omitempty"`
-	SecurityAnswer      string                 `protobuf:"bytes,12,opt,name=security_answer,json=securityAnswer,proto3" json:"security_answer,omitempty"`
+	FirstName           string                 `protobuf:"bytes,3,opt,name=first_name,json=firstName,proto3" json:"first_name,omitempty"`
+	LastName            string                 `protobuf:"bytes,4,opt,name=last_name,json=lastName,proto3" json:"last_name,omitempty"`
+	Dob                 string                 `protobuf:"bytes,5,opt,name=dob,proto3" json:"dob,omitempty"`
+	Gender              string                 `protobuf:"bytes,6,opt,name=gender,proto3" json:"gender,omitempty"`
+	SubscribeNewsletter bool                   `protobuf:"varint,7,opt,name=subscribe_newsletter,json=subscribeNewsletter,proto3" json:"subscribe_newsletter,omitempty"`
+	CaptchaToken        string                 `protobuf:"bytes,8,opt,name=captcha_token,json=captchaToken,proto3" json:"captcha_token,omitempty"`
+	SecurityQuestionId  int32                  `protobuf:"varint,9,opt,name=security_question_id,json=securityQuestionId,proto3" json:"security_question_id,omitempty"`
+	SecurityAnswer      string                 `protobuf:"bytes,10,opt,name=security_answer,json=securityAnswer,proto3" json:"security_answer,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
@@ -83,13 +81,6 @@ func (x *RegisterRequest) GetPassword() string {
 	return ""
 }
 
-func (x *RegisterRequest) GetConfirmPassword() string {
-	if x != nil {
-		return x.ConfirmPassword
-	}
-	return ""
-}
-
 func (x *RegisterRequest) GetFirstName() string {
 	if x != nil {
 		return x.FirstName
@@ -114,13 +105,6 @@ func (x *RegisterRequest) GetDob() string {
 func (x *RegisterRequest) GetGender() string {
 	if x != nil {
 		return x.Gender
-	}
-	return ""
-}
-
-func (x *RegisterRequest) GetProfilePictureUrl() string {
-	if x != nil {
-		return x.ProfilePictureUrl
 	}
 	return ""
 }
@@ -522,22 +506,20 @@ var File_proto_travelohi_v1_auth_auth_proto protoreflect.FileDescriptor
 
 const file_proto_travelohi_v1_auth_auth_proto_rawDesc = "" +
 	"\n" +
-	"\"proto/travelohi/v1/auth/auth.proto\x12\x11travelohi.v1.auth\"\xb7\x03\n" +
+	"\"proto/travelohi/v1/auth/auth.proto\x12\x11travelohi.v1.auth\"\xdc\x02\n" +
 	"\x0fRegisterRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
-	"\bpassword\x18\x02 \x01(\tR\bpassword\x12)\n" +
-	"\x10confirm_password\x18\x03 \x01(\tR\x0fconfirmPassword\x12\x1d\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\x12\x1d\n" +
 	"\n" +
-	"first_name\x18\x04 \x01(\tR\tfirstName\x12\x1b\n" +
-	"\tlast_name\x18\x05 \x01(\tR\blastName\x12\x10\n" +
-	"\x03dob\x18\x06 \x01(\tR\x03dob\x12\x16\n" +
-	"\x06gender\x18\a \x01(\tR\x06gender\x12.\n" +
-	"\x13profile_picture_url\x18\b \x01(\tR\x11profilePictureUrl\x121\n" +
-	"\x14subscribe_newsletter\x18\t \x01(\bR\x13subscribeNewsletter\x12#\n" +
-	"\rcaptcha_token\x18\n" +
-	" \x01(\tR\fcaptchaToken\x120\n" +
-	"\x14security_question_id\x18\v \x01(\x05R\x12securityQuestionId\x12'\n" +
-	"\x0fsecurity_answer\x18\f \x01(\tR\x0esecurityAnswer\"e\n" +
+	"first_name\x18\x03 \x01(\tR\tfirstName\x12\x1b\n" +
+	"\tlast_name\x18\x04 \x01(\tR\blastName\x12\x10\n" +
+	"\x03dob\x18\x05 \x01(\tR\x03dob\x12\x16\n" +
+	"\x06gender\x18\x06 \x01(\tR\x06gender\x121\n" +
+	"\x14subscribe_newsletter\x18\a \x01(\bR\x13subscribeNewsletter\x12#\n" +
+	"\rcaptcha_token\x18\b \x01(\tR\fcaptchaToken\x120\n" +
+	"\x14security_question_id\x18\t \x01(\x05R\x12securityQuestionId\x12'\n" +
+	"\x0fsecurity_answer\x18\n" +
+	" \x01(\tR\x0esecurityAnswer\"e\n" +
 	"\fLoginRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\x12#\n" +

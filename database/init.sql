@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS auths (
 );
 
 -- Account Service Table
-CREATE TABLE IF NOT EXISTS accounts (
+CREATE TABLE IF NOT EXISTS account_models (
     id VARCHAR(255) PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     first_name VARCHAR(255) NOT NULL,
@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS accounts (
     gender VARCHAR(50),
     dob VARCHAR(50),
     profile_picture_url TEXT,
+    is_active BOOLEAN DEFAULT true NOT NULL,
     newsletter_subscribed BOOLEAN DEFAULT FALSE,
     hi_wallet_balance BIGINT DEFAULT 0,
     phone_number VARCHAR(50),

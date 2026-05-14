@@ -16,18 +16,16 @@ service AuthService {
 }
 
 message RegisterRequest {
-  string email = 1;
+string email = 1;
   string password = 2;
-  string confirm_password = 3;
-  string first_name = 4;
-  string last_name = 5;
-  string dob = 6;
-  string gender = 7;
-  string profile_picture_url = 8;
-  bool subscribe_newsletter = 9;
-  string captcha_token = 10;
-  int32 security_question_id = 11;
-  string security_answer = 12;
+  string first_name = 3;
+  string last_name = 4;
+  string dob = 5;
+  string gender = 6;
+  bool subscribe_newsletter = 7;
+  string captcha_token = 8; 
+  int32 security_question_id = 9;
+  string security_answer = 10;
 }
 
 message LoginRequest {

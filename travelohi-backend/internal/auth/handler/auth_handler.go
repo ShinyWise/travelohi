@@ -29,7 +29,6 @@ func (h *authHandler) Register(ctx context.Context, req *authpb.RegisterRequest)
 		LastName:            req.GetLastName(),
 		Email:               req.GetEmail(),
 		Password:            req.GetPassword(),
-		ConfirmPassword:     req.GetConfirmPassword(),
 		Gender:              req.GetGender(),
 		DOB:                 req.GetDob(),
 		SecurityQuestionID:  req.GetSecurityQuestionId(),

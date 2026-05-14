@@ -9,9 +9,14 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ../database/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - travelohi-net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U root -d travelohi_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   memcached:
     image: memcached:1.6-alpine
@@ -32,8 +37,10 @@ services:
       - MEMCACHED_URL=memcached:11211
       - JWT_SECRET=your-super-secret-key
     depends_on:
-      - postgres
-      - memcached
+      postgres:
+        condition: service_healthy
+      memcached:
+        condition: service_started
     networks:
       - travelohi-net
 
@@ -48,8 +55,10 @@ services:
       - MEMCACHED_URL=memcached:11211
       - JWT_SECRET=your-super-secret-key
     depends_on:
-      - postgres
-      - memcached
+      postgres:
+        condition: service_healthy
+      memcached:
+        condition: service_started
     networks:
       - travelohi-net
 
