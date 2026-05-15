@@ -29,6 +29,9 @@ static_resources:
                       # routing Account Services
                       - match: { prefix: "/travelohi.v1.account.AccountService" }
                         route: { cluster: account_cluster, timeout: 0s, max_stream_duration: { max_stream_duration: 0s } }
+                      # routing Hotel Services
+                      - match: { prefix: "/travelohi.v1.hotel.HotelService" }
+                        route: { cluster: hotel_cluster, timeout: 0s, max_stream_duration: { max_stream_duration: 0s } }
               http_filters:
                 - name: envoy.filters.http.grpc_web # envoy
                   typed_config:
@@ -70,3 +73,18 @@ static_resources:
                   socket_address:
                     address: account-service
                     port_value: 50052
+
+    # hotel services
+    - name: hotel_cluster
+      connect_timeout: 0.25s
+      type: logical_dns
+      http2_protocol_options: {}
+      load_assignment:
+        cluster_name: hotel_cluster
+        endpoints:
+          - lb_endpoints:
+            - endpoint:
+                address:
+                  socket_address:
+                    address: hotel-service
+                    port_value: 50053

@@ -10,6 +10,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ../database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ../database/seed.sql:/docker-entrypoint-initdb.d/seed.sql
     networks:
       - travelohi-net
     healthcheck:
@@ -50,6 +51,23 @@ services:
       dockerfile: deployments/account.Dockerfile
     ports:
       - "50052:50052"
+    environment:
+      - DB_URL=postgres://root:secretpassword@postgres:5432/travelohi_db?sslmode=disable
+      - MEMCACHED_URL=memcached:11211
+      - JWT_SECRET=your-super-secret-key
+    depends_on:
+      postgres:
+        condition: service_healthy
+      memcached:
+        condition: service_started
+    networks:
+      - travelohi-net
+  hotel-service:
+    build:
+      context: .
+      dockerfile: deployments/hotel.Dockerfile
+    ports:
+      - "50053:50053"
     environment:
       - DB_URL=postgres://root:secretpassword@postgres:5432/travelohi_db?sslmode=disable
       - MEMCACHED_URL=memcached:11211

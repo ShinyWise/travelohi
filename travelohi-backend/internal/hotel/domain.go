@@ -33,6 +33,16 @@ type HotelRoom struct {
 	AvailableCount int32
 }
 
+type SearchFilter struct {
+	Query     string
+	CheckIn   string
+	CheckOut  string
+	SortBy    string
+	SortOrder string
+	Limit     int32
+	Offset    int32
+}
+
 type HotelReview struct {
 	ID       string
 	HotelID  string
@@ -50,7 +60,9 @@ type HotelReview struct {
 }
 
 type HotelRepository interface {
-	SearchHotels(ctx context.Context, query string, checkIn string, checkOut string) ([]Hotel, error)
+	SearchHotels(ctx context.Context, filter SearchFilter) ([]Hotel, int32, error)
+}
 
-	// get hotel details
+type HotelUseCase interface {
+	SearchHotels(ctx context.Context, filter SearchFilter) ([]Hotel, int32, error)
 }
