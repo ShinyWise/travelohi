@@ -40,7 +40,7 @@ func NewPostgresAuthRepository(db *gorm.DB) auth.AuthRepository {
 	return &PostgresAuthRepository{db: db}
 }
 
-// just for compile-error safety check
+// compile-time safety check
 var _ auth.AuthRepository = (*PostgresAuthRepository)(nil)
 
 func (r *PostgresAuthRepository) Create(ctx context.Context, a *auth.Auth) error {
@@ -67,4 +67,39 @@ func (r *PostgresAuthRepository) GetByEmail(ctx context.Context, email string) (
 		return nil, err
 	}
 	return model.ToDomain(), nil
+}
+
+func (r *PostgresAuthRepository) Update(ctx context.Context, a *auth.Auth) error {
+	model := &AuthModel{
+		ID:                 a.ID,
+		Email:              a.Email,
+		PasswordHash:       a.PasswordHash,
+		SecurityQuestionID: a.SecurityQuestionID,
+		SecurityAnswerHash: a.SecurityAnswerHash,
+		IsBanned:           a.IsBanned,
+	}
+
+	return r.db.WithContext(ctx).Save(model).Error
+}
+
+type PostgresRoleRepository struct {
+	db *gorm.DB
+}
+
+func NewPostgresRoleRepository(db *gorm.DB) *PostgresRoleRepository {
+	return &PostgresRoleRepository{db: db}
+}
+
+func (r *PostgresRoleRepository) IsAdmin(ctx context.Context, userID string) (bool, error) {
+	var isAdmin bool
+	err := r.db.WithContext(ctx).
+		Table("account_models").
+		Select("is_admin").
+		Where("id = ?", userID).
+		Row().
+		Scan(&isAdmin)
+	if err != nil {
+		return false, err
+	}
+	return isAdmin, nil
 }

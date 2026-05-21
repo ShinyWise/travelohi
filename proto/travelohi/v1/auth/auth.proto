@@ -13,6 +13,11 @@ service AuthService {
   rpc Register(RegisterRequest) returns (AuthResponse) {}
 
   rpc Logout(LogoutRequest) returns (LogoutResponse) {}
+
+  rpc GetSecurityQuestion(GetSecurityQuestionRequest) returns (GetSecurityQuestionResponse) {}
+  rpc ResetPassword(ResetPasswordRequest) returns (AuthResponse) {}
+
+  rpc CheckEmail(CheckEmailRequest) returns (CheckEmailResponse) {}
 }
 
 message RegisterRequest {
@@ -62,4 +67,27 @@ message LogoutRequest {
 message LogoutResponse {
   bool success = 1;
   string message = 2;
+}
+
+message GetSecurityQuestionRequest {
+  string email = 1;
+}
+
+message GetSecurityQuestionResponse {
+  int32 security_question_id = 1;
+}
+
+message ResetPasswordRequest {
+  string email = 1;
+  string security_answer = 2;
+  string new_password = 3;
+}
+
+message CheckEmailRequest {
+  string email = 1;
+  string captcha_token = 2;
+}
+
+message CheckEmailResponse {
+  bool exists = 1;
 }

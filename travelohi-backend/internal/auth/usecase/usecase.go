@@ -3,10 +3,13 @@ package usecase
 import (
 	"context"
 	"crypto/rand"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
 	"math/big"
+	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/travelohi/backend/internal/auth"
@@ -45,7 +48,29 @@ func NewAuthUseCase(
 
 var _ auth.AuthUseCase = (*authUseCase)(nil)
 
+func verifyRecaptcha(token string) error {
+	secret := "YOUR_GOOGLE_RECAPTCHA_SECRET_KEY"
+
+	resp, err := http.PostForm("https://www.google.com/recaptcha/api/siteverify",
+		url.Values{"secret": {secret}, "response": {token}})
+	if err != nil {
+		return errors.New("failed to connect to recaptcha server")
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		Success bool `json:"success"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil || !result.Success {
+		return errors.New("recaptcha validation failed (bot detected)")
+	}
+	return nil
+}
+
 func (uc *authUseCase) RegisterUser(ctx context.Context, req *auth.RegisterData) (*auth.AuthResult, error) {
+	if err := verifyRecaptcha(req.CaptchaToken); err != nil {
+		return nil, err
+	}
 
 	_, err := uc.repo.GetByEmail(ctx, req.Email)
 	if err == nil {
@@ -54,7 +79,6 @@ func (uc *authUseCase) RegisterUser(ctx context.Context, req *auth.RegisterData)
 		return nil, auth.ErrInternal
 	}
 
-	// Hasher here
 	hashedPassword, err := uc.hasher.Hash(req.Password)
 
 	if err != nil {
@@ -66,7 +90,7 @@ func (uc *authUseCase) RegisterUser(ctx context.Context, req *auth.RegisterData)
 		return nil, auth.ErrHashing
 	}
 
-	// generate id buat account baru
+	// generate account id
 	newUserID := uc.idGen.Generate()
 
 	vaultRecord := &auth.Auth{
@@ -103,7 +127,11 @@ func (uc *authUseCase) RegisterUser(ctx context.Context, req *auth.RegisterData)
 	}, nil
 }
 
-func (uc *authUseCase) Login(ctx context.Context, email, password string) (*auth.AuthResult, error) {
+func (uc *authUseCase) Login(ctx context.Context, email, password string, captchaToken string) (*auth.AuthResult, error) {
+	if err := verifyRecaptcha(captchaToken); err != nil {
+		return nil, err
+	}
+
 	user, err := uc.repo.GetByEmail(ctx, email)
 	if err != nil {
 		return nil, err
@@ -118,17 +146,17 @@ func (uc *authUseCase) Login(ctx context.Context, email, password string) (*auth
 		return nil, auth.ErrInvalidCreds
 	}
 
-	// validasi session
+	// generate session
 	sessionID := uc.idGen.Generate()
 
 	sessionKey := "session:" + user.ID
 
-	// expired 24 jam
+	// set session to cache
 	if err := uc.cache.Set(ctx, sessionKey, []byte(sessionID), 86400); err != nil {
 		return nil, auth.ErrInternal
 	}
 
-	// create accesstoken for validating login access.
+	// generate access token
 	accessToken, err := uc.tokenMaker.CreateToken(user.ID, sessionID, 24*time.Hour)
 	if err != nil {
 		return nil, auth.ErrInternal
@@ -218,4 +246,67 @@ func (uc *authUseCase) Logout(ctx context.Context, token string) error {
 		return auth.ErrInternal
 	}
 	return nil
+}
+
+func (uc *authUseCase) GetSecurityQuestion(ctx context.Context, email string) (int32, error) {
+	user, err := uc.repo.GetByEmail(ctx, email)
+	if err != nil {
+		return 0, err
+	}
+	if user.IsBanned {
+		return 0, errors.New("account suspended")
+	}
+	return user.SecurityQuestionID, nil
+}
+
+func (uc *authUseCase) ResetPassword(ctx context.Context, email, answer, newPassword string) (*auth.AuthResult, error) {
+	user, err := uc.repo.GetByEmail(ctx, email)
+	if err != nil {
+		return nil, auth.ErrInternal
+	}
+
+	// verify security answer
+	if err := uc.hasher.Compare(user.SecurityAnswerHash, answer); err != nil {
+		return nil, errors.New("incorrect security answer")
+	}
+
+	// validate new password
+	if err := uc.hasher.Compare(user.PasswordHash, newPassword); err == nil {
+		return nil, errors.New("new password cannot be the same as the old password")
+	}
+
+	// hash and update password
+	hashedNewPassword, err := uc.hasher.Hash(newPassword)
+	if err != nil {
+		return nil, auth.ErrHashing
+	}
+
+	user.PasswordHash = hashedNewPassword
+
+	if err := uc.repo.Update(ctx, user); err != nil {
+		return nil, auth.ErrInternal
+	}
+
+	return &auth.AuthResult{
+		UserID:  user.ID,
+		Message: "Password reset successfully. You can now log in.",
+	}, nil
+}
+
+func (uc *authUseCase) CheckEmail(ctx context.Context, email string, captchaToken string) (bool, error) {
+	// verify recaptcha
+	if err := verifyRecaptcha(captchaToken); err != nil {
+		return false, err
+	}
+
+	// check if email exists
+	_, err := uc.repo.GetByEmail(ctx, email)
+	if err != nil {
+		if errors.Is(err, auth.ErrInvalidCreds) {
+			return false, nil
+		}
+		return false, auth.ErrInternal
+	}
+
+	return true, nil
 }

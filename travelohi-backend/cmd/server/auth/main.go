@@ -46,7 +46,7 @@ func main() {
 	defer accountConn.Close()
 	accountClient := accountpb.NewAccountServiceClient(accountConn)
 
-	// Dependency Injection
+	// dependency injection
 	tokenMaker := token.NewJWTMaker(jwtSecret)
 	hasher := hash.NewBcryptHasher()
 	idGen := id.NewUUIDGenerator()
@@ -62,7 +62,8 @@ func main() {
 	authHandler := handler.NewAuthHandler(authUseCase)
 
 	// interceptor
-	authInterceptor := interceptor.NewAuthInterceptor(tokenMaker, cacheRepo)
+	roleRepo := repository.NewPostgresRoleRepository(dbConn)
+	authInterceptor := interceptor.NewAuthInterceptor(tokenMaker, cacheRepo, roleRepo)
 
 	// grpc server
 	gRPCServer := grpc.NewServer(

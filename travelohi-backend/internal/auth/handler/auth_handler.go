@@ -34,6 +34,7 @@ func (h *authHandler) Register(ctx context.Context, req *authpb.RegisterRequest)
 		SecurityQuestionID:  req.GetSecurityQuestionId(),
 		SecurityAnswer:      req.GetSecurityAnswer(),
 		SubscribeNewsletter: req.GetSubscribeNewsletter(),
+		CaptchaToken:        req.GetCaptchaToken(),
 	}
 
 	// 2. kasih ke auth usecase
@@ -50,7 +51,7 @@ func (h *authHandler) Register(ctx context.Context, req *authpb.RegisterRequest)
 }
 
 func (h *authHandler) Login(ctx context.Context, req *authpb.LoginRequest) (*authpb.AuthResponse, error) {
-	res, err := h.usecase.Login(ctx, req.GetEmail(), req.GetPassword())
+	res, err := h.usecase.Login(ctx, req.GetEmail(), req.GetPassword(), req.GetCaptchaToken())
 	if err != nil {
 		if err == auth.ErrInvalidCreds {
 			return nil, status.Error(codes.Unauthenticated, "invalid email or password")
@@ -103,5 +104,39 @@ func (h *authHandler) Logout(ctx context.Context, req *authpb.LogoutRequest) (*a
 	return &authpb.LogoutResponse{
 		Success: true,
 		Message: "Successfully logged out",
+	}, nil
+}
+
+func (h *authHandler) GetSecurityQuestion(ctx context.Context, req *authpb.GetSecurityQuestionRequest) (*authpb.GetSecurityQuestionResponse, error) {
+	qID, err := h.usecase.GetSecurityQuestion(ctx, req.GetEmail())
+	if err != nil {
+		return nil, status.Error(codes.NotFound, "user not found or invalid")
+	}
+	return &authpb.GetSecurityQuestionResponse{
+		SecurityQuestionId: qID,
+	}, nil
+}
+
+func (h *authHandler) ResetPassword(ctx context.Context, req *authpb.ResetPasswordRequest) (*authpb.AuthResponse, error) {
+	res, err := h.usecase.ResetPassword(ctx, req.GetEmail(), req.GetSecurityAnswer(), req.GetNewPassword())
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+	return &authpb.AuthResponse{
+		UserId:  res.UserID,
+		Message: res.Message,
+	}, nil
+}
+
+func (h *authHandler) CheckEmail(ctx context.Context, req *authpb.CheckEmailRequest) (*authpb.CheckEmailResponse, error) {
+	exists, err := h.usecase.CheckEmail(ctx, req.GetEmail(), req.GetCaptchaToken())
+
+	if err != nil {
+		// if recaptcha fails, throw the error
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	return &authpb.CheckEmailResponse{
+		Exists: exists,
 	}, nil
 }

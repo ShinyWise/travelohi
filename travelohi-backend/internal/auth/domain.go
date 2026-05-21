@@ -35,6 +35,7 @@ type RegisterData struct {
 	SecurityQuestionID  int32
 	SecurityAnswer      string
 	SubscribeNewsletter bool
+	CaptchaToken        string
 }
 
 type AuthResult struct {
@@ -46,6 +47,7 @@ type AuthResult struct {
 type AuthRepository interface {
 	Create(ctx context.Context, auth *Auth) error
 	GetByEmail(ctx context.Context, email string) (*Auth, error)
+	Update(ctx context.Context, auth *Auth) error
 }
 
 // handles temporary storage --> memcached buat otp, blacklist
@@ -57,8 +59,12 @@ type CacheRepository interface {
 
 type AuthUseCase interface {
 	RegisterUser(ctx context.Context, req *RegisterData) (*AuthResult, error)
-	Login(ctx context.Context, email, password string) (*AuthResult, error)
+	Login(ctx context.Context, email, password, captchaToken string) (*AuthResult, error)
 	SendOTP(ctx context.Context, email string) error
 	LoginWithOTP(ctx context.Context, email, otp string) (*AuthResult, error)
 	Logout(ctx context.Context, token string) error
+	GetSecurityQuestion(ctx context.Context, email string) (int32, error)
+	ResetPassword(ctx context.Context, email, answer, newPassword string) (*AuthResult, error)
+
+	CheckEmail(ctx context.Context, email string, captchaToken string) (bool, error)
 }

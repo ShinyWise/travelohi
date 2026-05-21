@@ -2,6 +2,7 @@ package interceptor
 
 import (
 	"context"
+	"strings"
 
 	"github.com/travelohi/backend/internal/auth"
 	"github.com/travelohi/backend/pkg/token"
@@ -11,18 +12,22 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-type contextKey string
+type ContextKey string
 
-const UserIDKey contextKey = "x-user-id"
+const UserIDKey ContextKey = "x-user-id"
+
+type RoleRepository interface {
+	IsAdmin(ctx context.Context, userID string) (bool, error)
+}
 
 type AuthInterceptor struct {
-	tokenMaker token.Maker
-	cache      auth.CacheRepository
-	// simpen routes yang ga perlu token
+	tokenMaker   token.Maker
+	cache        auth.CacheRepository
+	roleRepo     RoleRepository
 	publicRoutes map[string]bool
 }
 
-func NewAuthInterceptor(tokenMaker token.Maker, cache auth.CacheRepository) *AuthInterceptor {
+func NewAuthInterceptor(tokenMaker token.Maker, cache auth.CacheRepository, roleRepo RoleRepository) *AuthInterceptor {
 	publicRoutes := map[string]bool{
 		"/travelohi.v1.auth.AuthService/Login":        true,
 		"/travelohi.v1.auth.AuthService/Register":     true,
@@ -35,6 +40,7 @@ func NewAuthInterceptor(tokenMaker token.Maker, cache auth.CacheRepository) *Aut
 	return &AuthInterceptor{
 		tokenMaker:   tokenMaker,
 		cache:        cache,
+		roleRepo:     roleRepo,
 		publicRoutes: publicRoutes,
 	}
 }
@@ -64,16 +70,111 @@ func (i *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 			return nil, status.Errorf(codes.Unauthenticated, "invalid or expired token")
 		}
 
-		// check session masi valid atau ga
+		// session validation
 		sessionKey := "session:" + userID
 		cachedSessionBytes, err := i.cache.Get(ctx, sessionKey)
-		if err != nil || string(cachedSessionBytes) != sessionID {
 
+		cachedData := string(cachedSessionBytes)
+		cachedParts := strings.Split(cachedData, ":")
+		cachedSessionID := cachedParts[0]
+
+		if err != nil || cachedSessionID != sessionID {
 			return nil, status.Errorf(codes.Unauthenticated, "session expired or logged in from another device")
 		}
 
+		// rbac validation
+		if strings.HasPrefix(info.FullMethod, "/travelohi.v1.admin.AdminService/") {
+			isAdmin := false
+
+			if len(cachedParts) == 2 && cachedParts[1] == "true" {
+				isAdmin = true
+			} else if i.roleRepo != nil {
+				isAdmin, err = i.roleRepo.IsAdmin(ctx, userID)
+				if err != nil {
+					return nil, status.Errorf(codes.Internal, "failed to verify user permissions")
+				}
+			}
+
+			if !isAdmin {
+				return nil, status.Errorf(codes.PermissionDenied, "permission denied: administrator privileges required")
+			}
+		}
+
+		// context injection
 		newCtx := context.WithValue(ctx, UserIDKey, userID)
 
 		return handler(newCtx, req)
+	}
+}
+
+type wrappedStream struct {
+	grpc.ServerStream
+	ctx context.Context
+}
+
+func (w *wrappedStream) Context() context.Context {
+	return w.ctx
+}
+
+// stream returns grpc stream server interceptor
+func (i *AuthInterceptor) Stream() grpc.StreamServerInterceptor {
+	return func(
+		srv interface{},
+		ss grpc.ServerStream,
+		info *grpc.StreamServerInfo,
+		handler grpc.StreamHandler,
+	) error {
+		// route filtering
+		if i.publicRoutes[info.FullMethod] {
+			return handler(srv, ss)
+		}
+
+		ctx := ss.Context()
+
+		// metadata extraction
+		tokenString, err := token.ExtractTokenFromContext(ctx)
+		if err != nil {
+			return status.Errorf(codes.Unauthenticated, "authorization token is not provided")
+		}
+
+		// cryptographic check
+		userID, sessionID, err := i.tokenMaker.VerifyToken(tokenString)
+		if err != nil {
+			return status.Errorf(codes.Unauthenticated, "invalid or expired token")
+		}
+
+		// session validation
+		sessionKey := "session:" + userID
+		cachedSessionBytes, err := i.cache.Get(ctx, sessionKey)
+
+		cachedData := string(cachedSessionBytes)
+		cachedParts := strings.Split(cachedData, ":")
+		cachedSessionID := cachedParts[0]
+
+		if err != nil || cachedSessionID != sessionID {
+			return status.Errorf(codes.Unauthenticated, "session expired or logged in from another device")
+		}
+
+		// rbac validation
+		if strings.HasPrefix(info.FullMethod, "/travelohi.v1.admin.AdminService/") {
+			isAdmin := false
+
+			if len(cachedParts) == 2 && cachedParts[1] == "true" {
+				isAdmin = true
+			} else if i.roleRepo != nil {
+				isAdmin, err = i.roleRepo.IsAdmin(ctx, userID)
+				if err != nil {
+					return status.Errorf(codes.Internal, "failed to verify user permissions")
+				}
+			}
+
+			if !isAdmin {
+				return status.Errorf(codes.PermissionDenied, "permission denied: administrator privileges required")
+			}
+		}
+
+		// context injection
+		newCtx := context.WithValue(ctx, UserIDKey, userID)
+		return handler(srv, &wrappedStream{ServerStream: ss, ctx: newCtx})
 	}
 }
