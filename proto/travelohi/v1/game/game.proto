@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package travelohi.v1.game;
+
+option go_package = "github.com/travelohi/backend/proto/game/v1;gamepb";
+
+service GameService {
+  rpc StreamGameLoop(stream GameClientEvent) returns (stream GameServerEvent) {}
+}
+
+// client to server event
+message GameClientEvent {
+  oneof payload {
+    JoinQueueRequest join_queue = 1;
+    PlayerActionRequest action = 2;
+  }
+}
+
+message JoinQueueRequest {
+  string user_id = 1; // Resolved via JWT
+}
+
+message PlayerActionRequest {
+  string room_id = 1;
+  string action_type = 2; // "move_left", "move_right", "low_kick", "front_kick"
+}
+
+// server to client event
+message GameServerEvent {
+  oneof payload {
+    MatchFoundEvent match_found = 1;
+    GameStateUpdate state_update = 2;
+    MatchEndEvent match_end = 3;
+    ErrorEvent error = 4;
+  }
+}
+
+message MatchFoundEvent {
+  string room_id = 1;
+  string opponent_name = 2;
+  int32 start_countdown = 3;
+}
+
+message GameStateUpdate {
+  int32 player_one_hp = 1;
+  int32 player_two_hp = 2;
+  int32 time_remaining = 3;
+  // add additional positioning data if needed
+}
+
+message MatchEndEvent {
+  string winner_id = 1;   
+  string reason = 2;
+}
+
+message ErrorEvent {
+  string message = 1; 
+}
