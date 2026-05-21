@@ -7,7 +7,9 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o hotel-binary ./cmd/server/hotel/main.go
+RUN --mount=type=cache,target=/root/.cache/go-build \
+    --mount=type=cache,target=/go/pkg/mod \
+    go build -o hotel-binary ./cmd/server/hotel/main.go
 
 FROM alpine:latest
 

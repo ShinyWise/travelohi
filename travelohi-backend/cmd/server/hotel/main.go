@@ -33,13 +33,12 @@ func main() {
 	// memcached connection
 	memcachedClient := memcache.New(memcachedURL)
 
-	// Dependency Injection
+	// dependency injection
 	tokenMaker := token.NewJWTMaker(jwtSecret)
 
 	// repository
 	hotelRepo := repository.NewPostgresHotelRepository(dbConn)
-	cacheRepo := authrepo.NewMemcachedRepository(memcachedClient) // Reusing the Auth cache repo for interceptor
-
+	cacheRepo := authrepo.NewMemcachedRepository(memcachedClient)
 	// usecase
 	hotelUC := usecase.NewHotelUseCase(hotelRepo)
 
@@ -47,7 +46,8 @@ func main() {
 	hotelHandler := hotelgrpc.NewHotelHandler(hotelUC)
 
 	// the bouncer (interceptor)
-	authInterceptor := interceptor.NewAuthInterceptor(tokenMaker, cacheRepo)
+	roleRepo := authrepo.NewPostgresRoleRepository(dbConn)
+	authInterceptor := interceptor.NewAuthInterceptor(tokenMaker, cacheRepo, roleRepo)
 
 	// grpc server
 	gRPCServer := grpc.NewServer(
