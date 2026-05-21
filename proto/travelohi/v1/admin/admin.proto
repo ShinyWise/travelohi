@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package travelohi.v1.admin;
+
+option go_package = "github.com/travelohi/backend/proto/admin/v1;adminpb";
+
+service AdminService {
+  // Inventory Ingestion
+  rpc InsertHotel(InsertHotelRequest) returns (AdminResponse) {}
+  rpc InsertAirline(InsertAirlineRequest) returns (AdminResponse) {}
+
+  // Promo Management
+  rpc CreatePromo(CreatePromoRequest) returns (AdminResponse) {}
+  rpc TogglePromoStatus(TogglePromoRequest) returns (AdminResponse) {}
+
+  // User Management
+  rpc GetAllUsers(GetAllUsersRequest) returns (GetAllUsersResponse) {}
+  rpc BanUser(BanUserRequest) returns (AdminResponse) {}
+  
+  // Notification
+  rpc SendBroadcast(SendBroadcastRequest) returns (AdminResponse) {}
+}
+
+message SendBroadcastRequest {
+  string subject = 1;
+  string body = 2;
+}
+
+message InsertHotelRequest {
+  string name = 1;
+  string description = 2;
+  string address = 3;
+  repeated string picture_urls = 4;
+  repeated string facilities = 5;
+  int64 starting_price = 6;
+}
+
+message InsertAirlineRequest {
+  string name = 1;
+  string logo_url = 2;
+}
+
+message CreatePromoRequest {
+  string promo_code = 1;
+  int64 discount_amount = 2;
+}
+
+message TogglePromoRequest {
+  string promo_id = 1;
+  bool is_active = 2;
+}
+
+message GetAllUsersRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+}
+
+message UserAdminView {
+  string id = 1;
+  string email = 2;
+  string full_name = 3;
+  bool is_admin = 4;
+  bool is_banned = 5;
+}
+
+message GetAllUsersResponse {
+  repeated UserAdminView users = 1;
+  int32 total_results = 2;
+}
+
+message BanUserRequest {
+  string user_id = 1;
+  bool ban_status = 2;
+}
+
+message AdminResponse {
+  bool success = 1;
+  string message = 2;
+}
