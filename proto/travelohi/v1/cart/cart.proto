@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+package travelohi.v1.cart;
+
+option go_package = "github.com/travelohi/backend/proto/cart/v1;cartpb";
+
+service CartService {
+  // Cart Management
+  rpc AddToCart(AddToCartRequest) returns (CartResponse) {}
+  rpc ViewCart(ViewCartRequest) returns (ViewCartResponse) {}
+  rpc UpdateCartItem(UpdateCartItemRequest) returns (CartResponse) {}
+  rpc RemoveFromCart(RemoveFromCartRequest) returns (CartResponse) {}
+  
+  // Checkout & Promos
+  rpc ApplyPromo(ApplyPromoRequest) returns (ViewCartResponse) {}
+  rpc Checkout(CheckoutRequest) returns (CheckoutResponse) {}
+  
+  // Internal Administration
+  rpc InternalCreatePromo(InternalCreatePromoRequest) returns (InternalCreatePromoResponse) {}
+}
+
+message CartItem {
+  string id = 1;
+  string item_type = 2;
+  string reference_id = 3;
+  
+  string display_name = 4;
+  string display_image_url = 5;
+  
+  string check_in_date = 6;
+  string check_out_date = 7;
+  
+  int64 item_price = 8;
+  int32 quantity = 9;
+  string status = 10;
+  int32 luggage_weight = 11;
+}
+
+message AddToCartRequest {
+  string item_type = 1; // hotel or flight
+  string reference_id = 2;
+  string check_in_date = 3; // kalo pilih hotel 
+  string check_out_date = 4; // kalo pilih hotel
+  int32 quantity = 5;
+  int32 luggage_weight = 6; // kalo pilih flight
+}
+
+message ViewCartRequest {}
+
+message ViewCartResponse {
+  repeated CartItem items = 1;
+  int64 subtotal = 2;
+  int64 discount_amount = 3;
+  int64 total_price = 4;
+  string applied_promo_code = 5;
+}
+
+message UpdateCartItemRequest {
+  string cart_item_id = 1;
+  string new_check_in_date = 2;
+  string new_check_out_date = 3;
+}
+
+message RemoveFromCartRequest {
+  string cart_item_id = 1;
+}
+
+message ApplyPromoRequest {
+  string promo_code = 1;
+}
+
+message CheckoutRequest {
+  string payment_method = 1; // hi_wallet or credit_card
+  string credit_card_id = 2;
+  string applied_promo_code = 3;
+}
+
+message CheckoutResponse {
+  bool success = 1;
+  string message = 2;
+  string transaction_id = 3;
+}
+
+message CartResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message InternalCreatePromoRequest {
+  string promo_code = 1;
+  int64 discount_amount = 2;
+  int32 max_uses = 3;
+  string expiry_date = 4;
+}
+
+message InternalCreatePromoResponse {
+  bool success = 1;
+  string message = 2;
+}

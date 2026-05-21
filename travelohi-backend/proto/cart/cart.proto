@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package travelohi.v1.cart;
+
+option go_package = "github.com/travelohi/backend/proto/cart/v1;cartpb";
+
+service CartService {
+  // Cart Management
+  rpc AddToCart(AddToCartRequest) returns (CartResponse) {}
+  rpc ViewCart(ViewCartRequest) returns (ViewCartResponse) {}
+  rpc UpdateCartItem(UpdateCartItemRequest) returns (CartResponse) {} // For changing hotel dates
+  rpc RemoveFromCart(RemoveFromCartRequest) returns (CartResponse) {}
+  
+  // Checkout & Promos
+  rpc ApplyPromo(ApplyPromoRequest) returns (ViewCartResponse) {}
+  rpc Checkout(CheckoutRequest) returns (CheckoutResponse) {}
+}
+
+message CartItem {
+  string id = 1;
+  string item_type = 2; // "hotel_room" or "flight_seat"
+  string reference_id = 3;
+  
+  // Resolved Display Data (Fetched by backend during ViewCart)
+  string display_name = 4; // e.g., "Deluxe King - Grand Asrilia" or "Seat 12A - Batik Air"
+  string display_image_url = 5;
+  
+  string check_in_date = 6;  // Applicable for hotels
+  string check_out_date = 7; // Applicable for hotels
+  
+  int64 item_price = 8;
+  int32 quantity = 9;
+  string status = 10; // "cart", "ongoing", "expired", "paid"
+}
+
+// ==========================================
+// Requests & Responses
+// ==========================================
+message AddToCartRequest {
+  string item_type = 1; // "hotel_room" or "flight_seat"
+  string reference_id = 2;
+  string check_in_date = 3; // Required if hotel
+  string check_out_date = 4; // Required if hotel
+  int32 quantity = 5;
+}
+
+message ViewCartRequest {}
+
+message ViewCartResponse {
+  repeated CartItem items = 1;
+  int64 subtotal = 2;
+  int64 discount_amount = 3;
+  int64 total_price = 4;
+  string applied_promo_code = 5;
+}
+
+message UpdateCartItemRequest {
+  string cart_item_id = 1;
+  string new_check_in_date = 2;
+  string new_check_out_date = 3;
+}
+
+message RemoveFromCartRequest {
+  string cart_item_id = 1;
+}
+
+message ApplyPromoRequest {
+  string promo_code = 1;
+}
+
+message CheckoutRequest {
+  string payment_method = 1; // "hi_wallet" or "credit_card"
+  string credit_card_id = 2; // Required if payment_method is "credit_card"
+  string applied_promo_code = 3; // The promo code applied
+}
+
+message CheckoutResponse {
+  bool success = 1;
+  string message = 2;
+  string transaction_id = 3;
+}
+
+message CartResponse {
+  bool success = 1;
+  string message = 2;
+}
