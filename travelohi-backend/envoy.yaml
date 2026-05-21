@@ -32,6 +32,25 @@ static_resources:
                       # routing Hotel Services
                       - match: { prefix: "/travelohi.v1.hotel.HotelService" }
                         route: { cluster: hotel_cluster, timeout: 0s, max_stream_duration: { max_stream_duration: 0s } }
+                      # routing Flight Services
+                      - match: { prefix: "/travelohi.v1.flight.FlightService" }
+                        route: { cluster: flight_cluster, timeout: 0s, max_stream_duration: { max_stream_duration: 0s } }
+                      # routing Cart Services
+                      - match: { prefix: "/travelohi.v1.cart.CartService" }
+                        route: { cluster: cart_cluster, timeout: 0s, max_stream_duration: { max_stream_duration: 0s } }
+                      # routing Admin Services
+                      - match: { prefix: "/travelohi.v1.admin.AdminService" }
+                        route: { cluster: admin_cluster, timeout: 0s, max_stream_duration: { max_stream_duration: 0s } }
+                      # routing Telemetry Services
+                      - match: { prefix: "/travelohi.v1.telemetry.TelemetryService" }
+                        route: { cluster: telemetry_cluster, timeout: 0s, max_stream_duration: { max_stream_duration: 0s } }
+                      # routing Communication Services
+                      - match: { prefix: "/travelohi.v1.communication.CommunicationService" }
+                        route: { cluster: communication_cluster, timeout: 0s, max_stream_duration: { max_stream_duration: 0s } }
+                      
+                      # routing Game Services (WebSockets)
+                      - match: { prefix: "/ws/game" }
+                        route: { cluster: game_cluster, timeout: 0s }
               http_filters:
                 - name: envoy.filters.http.grpc_web # envoy
                   typed_config:
@@ -42,6 +61,8 @@ static_resources:
                 - name: envoy.filters.http.router
                   typed_config:
                     "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+              upgrade_configs:
+                - upgrade_type: "websocket"
 
   clusters:
     # auth services
@@ -88,3 +109,92 @@ static_resources:
                   socket_address:
                     address: hotel-service
                     port_value: 50053
+
+    # flight services
+    - name: flight_cluster
+      connect_timeout: 0.25s
+      type: logical_dns
+      http2_protocol_options: {}
+      load_assignment:
+        cluster_name: flight_cluster
+        endpoints:
+          - lb_endpoints:
+            - endpoint:
+                address:
+                  socket_address:
+                    address: flight-service
+                    port_value: 50054
+
+    # cart services
+    - name: cart_cluster
+      connect_timeout: 0.25s
+      type: logical_dns
+      http2_protocol_options: {}
+      load_assignment:
+        cluster_name: cart_cluster
+        endpoints:
+          - lb_endpoints:
+            - endpoint:
+                address:
+                  socket_address:
+                    address: cart-service
+                    port_value: 50055
+
+    # admin services
+    - name: admin_cluster
+      connect_timeout: 0.25s
+      type: logical_dns
+      http2_protocol_options: {}
+      load_assignment:
+        cluster_name: admin_cluster
+        endpoints:
+          - lb_endpoints:
+            - endpoint:
+                address:
+                  socket_address:
+                    address: admin-service
+                    port_value: 50056
+
+    # telemetry services
+    - name: telemetry_cluster
+      connect_timeout: 0.25s
+      type: logical_dns
+      http2_protocol_options: {}
+      load_assignment:
+        cluster_name: telemetry_cluster
+        endpoints:
+          - lb_endpoints:
+            - endpoint:
+                address:
+                  socket_address:
+                    address: telemetry-service
+                    port_value: 50057
+
+    # communication services
+    - name: communication_cluster
+      connect_timeout: 0.25s
+      type: logical_dns
+      http2_protocol_options: {}
+      load_assignment:
+        cluster_name: communication_cluster
+        endpoints:
+          - lb_endpoints:
+            - endpoint:
+                address:
+                  socket_address:
+                    address: communication-service
+                    port_value: 50058
+
+    # game services
+    - name: game_cluster
+      connect_timeout: 0.25s
+      type: logical_dns
+      load_assignment:
+        cluster_name: game_cluster
+        endpoints:
+          - lb_endpoints:
+            - endpoint:
+                address:
+                  socket_address:
+                    address: game-service
+                    port_value: 50059

@@ -1,0 +1,11 @@
+# Ignore local Go binaries and build artifacts
+*.exe
+*.test
+*.out
+bin/
+
+# Ignore IDE files
+.git
+.gitignore
+.idea
+.vscode
