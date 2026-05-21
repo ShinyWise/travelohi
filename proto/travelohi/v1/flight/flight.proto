@@ -1,0 +1,106 @@
+syntax = "proto3";
+
+package travelohi.v1.flight;
+
+option go_package = "github.com/travelohi/backend/proto/flight/v1;flightpb";
+
+service FlightService {
+  rpc SearchFlights(SearchFlightsRequest) returns (SearchFlightsResponse) {}
+  rpc GetFlightDetails(GetFlightDetailsRequest) returns (GetFlightDetailsResponse) {}
+
+  rpc InternalLockSeat(LockSeatRequest) returns (LockSeatResponse) {}
+  rpc InternalUnlockSeat(UnlockSeatRequest) returns (UnlockSeatResponse) {}
+
+  rpc GetFlightSeats(GetFlightSeatsRequest) returns (GetFlightSeatsResponse) {}
+}
+
+message LockSeatRequest {
+  string seat_id = 1;
+}
+
+message LockSeatResponse {
+  bool success = 1;
+  string message = 2;
+  int64 locked_price = 3;
+}
+
+message UnlockSeatRequest {
+  string seat_id = 1;
+}
+
+message UnlockSeatResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+
+message Airline {
+  string id = 1;
+  string name = 2;
+  string logo_url = 3;
+}
+
+message Flight {
+  string id = 1;
+  Airline airline = 2;
+  string flight_code = 3;
+  string origin_airport = 4;
+  string destination_airport = 5;
+  string departure_time = 6;
+  string arrival_time = 7;
+  int32 duration_minutes = 8;
+  bool is_transit = 9;
+  int64 starting_price = 10;
+}
+
+message FlightSeat {
+  string id = 1;
+  string flight_id = 2;
+  string seat_number = 3; 
+  string seat_class = 4; 
+  int64 price = 5;
+  bool is_booked = 6;
+}
+
+message BaggageAddon {
+  string id = 1;
+  string flight_id = 2;
+  int32 weight_kg = 3;
+  int64 price = 4;
+}
+
+message SearchFlightsRequest {
+  string origin_airport = 1;
+  string destination_airport = 2;
+  string departure_date = 3; // YYYY-MM-DD
+  
+  bool transit_filter = 4;
+  
+  string sort_by = 5;
+  string sort_order = 6;
+  int32 limit = 7;
+  int32 offset = 8;
+}
+
+message SearchFlightsResponse {
+  repeated Flight flights = 1;
+  int32 total_results = 2;
+}
+
+message GetFlightDetailsRequest {
+  string flight_id = 1;
+}
+
+message GetFlightDetailsResponse {
+  Flight flight = 1;
+  repeated FlightSeat seats = 2;
+  repeated BaggageAddon baggage_options = 3;
+}
+
+message GetFlightSeatsRequest {
+  string flight_id = 1;
+}
+
+message GetFlightSeatsResponse {
+  repeated FlightSeat seats = 1;
+}
