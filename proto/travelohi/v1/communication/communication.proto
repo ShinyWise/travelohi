@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package travelohi.v1.communication;
+
+option go_package = "github.com/travelohi/backend/proto/communication/v1;communicationpb";
+
+service CommunicationService {
+  // Real-Time Transport
+  rpc StreamChat(stream ChatEvent) returns (stream ChatEvent) {}
+
+  // Message Persistence
+  rpc GetChatHistory(GetChatHistoryRequest) returns (GetChatHistoryResponse) {}
+
+  // Admin Dashboard Logic
+  rpc GetActiveConversations(GetActiveConversationsRequest) returns (GetActiveConversationsResponse) {}
+}
+
+message ChatEvent {
+  string conversation_id = 1;
+  string sender_id = 2;
+  
+  oneof event_payload {
+    MessagePayload message = 3;
+    TypingIndicatorPayload typing_indicator = 4;
+    ReadReceiptPayload read_receipt = 5;
+  }
+}
+
+message MessagePayload {
+  string message_id = 1;
+  string content = 2;
+  string timestamp = 3;
+}
+
+message TypingIndicatorPayload {
+  bool is_typing = 1;
+}
+
+message ReadReceiptPayload {
+  string message_id = 1;
+  string new_status = 2; // seen
+}
+
+message GetChatHistoryRequest {
+  string conversation_id = 1;
+  int32 limit = 2; // buat infinite scrolling
+  int32 offset = 3;
+}
+
+message GetChatHistoryResponse {
+  repeated MessagePayload messages = 1;
+}
+
+// Admin Dashboard
+message GetActiveConversationsRequest {
+  string search_query = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+
+message ConversationPreview {
+  string conversation_id = 1;
+  string user_id = 2;
+  string full_name = 3;
+  string latest_message_content = 4;
+  string latest_message_timestamp = 5;
+  int32 unread_count = 6;
+}
+
+message GetActiveConversationsResponse {
+  repeated ConversationPreview conversations = 1;
+  int32 total_active = 2;
+}
