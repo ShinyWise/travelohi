@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package travelohi.v1.telemetry;
+
+option go_package = "github.com/travelohi/backend/proto/telemetry/v1;telemetrypb";
+
+service TelemetryService {
+  // Search History Tracking
+  rpc LogSearchQuery(LogSearchQueryRequest) returns (TelemetryResponse) {}
+  rpc GetRecentSearches(GetRecentSearchesRequest) returns (GetRecentSearchesResponse) {}
+
+  // Global Recommendations & Popularity Metrics
+  rpc GetGlobalRecommendations(GetGlobalRecommendationsRequest) returns (GetGlobalRecommendationsResponse) {}
+  rpc GetPopularFlightDestinations(GetPopularFlightsRequest) returns (GetPopularFlightsResponse) {}
+  rpc GetPopularHotels(GetPopularHotelsRequest) returns (GetPopularHotelsResponse) {}
+}
+
+
+message LogSearchQueryRequest {
+  string user_id = 1;
+  string query = 2;
+}
+
+message GetRecentSearchesRequest {
+  string user_id = 1;
+}
+
+message GetRecentSearchesResponse {
+  repeated string queries = 1; // limit 3
+}
+
+message GetGlobalRecommendationsRequest {}
+
+message GetGlobalRecommendationsResponse {
+  repeated string recommended_queries = 1; // limit 5
+}
+
+message GetPopularFlightsRequest {}
+
+message GetPopularFlightsResponse {
+  message PopularDestination {
+    string destination_airport = 1;
+    string image_url = 2;
+    int64 booking_count = 3;
+  }
+  repeated PopularDestination destinations = 1; // limit 5
+}
+
+message GetPopularHotelsRequest {}
+
+message GetPopularHotelsResponse {
+  message PopularHotel {
+    string hotel_id = 1;
+    string name = 2;
+    string location = 3;
+    string image_url = 4;
+    int64 booking_count = 5;
+  }
+  repeated PopularHotel hotels = 1; // limit 5
+}
+
+message TelemetryResponse {
+  bool success = 1;
+}
