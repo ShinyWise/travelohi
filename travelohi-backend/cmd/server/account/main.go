@@ -37,22 +37,24 @@ func main() {
 	// memcached connection
 	memcachedClient := memcache.New(memcachedURL)
 
-	// Dependency Injection
+	// dependency injection
 
 	tokenMaker := token.NewJWTMaker(jwtSecret)
 
 	// repository
-	accountRepo := repository.NewPostgresAccountRepository(dbConn) // Adjust name if your constructor is different
-	cacheRepo := authrepo.NewMemcachedRepository(memcachedClient)  // Reusing the Auth cache repo
+	accountRepo := repository.NewPostgresAccountRepository(dbConn)
+	bookingRepo := repository.NewPostgresBookingRepository(dbConn)
+	cacheRepo := authrepo.NewMemcachedRepository(memcachedClient)
 
 	// usecase
-	accountUseCase := usecase.NewAccountUseCase(accountRepo)
+	accountUseCase := usecase.NewAccountUseCase(accountRepo, bookingRepo)
 
 	// handler
 	accountHandler := handler.NewUserGrpcHandler(accountUseCase)
 
 	// the bouncer (interceptor)
-	authInterceptor := interceptor.NewAuthInterceptor(tokenMaker, cacheRepo)
+	roleRepo := authrepo.NewPostgresRoleRepository(dbConn)
+	authInterceptor := interceptor.NewAuthInterceptor(tokenMaker, cacheRepo, roleRepo)
 
 	// grpc server
 	gRPCServer := grpc.NewServer(

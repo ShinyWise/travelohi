@@ -7,7 +7,9 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o account-binary ./cmd/server/account/main.go 
+RUN --mount=type=cache,target=/root/.cache/go-build \
+    --mount=type=cache,target=/go/pkg/mod \
+    go build -o account-binary ./cmd/server/account/main.go
 
 FROM alpine:latest
 

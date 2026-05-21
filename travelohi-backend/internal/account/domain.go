@@ -2,7 +2,21 @@ package account
 
 import (
 	"context"
+	"time"
 )
+
+type Booking struct {
+	ID                   string
+	UserID               string
+	TransactionID        string
+	ItemType             string
+	DisplayName          string
+	CheckInDate          string
+	CheckOutDate         string
+	Status               string
+	BookingReferenceCode string
+	CreatedAt            time.Time
+}
 
 type Account struct {
 	ID                   string
@@ -25,6 +39,16 @@ type AccountRepository interface {
 	GetByEmail(ctx context.Context, email string) (*Account, error)
 	Update(ctx context.Context, account *Account) error
 	Delete(ctx context.Context, account *Account) error
+
+	DeductBalance(ctx context.Context, userID string, amount int64) error
+	AddBalance(ctx context.Context, userID string, amount int64) error
+	GetPromoDiscount(ctx context.Context, promoCode string) (int64, error)
+}
+
+type BookingRepository interface {
+	CreateBooking(ctx context.Context, booking *Booking) error
+	GetBookingHistory(ctx context.Context, userID string, filterStatus string, limit, offset int32) ([]Booking, int64, error)
+	GetBookingByID(ctx context.Context, bookingID string) (*Booking, error)
 }
 
 type AccountUseCase interface {
@@ -32,10 +56,13 @@ type AccountUseCase interface {
 	GetProfile(ctx context.Context, id string) (*Account, error)
 	UpdateProfile(ctx context.Context, account *Account) (*Account, error)
 
-	// add interface related method for hotel and flight later
-	// get booking history
-	// GetBookingHistory(ctx context.Context, id string) (*Account, error)
+	DeductWallet(ctx context.Context, userID string, amount int64) error
+	RefundWallet(ctx context.Context, userID string, amount int64) error
 
-	// get e-ticket
-	// GetETicket(ctx context.Context, id string) (*Account, error)
+	InternalCreateBooking(ctx context.Context, booking *Booking) (*Booking, error)
+	GetBookingHistory(ctx context.Context, userID string, filterStatus string, limit, offset int32) ([]Booking, int32, error)
+	GetETicket(ctx context.Context, userID, bookingID string) (*Booking, string, string, string, error)
+
+	RedeemWalletCoupon(ctx context.Context, userID string, couponCode string) error
+	GetExchangeRate(ctx context.Context) float64
 }

@@ -9,12 +9,14 @@ import (
 )
 
 type AccountUseCase struct {
-	repo account.AccountRepository
+	repo        account.AccountRepository
+	bookingRepo account.BookingRepository
 }
 
-func NewAccountUseCase(repo account.AccountRepository) account.AccountUseCase {
+func NewAccountUseCase(repo account.AccountRepository, bookingRepo account.BookingRepository) account.AccountUseCase {
 	return &AccountUseCase{
-		repo: repo,
+		repo:        repo,
+		bookingRepo: bookingRepo,
 	}
 }
 
@@ -23,6 +25,11 @@ func (uc *AccountUseCase) InitProfile(ctx context.Context, account *account.Acco
 	if account.ID == "" || account.Email == "" {
 		return errors.New("[ERROR] Cannot initialize profile: ID and Email are required")
 	}
+
+	// initial balance
+	account.HiWalletBalance = 5000000
+	account.IsActive = true
+
 	return uc.repo.Create(ctx, account)
 }
 
@@ -46,4 +53,80 @@ func (uc *AccountUseCase) UpdateProfile(ctx context.Context, u *account.Account)
 	}
 
 	return uc.repo.GetByID(ctx, u.ID)
+}
+
+func (uc *AccountUseCase) DeductWallet(ctx context.Context, userID string, amount int64) error {
+	if amount <= 0 {
+		return errors.New("deduction amount must be greater than zero")
+	}
+
+	// handle error insufficient funds
+	return uc.repo.DeductBalance(ctx, userID, amount)
+}
+
+func (uc *AccountUseCase) RefundWallet(ctx context.Context, userID string, amount int64) error {
+	if amount <= 0 {
+		return errors.New("refund amount must be greater than zero")
+	}
+
+	return uc.repo.AddBalance(ctx, userID, amount)
+}
+
+func (uc *AccountUseCase) InternalCreateBooking(ctx context.Context, booking *account.Booking) (*account.Booking, error) {
+	// generate booking reference code
+	booking.BookingReferenceCode = "PNR-" + booking.ID[:8]
+	booking.Status = "completed"
+
+	err := uc.bookingRepo.CreateBooking(ctx, booking)
+	if err != nil {
+		return nil, err
+	}
+	return booking, nil
+}
+
+func (uc *AccountUseCase) GetBookingHistory(ctx context.Context, userID string, filterStatus string, limit, offset int32) ([]account.Booking, int32, error) {
+	bookings, total, err := uc.bookingRepo.GetBookingHistory(ctx, userID, filterStatus, limit, offset)
+	if err != nil {
+		return nil, 0, err
+	}
+	return bookings, int32(total), nil
+}
+
+func (uc *AccountUseCase) GetETicket(ctx context.Context, userID, bookingID string) (*account.Booking, string, string, string, error) {
+	booking, err := uc.bookingRepo.GetBookingByID(ctx, bookingID)
+	if err != nil {
+		return nil, "", "", "", errors.New("booking not found")
+	}
+
+	if booking.UserID != userID {
+		return nil, "", "", "", errors.New("unauthorized access to booking")
+	}
+
+	// dummy e-ticket data
+	qrCodeData := "QR-" + booking.BookingReferenceCode
+	issueDate := booking.CreatedAt.Format("2006-01-02 15:04:05")
+	passengerName := "Placeholder Name"
+
+	userProfile, err := uc.repo.GetByID(ctx, userID)
+	if err == nil && userProfile != nil {
+		passengerName = userProfile.FirstName + " " + userProfile.LastName
+	}
+
+	return booking, qrCodeData, issueDate, passengerName, nil
+}
+
+func (uc *AccountUseCase) RedeemWalletCoupon(ctx context.Context, userID string, couponCode string) error {
+	// validate promo code
+	discountAmount, err := uc.repo.GetPromoDiscount(ctx, couponCode)
+	if err != nil {
+		return err // Returns "invalid or inactive promo code"
+	}
+
+	// add balance
+	return uc.repo.AddBalance(ctx, userID, discountAmount)
+}
+
+func (uc *AccountUseCase) GetExchangeRate(ctx context.Context) float64 {
+	// static exchange rate
+	return 16000.00 // 1 USD = 17,000 IDR
 }

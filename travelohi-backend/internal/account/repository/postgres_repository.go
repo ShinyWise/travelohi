@@ -2,12 +2,13 @@ package repository
 
 import (
 	"context"
+	"errors"
 
 	"github.com/travelohi/backend/internal/account"
 	"gorm.io/gorm"
 )
 
-// Gorm Model
+// gorm model
 type AccountModel struct {
 	ID                   string  `gorm:"primarykey;column:id"`
 	Email                string  `gorm:"column:email"`
@@ -24,7 +25,7 @@ type AccountModel struct {
 	Address         string `gorm:"column:address"`
 }
 
-// function buat bantu  mapping gorm data into pure domain
+// function buat bantu mapping gorm data into pure domain
 func (m *AccountModel) ToDomain() *account.Account {
 	var picURL string
 	if m.ProfilePictureURL != nil {
@@ -70,6 +71,8 @@ func (r *PostgresAccountRepository) Create(ctx context.Context, acc *account.Acc
 		LastName:             acc.LastName,
 		Gender:               acc.Gender,
 		DOB:                  acc.DOB,
+		IsActive:             acc.IsActive,
+		HiWalletBalance:      acc.HiWalletBalance,
 		NewsletterSubscribed: acc.NewsletterSubscribed,
 	}
 
@@ -112,4 +115,48 @@ func (r *PostgresAccountRepository) Update(ctx context.Context, u *account.Accou
 func (r *PostgresAccountRepository) Delete(ctx context.Context, u *account.Account) error {
 	return r.db.WithContext(ctx).Where("id = ?", u.ID).Delete(&AccountModel{}).Error
 
+}
+
+func (r *PostgresAccountRepository) DeductBalance(ctx context.Context, userID string, amount int64) error {
+	// update pake postgres
+	result := r.db.WithContext(ctx).Exec(`
+		UPDATE account_models 
+		SET hi_wallet_balance = hi_wallet_balance - ? 
+		WHERE id = ? AND hi_wallet_balance >= ?
+	`, amount, userID, amount)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return errors.New("insufficient hi_wallet balance")
+	}
+
+	return nil
+}
+
+func (r *PostgresAccountRepository) AddBalance(ctx context.Context, userID string, amount int64) error {
+	result := r.db.WithContext(ctx).Exec(`
+		UPDATE account_models 
+		SET hi_wallet_balance = hi_wallet_balance + ? 
+		WHERE id = ?
+	`, amount, userID)
+
+	return result.Error
+}
+
+func (r *PostgresAccountRepository) GetPromoDiscount(ctx context.Context, promoCode string) (int64, error) {
+	var discount int64
+
+	err := r.db.WithContext(ctx).Table("promos").
+		Select("discount_amount").
+		Where("promo_code = ? AND is_active = ?", promoCode, true).
+		Scan(&discount).Error
+
+	if err != nil || discount == 0 {
+		return 0, errors.New("invalid or inactive promo code")
+	}
+
+	return discount, nil
 }

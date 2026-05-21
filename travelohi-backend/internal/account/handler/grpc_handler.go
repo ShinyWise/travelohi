@@ -3,8 +3,9 @@ package handler
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/travelohi/backend/internal/account"
-	utils "github.com/travelohi/backend/pkg/utils"
+	"github.com/travelohi/backend/pkg/utils"
 	accountpb "github.com/travelohi/backend/proto/account/v1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -45,42 +46,49 @@ func (h *AccountGrpcHandler) InitProfile(ctx context.Context, req *accountpb.Ini
 }
 
 func (h *AccountGrpcHandler) GetProfile(ctx context.Context, req *accountpb.GetProfileRequest) (*accountpb.GetProfileResponse, error) {
-	secureUserID, err := utils.ExtractUserID(ctx)
+	// ambil userid dari context
+	userID, err := utils.ExtractUserID(ctx)
+
+	// ambil dari request kalo ga ad di ctx
 	if err != nil {
-		return nil, err
+		userID = req.GetUserId()
 	}
 
-	domainAccount, err := h.userUsecase.GetProfile(ctx, secureUserID)
+	if userID == "" {
+		return nil, status.Error(codes.InvalidArgument, "user_id is required")
+	}
+
+	acc, err := h.userUsecase.GetProfile(ctx, userID)
 	if err != nil {
-		return nil, err
+		return nil, status.Error(codes.NotFound, "account not found")
 	}
 
 	return &accountpb.GetProfileResponse{
 		Profile: &accountpb.UserProfile{
-			Id:                   domainAccount.ID,
-			Email:                domainAccount.Email,
-			FirstName:            domainAccount.FirstName,
-			LastName:             domainAccount.LastName,
-			Gender:               domainAccount.Gender,
-			Dob:                  domainAccount.DOB,
-			ProfilePictureUrl:    domainAccount.ProfilePictureURL,
-			NewsletterSubscribed: domainAccount.NewsletterSubscribed,
-			HiWalletBalance:      domainAccount.HiWalletBalance,
-			PhoneNumber:          domainAccount.PhoneNumber,
-			Address:              domainAccount.Address,
+			Id:                   acc.ID,
+			Email:                acc.Email,
+			FirstName:            acc.FirstName,
+			LastName:             acc.LastName,
+			Gender:               acc.Gender,
+			Dob:                  acc.DOB,
+			ProfilePictureUrl:    acc.ProfilePictureURL,
+			NewsletterSubscribed: acc.NewsletterSubscribed,
+			HiWalletBalance:      acc.HiWalletBalance,
+			PhoneNumber:          acc.PhoneNumber,
+			Address:              acc.Address,
 		},
 	}, nil
 }
 
 func (h *AccountGrpcHandler) UpdateProfile(ctx context.Context, req *accountpb.UpdateProfileRequest) (*accountpb.UpdateProfileResponse, error) {
-	secureUserID, err := utils.ExtractUserID(ctx)
+	userID, err := utils.ExtractUserID(ctx)
 	if err != nil {
-		return nil, err
+		return nil, status.Error(codes.Unauthenticated, "unauthorized")
 	}
 
 	// translate protobuf request jadi domain
 	updateData := &account.Account{
-		ID:                   secureUserID,
+		ID:                   userID,
 		FirstName:            req.GetFirstName(),
 		LastName:             req.GetLastName(),
 		ProfilePictureURL:    req.GetProfilePictureUrl(),
@@ -111,4 +119,168 @@ func (h *AccountGrpcHandler) UpdateProfile(ctx context.Context, req *accountpb.U
 		},
 	}, nil
 
+}
+
+func (h *AccountGrpcHandler) DeductWallet(ctx context.Context, req *accountpb.DeductWalletRequest) (*accountpb.WalletResponse, error) {
+	userID := req.UserId
+	if userID == "" {
+		userID, _ = utils.ExtractUserID(ctx)
+	}
+
+	if userID == "" {
+		return nil, status.Error(codes.InvalidArgument, "user_id is required")
+	}
+
+	err := h.userUsecase.DeductWallet(ctx, userID, req.Amount)
+	if err != nil {
+		return nil, status.Error(codes.FailedPrecondition, err.Error())
+	}
+
+	return &accountpb.WalletResponse{Success: true, Message: "Payment successful"}, nil
+}
+
+func (h *AccountGrpcHandler) RefundWallet(ctx context.Context, req *accountpb.RefundWalletRequest) (*accountpb.WalletResponse, error) {
+	userID := req.UserId
+	if userID == "" {
+		userID, _ = utils.ExtractUserID(ctx)
+	}
+
+	if userID == "" {
+		return nil, status.Error(codes.InvalidArgument, "user_id is required")
+	}
+
+	err := h.userUsecase.RefundWallet(ctx, userID, req.Amount)
+	if err != nil {
+		return nil, status.Error(codes.Internal, "Refund failed")
+	}
+
+	return &accountpb.WalletResponse{Success: true, Message: "Refund successful"}, nil
+}
+
+func (h *AccountGrpcHandler) InternalCreateBooking(ctx context.Context, req *accountpb.InternalCreateBookingRequest) (*accountpb.InternalCreateBookingResponse, error) {
+	newBooking := &account.Booking{
+		ID:            uuid.New().String(),
+		UserID:        req.GetUserId(),
+		TransactionID: req.GetTransactionId(),
+		ItemType:      req.GetItemType(),
+		DisplayName:   req.GetDisplayName(),
+		CheckInDate:   req.GetCheckInDate(),
+		CheckOutDate:  req.GetCheckOutDate(),
+	}
+
+	// create uuid
+	if newBooking.ID == "" {
+		newBooking.ID = "BOOK-" + req.GetTransactionId()
+	}
+
+	created, err := h.userUsecase.InternalCreateBooking(ctx, newBooking)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Failed to create booking: %v", err)
+	}
+
+	return &accountpb.InternalCreateBookingResponse{
+		Success:              true,
+		Message:              "Booking created successfully",
+		BookingId:            created.ID,
+		BookingReferenceCode: created.BookingReferenceCode,
+	}, nil
+}
+
+func (h *AccountGrpcHandler) GetBookingHistory(ctx context.Context, req *accountpb.GetBookingHistoryRequest) (*accountpb.GetBookingHistoryResponse, error) {
+	userID := req.GetUserId()
+	if userID == "" {
+		userID, _ = utils.ExtractUserID(ctx)
+	}
+	if userID == "" {
+		return nil, status.Error(codes.Unauthenticated, "unauthorized")
+	}
+
+	bookings, total, err := h.userUsecase.GetBookingHistory(ctx, userID, req.GetFilterStatus(), req.GetLimit(), req.GetOffset())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Failed to get booking history: %v", err)
+	}
+
+	var pbBookings []*accountpb.BookingItem
+	for _, b := range bookings {
+		pbBookings = append(pbBookings, &accountpb.BookingItem{
+			BookingId:            b.ID,
+			TransactionId:        b.TransactionID,
+			ItemType:             b.ItemType,
+			DisplayName:          b.DisplayName,
+			CheckInDate:          b.CheckInDate,
+			CheckOutDate:         b.CheckOutDate,
+			Status:               b.Status,
+			BookingReferenceCode: b.BookingReferenceCode,
+		})
+	}
+
+	return &accountpb.GetBookingHistoryResponse{
+		Bookings:     pbBookings,
+		TotalResults: total,
+	}, nil
+}
+
+func (h *AccountGrpcHandler) GetETicket(ctx context.Context, req *accountpb.GetETicketRequest) (*accountpb.GetETicketResponse, error) {
+	userID := req.GetUserId()
+	if userID == "" {
+		userID, _ = utils.ExtractUserID(ctx)
+	}
+	if userID == "" {
+		return nil, status.Error(codes.Unauthenticated, "unauthorized")
+	}
+
+	booking, qrCodeData, issueDate, passengerName, err := h.userUsecase.GetETicket(ctx, userID, req.GetBookingId())
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "Failed to get e-ticket: %v", err)
+	}
+
+	pbBooking := &accountpb.BookingItem{
+		BookingId:            booking.ID,
+		TransactionId:        booking.TransactionID,
+		ItemType:             booking.ItemType,
+		DisplayName:          booking.DisplayName,
+		CheckInDate:          booking.CheckInDate,
+		CheckOutDate:         booking.CheckOutDate,
+		Status:               booking.Status,
+		BookingReferenceCode: booking.BookingReferenceCode,
+	}
+
+	return &accountpb.GetETicketResponse{
+		BookingDetails:       pbBooking,
+		QrCodeData:           qrCodeData,
+		IssueDate:            issueDate,
+		PassengerOrGuestName: passengerName,
+	}, nil
+}
+
+func (h *AccountGrpcHandler) RedeemWalletCoupon(ctx context.Context, req *accountpb.RedeemWalletCouponRequest) (*accountpb.WalletResponse, error) {
+	userID := req.GetUserId()
+	if userID == "" {
+		userID, _ = utils.ExtractUserID(ctx)
+	}
+	if userID == "" {
+		return nil, status.Error(codes.Unauthenticated, "unauthorized access")
+	}
+
+	if req.GetCouponCode() == "" {
+		return nil, status.Error(codes.InvalidArgument, "coupon code is required")
+	}
+
+	err := h.userUsecase.RedeemWalletCoupon(ctx, userID, req.GetCouponCode())
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	return &accountpb.WalletResponse{
+		Success: true,
+		Message: "Coupon successfully redeemed and added to your HI-Wallet!",
+	}, nil
+}
+
+func (h *AccountGrpcHandler) GetExchangeRate(ctx context.Context, req *accountpb.GetExchangeRateRequest) (*accountpb.GetExchangeRateResponse, error) {
+	rate := h.userUsecase.GetExchangeRate(ctx)
+
+	return &accountpb.GetExchangeRateResponse{
+		UsdToIdrRate: rate,
+	}, nil
 }
