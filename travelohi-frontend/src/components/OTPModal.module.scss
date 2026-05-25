@@ -1,0 +1,176 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(4px);
+}
+
+.modalContent {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 30px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+
+    h3 {
+        color: var(--accent-color);
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+}
+
+.closeBtn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+
+    &:hover {
+        color: var(--text-primary);
+    }
+}
+
+.description {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+}
+
+.emailPreview {
+    background-color: var(--bg-secondary);
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.emailText {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.changeEmailBtn {
+    background: none;
+    border: none;
+    color: var(--accent-color);
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0 0 0 10px;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.errorBox {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+    border: 1px solid rgba(231, 76, 60, 0.3);
+}
+
+.successBox {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: #27ae60;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+    border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.actionBtn {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--accent-color);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.2s;
+
+    &:hover:not(:disabled) {
+        opacity: 0.9;
+    }
+
+    &:disabled {
+        background-color: var(--border-color);
+        cursor: not-allowed;
+    }
+}
+
+.stepOneContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.stepTwoContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.otpInputGroup {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.otpInputBox {
+    width: 45px;
+    height: 55px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+    transition: all 0.2s;
+
+    &:focus {
+        outline: none;
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb), 0.2);
+    }
+}
+
+.resendBtn {
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+    margin-top: 10px;
+
+    &:hover:not(:disabled) {
+        background-color: #e0e0e0;
+        color: var(--text-primary);
+    }
+}

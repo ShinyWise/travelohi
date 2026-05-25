@@ -1,0 +1,197 @@
+.loginContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #1CA6E7;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    margin-top: -20px;
+    margin-bottom: -20px;
+    padding: 40px 20px;
+    box-sizing: border-box;
+}
+
+.formCard {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 40px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+
+    h2 {
+        text-align: center;
+        color: var(--text-primary);
+        margin-bottom: 25px;
+        font-size: 1.5rem;
+    }
+}
+
+.serverError {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.successMessage {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: #27ae60;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(46, 204, 113, 0.3);
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.emailLockedBlock {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+
+    .lockedEmail {
+        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 0.95rem;
+    }
+
+    .changeEmailBtn {
+        background: transparent;
+        border: none;
+        color: var(--accent-color);
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 0.85rem;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+.emailExistsMessage {
+    color: #27ae60;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-top: -14px;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.captchaContainer {
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: center;
+}
+
+.loginBtn {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--accent-color);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+        opacity: 0.9;
+    }
+
+    &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 10px 0 20px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+
+    &::before,
+    &::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    span {
+        padding: 0 10px;
+    }
+}
+
+.otpBtn {
+    width: 100%;
+    padding: 12px;
+    background-color: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 15px;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background-color: var(--bg-secondary);
+    }
+}
+
+.registerBtn {
+    width: 100%;
+    padding: 12px;
+    background-color: #1384e1;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+        opacity: 0.9;
+    }
+}
+
+.footerLinks {
+    text-align: center;
+
+    a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 0.9rem;
+
+        &:hover {
+            text-decoration: underline;
+            color: var(--accent-color);
+        }
+    }
+}
