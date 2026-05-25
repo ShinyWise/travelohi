@@ -1,0 +1,269 @@
+.card {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s;
+
+    &:hover {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+}
+
+.selectBtn {
+    background-color: var(--accent-color);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    width: 100%;
+
+    &:hover {
+        opacity: 0.9;
+    }
+}
+
+.flightHeader {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+
+    .airlineInfo {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+
+        img {
+            height: 30px;
+            width: auto;
+        }
+
+        span {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        small {
+            color: var(--text-secondary);
+        }
+    }
+
+    .priceInfo h4 {
+        margin: 0;
+        color: #e74c3c;
+
+        span {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: normal;
+        }
+    }
+}
+
+.flightBody {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .timeBlock {
+        text-align: center;
+        flex: 0 0 140px;
+
+        strong {
+            display: block;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+        }
+
+        .date {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin: 2px 0;
+        }
+
+        span {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+    }
+
+    .durationBlock {
+        flex: 1;
+        margin: 0 30px;
+        text-align: center;
+        position: relative;
+
+        .duration {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .line {
+            height: 2px;
+            background-color: var(--border-color);
+            margin: 5px 0;
+            position: relative;
+
+            &::after,
+            &::before {
+                content: '';
+                position: absolute;
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background-color: var(--border-color);
+                top: -2px;
+            }
+
+            &::before {
+                left: 0;
+            }
+
+            &::after {
+                right: 0;
+            }
+        }
+
+        .transit {
+            font-size: 0.8rem;
+            color: var(--accent-color);
+        }
+    }
+
+    .actionBlock {
+        width: 120px;
+    }
+
+    @media (max-width: 768px) {
+        flex-wrap: wrap;
+        gap: 15px;
+
+        .actionBlock {
+            width: 100%;
+        }
+    }
+}
+
+.hotelGrid {
+    display: flex;
+    gap: 20px;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
+
+    .imageCol {
+        width: 200px;
+        flex-shrink: 0;
+
+        img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        @media (max-width: 768px) {
+            width: 100%;
+        }
+    }
+
+    .infoCol {
+        flex: 1;
+
+        h3 {
+            margin: 0 0 5px;
+            color: var(--text-primary);
+        }
+
+        .address {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .ratingBlock {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+
+            .ratingBadge {
+                background-color: #0b5b9c;
+                color: #fff;
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-weight: bold;
+                font-size: 0.9rem;
+            }
+
+            .reviews {
+                color: var(--text-secondary);
+                font-size: 0.85rem;
+            }
+        }
+
+        .facilities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+
+            .pill {
+                background-color: var(--bg-secondary);
+                border: 1px solid var(--border-color);
+                padding: 4px 10px;
+                border-radius: 12px;
+                font-size: 0.8rem;
+                color: var(--text-secondary);
+            }
+        }
+    }
+
+    .priceCol {
+        width: 180px;
+        text-align: right;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+
+        @media (max-width: 768px) {
+            width: 100%;
+            text-align: left;
+        }
+
+        .priceLabel {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        h4 {
+            margin: 5px 0;
+            color: #e74c3c;
+            font-size: 1.4rem;
+        }
+
+        .priceSuffix {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+    }
+}
+
+.availability {
+    font-size: 0.85rem;
+    color: #e74c3c;
+    font-weight: 600;
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}

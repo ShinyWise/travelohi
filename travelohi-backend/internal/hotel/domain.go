@@ -19,6 +19,7 @@ type Hotel struct {
 	RatingAverage     float32
 	TotalReviews      int32
 	StartingPrice     int64
+	Availability      int32
 
 	Rooms []HotelRoom
 }
@@ -31,16 +32,21 @@ type HotelRoom struct {
 	Capacity       int32
 	Facilities     []string
 	AvailableCount int32
+	ImageURL       string
 }
 
 type SearchFilter struct {
-	Query     string
-	CheckIn   string
-	CheckOut  string
-	SortBy    string
-	SortOrder string
-	Limit     int32
-	Offset    int32
+	Query      string
+	CheckIn    string
+	CheckOut   string
+	SortBy     string
+	SortOrder  string
+	Limit      int32
+	Offset     int32
+	MinPrice   int64
+	MaxPrice   int64
+	MinRating  float32
+	Facilities []string
 }
 
 type HotelReview struct {
@@ -61,8 +67,14 @@ type HotelReview struct {
 
 type HotelRepository interface {
 	SearchHotels(ctx context.Context, filter SearchFilter) ([]Hotel, int32, error)
+	GetHotelByID(ctx context.Context, id string) (Hotel, error)
+	GetAvailableRooms(ctx context.Context, hotelID string, checkIn, checkOut string) ([]HotelRoom, error)
+	GetRecentReviews(ctx context.Context, hotelID string) ([]HotelReview, error)
+	AddHotelReview(ctx context.Context, review HotelReview) error
 }
 
 type HotelUseCase interface {
 	SearchHotels(ctx context.Context, filter SearchFilter) ([]Hotel, int32, error)
+	GetHotelDetails(ctx context.Context, hotelID string, checkIn, checkOut string) (Hotel, []HotelRoom, []HotelReview, error)
+	AddHotelReview(ctx context.Context, review HotelReview) error
 }

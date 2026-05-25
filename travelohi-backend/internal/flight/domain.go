@@ -24,9 +24,30 @@ type FlightSeat struct {
 	IsBooked   bool
 }
 
+type Airline struct {
+	ID      string
+	Name    string
+	LogoURL string
+}
+
+type FlightSearchFilter struct {
+	Origin        string
+	Destination   string
+	DepartureDate string
+	TransitFilter string // "direct", "transit", or ""
+	SortBy        string // "duration", "price", "transits"
+	SortOrder     string // "asc", "desc"
+	Limit         int32
+	Offset        int32
+	MinPrice      int64
+	MaxPrice      int64
+}
+
 type FlightRepository interface {
 	// standard search
-	SearchFlights(ctx context.Context, origin, dest, date string, limit, offset int32) ([]Flight, int32, error)
+	SearchFlights(ctx context.Context, filter FlightSearchFilter) ([]Flight, int32, error)
+	GetFlightByID(ctx context.Context, id string) (Flight, error)
+	GetAirlineByID(ctx context.Context, id string) (Airline, error)
 
 	// concurrency methods
 	LockAndBookSeat(ctx context.Context, seatID string) (int64, error)
@@ -36,7 +57,9 @@ type FlightRepository interface {
 }
 
 type FlightUseCase interface {
-	SearchFlights(ctx context.Context, origin, dest, date string, limit, offset int32) ([]Flight, int32, error)
+	SearchFlights(ctx context.Context, filter FlightSearchFilter) ([]Flight, int32, error)
+	GetFlightByID(ctx context.Context, id string) (Flight, error)
+	GetAirlineByID(ctx context.Context, id string) (Airline, error)
 	BookSeat(ctx context.Context, seatID string, userID string) (int64, error)
 	UnlockSeat(ctx context.Context, seatID string) error
 

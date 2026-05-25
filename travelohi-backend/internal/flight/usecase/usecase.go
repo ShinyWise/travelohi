@@ -18,11 +18,19 @@ func NewFlightUseCase(repo flight.FlightRepository) flight.FlightUseCase {
 }
 
 // search flights
-func (uc *flightUseCase) SearchFlights(ctx context.Context, origin, dest, date string, limit, offset int32) ([]flight.Flight, int32, error) {
-	return uc.repo.SearchFlights(ctx, origin, dest, date, limit, offset)
+func (uc *flightUseCase) SearchFlights(ctx context.Context, filter flight.FlightSearchFilter) ([]flight.Flight, int32, error) {
+	return uc.repo.SearchFlights(ctx, filter)
 }
 
-// book seat
+func (uc *flightUseCase) GetFlightByID(ctx context.Context, id string) (flight.Flight, error) {
+	return uc.repo.GetFlightByID(ctx, id)
+}
+
+func (uc *flightUseCase) GetAirlineByID(ctx context.Context, id string) (flight.Airline, error) {
+	return uc.repo.GetAirlineByID(ctx, id)
+}
+
+// lock seat
 func (uc *flightUseCase) BookSeat(ctx context.Context, seatID string, userID string) (int64, error) {
 
 	// call the lock transaction
