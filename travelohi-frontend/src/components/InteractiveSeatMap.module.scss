@@ -1,0 +1,150 @@
+.seatMapContainer {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.title {
+    margin-top: 0;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+}
+
+.legend {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+
+    .legendItem {
+        display: flex;
+        align-items: center;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        gap: 8px;
+
+        .box {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+
+            &.available {
+                border: 1px solid var(--border-color);
+                background-color: var(--bg-primary);
+            }
+
+            &.booked {
+                background-color: #e0e0e0;
+                border: 1px solid #ccc;
+            }
+
+            &.selected {
+                background-color: var(--accent-color);
+            }
+
+            &.business {
+                background-color: #f39c12;
+                border: 1px solid #d68910;
+            }
+        }
+    }
+}
+
+.planeBody {
+    background-color: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 40px 40px 10px 10px;
+    padding: 40px 20px;
+    max-width: 350px;
+    margin: 0 auto;
+}
+
+.cockpit {
+    text-align: center;
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.8rem;
+    border-bottom: 2px dashed var(--border-color);
+    padding-bottom: 10px;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    position: relative;
+
+    .rowNumber {
+        position: absolute;
+        left: -20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: var(--text-secondary);
+        width: 20px;
+        text-align: right;
+    }
+
+    .seatsGrid {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        width: 100%;
+
+        &>button:nth-child(3) {
+            margin-right: 20px;
+        }
+    }
+}
+
+.seat {
+    width: 35px;
+    height: 35px;
+    border-radius: 6px 6px 2px 2px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s;
+
+    &.seatAvailable {
+        background-color: var(--bg-primary);
+        border: 1px solid var(--accent-color);
+        color: var(--accent-color);
+
+        &:hover {
+            background-color: rgba(0, 165, 212, 0.1);
+        }
+    }
+
+    &.seatBusiness {
+        background-color: #fcf3cf;
+        border: 1px solid #f39c12;
+        color: #d68910;
+
+        &:hover {
+            background-color: #f9e79f;
+        }
+    }
+
+    &.seatBooked {
+        background-color: #e0e0e0;
+        border: 1px solid #ccc;
+        color: #999;
+        cursor: not-allowed;
+    }
+
+    &.seatSelected {
+        background-color: var(--accent-color);
+        border: 1px solid var(--accent-color);
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+}

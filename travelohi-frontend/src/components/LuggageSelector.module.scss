@@ -1,0 +1,63 @@
+.luggageContainer {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-top: 20px;
+
+    h3 {
+        margin-top: 0;
+        color: var(--text-primary);
+        margin-bottom: 5px;
+    }
+
+    .subtitle {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        margin-bottom: 20px;
+    }
+}
+
+.optionsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.optionCard {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background-color: var(--bg-primary);
+
+    h4 {
+        margin: 0 0 10px;
+        color: var(--text-primary);
+        font-size: 1.1rem;
+    }
+
+    span {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    &:hover {
+        border-color: var(--accent-color);
+    }
+
+    &.selected {
+        border-color: var(--accent-color);
+        background-color: rgba(0, 165, 212, 0.05);
+        box-shadow: 0 0 0 1px var(--accent-color);
+
+        h4,
+        span {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+    }
+}
