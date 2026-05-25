@@ -1,0 +1,150 @@
+.card {
+    display: flex;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    &.expiredCard {
+        background-color: var(--bg-secondary);
+        opacity: 0.8;
+        border-color: #e74c3c;
+    }
+}
+
+.imageCol {
+    width: 120px;
+    height: 120px;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+
+    @media (max-width: 768px) {
+        width: 100%;
+        height: 150px;
+    }
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.infoCol {
+    flex: 1;
+    padding: 0 20px;
+
+    @media (max-width: 768px) {
+        padding: 0;
+    }
+
+    .headerRow {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 5px;
+
+        h4 {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+    }
+
+    .badge {
+        font-size: 0.75rem;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-weight: bold;
+
+        &.badgeOngoing {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+        }
+
+        &.badgeExpired {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+    }
+
+    .subtitle {
+        margin: 0 0 10px;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    .dateInfo {
+        font-size: 0.9rem;
+        color: var(--text-primary);
+        font-weight: 500;
+        margin-bottom: 15px;
+        background-color: var(--bg-secondary);
+        padding: 6px 10px;
+        border-radius: 4px;
+        display: inline-block;
+    }
+
+    .actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        button {
+            background: none;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0;
+            font-size: 0.9rem;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
+        .removeBtn {
+            color: #e74c3c;
+        }
+
+        .editBtn {
+            color: var(--accent-color);
+        }
+
+        .separator {
+            color: var(--border-color);
+        }
+    }
+}
+
+.priceCol {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    min-width: 150px;
+
+    @media (max-width: 768px) {
+        align-items: flex-start;
+    }
+
+    .price {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: #e74c3c;
+    }
+
+    .qty {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-top: 5px;
+    }
+}

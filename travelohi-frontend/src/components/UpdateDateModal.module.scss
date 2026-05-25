@@ -1,0 +1,88 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(4px);
+}
+
+.modalContent {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 30px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+
+    h3 {
+        margin-top: 0;
+        margin-bottom: 20px;
+        color: var(--text-primary);
+    }
+}
+
+.inputGroup {
+    margin-bottom: 15px;
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        font-weight: 600;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        background-color: var(--bg-secondary);
+        color: var(--text-primary);
+        font-family: inherit;
+
+        &:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+    }
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 25px;
+
+    button {
+        padding: 10px 16px;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: opacity 0.2s;
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    }
+
+    .cancelBtn {
+        background: transparent;
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+    }
+
+    .saveBtn {
+        background-color: var(--accent-color);
+        border: none;
+        color: #fff;
+    }
+}

@@ -1,9 +1,10 @@
-// internal/cart/usecase/cart_usecase.go
 package usecase
 
 import (
 	"context"
 	"errors"
+	"fmt"
+	"time"
 
 	"github.com/google/uuid"
 	"google.golang.org/grpc/metadata"
@@ -15,8 +16,8 @@ import (
 
 type cartUseCase struct {
 	repo          cart.CartRepository
-	flightClient  flightpb.FlightServiceClient   // The gRPC Client!
-	accountClient accountpb.AccountServiceClient // For Financials
+	flightClient  flightpb.FlightServiceClient
+	accountClient accountpb.AccountServiceClient
 }
 
 func NewCartUseCase(repo cart.CartRepository, flightClient flightpb.FlightServiceClient, accountClient accountpb.AccountServiceClient) cart.CartUseCase {
@@ -27,7 +28,34 @@ func NewCartUseCase(repo cart.CartRepository, flightClient flightpb.FlightServic
 	}
 }
 
+func calculateNights(checkIn, checkOut string) int64 {
+	t1, err1 := time.Parse("2006-01-02", checkIn)
+	t2, err2 := time.Parse("2006-01-02", checkOut)
+	if err1 != nil || err2 != nil {
+		t1, err1 = time.Parse("2006-01-02 15:04", checkIn)
+		t2, err2 = time.Parse("2006-01-02 15:04", checkOut)
+		if err1 != nil || err2 != nil {
+			return 1
+		}
+	}
+	days := int64(t2.Sub(t1).Hours() / 24)
+	if days <= 0 {
+		return 1
+	}
+	return days
+}
+
 func (uc *cartUseCase) AddToCart(ctx context.Context, userID, itemType, referenceID, checkIn, checkOut string, quantity int32, luggageWeight int32) error {
+	// check duplicate for hotel rooms
+	if itemType == "hotel_room" {
+		exists, err := uc.repo.CheckItemInCart(ctx, userID, referenceID)
+		if err != nil {
+			return err
+		}
+		if exists {
+			return errors.New("kamar ini sudah ada di dalam keranjang belanja Anda")
+		}
+	}
 
 	// extract metadata from incoming context
 	md, ok := metadata.FromIncomingContext(ctx)
@@ -49,6 +77,13 @@ func (uc *cartUseCase) AddToCart(ctx context.Context, userID, itemType, referenc
 		}
 
 		itemPrice = resp.LockedPrice
+	} else if itemType == "hotel_room" {
+		pricePerNight, err := uc.repo.GetRoomPrice(ctx, referenceID)
+		if err != nil {
+			return errors.New("failed to fetch hotel room price")
+		}
+		nights := calculateNights(checkIn, checkOut)
+		itemPrice = pricePerNight * nights
 	}
 
 	// save to cart database
@@ -60,6 +95,9 @@ func (uc *cartUseCase) AddToCart(ctx context.Context, userID, itemType, referenc
 		Price:         itemPrice,
 		Status:        "in_cart",
 		LuggageWeight: luggageWeight,
+		Quantity:      quantity,
+		CheckInDate:   checkIn,
+		CheckOutDate:  checkOut,
 	}
 
 	err := uc.repo.AddToCart(ctx, newItem)
@@ -78,31 +116,45 @@ func (uc *cartUseCase) ViewCart(ctx context.Context, userID string) ([]cart.Cart
 
 	var subtotal int64 = 0
 	for _, item := range items {
-		subtotal += item.Price
+		subtotal += item.Price * int64(item.Quantity)
 	}
 
 	return items, subtotal, 0, subtotal, "", nil
 }
 
 func (uc *cartUseCase) UpdateCartItem(ctx context.Context, userID, itemID, newCheckIn, newCheckOut string) error {
-	return uc.repo.UpdateCartItem(ctx, itemID, userID, newCheckIn, newCheckOut)
+	item, err := uc.repo.GetCartItemByID(ctx, itemID, userID)
+	if err != nil {
+		return err
+	}
+
+	newPrice := item.Price
+	if item.ItemType == "hotel_room" {
+		pricePerNight, err := uc.repo.GetRoomPrice(ctx, item.ReferenceID)
+		if err == nil {
+			nights := calculateNights(newCheckIn, newCheckOut)
+			newPrice = pricePerNight * nights
+		}
+	}
+
+	return uc.repo.UpdateCartItem(ctx, itemID, userID, newCheckIn, newCheckOut, newPrice)
 }
 
 func (uc *cartUseCase) RemoveFromCart(ctx context.Context, userID, itemID string) error {
 	return uc.repo.RemoveFromCart(ctx, itemID, userID)
 }
 
-func (uc *cartUseCase) ApplyPromo(ctx context.Context, userID, promoCode string) error {
+func (uc *cartUseCase) ApplyPromo(ctx context.Context, userID, promoCode string) (int64, error) {
 	promo, err := uc.repo.GetPromoByCode(ctx, promoCode)
 	if err != nil {
-		return errors.New("invalid promo code")
+		return 0, errors.New("invalid or inactive promo code")
 	}
 
 	if promo.CurrentUses >= promo.MaxUses {
-		return errors.New("promo code usage limit reached")
+		return 0, errors.New("promo code usage limit reached")
 	}
 
-	return nil
+	return promo.DiscountAmount, nil
 }
 
 func (uc *cartUseCase) InternalCreatePromo(ctx context.Context, promoCode string, discountAmount int64, maxUses int32, expiryDate string) error {
@@ -126,7 +178,7 @@ func (uc *cartUseCase) Checkout(ctx context.Context, userID, paymentMethod, cred
 	// calculate total price
 	var totalPrice int64 = 0
 	for _, item := range items {
-		totalPrice += item.Price
+		totalPrice += item.Price * int64(item.Quantity)
 	}
 
 	// apply promo if valid
@@ -182,14 +234,24 @@ func (uc *cartUseCase) Checkout(ctx context.Context, userID, paymentMethod, cred
 
 	// create booking via account service
 	for _, item := range items {
-		_, _ = uc.accountClient.InternalCreateBooking(ctx, &accountpb.InternalCreateBookingRequest{
+		_, err = uc.accountClient.InternalCreateBooking(ctx, &accountpb.InternalCreateBookingRequest{
 			UserId:        userID,
 			TransactionId: transactionID,
 			ItemType:      item.ItemType,
-			DisplayName:   "Booking for " + item.ReferenceID,
-			CheckInDate:   "",
-			CheckOutDate:  "",
+			DisplayName:   fmt.Sprintf("%s|%s", item.DisplayName, item.ReferenceID),
+			CheckInDate:   item.CheckInDate,
+			CheckOutDate:  item.CheckOutDate,
 		})
+		if err != nil {
+			// refund wallet on failure
+			if paymentMethod == "hi_wallet" {
+				_, _ = uc.accountClient.RefundWallet(ctx, &accountpb.RefundWalletRequest{
+					UserId: userID,
+					Amount: totalPrice,
+				})
+			}
+			return "", fmt.Errorf("failed to create booking record: %w", err)
+		}
 	}
 
 	return transactionID, nil

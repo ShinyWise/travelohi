@@ -1,8 +1,8 @@
-// internal/cart/repository/cart_repository.go
 package repository
 
 import (
 	"context"
+	"encoding/json"
 	"time"
 
 	"github.com/travelohi/backend/internal/cart"
@@ -17,6 +17,9 @@ type CartItemModel struct {
 	Price         int64     `gorm:"type:bigint;not null"`
 	Status        string    `gorm:"type:varchar(50);default:'in_cart'"`
 	LuggageWeight int32     `gorm:"column:luggage_weight;type:int;default:0"`
+	Quantity      int32     `gorm:"column:quantity;type:int;default:1"`
+	CheckInDate   string    `gorm:"column:check_in_date;type:varchar(50)"`
+	CheckOutDate  string    `gorm:"column:check_out_date;type:varchar(50)"`
 	CreatedAt     time.Time `gorm:"autoCreateTime"`
 }
 
@@ -45,6 +48,17 @@ func NewPostgresCartRepository(db *gorm.DB) cart.CartRepository {
 	return &postgresCartRepo{db: db}
 }
 
+func getFirstImageUrl(jsonStr string) string {
+	if jsonStr == "" {
+		return ""
+	}
+	var urls []string
+	if err := json.Unmarshal([]byte(jsonStr), &urls); err == nil && len(urls) > 0 {
+		return urls[0]
+	}
+	return ""
+}
+
 func (r *postgresCartRepo) AddToCart(ctx context.Context, item cart.CartItem) error {
 	dbModel := CartItemModel{
 		ID:            item.ID,
@@ -54,6 +68,9 @@ func (r *postgresCartRepo) AddToCart(ctx context.Context, item cart.CartItem) er
 		Price:         item.Price,
 		Status:        item.Status,
 		LuggageWeight: item.LuggageWeight,
+		Quantity:      item.Quantity,
+		CheckInDate:   item.CheckInDate,
+		CheckOutDate:  item.CheckOutDate,
 		CreatedAt:     item.CreatedAt,
 	}
 
@@ -69,18 +86,113 @@ func (r *postgresCartRepo) GetActiveCartItems(ctx context.Context, userID string
 
 	var items []cart.CartItem
 	for _, m := range models {
+		displayName := "Item " + m.ReferenceID
+		displayImageUrl := ""
+		checkInDate := m.CheckInDate
+		checkOutDate := m.CheckOutDate
+
+		if m.ItemType == "hotel_room" {
+			var details struct {
+				RoomName    string `gorm:"column:room_name"`
+				HotelName   string `gorm:"column:hotel_name"`
+				PictureUrls string `gorm:"column:picture_urls"`
+			}
+			err := r.db.Raw(`
+				SELECT hr.name as room_name, h.name as hotel_name, h.picture_urls
+				FROM hotel_rooms hr
+				JOIN hotels h ON hr.hotel_id = h.id
+				WHERE hr.id = ?
+			`, m.ReferenceID).Scan(&details).Error
+			if err == nil {
+				displayName = details.HotelName + " - " + details.RoomName
+				displayImageUrl = getFirstImageUrl(details.PictureUrls)
+			}
+		} else if m.ItemType == "flight_seat" {
+			var details struct {
+				SeatNumber    string    `gorm:"column:seat_number"`
+				FlightCode    string    `gorm:"column:flight_code"`
+				AirlineName   string    `gorm:"column:airline_name"`
+				LogoUrl       string    `gorm:"column:logo_url"`
+				DepartureTime time.Time `gorm:"column:departure_time"`
+				ArrivalTime   time.Time `gorm:"column:arrival_time"`
+			}
+			err := r.db.Raw(`
+				SELECT fs.seat_number, f.flight_code, a.name as airline_name, a.logo_url, f.departure_time, f.arrival_time
+				FROM flight_seats fs
+				JOIN flights f ON fs.flight_id = f.id
+				LEFT JOIN airlines a ON f.airline_id = a.id
+				WHERE fs.id = ?
+			`, m.ReferenceID).Scan(&details).Error
+			if err == nil {
+				displayName = details.AirlineName + " (" + details.FlightCode + ") - Seat " + details.SeatNumber
+				displayImageUrl = details.LogoUrl
+				checkInDate = details.DepartureTime.Format("2006-01-02 15:04")
+				checkOutDate = details.ArrivalTime.Format("2006-01-02 15:04")
+			}
+		}
+
 		items = append(items, cart.CartItem{
-			ID:            m.ID,
-			UserID:        m.UserID,
-			ItemType:      m.ItemType,
-			ReferenceID:   m.ReferenceID,
-			Price:         m.Price,
-			Status:        m.Status,
-			LuggageWeight: m.LuggageWeight,
-			CreatedAt:     m.CreatedAt,
+			ID:              m.ID,
+			UserID:          m.UserID,
+			ItemType:        m.ItemType,
+			ReferenceID:     m.ReferenceID,
+			Price:           m.Price,
+			Status:          m.Status,
+			LuggageWeight:   m.LuggageWeight,
+			Quantity:        m.Quantity,
+			CheckInDate:     checkInDate,
+			CheckOutDate:    checkOutDate,
+			DisplayName:     displayName,
+			DisplayImageUrl: displayImageUrl,
+			CreatedAt:       m.CreatedAt,
 		})
 	}
 	return items, nil
+}
+
+func (r *postgresCartRepo) GetCartItemByID(ctx context.Context, itemID, userID string) (cart.CartItem, error) {
+	var m CartItemModel
+	err := r.db.WithContext(ctx).Where("id = ? AND user_id = ?", itemID, userID).First(&m).Error
+	if err != nil {
+		return cart.CartItem{}, err
+	}
+	return cart.CartItem{
+		ID:            m.ID,
+		UserID:        m.UserID,
+		ItemType:      m.ItemType,
+		ReferenceID:   m.ReferenceID,
+		Price:         m.Price,
+		Status:        m.Status,
+		LuggageWeight: m.LuggageWeight,
+		Quantity:      m.Quantity,
+		CheckInDate:   m.CheckInDate,
+		CheckOutDate:  m.CheckOutDate,
+		CreatedAt:     m.CreatedAt,
+	}, nil
+}
+
+func (r *postgresCartRepo) CheckItemInCart(ctx context.Context, userID, referenceID string) (bool, error) {
+	var count int64
+	err := r.db.WithContext(ctx).Model(&CartItemModel{}).
+		Where("user_id = ? AND reference_id = ? AND status = ?", userID, referenceID, "in_cart").
+		Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
+
+func (r *postgresCartRepo) GetRoomPrice(ctx context.Context, roomId string) (int64, error) {
+	var price int64
+	err := r.db.WithContext(ctx).Table("hotel_rooms").
+		Where("id = ?", roomId).
+		Select("price_per_night").
+		Row().
+		Scan(&price)
+	if err != nil {
+		return 0, err
+	}
+	return price, nil
 }
 
 func (r *postgresCartRepo) MarkCartAsPaid(ctx context.Context, userID string) error {
@@ -89,9 +201,14 @@ func (r *postgresCartRepo) MarkCartAsPaid(ctx context.Context, userID string) er
 		Update("status", "paid").Error
 }
 
-func (r *postgresCartRepo) UpdateCartItem(ctx context.Context, itemID, userID string, newCheckIn, newCheckOut string) error {
-	// not supported by current schema
-	return nil
+func (r *postgresCartRepo) UpdateCartItem(ctx context.Context, itemID, userID string, newCheckIn, newCheckOut string, newPrice int64) error {
+	return r.db.WithContext(ctx).Model(&CartItemModel{}).
+		Where("id = ? AND user_id = ?", itemID, userID).
+		Updates(map[string]interface{}{
+			"check_in_date":  newCheckIn,
+			"check_out_date": newCheckOut,
+			"price":          newPrice,
+		}).Error
 }
 
 func (r *postgresCartRepo) RemoveFromCart(ctx context.Context, itemID, userID string) error {

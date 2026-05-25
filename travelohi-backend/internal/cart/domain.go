@@ -1,4 +1,3 @@
-// internal/cart/domain.go
 package cart
 
 import (
@@ -7,14 +6,19 @@ import (
 )
 
 type CartItem struct {
-	ID            string
-	UserID        string
-	ItemType      string
-	ReferenceID   string
-	Price         int64
-	Status        string
-	CreatedAt     time.Time
-	LuggageWeight int32
+	ID              string
+	UserID          string
+	ItemType        string
+	ReferenceID     string
+	Price           int64
+	Status          string
+	CreatedAt       time.Time
+	LuggageWeight   int32
+	Quantity        int32
+	CheckInDate     string
+	CheckOutDate    string
+	DisplayName     string
+	DisplayImageUrl string
 }
 
 type Promo struct {
@@ -29,9 +33,12 @@ type Promo struct {
 type CartRepository interface {
 	AddToCart(ctx context.Context, item CartItem) error
 	GetActiveCartItems(ctx context.Context, userID string) ([]CartItem, error)
-	UpdateCartItem(ctx context.Context, itemID, userID string, newCheckIn, newCheckOut string) error
+	GetCartItemByID(ctx context.Context, itemID, userID string) (CartItem, error)
+	GetRoomPrice(ctx context.Context, roomId string) (int64, error)
+	UpdateCartItem(ctx context.Context, itemID, userID string, newCheckIn, newCheckOut string, newPrice int64) error
 	RemoveFromCart(ctx context.Context, itemID, userID string) error
 	MarkCartAsPaid(ctx context.Context, userID string) error
+	CheckItemInCart(ctx context.Context, userID, referenceID string) (bool, error)
 
 	// promos
 	CreatePromo(ctx context.Context, promo Promo) error
@@ -44,7 +51,7 @@ type CartUseCase interface {
 	ViewCart(ctx context.Context, userID string) ([]CartItem, int64, int64, int64, string, error) // items, subtotal, discount, total, applied_promo
 	UpdateCartItem(ctx context.Context, userID, itemID, newCheckIn, newCheckOut string) error
 	RemoveFromCart(ctx context.Context, userID, itemID string) error
-	ApplyPromo(ctx context.Context, userID, promoCode string) error
+	ApplyPromo(ctx context.Context, userID, promoCode string) (int64, error)
 
 	Checkout(ctx context.Context, userID, paymentMethod, creditCardID, appliedPromoCode string) (string, error)
 

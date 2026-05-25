@@ -8,9 +8,19 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/travelohi/backend/internal/cart"
 	flightpb "github.com/travelohi/backend/proto/flight/v1"
 )
+
+type CartItemSweeperModel struct {
+	ID          string `gorm:"primaryKey;column:id"`
+	ItemType    string `gorm:"column:item_type"`
+	ReferenceID string `gorm:"column:reference_id"`
+	Status      string `gorm:"column:status"`
+}
+
+func (CartItemSweeperModel) TableName() string {
+	return "cart_items"
+}
 
 func StartCartSweeper(ctx context.Context, db *gorm.DB, flightClient flightpb.FlightServiceClient) {
 	log.Println("🧹 Cart Sweeper Worker started in the background...")
@@ -34,9 +44,9 @@ func StartCartSweeper(ctx context.Context, db *gorm.DB, flightClient flightpb.Fl
 
 func sweepExpiredCarts(ctx context.Context, db *gorm.DB, flightClient flightpb.FlightServiceClient) {
 
-	var expiredItems []cart.CartItem
+	var expiredItems []CartItemSweeperModel
 
-	err := db.Where("status = ? AND created_at < NOW() - INTERVAL '15 minutes'", "in_cart").Find(&expiredItems).Error
+	err := db.WithContext(ctx).Model(&CartItemSweeperModel{}).Where("status = ? AND created_at < NOW() - INTERVAL '15 minutes'", "in_cart").Find(&expiredItems).Error
 	if err != nil {
 		log.Printf("Sweeper Error: failed to fetch expiring carts: %v\n", err)
 		return
@@ -60,7 +70,7 @@ func sweepExpiredCarts(ctx context.Context, db *gorm.DB, flightClient flightpb.F
 		}
 
 		// finalize database state
-		err = db.Model(&item).Update("status", "expired").Error
+		err = db.WithContext(ctx).Model(&CartItemSweeperModel{}).Where("id = ?", item.ID).Update("status", "expired").Error
 		if err != nil {
 			log.Printf("❌ Sweeper Error: Unlocked seat %s, but failed to mark cart as expired: %v", item.ReferenceID, err)
 		} else {

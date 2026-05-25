@@ -1,4 +1,3 @@
-// internal/cart/delivery/grpc/cart_handler.go
 package grpc
 
 import (
@@ -21,9 +20,7 @@ func NewCartHandler(usecase cart.CartUseCase) *CartHandler {
 	return &CartHandler{usecase: usecase}
 }
 
-// internal/cart/delivery/grpc/cart_handler.go
-
-func (h *CartHandler) AddToCart(ctx context.Context, req *cartpb.AddToCartRequest) (*cartpb.CartResponse, error) { // CHANGED TO CartResponse
+func (h *CartHandler) AddToCart(ctx context.Context, req *cartpb.AddToCartRequest) (*cartpb.CartResponse, error) {
 	// extract user id
 	userID, err := utils.ExtractUserID(ctx)
 	if err != nil {
@@ -92,12 +89,12 @@ func (h *CartHandler) ViewCart(ctx context.Context, req *cartpb.ViewCartRequest)
 			Id:              item.ID,
 			ItemType:        item.ItemType,
 			ReferenceId:     item.ReferenceID,
-			DisplayName:     "Item " + item.ReferenceID,
-			DisplayImageUrl: "",
-			CheckInDate:     "",
-			CheckOutDate:    "",
+			DisplayName:     item.DisplayName,
+			DisplayImageUrl: item.DisplayImageUrl,
+			CheckInDate:     item.CheckInDate,
+			CheckOutDate:    item.CheckOutDate,
 			ItemPrice:       item.Price,
-			Quantity:        1,
+			Quantity:        item.Quantity,
 			LuggageWeight:   item.LuggageWeight,
 			Status:          item.Status,
 		})
@@ -146,13 +143,24 @@ func (h *CartHandler) ApplyPromo(ctx context.Context, req *cartpb.ApplyPromoRequ
 		return nil, status.Error(codes.Unauthenticated, err.Error())
 	}
 
-	err = h.usecase.ApplyPromo(ctx, userID, req.PromoCode)
+	discount, err := h.usecase.ApplyPromo(ctx, userID, req.PromoCode)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	// return updated cart view
-	return h.ViewCart(ctx, &cartpb.ViewCartRequest{})
+	cartView, err := h.ViewCart(ctx, &cartpb.ViewCartRequest{})
+	if err != nil {
+		return nil, err
+	}
+
+	cartView.DiscountAmount = discount
+	cartView.TotalPrice = cartView.Subtotal - discount
+	if cartView.TotalPrice < 0 {
+		cartView.TotalPrice = 0
+	}
+	cartView.AppliedPromoCode = req.PromoCode
+
+	return cartView, nil
 }
 
 func (h *CartHandler) InternalCreatePromo(ctx context.Context, req *cartpb.InternalCreatePromoRequest) (*cartpb.InternalCreatePromoResponse, error) {
