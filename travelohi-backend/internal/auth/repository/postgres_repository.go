@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"errors"
 
 	"github.com/travelohi/backend/internal/auth"
 	"gorm.io/gorm"
@@ -57,16 +56,40 @@ func (r *PostgresAuthRepository) Create(ctx context.Context, a *auth.Auth) error
 }
 
 func (r *PostgresAuthRepository) GetByEmail(ctx context.Context, email string) (*auth.Auth, error) {
-	var model AuthModel
+	var result struct {
+		ID                 string
+		Email              string
+		PasswordHash       string
+		SecurityQuestionID int32
+		SecurityAnswerHash string
+		IsBanned           bool
+		IsActive           bool
+	}
 
-	err := r.db.WithContext(ctx).Where("email = ?", email).First(&model).Error
+	err := r.db.WithContext(ctx).
+		Table("auths").
+		Select("auths.id, auths.email, auths.password_hash, auths.security_question_id, auths.security_answer_hash, auths.is_banned, account_models.is_active").
+		Joins("left join account_models on account_models.id = auths.id").
+		Where("auths.email = ?", email).
+		Scan(&result).Error
+
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, auth.ErrInvalidCreds
-		}
 		return nil, err
 	}
-	return model.ToDomain(), nil
+
+	if result.ID == "" {
+		return nil, auth.ErrInvalidCreds
+	}
+
+	return &auth.Auth{
+		ID:                 result.ID,
+		Email:              result.Email,
+		PasswordHash:       result.PasswordHash,
+		SecurityQuestionID: result.SecurityQuestionID,
+		SecurityAnswerHash: result.SecurityAnswerHash,
+		IsBanned:           result.IsBanned,
+		IsActive:           result.IsActive,
+	}, nil
 }
 
 func (r *PostgresAuthRepository) Update(ctx context.Context, a *auth.Auth) error {

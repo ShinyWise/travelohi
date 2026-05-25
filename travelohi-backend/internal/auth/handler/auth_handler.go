@@ -85,6 +85,7 @@ func (h *authHandler) SendOTP(ctx context.Context, req *authpb.SendOTPRequest) (
 	}
 
 	return &authpb.SendOTPResponse{
+		Success: true,
 		Message: "If that email is registered, an OTP has been sent.",
 	}, nil
 }
@@ -118,7 +119,7 @@ func (h *authHandler) GetSecurityQuestion(ctx context.Context, req *authpb.GetSe
 }
 
 func (h *authHandler) ResetPassword(ctx context.Context, req *authpb.ResetPasswordRequest) (*authpb.AuthResponse, error) {
-	res, err := h.usecase.ResetPassword(ctx, req.GetEmail(), req.GetSecurityAnswer(), req.GetNewPassword())
+	res, err := h.usecase.ResetPassword(ctx, req.GetEmail(), req.GetSecurityQuestionId(), req.GetSecurityAnswer(), req.GetNewPassword())
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
