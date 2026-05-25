@@ -29,12 +29,31 @@ type AuthInterceptor struct {
 
 func NewAuthInterceptor(tokenMaker token.Maker, cache auth.CacheRepository, roleRepo RoleRepository) *AuthInterceptor {
 	publicRoutes := map[string]bool{
-		"/travelohi.v1.auth.AuthService/Login":        true,
-		"/travelohi.v1.auth.AuthService/Register":     true,
-		"/travelohi.v1.auth.AuthService/SendOTP":      true,
-		"/travelohi.v1.auth.AuthService/LoginWithOTP": true,
+		"/travelohi.v1.auth.AuthService/Login":               true,
+		"/travelohi.v1.auth.AuthService/Register":            true,
+		"/travelohi.v1.auth.AuthService/SendOTP":             true,
+		"/travelohi.v1.auth.AuthService/LoginWithOTP":        true,
+		"/travelohi.v1.auth.AuthService/CheckEmail":          true,
+		"/travelohi.v1.auth.AuthService/GetSecurityQuestion": true,
+		"/travelohi.v1.auth.AuthService/ResetPassword":       true,
 		// internal microservice call: perlu dipake buat authService pas register
 		"/travelohi.v1.account.AccountService/InitProfile": true,
+
+		// Hotel Service public endpoints
+		"/travelohi.v1.hotel.HotelService/SearchHotels":    true,
+		"/travelohi.v1.hotel.HotelService/GetHotelDetails": true,
+
+		// Flight Service public endpoints
+		"/travelohi.v1.flight.FlightService/SearchFlights":      true,
+		"/travelohi.v1.flight.FlightService/GetFlightDetails":   true,
+		"/travelohi.v1.flight.FlightService/GetFlightSeats":     true,
+		"/travelohi.v1.flight.FlightService/InternalLockSeat":   true,
+		"/travelohi.v1.flight.FlightService/InternalUnlockSeat": true,
+
+		// Telemetry Service public recommendations
+		"/travelohi.v1.telemetry.TelemetryService/GetGlobalRecommendations":     true,
+		"/travelohi.v1.telemetry.TelemetryService/GetPopularFlightDestinations": true,
+		"/travelohi.v1.telemetry.TelemetryService/GetPopularHotels":             true,
 	}
 
 	return &AuthInterceptor{

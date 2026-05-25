@@ -14,7 +14,28 @@ const authInterceptor: RpcInterceptor = {
             options.meta["authorization"] = `Bearer ${token}`;
         }
 
-        return next(method, input, options);
+        const call = next(method, input, options);
+
+        call.status.then(status => {
+            if (status.code === 'UNAUTHENTICATED') {
+                handleSessionExpired();
+            }
+        }).catch(err => {
+            if (err.code === 'UNAUTHENTICATED' || err.message?.toLowerCase().includes('unauthenticated')) {
+                handleSessionExpired();
+            }
+        });
+
+        return call;
+    }
+};
+
+const handleSessionExpired = () => {
+    if (!window.location.href.includes('expired=true')) {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('user_id');
+        localStorage.removeItem('profile_picture_url');
+        window.location.href = '/?expired=true';
     }
 };
 
