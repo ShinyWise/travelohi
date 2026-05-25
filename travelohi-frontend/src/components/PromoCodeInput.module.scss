@@ -1,0 +1,121 @@
+.promoContainer {
+    margin-bottom: 25px;
+
+    h4 {
+        margin: 0 0 10px;
+        font-size: 0.95rem;
+        color: var(--text-primary);
+    }
+}
+
+.inputGroup {
+    display: flex;
+    gap: 10px;
+
+    input {
+        flex: 1;
+        padding: 10px 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        background-color: var(--bg-secondary);
+        color: var(--text-primary);
+        font-size: 0.95rem;
+        text-transform: uppercase;
+
+        &::placeholder {
+            text-transform: none;
+        }
+
+        &:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        &:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+    }
+
+    button {
+        padding: 0 20px;
+        background-color: var(--bg-secondary);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover:not(:disabled) {
+            background-color: var(--border-color);
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    }
+}
+
+.errorMessage {
+    margin: 8px 0 0;
+    color: #e74c3c;
+    font-size: 0.85rem;
+}
+
+.successMessage {
+    margin: 8px 0 0;
+    color: #27ae60;
+    font-size: 0.85rem;
+}
+
+.appliedContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(46, 204, 113, 0.05);
+    border: 1px solid rgba(46, 204, 113, 0.2);
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin-bottom: 25px;
+
+    .successBadge {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        .icon {
+            font-size: 1.2rem;
+        }
+
+        .details {
+            display: flex;
+            flex-direction: column;
+
+            strong {
+                color: #27ae60;
+                font-size: 0.9rem;
+            }
+
+            span {
+                color: var(--text-secondary);
+                font-size: 0.85rem;
+                font-weight: bold;
+            }
+        }
+    }
+
+    .removeBtn {
+        background: transparent;
+        border: none;
+        color: #e74c3c;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
