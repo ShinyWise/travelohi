@@ -10,6 +10,8 @@ import (
 	"math/big"
 	"net/http"
 	"net/url"
+	"regexp"
+	"strings"
 	"time"
 
 	"github.com/travelohi/backend/internal/auth"
@@ -48,8 +50,17 @@ func NewAuthUseCase(
 
 var _ auth.AuthUseCase = (*authUseCase)(nil)
 
+var emailRegex = regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.com$`)
+
+func validateEmailPattern(email string) error {
+	if !emailRegex.MatchString(email) {
+		return errors.New("Format email harus: nama@domain.com")
+	}
+	return nil
+}
+
 func verifyRecaptcha(token string) error {
-	secret := "YOUR_GOOGLE_RECAPTCHA_SECRET_KEY"
+	secret := "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
 
 	resp, err := http.PostForm("https://www.google.com/recaptcha/api/siteverify",
 		url.Values{"secret": {secret}, "response": {token}})
@@ -68,6 +79,9 @@ func verifyRecaptcha(token string) error {
 }
 
 func (uc *authUseCase) RegisterUser(ctx context.Context, req *auth.RegisterData) (*auth.AuthResult, error) {
+	if err := validateEmailPattern(req.Email); err != nil {
+		return nil, err
+	}
 	if err := verifyRecaptcha(req.CaptchaToken); err != nil {
 		return nil, err
 	}
@@ -85,7 +99,7 @@ func (uc *authUseCase) RegisterUser(ctx context.Context, req *auth.RegisterData)
 		return nil, auth.ErrHashing
 	}
 
-	hashedSecurityAnswer, err := uc.hasher.Hash(req.SecurityAnswer)
+	hashedSecurityAnswer, err := uc.hasher.Hash(strings.ToLower(strings.TrimSpace(req.SecurityAnswer)))
 	if err != nil {
 		return nil, auth.ErrHashing
 	}
@@ -128,6 +142,9 @@ func (uc *authUseCase) RegisterUser(ctx context.Context, req *auth.RegisterData)
 }
 
 func (uc *authUseCase) Login(ctx context.Context, email, password string, captchaToken string) (*auth.AuthResult, error) {
+	if err := validateEmailPattern(email); err != nil {
+		return nil, err
+	}
 	if err := verifyRecaptcha(captchaToken); err != nil {
 		return nil, err
 	}
@@ -139,6 +156,10 @@ func (uc *authUseCase) Login(ctx context.Context, email, password string, captch
 
 	if user.IsBanned {
 		return nil, errors.New("Your account has been suspended")
+	}
+
+	if !user.IsActive {
+		return nil, errors.New("Your account has not been activated")
 	}
 
 	// crypto check
@@ -171,6 +192,9 @@ func (uc *authUseCase) Login(ctx context.Context, email, password string, captch
 }
 
 func (uc *authUseCase) LoginWithOTP(ctx context.Context, email, otp string) (*auth.AuthResult, error) {
+	if err := validateEmailPattern(email); err != nil {
+		return nil, err
+	}
 	otpKey := "otp:" + email
 	cachedOTPBytes, err := uc.cache.Get(ctx, otpKey)
 	if err != nil {
@@ -187,7 +211,11 @@ func (uc *authUseCase) LoginWithOTP(ctx context.Context, email, otp string) (*au
 	}
 
 	if user.IsBanned {
-		return nil, errors.New("your account has been suspended")
+		return nil, errors.New("Your account has been suspended")
+	}
+
+	if !user.IsActive {
+		return nil, errors.New("Your account has not been activated")
 	}
 
 	sessionID := uc.idGen.Generate()
@@ -211,6 +239,9 @@ func (uc *authUseCase) LoginWithOTP(ctx context.Context, email, otp string) (*au
 }
 
 func (uc *authUseCase) SendOTP(ctx context.Context, email string) error {
+	if err := validateEmailPattern(email); err != nil {
+		return err
+	}
 	_, err := uc.repo.GetByEmail(ctx, email)
 	if err != nil {
 		if errors.Is(err, auth.ErrInvalidCreds) {
@@ -249,6 +280,9 @@ func (uc *authUseCase) Logout(ctx context.Context, token string) error {
 }
 
 func (uc *authUseCase) GetSecurityQuestion(ctx context.Context, email string) (int32, error) {
+	if err := validateEmailPattern(email); err != nil {
+		return 0, err
+	}
 	user, err := uc.repo.GetByEmail(ctx, email)
 	if err != nil {
 		return 0, err
@@ -259,15 +293,27 @@ func (uc *authUseCase) GetSecurityQuestion(ctx context.Context, email string) (i
 	return user.SecurityQuestionID, nil
 }
 
-func (uc *authUseCase) ResetPassword(ctx context.Context, email, answer, newPassword string) (*auth.AuthResult, error) {
+func (uc *authUseCase) ResetPassword(ctx context.Context, email string, questionID int32, answer string, newPassword string) (*auth.AuthResult, error) {
+	if err := validateEmailPattern(email); err != nil {
+		return nil, err
+	}
 	user, err := uc.repo.GetByEmail(ctx, email)
 	if err != nil {
-		return nil, auth.ErrInternal
+		return nil, errors.New("incorrect security question or answer")
+	}
+
+	if user.IsBanned {
+		return nil, errors.New("account suspended")
+	}
+
+	// verify security question
+	if user.SecurityQuestionID != questionID {
+		return nil, errors.New("incorrect security question or answer")
 	}
 
 	// verify security answer
-	if err := uc.hasher.Compare(user.SecurityAnswerHash, answer); err != nil {
-		return nil, errors.New("incorrect security answer")
+	if err := uc.hasher.Compare(user.SecurityAnswerHash, strings.ToLower(strings.TrimSpace(answer))); err != nil {
+		return nil, errors.New("incorrect security question or answer")
 	}
 
 	// validate new password
@@ -294,6 +340,9 @@ func (uc *authUseCase) ResetPassword(ctx context.Context, email, answer, newPass
 }
 
 func (uc *authUseCase) CheckEmail(ctx context.Context, email string, captchaToken string) (bool, error) {
+	if err := validateEmailPattern(email); err != nil {
+		return false, err
+	}
 	// verify recaptcha
 	if err := verifyRecaptcha(captchaToken); err != nil {
 		return false, err
