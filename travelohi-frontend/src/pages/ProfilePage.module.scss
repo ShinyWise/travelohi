@@ -1,0 +1,328 @@
+.profileContainer {
+    display: flex;
+    max-width: 1200px;
+    margin: 40px auto;
+    gap: 30px;
+    padding: 0 20px;
+    align-items: flex-start;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
+}
+
+.loadingSpinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.sidebar {
+    width: 280px;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    @media (max-width: 768px) {
+        width: 100%;
+    }
+}
+
+.userInfoMini {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+    gap: 15px;
+
+    .avatarMini {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .nameMini {
+        h4 {
+            margin: 0 0 4px 0;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        span {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+    }
+}
+
+.navMenu {
+    display: flex;
+    flex-direction: column;
+
+    .navItem {
+        padding: 15px 20px;
+        background: none;
+        border: none;
+        text-align: left;
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+        cursor: pointer;
+        border-bottom: 1px solid var(--border-color);
+        transition: background-color 0.2s, color 0.2s;
+
+        &:last-child {
+            border-bottom: none;
+            color: #e74c3c;
+        }
+
+        &:hover,
+        &.active {
+            background-color: var(--bg-secondary);
+            color: var(--accent-color);
+        }
+
+        &:last-child:hover {
+            color: #c0392b;
+        }
+    }
+}
+
+.mainContent {
+    flex: 1;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    h2 {
+        margin-top: 0;
+        margin-bottom: 25px;
+        color: var(--text-primary);
+        font-size: 1.5rem;
+        padding-bottom: 15px;
+        border-bottom: 1px solid var(--border-color);
+    }
+}
+
+.errorBox {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(231, 76, 60, 0.3);
+}
+
+.bookingsList {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.bookingCard {
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.bookingHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 5px;
+}
+
+.itemBadge {
+    background-color: #eaf2f8;
+    color: #0b5b9c;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.statusBadge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+
+    &.paid,
+    &.active {
+        background-color: #d4efdf;
+        color: #27ae60;
+    }
+
+    &.ongoing {
+        background-color: #fdebd0;
+        color: #e67e22;
+    }
+
+    &.completed {
+        background-color: #eaf2f8;
+        color: #0b5b9c;
+    }
+}
+
+.bookingTitle {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.bookingDetails {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.detailCol {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    strong {
+        color: var(--text-primary);
+    }
+}
+
+.ticketBtn {
+    align-self: flex-end;
+    background-color: #0b5b9c;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+
+    &:hover {
+        opacity: 0.9;
+    }
+}
+
+.emptyBookings {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-secondary);
+
+    p {
+        margin-bottom: 20px;
+    }
+
+    button {
+        background-color: #0b5b9c;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+}
+
+.ticketOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.ticketModal {
+    background-color: #fff;
+    width: 100%;
+    max-width: 600px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+}
+
+.ticketHeaderMain {
+    background-color: #0b5b9c;
+    color: #fff;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h3 {
+        margin: 0;
+        font-size: 1.25rem;
+    }
+
+    .closeBtn {
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 1.5rem;
+        cursor: pointer;
+        line-height: 1;
+    }
+}
+
+.ticketBody {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.ticketInfoGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.ticketQRBlock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: #f7f9fa;
+    border: 1px dashed var(--border-color);
+    border-radius: 8px;
+    gap: 8px;
+
+    .qrBox {
+        font-size: 4rem;
+    }
+
+    .refCode {
+        font-family: monospace;
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #0b5b9c;
+    }
+}

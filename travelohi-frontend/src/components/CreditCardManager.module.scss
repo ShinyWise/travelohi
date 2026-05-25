@@ -1,0 +1,115 @@
+.managerContainer {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid var(--border-color);
+}
+
+.sectionTitle {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.emptyState {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+.cardList {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.cardItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+
+    .cardInfo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        color: var(--text-primary);
+
+        .cardIcon {
+            font-size: 1.2rem;
+        }
+    }
+
+    .removeBtn {
+        background: transparent;
+        color: #e74c3c;
+        border: none;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+.addBtn {
+    padding: 10px 20px;
+    background-color: transparent;
+    color: var(--accent-color);
+    border: 1px dashed var(--accent-color);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: rgba(0, 165, 212, 0.05);
+    }
+}
+
+.addCardForm {
+    background-color: var(--bg-secondary);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+
+    .actionButtons {
+        display: flex;
+        gap: 15px;
+        margin-top: 15px;
+
+        .saveBtn {
+            padding: 10px 20px;
+            background-color: var(--accent-color);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .cancelBtn {
+            padding: 10px 20px;
+            background-color: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+
+            &:hover {
+                background-color: var(--border-color);
+            }
+        }
+    }
+}
