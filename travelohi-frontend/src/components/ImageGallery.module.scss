@@ -1,0 +1,133 @@
+.galleryContainer {
+    display: flex;
+    gap: 15px;
+    height: 400px;
+    margin-bottom: 30px;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        height: auto;
+    }
+}
+
+.mainImageWrapper {
+    flex: 2;
+    border-radius: 8px 0 0 8px;
+    overflow: hidden;
+
+    @media (max-width: 768px) {
+        border-radius: 8px;
+        height: 250px;
+    }
+
+    .mainImage {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+
+        &:hover {
+            transform: scale(1.02);
+        }
+    }
+}
+
+.thumbnailGrid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 10px;
+    position: relative;
+
+    @media (max-width: 768px) {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+}
+
+.thumbnailWrapper {
+    overflow: hidden;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+
+    @media (max-width: 768px) {
+        min-width: 120px;
+        height: 80px;
+        scroll-snap-align: start;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.3);
+        transition: background-color 0.2s;
+    }
+
+    &:hover::after,
+    &.active::after {
+        background-color: transparent;
+    }
+
+    .thumbnail {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    &:nth-child(2) {
+        border-top-right-radius: 8px;
+    }
+
+    &:nth-child(4) {
+        border-bottom-right-radius: 8px;
+    }
+}
+
+.moreOverlay {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: calc(50% - 5px);
+    height: calc(50% - 5px);
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom-right-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.1rem;
+
+    @media (max-width: 768px) {
+        position: relative;
+        width: 120px;
+        height: 80px;
+        flex-shrink: 0;
+    }
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+}
+
+.emptyGallery {
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+    border-radius: 8px;
+}
