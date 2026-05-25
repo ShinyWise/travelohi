@@ -1,0 +1,66 @@
+.homeContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.whyUsSection {
+    text-align: center;
+    margin-bottom: 60px;
+    padding: 40px 20px;
+    background-color: var(--bg-secondary);
+    border-radius: 12px;
+
+    h2 {
+        color: var(--text-primary);
+        margin-bottom: 30px;
+        font-size: 1.8rem;
+    }
+}
+
+.featuresGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.featureCard {
+    padding: 20px;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    transition: transform 0.3s;
+
+    &:hover {
+        transform: translateY(-5px);
+    }
+
+    .featureIcon {
+        font-size: 2.5rem;
+        display: block;
+        margin-bottom: 15px;
+    }
+
+    h3 {
+        color: var(--accent-color);
+        margin-bottom: 10px;
+    }
+
+    p {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+}
+
+.loadingState {
+    text-align: center;
+    padding: 50px 0;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 1.2rem;
+}

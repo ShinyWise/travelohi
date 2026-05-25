@@ -1,0 +1,78 @@
+.sliderContainer {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto 40px;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.sliderTrack {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    width: 100%;
+}
+
+.slide {
+    min-width: 100%;
+    box-sizing: border-box;
+}
+
+.imagePlaceholder {
+    width: 100%;
+    height: 350px;
+    background-color: var(--accent-color);
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+
+    @media (max-width: 768px) {
+        height: 250px;
+    }
+}
+
+.promoContent {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    width: 100%;
+    padding: 40px 20px 20px;
+    color: #ffffff;
+
+    h3 {
+        margin: 0 0 10px;
+        font-size: 1.8rem;
+    }
+
+    .promoCode {
+        font-size: 1rem;
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 5px 10px;
+        border-radius: 4px;
+    }
+}
+
+.dotsContainer {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    background-color: transparent;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    padding: 0;
+
+    &.active {
+        background-color: #ffffff;
+    }
+}
