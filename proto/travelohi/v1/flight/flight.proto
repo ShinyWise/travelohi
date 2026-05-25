@@ -74,12 +74,15 @@ message SearchFlightsRequest {
   string destination_airport = 2;
   string departure_date = 3; // YYYY-MM-DD
   
-  bool transit_filter = 4;
+  string transit_filter = 4;
   
   string sort_by = 5;
   string sort_order = 6;
   int32 limit = 7;
   int32 offset = 8;
+
+  int64 min_price = 9;
+  int64 max_price = 10;
 }
 
 message SearchFlightsResponse {

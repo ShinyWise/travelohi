@@ -36,6 +36,7 @@ type Hotel struct {
 	RatingAverage     float32                `protobuf:"fixed32,11,opt,name=rating_average,json=ratingAverage,proto3" json:"rating_average,omitempty"`
 	TotalReviews      int32                  `protobuf:"varint,12,opt,name=total_reviews,json=totalReviews,proto3" json:"total_reviews,omitempty"`
 	StartingPrice     int64                  `protobuf:"varint,13,opt,name=starting_price,json=startingPrice,proto3" json:"starting_price,omitempty"`
+	Availability      int32                  `protobuf:"varint,14,opt,name=availability,proto3" json:"availability,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -161,6 +162,13 @@ func (x *Hotel) GetStartingPrice() int64 {
 	return 0
 }
 
+func (x *Hotel) GetAvailability() int32 {
+	if x != nil {
+		return x.Availability
+	}
+	return 0
+}
+
 type HotelRoom struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	Id             string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -170,6 +178,7 @@ type HotelRoom struct {
 	Capacity       int32                  `protobuf:"varint,5,opt,name=capacity,proto3" json:"capacity,omitempty"`
 	Facilities     []string               `protobuf:"bytes,6,rep,name=facilities,proto3" json:"facilities,omitempty"` // e.g., "Bathtub", "Non-smoking"
 	AvailableCount int32                  `protobuf:"varint,7,opt,name=available_count,json=availableCount,proto3" json:"available_count,omitempty"`
+	ImageUrl       string                 `protobuf:"bytes,8,opt,name=image_url,json=imageUrl,proto3" json:"image_url,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -253,17 +262,28 @@ func (x *HotelRoom) GetAvailableCount() int32 {
 	return 0
 }
 
+func (x *HotelRoom) GetImageUrl() string {
+	if x != nil {
+		return x.ImageUrl
+	}
+	return ""
+}
+
 type HotelReview struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	HotelId       string                 `protobuf:"bytes,2,opt,name=hotel_id,json=hotelId,proto3" json:"hotel_id,omitempty"`
-	UserId        string                 `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	UserName      string                 `protobuf:"bytes,4,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`
-	RatingAverage float32                `protobuf:"fixed32,5,opt,name=rating_average,json=ratingAverage,proto3" json:"rating_average,omitempty"`
-	Comment       string                 `protobuf:"bytes,6,opt,name=comment,proto3" json:"comment,omitempty"`
-	CreatedAt     string                 `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	Id                string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	HotelId           string                 `protobuf:"bytes,2,opt,name=hotel_id,json=hotelId,proto3" json:"hotel_id,omitempty"`
+	UserId            string                 `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	UserName          string                 `protobuf:"bytes,4,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`
+	RatingCleanliness float32                `protobuf:"fixed32,5,opt,name=rating_cleanliness,json=ratingCleanliness,proto3" json:"rating_cleanliness,omitempty"`
+	RatingComfort     float32                `protobuf:"fixed32,6,opt,name=rating_comfort,json=ratingComfort,proto3" json:"rating_comfort,omitempty"`
+	RatingLocation    float32                `protobuf:"fixed32,7,opt,name=rating_location,json=ratingLocation,proto3" json:"rating_location,omitempty"`
+	RatingService     float32                `protobuf:"fixed32,8,opt,name=rating_service,json=ratingService,proto3" json:"rating_service,omitempty"`
+	RatingAverage     float32                `protobuf:"fixed32,9,opt,name=rating_average,json=ratingAverage,proto3" json:"rating_average,omitempty"`
+	Comment           string                 `protobuf:"bytes,10,opt,name=comment,proto3" json:"comment,omitempty"`
+	CreatedAt         string                 `protobuf:"bytes,11,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *HotelReview) Reset() {
@@ -322,6 +342,34 @@ func (x *HotelReview) GetUserName() string {
 		return x.UserName
 	}
 	return ""
+}
+
+func (x *HotelReview) GetRatingCleanliness() float32 {
+	if x != nil {
+		return x.RatingCleanliness
+	}
+	return 0
+}
+
+func (x *HotelReview) GetRatingComfort() float32 {
+	if x != nil {
+		return x.RatingComfort
+	}
+	return 0
+}
+
+func (x *HotelReview) GetRatingLocation() float32 {
+	if x != nil {
+		return x.RatingLocation
+	}
+	return 0
+}
+
+func (x *HotelReview) GetRatingService() float32 {
+	if x != nil {
+		return x.RatingService
+	}
+	return 0
 }
 
 func (x *HotelReview) GetRatingAverage() float32 {
@@ -791,7 +839,7 @@ var File_proto_travelohi_v1_hotel_hotel_proto protoreflect.FileDescriptor
 
 const file_proto_travelohi_v1_hotel_hotel_proto_rawDesc = "" +
 	"\n" +
-	"$proto/travelohi/v1/hotel/hotel.proto\x12\x12travelohi.v1.hotel\"\xc3\x03\n" +
+	"$proto/travelohi/v1/hotel/hotel.proto\x12\x12travelohi.v1.hotel\"\xe7\x03\n" +
 	"\x05Hotel\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
@@ -808,7 +856,8 @@ const file_proto_travelohi_v1_hotel_hotel_proto_rawDesc = "" +
 	" \x01(\x02R\rratingService\x12%\n" +
 	"\x0erating_average\x18\v \x01(\x02R\rratingAverage\x12#\n" +
 	"\rtotal_reviews\x18\f \x01(\x05R\ftotalReviews\x12%\n" +
-	"\x0estarting_price\x18\r \x01(\x03R\rstartingPrice\"\xd7\x01\n" +
+	"\x0estarting_price\x18\r \x01(\x03R\rstartingPrice\x12\"\n" +
+	"\favailability\x18\x0e \x01(\x05R\favailability\"\xf4\x01\n" +
 	"\tHotelRoom\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x19\n" +
 	"\bhotel_id\x18\x02 \x01(\tR\ahotelId\x12\x12\n" +
@@ -818,16 +867,22 @@ const file_proto_travelohi_v1_hotel_hotel_proto_rawDesc = "" +
 	"\n" +
 	"facilities\x18\x06 \x03(\tR\n" +
 	"facilities\x12'\n" +
-	"\x0favailable_count\x18\a \x01(\x05R\x0eavailableCount\"\xce\x01\n" +
+	"\x0favailable_count\x18\a \x01(\x05R\x0eavailableCount\x12\x1b\n" +
+	"\timage_url\x18\b \x01(\tR\bimageUrl\"\xf4\x02\n" +
 	"\vHotelReview\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x19\n" +
 	"\bhotel_id\x18\x02 \x01(\tR\ahotelId\x12\x17\n" +
 	"\auser_id\x18\x03 \x01(\tR\x06userId\x12\x1b\n" +
-	"\tuser_name\x18\x04 \x01(\tR\buserName\x12%\n" +
-	"\x0erating_average\x18\x05 \x01(\x02R\rratingAverage\x12\x18\n" +
-	"\acomment\x18\x06 \x01(\tR\acomment\x12\x1d\n" +
+	"\tuser_name\x18\x04 \x01(\tR\buserName\x12-\n" +
+	"\x12rating_cleanliness\x18\x05 \x01(\x02R\x11ratingCleanliness\x12%\n" +
+	"\x0erating_comfort\x18\x06 \x01(\x02R\rratingComfort\x12'\n" +
+	"\x0frating_location\x18\a \x01(\x02R\x0eratingLocation\x12%\n" +
+	"\x0erating_service\x18\b \x01(\x02R\rratingService\x12%\n" +
+	"\x0erating_average\x18\t \x01(\x02R\rratingAverage\x12\x18\n" +
+	"\acomment\x18\n" +
+	" \x01(\tR\acomment\x12\x1d\n" +
 	"\n" +
-	"created_at\x18\a \x01(\tR\tcreatedAt\"\xd4\x02\n" +
+	"created_at\x18\v \x01(\tR\tcreatedAt\"\xd4\x02\n" +
 	"\x13SearchHotelsRequest\x12\x14\n" +
 	"\x05query\x18\x01 \x01(\tR\x05query\x12\"\n" +
 	"\rcheck_in_date\x18\x02 \x01(\tR\vcheckInDate\x12$\n" +

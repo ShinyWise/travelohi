@@ -26,6 +26,7 @@ message Hotel {
   
   int32 total_reviews = 12;
   int64 starting_price = 13;
+  int32 availability = 14;
 }
 
 message HotelRoom {
@@ -36,6 +37,7 @@ message HotelRoom {
   int32 capacity = 5;
   repeated string facilities = 6; // e.g., "Bathtub", "Non-smoking"
   int32 available_count = 7;
+  string image_url = 8;
 }
 
 message HotelReview {
@@ -43,9 +45,13 @@ message HotelReview {
   string hotel_id = 2;
   string user_id = 3;
   string user_name = 4;
-  float rating_average = 5;
-  string comment = 6;
-  string created_at = 7;
+  float rating_cleanliness = 5;
+  float rating_comfort = 6;
+  float rating_location = 7;
+  float rating_service = 8;
+  float rating_average = 9;
+  string comment = 10;
+  string created_at = 11;
 }
 
 message SearchHotelsRequest {

@@ -11,11 +11,7 @@ import { UnknownFieldHandler } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
-// ==========================================// Requests & Responses// ==========================================
-
 /**
- * The core bidirectional envelope
- *
  * @generated from protobuf message travelohi.v1.communication.ChatEvent
  */
 export interface ChatEvent {
@@ -26,9 +22,8 @@ export interface ChatEvent {
     /**
      * @generated from protobuf field: string sender_id = 2
      */
-    senderId: string; // Extracted via JWT securely in the interceptor    /**
-     * Polymorphic payload to handle different real-time events
-     *
+    senderId: string;
+    /**
      * @generated from protobuf oneof: event_payload
      */
     eventPayload: {
@@ -90,10 +85,8 @@ export interface ReadReceiptPayload {
     /**
      * @generated from protobuf field: string new_status = 2
      */
-    newStatus: string; // e.g., "seen"}
+    newStatus: string; // seen}
 /**
- * History & Pagination
- *
  * @generated from protobuf message travelohi.v1.communication.GetChatHistoryRequest
  */
 export interface GetChatHistoryRequest {
@@ -104,7 +97,7 @@ export interface GetChatHistoryRequest {
     /**
      * @generated from protobuf field: int32 limit = 2
      */
-    limit: number; // For infinite scrolling    /**
+    limit: number; // buat infinite scrolling    /**
      * @generated from protobuf field: int32 offset = 3
      */
     offset: number;
@@ -127,7 +120,8 @@ export interface GetActiveConversationsRequest {
     /**
      * @generated from protobuf field: string search_query = 1
      */
-    searchQuery: string; // Supports debounced search by username/email    /**
+    searchQuery: string;
+    /**
      * @generated from protobuf field: int32 limit = 2
      */
     limit: number;

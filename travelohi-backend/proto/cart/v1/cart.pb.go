@@ -21,23 +21,19 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// ==========================================
-// Entities
-// ==========================================
 type CartItem struct {
-	state       protoimpl.MessageState `protogen:"open.v1"`
-	Id          string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	ItemType    string                 `protobuf:"bytes,2,opt,name=item_type,json=itemType,proto3" json:"item_type,omitempty"` // "hotel_room" or "flight_seat"
-	ReferenceId string                 `protobuf:"bytes,3,opt,name=reference_id,json=referenceId,proto3" json:"reference_id,omitempty"`
-	// Resolved Display Data (Fetched by backend during ViewCart)
-	DisplayName     string `protobuf:"bytes,4,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"` // e.g., "Deluxe King - Grand Asrilia" or "Seat 12A - Batik Air"
-	DisplayImageUrl string `protobuf:"bytes,5,opt,name=display_image_url,json=displayImageUrl,proto3" json:"display_image_url,omitempty"`
-	CheckInDate     string `protobuf:"bytes,6,opt,name=check_in_date,json=checkInDate,proto3" json:"check_in_date,omitempty"`    // Applicable for hotels
-	CheckOutDate    string `protobuf:"bytes,7,opt,name=check_out_date,json=checkOutDate,proto3" json:"check_out_date,omitempty"` // Applicable for hotels
-	ItemPrice       int64  `protobuf:"varint,8,opt,name=item_price,json=itemPrice,proto3" json:"item_price,omitempty"`
-	Quantity        int32  `protobuf:"varint,9,opt,name=quantity,proto3" json:"quantity,omitempty"`
-	Status          string `protobuf:"bytes,10,opt,name=status,proto3" json:"status,omitempty"` // "cart", "ongoing", "expired", "paid"
-	LuggageWeight   int32  `protobuf:"varint,11,opt,name=luggage_weight,json=luggageWeight,proto3" json:"luggage_weight,omitempty"`
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Id              string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ItemType        string                 `protobuf:"bytes,2,opt,name=item_type,json=itemType,proto3" json:"item_type,omitempty"`
+	ReferenceId     string                 `protobuf:"bytes,3,opt,name=reference_id,json=referenceId,proto3" json:"reference_id,omitempty"`
+	DisplayName     string                 `protobuf:"bytes,4,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
+	DisplayImageUrl string                 `protobuf:"bytes,5,opt,name=display_image_url,json=displayImageUrl,proto3" json:"display_image_url,omitempty"`
+	CheckInDate     string                 `protobuf:"bytes,6,opt,name=check_in_date,json=checkInDate,proto3" json:"check_in_date,omitempty"`
+	CheckOutDate    string                 `protobuf:"bytes,7,opt,name=check_out_date,json=checkOutDate,proto3" json:"check_out_date,omitempty"`
+	ItemPrice       int64                  `protobuf:"varint,8,opt,name=item_price,json=itemPrice,proto3" json:"item_price,omitempty"`
+	Quantity        int32                  `protobuf:"varint,9,opt,name=quantity,proto3" json:"quantity,omitempty"`
+	Status          string                 `protobuf:"bytes,10,opt,name=status,proto3" json:"status,omitempty"`
+	LuggageWeight   int32                  `protobuf:"varint,11,opt,name=luggage_weight,json=luggageWeight,proto3" json:"luggage_weight,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -149,17 +145,14 @@ func (x *CartItem) GetLuggageWeight() int32 {
 	return 0
 }
 
-// ==========================================
-// Requests & Responses
-// ==========================================
 type AddToCartRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	ItemType      string                 `protobuf:"bytes,1,opt,name=item_type,json=itemType,proto3" json:"item_type,omitempty"` // "hotel_room" or "flight_seat"
+	ItemType      string                 `protobuf:"bytes,1,opt,name=item_type,json=itemType,proto3" json:"item_type,omitempty"` // hotel or flight
 	ReferenceId   string                 `protobuf:"bytes,2,opt,name=reference_id,json=referenceId,proto3" json:"reference_id,omitempty"`
-	CheckInDate   string                 `protobuf:"bytes,3,opt,name=check_in_date,json=checkInDate,proto3" json:"check_in_date,omitempty"`    // Required if hotel
-	CheckOutDate  string                 `protobuf:"bytes,4,opt,name=check_out_date,json=checkOutDate,proto3" json:"check_out_date,omitempty"` // Required if hotel
+	CheckInDate   string                 `protobuf:"bytes,3,opt,name=check_in_date,json=checkInDate,proto3" json:"check_in_date,omitempty"`    // kalo pilih hotel
+	CheckOutDate  string                 `protobuf:"bytes,4,opt,name=check_out_date,json=checkOutDate,proto3" json:"check_out_date,omitempty"` // kalo pilih hotel
 	Quantity      int32                  `protobuf:"varint,5,opt,name=quantity,proto3" json:"quantity,omitempty"`
-	LuggageWeight int32                  `protobuf:"varint,6,opt,name=luggage_weight,json=luggageWeight,proto3" json:"luggage_weight,omitempty"` // Optional: 0, 15, 20, 25 (kg)
+	LuggageWeight int32                  `protobuf:"varint,6,opt,name=luggage_weight,json=luggageWeight,proto3" json:"luggage_weight,omitempty"` // kalo pilih flight
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -498,9 +491,9 @@ func (x *ApplyPromoRequest) GetPromoCode() string {
 
 type CheckoutRequest struct {
 	state            protoimpl.MessageState `protogen:"open.v1"`
-	PaymentMethod    string                 `protobuf:"bytes,1,opt,name=payment_method,json=paymentMethod,proto3" json:"payment_method,omitempty"`            // "hi_wallet" or "credit_card"
-	CreditCardId     string                 `protobuf:"bytes,2,opt,name=credit_card_id,json=creditCardId,proto3" json:"credit_card_id,omitempty"`             // Required if payment_method is "credit_card"
-	AppliedPromoCode string                 `protobuf:"bytes,3,opt,name=applied_promo_code,json=appliedPromoCode,proto3" json:"applied_promo_code,omitempty"` // The promo code applied
+	PaymentMethod    string                 `protobuf:"bytes,1,opt,name=payment_method,json=paymentMethod,proto3" json:"payment_method,omitempty"` // hi_wallet or credit_card
+	CreditCardId     string                 `protobuf:"bytes,2,opt,name=credit_card_id,json=creditCardId,proto3" json:"credit_card_id,omitempty"`
+	AppliedPromoCode string                 `protobuf:"bytes,3,opt,name=applied_promo_code,json=appliedPromoCode,proto3" json:"applied_promo_code,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }

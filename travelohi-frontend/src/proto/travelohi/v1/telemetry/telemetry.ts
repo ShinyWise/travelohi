@@ -11,8 +11,6 @@ import { UnknownFieldHandler } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
-// ==========================================// Requests & Responses// ==========================================
-
 /**
  * @generated from protobuf message travelohi.v1.telemetry.LogSearchQueryRequest
  */
@@ -20,7 +18,8 @@ export interface LogSearchQueryRequest {
     /**
      * @generated from protobuf field: string user_id = 1
      */
-    userId: string; // Passed via JWT context    /**
+    userId: string;
+    /**
      * @generated from protobuf field: string query = 2
      */
     query: string;
@@ -41,7 +40,7 @@ export interface GetRecentSearchesResponse {
     /**
      * @generated from protobuf field: repeated string queries = 1
      */
-    queries: string[]; // Limited to 3}
+    queries: string[]; // limit 3}
 /**
  * @generated from protobuf message travelohi.v1.telemetry.GetGlobalRecommendationsRequest
  */
@@ -54,7 +53,7 @@ export interface GetGlobalRecommendationsResponse {
     /**
      * @generated from protobuf field: repeated string recommended_queries = 1
      */
-    recommendedQueries: string[]; // Limited to 5}
+    recommendedQueries: string[]; // limit 5}
 /**
  * @generated from protobuf message travelohi.v1.telemetry.GetPopularFlightsRequest
  */
@@ -67,10 +66,8 @@ export interface GetPopularFlightsResponse {
     /**
      * @generated from protobuf field: repeated travelohi.v1.telemetry.GetPopularFlightsResponse.PopularDestination destinations = 1
      */
-    destinations: GetPopularFlightsResponse_PopularDestination[]; // Limited to 5}
+    destinations: GetPopularFlightsResponse_PopularDestination[]; // limit 5}
 /**
- * Utilizing a simplified DTO for the homepage slider
- *
  * @generated from protobuf message travelohi.v1.telemetry.GetPopularFlightsResponse.PopularDestination
  */
 export interface GetPopularFlightsResponse_PopularDestination {
@@ -99,7 +96,7 @@ export interface GetPopularHotelsResponse {
     /**
      * @generated from protobuf field: repeated travelohi.v1.telemetry.GetPopularHotelsResponse.PopularHotel hotels = 1
      */
-    hotels: GetPopularHotelsResponse_PopularHotel[]; // Limited to 5}
+    hotels: GetPopularHotelsResponse_PopularHotel[]; // limit 5}
 /**
  * @generated from protobuf message travelohi.v1.telemetry.GetPopularHotelsResponse.PopularHotel
  */

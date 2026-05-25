@@ -30,7 +30,6 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FlightServiceClient interface {
-	// Catalog & Search
 	SearchFlights(ctx context.Context, in *SearchFlightsRequest, opts ...grpc.CallOption) (*SearchFlightsResponse, error)
 	GetFlightDetails(ctx context.Context, in *GetFlightDetailsRequest, opts ...grpc.CallOption) (*GetFlightDetailsResponse, error)
 	InternalLockSeat(ctx context.Context, in *LockSeatRequest, opts ...grpc.CallOption) (*LockSeatResponse, error)
@@ -100,7 +99,6 @@ func (c *flightServiceClient) GetFlightSeats(ctx context.Context, in *GetFlightS
 // All implementations must embed UnimplementedFlightServiceServer
 // for forward compatibility.
 type FlightServiceServer interface {
-	// Catalog & Search
 	SearchFlights(context.Context, *SearchFlightsRequest) (*SearchFlightsResponse, error)
 	GetFlightDetails(context.Context, *GetFlightDetailsRequest) (*GetFlightDetailsResponse, error)
 	InternalLockSeat(context.Context, *LockSeatRequest) (*LockSeatResponse, error)

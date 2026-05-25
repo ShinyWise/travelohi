@@ -14,8 +14,6 @@ import type { RpcOptions } from "@protobuf-ts/runtime-rpc";
  */
 export interface IGameServiceClient {
     /**
-     * The primary bidirectional pipe for queueing and gameplay
-     *
      * @generated from protobuf rpc: StreamGameLoop
      */
     streamGameLoop(options?: RpcOptions): DuplexStreamingCall<GameClientEvent, GameServerEvent>;
@@ -30,8 +28,6 @@ export class GameServiceClient implements IGameServiceClient, ServiceInfo {
     constructor(private readonly _transport: RpcTransport) {
     }
     /**
-     * The primary bidirectional pipe for queueing and gameplay
-     *
      * @generated from protobuf rpc: StreamGameLoop
      */
     streamGameLoop(options?: RpcOptions): DuplexStreamingCall<GameClientEvent, GameServerEvent> {

@@ -23,7 +23,7 @@ const (
 
 type LogSearchQueryRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"` // Passed via JWT context
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	Query         string                 `protobuf:"bytes,2,opt,name=query,proto3" json:"query,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -119,7 +119,7 @@ func (x *GetRecentSearchesRequest) GetUserId() string {
 
 type GetRecentSearchesResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Queries       []string               `protobuf:"bytes,1,rep,name=queries,proto3" json:"queries,omitempty"` // Limited to 3
+	Queries       []string               `protobuf:"bytes,1,rep,name=queries,proto3" json:"queries,omitempty"` // limit 3
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -199,7 +199,7 @@ func (*GetGlobalRecommendationsRequest) Descriptor() ([]byte, []int) {
 
 type GetGlobalRecommendationsResponse struct {
 	state              protoimpl.MessageState `protogen:"open.v1"`
-	RecommendedQueries []string               `protobuf:"bytes,1,rep,name=recommended_queries,json=recommendedQueries,proto3" json:"recommended_queries,omitempty"` // Limited to 5
+	RecommendedQueries []string               `protobuf:"bytes,1,rep,name=recommended_queries,json=recommendedQueries,proto3" json:"recommended_queries,omitempty"` // limit 5
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -279,7 +279,7 @@ func (*GetPopularFlightsRequest) Descriptor() ([]byte, []int) {
 
 type GetPopularFlightsResponse struct {
 	state         protoimpl.MessageState                          `protogen:"open.v1"`
-	Destinations  []*GetPopularFlightsResponse_PopularDestination `protobuf:"bytes,1,rep,name=destinations,proto3" json:"destinations,omitempty"` // Limited to 5
+	Destinations  []*GetPopularFlightsResponse_PopularDestination `protobuf:"bytes,1,rep,name=destinations,proto3" json:"destinations,omitempty"` // limit 5
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -359,7 +359,7 @@ func (*GetPopularHotelsRequest) Descriptor() ([]byte, []int) {
 
 type GetPopularHotelsResponse struct {
 	state         protoimpl.MessageState                   `protogen:"open.v1"`
-	Hotels        []*GetPopularHotelsResponse_PopularHotel `protobuf:"bytes,1,rep,name=hotels,proto3" json:"hotels,omitempty"` // Limited to 5
+	Hotels        []*GetPopularHotelsResponse_PopularHotel `protobuf:"bytes,1,rep,name=hotels,proto3" json:"hotels,omitempty"` // limit 5
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -445,7 +445,6 @@ func (x *TelemetryResponse) GetSuccess() bool {
 	return false
 }
 
-// Utilizing a simplified DTO for the homepage slider
 type GetPopularFlightsResponse_PopularDestination struct {
 	state              protoimpl.MessageState `protogen:"open.v1"`
 	DestinationAirport string                 `protobuf:"bytes,1,opt,name=destination_airport,json=destinationAirport,proto3" json:"destination_airport,omitempty"`

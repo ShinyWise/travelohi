@@ -17,8 +17,6 @@ import type { TelemetryResponse } from "./telemetry";
 import type { LogSearchQueryRequest } from "./telemetry";
 import type { UnaryCall } from "@protobuf-ts/runtime-rpc";
 import type { RpcOptions } from "@protobuf-ts/runtime-rpc";
-// Import hotel and flight definitions if cross-referencing entities, // or return standard DTOs for the frontend.
-
 /**
  * @generated from protobuf service travelohi.v1.telemetry.TelemetryService
  */
@@ -48,8 +46,6 @@ export interface ITelemetryServiceClient {
      */
     getPopularHotels(input: GetPopularHotelsRequest, options?: RpcOptions): UnaryCall<GetPopularHotelsRequest, GetPopularHotelsResponse>;
 }
-// Import hotel and flight definitions if cross-referencing entities, // or return standard DTOs for the frontend.
-
 /**
  * @generated from protobuf service travelohi.v1.telemetry.TelemetryService
  */

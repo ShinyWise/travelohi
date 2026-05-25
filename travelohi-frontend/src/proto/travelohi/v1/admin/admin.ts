@@ -11,8 +11,6 @@ import { UnknownFieldHandler } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
-// ==========================================// Requests & Responses// ==========================================
-
 /**
  * @generated from protobuf message travelohi.v1.admin.SendBroadcastRequest
  */
@@ -156,7 +154,8 @@ export interface BanUserRequest {
     /**
      * @generated from protobuf field: bool ban_status = 2
      */
-    banStatus: boolean; // true to ban, false to unban}
+    banStatus: boolean;
+}
 /**
  * @generated from protobuf message travelohi.v1.admin.AdminResponse
  */

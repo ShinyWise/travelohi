@@ -182,6 +182,10 @@ export interface ResetPasswordRequest {
      * @generated from protobuf field: string new_password = 3
      */
     newPassword: string;
+    /**
+     * @generated from protobuf field: int32 security_question_id = 4
+     */
+    securityQuestionId: number;
 }
 /**
  * @generated from protobuf message travelohi.v1.auth.CheckEmailRequest
@@ -194,7 +198,8 @@ export interface CheckEmailRequest {
     /**
      * @generated from protobuf field: string captcha_token = 2
      */
-    captchaToken: string; // SECURITY: Required to prevent bot enumeration!}
+    captchaToken: string;
+}
 /**
  * @generated from protobuf message travelohi.v1.auth.CheckEmailResponse
  */
@@ -808,7 +813,8 @@ class ResetPasswordRequest$Type extends MessageType<ResetPasswordRequest> {
         super("travelohi.v1.auth.ResetPasswordRequest", [
             { no: 1, name: "email", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "security_answer", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "new_password", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 3, name: "new_password", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "security_question_id", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
         ]);
     }
     create(value?: PartialMessage<ResetPasswordRequest>): ResetPasswordRequest {
@@ -816,6 +822,7 @@ class ResetPasswordRequest$Type extends MessageType<ResetPasswordRequest> {
         message.email = "";
         message.securityAnswer = "";
         message.newPassword = "";
+        message.securityQuestionId = 0;
         if (value !== undefined)
             reflectionMergePartial<ResetPasswordRequest>(this, message, value);
         return message;
@@ -833,6 +840,9 @@ class ResetPasswordRequest$Type extends MessageType<ResetPasswordRequest> {
                     break;
                 case /* string new_password */ 3:
                     message.newPassword = reader.string();
+                    break;
+                case /* int32 security_question_id */ 4:
+                    message.securityQuestionId = reader.int32();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -855,6 +865,9 @@ class ResetPasswordRequest$Type extends MessageType<ResetPasswordRequest> {
         /* string new_password = 3; */
         if (message.newPassword !== "")
             writer.tag(3, WireType.LengthDelimited).string(message.newPassword);
+        /* int32 security_question_id = 4; */
+        if (message.securityQuestionId !== 0)
+            writer.tag(4, WireType.Varint).int32(message.securityQuestionId);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

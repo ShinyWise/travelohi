@@ -496,7 +496,7 @@ func (x *GetAllUsersResponse) GetTotalResults() int32 {
 type BanUserRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	BanStatus     bool                   `protobuf:"varint,2,opt,name=ban_status,json=banStatus,proto3" json:"ban_status,omitempty"` // true to ban, false to unban
+	BanStatus     bool                   `protobuf:"varint,2,opt,name=ban_status,json=banStatus,proto3" json:"ban_status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }

@@ -12,9 +12,7 @@ import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 /**
- * ==========================================
- * Client to Server Events
- * ==========================================
+ * client to server event
  *
  * @generated from protobuf message travelohi.v1.game.GameClientEvent
  */
@@ -59,9 +57,7 @@ export interface PlayerActionRequest {
      */
     actionType: string; // "move_left", "move_right", "low_kick", "front_kick"}
 /**
- * ==========================================
- * Server to Client Events
- * ==========================================
+ * server to client event
  *
  * @generated from protobuf message travelohi.v1.game.GameServerEvent
  */
@@ -129,7 +125,7 @@ export interface GameStateUpdate {
     /**
      * @generated from protobuf field: int32 time_remaining = 3
      */
-    timeRemaining: number; // Additional positioning data can be added here}
+    timeRemaining: number; // add additional positioning data if needed}
 /**
  * @generated from protobuf message travelohi.v1.game.MatchEndEvent
  */
@@ -137,10 +133,12 @@ export interface MatchEndEvent {
     /**
      * @generated from protobuf field: string winner_id = 1
      */
-    winnerId: string; // Empty string if draw    /**
+    winnerId: string;
+    /**
      * @generated from protobuf field: string reason = 2
      */
-    reason: string; // "knockout", "time_up", "opponent_disconnected"}
+    reason: string;
+}
 /**
  * @generated from protobuf message travelohi.v1.game.ErrorEvent
  */
@@ -148,7 +146,8 @@ export interface ErrorEvent {
     /**
      * @generated from protobuf field: string message = 1
      */
-    message: string; // e.g., "Rate limit exceeded"}
+    message: string;
+}
 // @generated message type with reflection information, may provide speed optimized methods
 class GameClientEvent$Type extends MessageType<GameClientEvent> {
     constructor() {

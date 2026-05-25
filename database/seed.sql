@@ -1,42 +1,22 @@
-TRUNCATE TABLE hotel_rooms, hotels, flights, flight_seats, account_models CASCADE;
+TRUNCATE TABLE hotel_rooms, hotels, hotel_reviews, flights, flight_seats, account_models, auths, airlines, cart_items, support_conversations, support_messages, search_histories, global_search_metrics, booking_models, promos CASCADE;
 
 -- seed test user for checkout testing
 INSERT INTO account_models (id, email, first_name, last_name, is_active, hi_wallet_balance) VALUES
 ('test_user_id', 'tester@travelohi.com', 'Test', 'User', true, 50000000);
 
--- seed hotel
-INSERT INTO hotels (id, name, address, starting_price) VALUES
-('h_1', 'Grand Asrilia Hotel', 'Bandung', 500000),
-('h_2', 'The Ritz-Carlton', 'Jakarta', 2500000);
-
--- seed rooms
-INSERT INTO hotel_rooms (id, hotel_id, name, price_per_night, capacity) VALUES
-('r_1', 'h_1', 'Deluxe King', 500000, 5),
-('r_2', 'h_1', 'Superior Twin', 450000, 10),
-('r_3', 'h_2', 'Presidential Suite', 2500000, 2);
-
--- seed flight
-INSERT INTO flights (id, airline_id, flight_code, origin_airport, destination_airport, starting_price)
-VALUES ('flight_jkt_bali', 'airline_garuda', 'GA-123', 'CGK', 'DPS', 1000000);
-
--- seed seat
-INSERT INTO flight_seats (id, flight_id, seat_number, seat_class, price, is_booked)
-VALUES ('seat_12A', 'flight_jkt_bali', '12A', 'Economy', 1500000, false);
-
-
 -- seed admin
 INSERT INTO auths (id, email, password_hash, is_banned) 
-VALUES ('admin-001', 'master@travelohi.com', '$2a$10$eRPFY0cTxfMvdxOId3M95OVHJ2Z54ZKlo0zVbIHfyFfX6EtagJf4u', FALSE);
+VALUES ('admin-001', 'master@travelohi.com', '$2a$10$5rl1PMcFV7wiEhST1nmyuuDhar4.XGis2Ksmx4zdKuqgR/8QpdRM2', FALSE); -- password: admin123
 
 INSERT INTO account_models (id, email, first_name, last_name, is_admin, is_banned, newsletter_subscribed) 
 VALUES ('admin-001', 'master@travelohi.com', 'Master', 'Control', TRUE, FALSE, FALSE);
 
 -- seed user
 INSERT INTO auths (id, email, password_hash, is_banned) 
-VALUES ('user-002', 'testuser@example.com', '$2a$10$eRPFY0cTxfMvdxOId3M95OVHJ2Z54ZKlo0zVbIHfyFfX6EtagJf4u', FALSE);
+VALUES ('user-002', 'testuser@example.com', '$2a$10$KYWpmQ8yzsDtyO076z4zHO54iqwu/s2yWITfOS6X9K0SFrVfcBLsK', FALSE); -- password: user123
 
-INSERT INTO account_models (id, email, first_name, last_name, is_admin, is_banned, newsletter_subscribed) 
-VALUES ('user-002', 'testuser@example.com', 'John', 'Doe', FALSE, FALSE, TRUE);
+INSERT INTO account_models (id, email, first_name, last_name, is_admin, is_banned, newsletter_subscribed, is_active, hi_wallet_balance) 
+VALUES ('user-002', 'testuser@example.com', 'John', 'Doe', FALSE, FALSE, TRUE, TRUE, 10000000);
 
 
 -- seed airlines & flights
@@ -53,8 +33,16 @@ INSERT INTO flights (id, airline_id, flight_code, origin_airport, destination_ai
 INSERT INTO flight_seats (id, flight_id, seat_number, seat_class, is_booked, price) VALUES
 ('seat-dps-12a', 'fl-001', '12A', 'Economy', TRUE, 1200000),
 ('seat-dps-12b', 'fl-001', '12B', 'Economy', TRUE, 1200000),
+('seat-dps-12c', 'fl-001', '12C', 'Economy', FALSE, 1200000),
+('seat-dps-12d', 'fl-001', '12D', 'Economy', FALSE, 1200000),
+('seat-dps-01a', 'fl-001', '01A', 'Business', FALSE, 3000000),
+('seat-dps-01b', 'fl-001', '01B', 'Business', FALSE, 3000000),
 ('seat-sin-05a', 'fl-002', '05A', 'Business', TRUE, 2500000),
-('seat-hnd-20f', 'fl-003', '20F', 'Economy', TRUE, 8000000);
+('seat-sin-05b', 'fl-002', '05B', 'Business', FALSE, 2500000),
+('seat-sin-10a', 'fl-002', '10A', 'Economy', FALSE, 1500000),
+('seat-hnd-20f', 'fl-003', '20F', 'Economy', TRUE, 8000000),
+('seat-hnd-20a', 'fl-003', '20A', 'Economy', FALSE, 8000000),
+('seat-hnd-02a', 'fl-003', '02A', 'Business', FALSE, 15000000);
 
 
 -- seed hotels & rooms
@@ -62,9 +50,16 @@ INSERT INTO hotels (id, name, description, address, picture_urls, facilities, st
 ('htl-asrilia', 'Grand Asrilia Hotel', 'Luxury Stay', 'Bandung', '["https://travelohi.com/asrilia.jpg"]', '["WiFi", "Pool"]', 750000),
 ('htl-hilton', 'Hilton Bandung', 'Premium Business Hotel', 'Bandung', '["https://travelohi.com/hilton.jpg"]', '["Gym", "Pool"]', 1500000);
 
-INSERT INTO hotel_rooms (id, hotel_id, name, price_per_night, capacity, facilities) VALUES
-('rm-asrilia-deluxe', 'htl-asrilia', 'Deluxe King', 750000, 2, '["Bathtub"]'),
-('rm-hilton-suite', 'htl-hilton', 'Executive Suite', 1500000, 2, '["Mini-bar"]');
+INSERT INTO hotel_rooms (id, hotel_id, name, price_per_night, capacity, facilities, total_inventory) VALUES
+('rm-asrilia-deluxe', 'htl-asrilia', 'Deluxe King', 750000, 2, '["Bathtub"]', 1),
+('rm-hilton-suite', 'htl-hilton', 'Executive Suite', 1500000, 2, '["Mini-bar"]', 5);
+
+-- seed hotel reviews
+INSERT INTO hotel_reviews (id, hotel_id, user_id, user_name, rating_cleanliness, rating_comfort, rating_location, rating_service, rating_average, comment, created_at) VALUES
+('rev-1', 'htl-asrilia', 'user-002', 'Budi Santoso', 9.0, 8.5, 9.0, 8.5, 8.75, 'Kamarnya bersih sekali dan lokasinya strategis di Bandung.', NOW()),
+('rev-2', 'htl-asrilia', 'user-002', 'Siti Rahma', 8.0, 8.0, 8.0, 9.0, 8.25, 'Pelayanannya sangat ramah dan kolam renangnya bersih.', NOW()),
+('rev-3', 'htl-hilton', 'user-002', 'Andi Wijaya', 9.5, 9.5, 9.0, 9.5, 9.38, 'Hotel premium yang sangat cocok untuk perjalanan bisnis.', NOW());
+
 
 -- seed transaction buat cart
 INSERT INTO cart_items (id, user_id, item_type, reference_id, price, status) VALUES
@@ -90,3 +85,22 @@ VALUES
 ('msg-hist-2', 'conv-test-001', 'admin-001', 'Hello! I am here to help. What seems to be the problem?', 'seen', NOW() - INTERVAL '9 minutes'),
 ('msg-hist-3', 'conv-test-001', 'user-002', 'The address on the e-ticket looks wrong.', 'sent', NOW() - INTERVAL '2 minutes')
 ON CONFLICT (id) DO NOTHING;
+
+-- seed search histories for user-002
+INSERT INTO search_histories (id, user_id, search_query, created_at) VALUES
+('sh-1', 'user-002', 'Bandung', NOW() - INTERVAL '1 minute'),
+('sh-2', 'user-002', 'Jakarta', NOW() - INTERVAL '2 minutes'),
+('sh-3', 'user-002', 'Bali (DPS)', NOW() - INTERVAL '3 minutes');
+
+-- seed global search metrics
+INSERT INTO global_search_metrics (search_query, search_count, last_searched_at) VALUES
+('Bandung', 100, NOW()),
+('Jakarta', 80, NOW()),
+('Bali (DPS)', 70, NOW()),
+('Tokyo (HND)', 50, NOW()),
+('Singapore (SIN)', 30, NOW());
+
+-- seed promos
+INSERT INTO promos (id, promo_code, discount_amount, is_active) VALUES
+('p_travel100', 'TRAVEL100', 100000, true),
+('p_travel50', 'TRAVEL50', 50000, true);

@@ -21,9 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// ==========================================
-// Client to Server Events
-// ==========================================
+// client to server event
 type GameClientEvent struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Types that are valid to be assigned to Payload:
@@ -202,9 +200,7 @@ func (x *PlayerActionRequest) GetActionType() string {
 	return ""
 }
 
-// ==========================================
-// Server to Client Events
-// ==========================================
+// server to client event
 type GameServerEvent struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Types that are valid to be assigned to Payload:
@@ -383,7 +379,7 @@ type GameStateUpdate struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	PlayerOneHp   int32                  `protobuf:"varint,1,opt,name=player_one_hp,json=playerOneHp,proto3" json:"player_one_hp,omitempty"`
 	PlayerTwoHp   int32                  `protobuf:"varint,2,opt,name=player_two_hp,json=playerTwoHp,proto3" json:"player_two_hp,omitempty"`
-	TimeRemaining int32                  `protobuf:"varint,3,opt,name=time_remaining,json=timeRemaining,proto3" json:"time_remaining,omitempty"` // Additional positioning data can be added here
+	TimeRemaining int32                  `protobuf:"varint,3,opt,name=time_remaining,json=timeRemaining,proto3" json:"time_remaining,omitempty"` // add additional positioning data if needed
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -441,8 +437,8 @@ func (x *GameStateUpdate) GetTimeRemaining() int32 {
 
 type MatchEndEvent struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	WinnerId      string                 `protobuf:"bytes,1,opt,name=winner_id,json=winnerId,proto3" json:"winner_id,omitempty"` // Empty string if draw
-	Reason        string                 `protobuf:"bytes,2,opt,name=reason,proto3" json:"reason,omitempty"`                     // "knockout", "time_up", "opponent_disconnected"
+	WinnerId      string                 `protobuf:"bytes,1,opt,name=winner_id,json=winnerId,proto3" json:"winner_id,omitempty"`
+	Reason        string                 `protobuf:"bytes,2,opt,name=reason,proto3" json:"reason,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -493,7 +489,7 @@ func (x *MatchEndEvent) GetReason() string {
 
 type ErrorEvent struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"` // e.g., "Rate limit exceeded"
+	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }

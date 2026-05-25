@@ -12,10 +12,6 @@ import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 /**
- * ==========================================
- * Entities
- * ==========================================
- *
  * @generated from protobuf message travelohi.v1.cart.CartItem
  */
 export interface CartItem {
@@ -26,26 +22,28 @@ export interface CartItem {
     /**
      * @generated from protobuf field: string item_type = 2
      */
-    itemType: string; // "hotel_room" or "flight_seat"    /**
+    itemType: string;
+    /**
      * @generated from protobuf field: string reference_id = 3
      */
     referenceId: string;
     /**
-     * Resolved Display Data (Fetched by backend during ViewCart)
-     *
      * @generated from protobuf field: string display_name = 4
      */
-    displayName: string; // e.g., "Deluxe King - Grand Asrilia" or "Seat 12A - Batik Air"    /**
+    displayName: string;
+    /**
      * @generated from protobuf field: string display_image_url = 5
      */
     displayImageUrl: string;
     /**
      * @generated from protobuf field: string check_in_date = 6
      */
-    checkInDate: string; // Applicable for hotels    /**
+    checkInDate: string;
+    /**
      * @generated from protobuf field: string check_out_date = 7
      */
-    checkOutDate: string; // Applicable for hotels    /**
+    checkOutDate: string;
+    /**
      * @generated from protobuf field: int64 item_price = 8
      */
     itemPrice: bigint;
@@ -56,40 +54,37 @@ export interface CartItem {
     /**
      * @generated from protobuf field: string status = 10
      */
-    status: string; // "cart", "ongoing", "expired", "paid"    /**
+    status: string;
+    /**
      * @generated from protobuf field: int32 luggage_weight = 11
      */
     luggageWeight: number;
 }
 /**
- * ==========================================
- * Requests & Responses
- * ==========================================
- *
  * @generated from protobuf message travelohi.v1.cart.AddToCartRequest
  */
 export interface AddToCartRequest {
     /**
      * @generated from protobuf field: string item_type = 1
      */
-    itemType: string; // "hotel_room" or "flight_seat"    /**
+    itemType: string; // hotel or flight    /**
      * @generated from protobuf field: string reference_id = 2
      */
     referenceId: string;
     /**
      * @generated from protobuf field: string check_in_date = 3
      */
-    checkInDate: string; // Required if hotel    /**
+    checkInDate: string; // kalo pilih hotel     /**
      * @generated from protobuf field: string check_out_date = 4
      */
-    checkOutDate: string; // Required if hotel    /**
+    checkOutDate: string; // kalo pilih hotel    /**
      * @generated from protobuf field: int32 quantity = 5
      */
     quantity: number;
     /**
      * @generated from protobuf field: int32 luggage_weight = 6
      */
-    luggageWeight: number; // Optional: 0, 15, 20, 25 (kg)}
+    luggageWeight: number; // kalo pilih flight}
 /**
  * @generated from protobuf message travelohi.v1.cart.ViewCartRequest
  */
@@ -162,13 +157,15 @@ export interface CheckoutRequest {
     /**
      * @generated from protobuf field: string payment_method = 1
      */
-    paymentMethod: string; // "hi_wallet" or "credit_card"    /**
+    paymentMethod: string; // hi_wallet or credit_card    /**
      * @generated from protobuf field: string credit_card_id = 2
      */
-    creditCardId: string; // Required if payment_method is "credit_card"    /**
+    creditCardId: string;
+    /**
      * @generated from protobuf field: string applied_promo_code = 3
      */
-    appliedPromoCode: string; // The promo code applied}
+    appliedPromoCode: string;
+}
 /**
  * @generated from protobuf message travelohi.v1.cart.CheckoutResponse
  */

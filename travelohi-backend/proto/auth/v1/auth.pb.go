@@ -591,12 +591,13 @@ func (x *GetSecurityQuestionResponse) GetSecurityQuestionId() int32 {
 }
 
 type ResetPasswordRequest struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	Email          string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
-	SecurityAnswer string                 `protobuf:"bytes,2,opt,name=security_answer,json=securityAnswer,proto3" json:"security_answer,omitempty"`
-	NewPassword    string                 `protobuf:"bytes,3,opt,name=new_password,json=newPassword,proto3" json:"new_password,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	Email              string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
+	SecurityAnswer     string                 `protobuf:"bytes,2,opt,name=security_answer,json=securityAnswer,proto3" json:"security_answer,omitempty"`
+	NewPassword        string                 `protobuf:"bytes,3,opt,name=new_password,json=newPassword,proto3" json:"new_password,omitempty"`
+	SecurityQuestionId int32                  `protobuf:"varint,4,opt,name=security_question_id,json=securityQuestionId,proto3" json:"security_question_id,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *ResetPasswordRequest) Reset() {
@@ -650,10 +651,17 @@ func (x *ResetPasswordRequest) GetNewPassword() string {
 	return ""
 }
 
+func (x *ResetPasswordRequest) GetSecurityQuestionId() int32 {
+	if x != nil {
+		return x.SecurityQuestionId
+	}
+	return 0
+}
+
 type CheckEmailRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
-	CaptchaToken  string                 `protobuf:"bytes,2,opt,name=captcha_token,json=captchaToken,proto3" json:"captcha_token,omitempty"` // SECURITY: Required to prevent bot enumeration!
+	CaptchaToken  string                 `protobuf:"bytes,2,opt,name=captcha_token,json=captchaToken,proto3" json:"captcha_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -788,11 +796,12 @@ const file_proto_travelohi_v1_auth_auth_proto_rawDesc = "" +
 	"\x1aGetSecurityQuestionRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\"O\n" +
 	"\x1bGetSecurityQuestionResponse\x120\n" +
-	"\x14security_question_id\x18\x01 \x01(\x05R\x12securityQuestionId\"x\n" +
+	"\x14security_question_id\x18\x01 \x01(\x05R\x12securityQuestionId\"\xaa\x01\n" +
 	"\x14ResetPasswordRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12'\n" +
 	"\x0fsecurity_answer\x18\x02 \x01(\tR\x0esecurityAnswer\x12!\n" +
-	"\fnew_password\x18\x03 \x01(\tR\vnewPassword\"N\n" +
+	"\fnew_password\x18\x03 \x01(\tR\vnewPassword\x120\n" +
+	"\x14security_question_id\x18\x04 \x01(\x05R\x12securityQuestionId\"N\n" +
 	"\x11CheckEmailRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12#\n" +
 	"\rcaptcha_token\x18\x02 \x01(\tR\fcaptchaToken\",\n" +

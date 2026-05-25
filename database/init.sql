@@ -48,7 +48,23 @@ CREATE TABLE IF NOT EXISTS hotel_rooms (
     name VARCHAR(100) NOT NULL,
     price_per_night BIGINT NOT NULL,
     capacity INT NOT NULL,
-    facilities JSONB
+    facilities JSONB,
+    picture_url VARCHAR(255),
+    total_inventory INT DEFAULT 5
+);
+
+CREATE TABLE IF NOT EXISTS hotel_reviews (
+    id VARCHAR(255) PRIMARY KEY,
+    hotel_id VARCHAR(255) REFERENCES hotels(id),
+    user_id VARCHAR(255),
+    user_name VARCHAR(255),
+    rating_cleanliness NUMERIC(3,2) DEFAULT 0,
+    rating_comfort NUMERIC(3,2) DEFAULT 0,
+    rating_location NUMERIC(3,2) DEFAULT 0,
+    rating_service NUMERIC(3,2) DEFAULT 0,
+    rating_average NUMERIC(3,2) DEFAULT 0,
+    comment TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS bookings (
@@ -69,6 +85,10 @@ CREATE TABLE cart_items (
     reference_id VARCHAR(255) NOT NULL,
     price BIGINT NOT NULL, -- ADDED THIS
     status VARCHAR(50) DEFAULT 'in_cart',
+    quantity INT DEFAULT 1,
+    check_in_date VARCHAR(50),
+    check_out_date VARCHAR(50),
+    luggage_weight INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -110,6 +130,8 @@ CREATE TABLE IF NOT EXISTS promos (
     id VARCHAR(255) PRIMARY KEY,
     promo_code VARCHAR(50) UNIQUE NOT NULL,
     discount_amount BIGINT NOT NULL,
+    max_uses INT DEFAULT 100,
+    current_uses INT DEFAULT 0,
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -163,6 +185,25 @@ CREATE TABLE IF NOT EXISTS support_messages (
 );
 
 CREATE INDEX idx_messages_conversation_time ON support_messages(conversation_id, created_at DESC);
+
+
+CREATE TABLE IF NOT EXISTS booking_models (
+    id VARCHAR(255) PRIMARY KEY,
+    user_id VARCHAR(255) NOT NULL,
+    transaction_id VARCHAR(255) NOT NULL,
+    item_type VARCHAR(50) NOT NULL,
+    display_name VARCHAR(255) NOT NULL,
+    check_in_date VARCHAR(255),
+    check_out_date VARCHAR(255),
+    status VARCHAR(50) NOT NULL,
+    booking_reference_code VARCHAR(50) NOT NULL,
+    room_id VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_booking_models_user ON booking_models(user_id);
+
+
 
 -- game server 
 -- record completed matches

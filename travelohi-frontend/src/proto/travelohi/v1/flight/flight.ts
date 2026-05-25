@@ -60,10 +60,6 @@ export interface UnlockSeatResponse {
     message: string;
 }
 /**
- * ==========================================
- * Entities
- * ==========================================
- *
  * @generated from protobuf message travelohi.v1.flight.Airline
  */
 export interface Airline {
@@ -140,10 +136,12 @@ export interface FlightSeat {
     /**
      * @generated from protobuf field: string seat_number = 3
      */
-    seatNumber: string; // e.g., "12A"    /**
+    seatNumber: string;
+    /**
      * @generated from protobuf field: string seat_class = 4
      */
-    seatClass: string; // "Economy", "Business", "First"    /**
+    seatClass: string;
+    /**
      * @generated from protobuf field: int64 price = 5
      */
     price: bigint;
@@ -174,10 +172,6 @@ export interface BaggageAddon {
     price: bigint;
 }
 /**
- * ==========================================
- * Requests & Responses
- * ==========================================
- *
  * @generated from protobuf message travelohi.v1.flight.SearchFlightsRequest
  */
 export interface SearchFlightsRequest {
@@ -193,25 +187,33 @@ export interface SearchFlightsRequest {
      * @generated from protobuf field: string departure_date = 3
      */
     departureDate: string; // YYYY-MM-DD    /**
-     * Filters
-     *
-     * @generated from protobuf field: bool transit_filter = 4
+     * @generated from protobuf field: string transit_filter = 4
      */
-    transitFilter: boolean; // true for direct only, false for all    /**
-     * Sort & Pagination
-     *
+    transitFilter: string;
+    /**
      * @generated from protobuf field: string sort_by = 5
      */
-    sortBy: string; // "duration", "price", "transits"    /**
+    sortBy: string;
+    /**
      * @generated from protobuf field: string sort_order = 6
      */
-    sortOrder: string; // "asc", "desc"    /**
+    sortOrder: string;
+    /**
      * @generated from protobuf field: int32 limit = 7
      */
-    limit: number; // 20, 25, or 30    /**
+    limit: number;
+    /**
      * @generated from protobuf field: int32 offset = 8
      */
     offset: number;
+    /**
+     * @generated from protobuf field: int64 min_price = 9
+     */
+    minPrice: bigint;
+    /**
+     * @generated from protobuf field: int64 max_price = 10
+     */
+    maxPrice: bigint;
 }
 /**
  * @generated from protobuf message travelohi.v1.flight.SearchFlightsResponse
@@ -828,11 +830,13 @@ class SearchFlightsRequest$Type extends MessageType<SearchFlightsRequest> {
             { no: 1, name: "origin_airport", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "destination_airport", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "departure_date", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 4, name: "transit_filter", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 4, name: "transit_filter", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 5, name: "sort_by", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 6, name: "sort_order", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 7, name: "limit", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
-            { no: 8, name: "offset", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+            { no: 8, name: "offset", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 9, name: "min_price", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 10, name: "max_price", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ }
         ]);
     }
     create(value?: PartialMessage<SearchFlightsRequest>): SearchFlightsRequest {
@@ -840,11 +844,13 @@ class SearchFlightsRequest$Type extends MessageType<SearchFlightsRequest> {
         message.originAirport = "";
         message.destinationAirport = "";
         message.departureDate = "";
-        message.transitFilter = false;
+        message.transitFilter = "";
         message.sortBy = "";
         message.sortOrder = "";
         message.limit = 0;
         message.offset = 0;
+        message.minPrice = 0n;
+        message.maxPrice = 0n;
         if (value !== undefined)
             reflectionMergePartial<SearchFlightsRequest>(this, message, value);
         return message;
@@ -863,8 +869,8 @@ class SearchFlightsRequest$Type extends MessageType<SearchFlightsRequest> {
                 case /* string departure_date */ 3:
                     message.departureDate = reader.string();
                     break;
-                case /* bool transit_filter */ 4:
-                    message.transitFilter = reader.bool();
+                case /* string transit_filter */ 4:
+                    message.transitFilter = reader.string();
                     break;
                 case /* string sort_by */ 5:
                     message.sortBy = reader.string();
@@ -877,6 +883,12 @@ class SearchFlightsRequest$Type extends MessageType<SearchFlightsRequest> {
                     break;
                 case /* int32 offset */ 8:
                     message.offset = reader.int32();
+                    break;
+                case /* int64 min_price */ 9:
+                    message.minPrice = reader.int64().toBigInt();
+                    break;
+                case /* int64 max_price */ 10:
+                    message.maxPrice = reader.int64().toBigInt();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -899,9 +911,9 @@ class SearchFlightsRequest$Type extends MessageType<SearchFlightsRequest> {
         /* string departure_date = 3; */
         if (message.departureDate !== "")
             writer.tag(3, WireType.LengthDelimited).string(message.departureDate);
-        /* bool transit_filter = 4; */
-        if (message.transitFilter !== false)
-            writer.tag(4, WireType.Varint).bool(message.transitFilter);
+        /* string transit_filter = 4; */
+        if (message.transitFilter !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.transitFilter);
         /* string sort_by = 5; */
         if (message.sortBy !== "")
             writer.tag(5, WireType.LengthDelimited).string(message.sortBy);
@@ -914,6 +926,12 @@ class SearchFlightsRequest$Type extends MessageType<SearchFlightsRequest> {
         /* int32 offset = 8; */
         if (message.offset !== 0)
             writer.tag(8, WireType.Varint).int32(message.offset);
+        /* int64 min_price = 9; */
+        if (message.minPrice !== 0n)
+            writer.tag(9, WireType.Varint).int64(message.minPrice);
+        /* int64 max_price = 10; */
+        if (message.maxPrice !== 0n)
+            writer.tag(10, WireType.Varint).int64(message.maxPrice);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

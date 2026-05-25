@@ -26,7 +26,6 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type GameServiceClient interface {
-	// The primary bidirectional pipe for queueing and gameplay
 	StreamGameLoop(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[GameClientEvent, GameServerEvent], error)
 }
 
@@ -55,7 +54,6 @@ type GameService_StreamGameLoopClient = grpc.BidiStreamingClient[GameClientEvent
 // All implementations must embed UnimplementedGameServiceServer
 // for forward compatibility.
 type GameServiceServer interface {
-	// The primary bidirectional pipe for queueing and gameplay
 	StreamGameLoop(grpc.BidiStreamingServer[GameClientEvent, GameServerEvent]) error
 	mustEmbedUnimplementedGameServiceServer()
 }

@@ -221,9 +221,6 @@ func (x *UnlockSeatResponse) GetMessage() string {
 	return ""
 }
 
-// ==========================================
-// Entities
-// ==========================================
 type Airline struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -404,8 +401,8 @@ type FlightSeat struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	FlightId      string                 `protobuf:"bytes,2,opt,name=flight_id,json=flightId,proto3" json:"flight_id,omitempty"`
-	SeatNumber    string                 `protobuf:"bytes,3,opt,name=seat_number,json=seatNumber,proto3" json:"seat_number,omitempty"` // e.g., "12A"
-	SeatClass     string                 `protobuf:"bytes,4,opt,name=seat_class,json=seatClass,proto3" json:"seat_class,omitempty"`    // "Economy", "Business", "First"
+	SeatNumber    string                 `protobuf:"bytes,3,opt,name=seat_number,json=seatNumber,proto3" json:"seat_number,omitempty"`
+	SeatClass     string                 `protobuf:"bytes,4,opt,name=seat_class,json=seatClass,proto3" json:"seat_class,omitempty"`
 	Price         int64                  `protobuf:"varint,5,opt,name=price,proto3" json:"price,omitempty"`
 	IsBooked      bool                   `protobuf:"varint,6,opt,name=is_booked,json=isBooked,proto3" json:"is_booked,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -552,23 +549,20 @@ func (x *BaggageAddon) GetPrice() int64 {
 	return 0
 }
 
-// ==========================================
-// Requests & Responses
-// ==========================================
 type SearchFlightsRequest struct {
 	state              protoimpl.MessageState `protogen:"open.v1"`
 	OriginAirport      string                 `protobuf:"bytes,1,opt,name=origin_airport,json=originAirport,proto3" json:"origin_airport,omitempty"`
 	DestinationAirport string                 `protobuf:"bytes,2,opt,name=destination_airport,json=destinationAirport,proto3" json:"destination_airport,omitempty"`
 	DepartureDate      string                 `protobuf:"bytes,3,opt,name=departure_date,json=departureDate,proto3" json:"departure_date,omitempty"` // YYYY-MM-DD
-	// Filters
-	TransitFilter bool `protobuf:"varint,4,opt,name=transit_filter,json=transitFilter,proto3" json:"transit_filter,omitempty"` // true for direct only, false for all
-	// Sort & Pagination
-	SortBy        string `protobuf:"bytes,5,opt,name=sort_by,json=sortBy,proto3" json:"sort_by,omitempty"`          // "duration", "price", "transits"
-	SortOrder     string `protobuf:"bytes,6,opt,name=sort_order,json=sortOrder,proto3" json:"sort_order,omitempty"` // "asc", "desc"
-	Limit         int32  `protobuf:"varint,7,opt,name=limit,proto3" json:"limit,omitempty"`                         // 20, 25, or 30
-	Offset        int32  `protobuf:"varint,8,opt,name=offset,proto3" json:"offset,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	TransitFilter      string                 `protobuf:"bytes,4,opt,name=transit_filter,json=transitFilter,proto3" json:"transit_filter,omitempty"`
+	SortBy             string                 `protobuf:"bytes,5,opt,name=sort_by,json=sortBy,proto3" json:"sort_by,omitempty"`
+	SortOrder          string                 `protobuf:"bytes,6,opt,name=sort_order,json=sortOrder,proto3" json:"sort_order,omitempty"`
+	Limit              int32                  `protobuf:"varint,7,opt,name=limit,proto3" json:"limit,omitempty"`
+	Offset             int32                  `protobuf:"varint,8,opt,name=offset,proto3" json:"offset,omitempty"`
+	MinPrice           int64                  `protobuf:"varint,9,opt,name=min_price,json=minPrice,proto3" json:"min_price,omitempty"`
+	MaxPrice           int64                  `protobuf:"varint,10,opt,name=max_price,json=maxPrice,proto3" json:"max_price,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *SearchFlightsRequest) Reset() {
@@ -622,11 +616,11 @@ func (x *SearchFlightsRequest) GetDepartureDate() string {
 	return ""
 }
 
-func (x *SearchFlightsRequest) GetTransitFilter() bool {
+func (x *SearchFlightsRequest) GetTransitFilter() string {
 	if x != nil {
 		return x.TransitFilter
 	}
-	return false
+	return ""
 }
 
 func (x *SearchFlightsRequest) GetSortBy() string {
@@ -653,6 +647,20 @@ func (x *SearchFlightsRequest) GetLimit() int32 {
 func (x *SearchFlightsRequest) GetOffset() int32 {
 	if x != nil {
 		return x.Offset
+	}
+	return 0
+}
+
+func (x *SearchFlightsRequest) GetMinPrice() int64 {
+	if x != nil {
+		return x.MinPrice
+	}
+	return 0
+}
+
+func (x *SearchFlightsRequest) GetMaxPrice() int64 {
+	if x != nil {
+		return x.MaxPrice
 	}
 	return 0
 }
@@ -949,17 +957,20 @@ const file_proto_travelohi_v1_flight_flight_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
 	"\tflight_id\x18\x02 \x01(\tR\bflightId\x12\x1b\n" +
 	"\tweight_kg\x18\x03 \x01(\x05R\bweightKg\x12\x14\n" +
-	"\x05price\x18\x04 \x01(\x03R\x05price\"\xa2\x02\n" +
+	"\x05price\x18\x04 \x01(\x03R\x05price\"\xdc\x02\n" +
 	"\x14SearchFlightsRequest\x12%\n" +
 	"\x0eorigin_airport\x18\x01 \x01(\tR\roriginAirport\x12/\n" +
 	"\x13destination_airport\x18\x02 \x01(\tR\x12destinationAirport\x12%\n" +
 	"\x0edeparture_date\x18\x03 \x01(\tR\rdepartureDate\x12%\n" +
-	"\x0etransit_filter\x18\x04 \x01(\bR\rtransitFilter\x12\x17\n" +
+	"\x0etransit_filter\x18\x04 \x01(\tR\rtransitFilter\x12\x17\n" +
 	"\asort_by\x18\x05 \x01(\tR\x06sortBy\x12\x1d\n" +
 	"\n" +
 	"sort_order\x18\x06 \x01(\tR\tsortOrder\x12\x14\n" +
 	"\x05limit\x18\a \x01(\x05R\x05limit\x12\x16\n" +
-	"\x06offset\x18\b \x01(\x05R\x06offset\"s\n" +
+	"\x06offset\x18\b \x01(\x05R\x06offset\x12\x1b\n" +
+	"\tmin_price\x18\t \x01(\x03R\bminPrice\x12\x1b\n" +
+	"\tmax_price\x18\n" +
+	" \x01(\x03R\bmaxPrice\"s\n" +
 	"\x15SearchFlightsResponse\x125\n" +
 	"\aflights\x18\x01 \x03(\v2\x1b.travelohi.v1.flight.FlightR\aflights\x12#\n" +
 	"\rtotal_results\x18\x02 \x01(\x05R\ftotalResults\"6\n" +

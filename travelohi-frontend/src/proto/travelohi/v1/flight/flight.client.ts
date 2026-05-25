@@ -22,8 +22,6 @@ import type { RpcOptions } from "@protobuf-ts/runtime-rpc";
  */
 export interface IFlightServiceClient {
     /**
-     * Catalog & Search
-     *
      * @generated from protobuf rpc: SearchFlights
      */
     searchFlights(input: SearchFlightsRequest, options?: RpcOptions): UnaryCall<SearchFlightsRequest, SearchFlightsResponse>;
@@ -54,8 +52,6 @@ export class FlightServiceClient implements IFlightServiceClient, ServiceInfo {
     constructor(private readonly _transport: RpcTransport) {
     }
     /**
-     * Catalog & Search
-     *
      * @generated from protobuf rpc: SearchFlights
      */
     searchFlights(input: SearchFlightsRequest, options?: RpcOptions): UnaryCall<SearchFlightsRequest, SearchFlightsResponse> {

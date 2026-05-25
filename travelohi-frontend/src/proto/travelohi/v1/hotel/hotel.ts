@@ -66,6 +66,10 @@ export interface Hotel {
      * @generated from protobuf field: int64 starting_price = 13
      */
     startingPrice: bigint;
+    /**
+     * @generated from protobuf field: int32 availability = 14
+     */
+    availability: number;
 }
 /**
  * @generated from protobuf message travelohi.v1.hotel.HotelRoom
@@ -97,6 +101,10 @@ export interface HotelRoom {
      * @generated from protobuf field: int32 available_count = 7
      */
     availableCount: number;
+    /**
+     * @generated from protobuf field: string image_url = 8
+     */
+    imageUrl: string;
 }
 /**
  * @generated from protobuf message travelohi.v1.hotel.HotelReview
@@ -119,15 +127,31 @@ export interface HotelReview {
      */
     userName: string;
     /**
-     * @generated from protobuf field: float rating_average = 5
+     * @generated from protobuf field: float rating_cleanliness = 5
+     */
+    ratingCleanliness: number;
+    /**
+     * @generated from protobuf field: float rating_comfort = 6
+     */
+    ratingComfort: number;
+    /**
+     * @generated from protobuf field: float rating_location = 7
+     */
+    ratingLocation: number;
+    /**
+     * @generated from protobuf field: float rating_service = 8
+     */
+    ratingService: number;
+    /**
+     * @generated from protobuf field: float rating_average = 9
      */
     ratingAverage: number;
     /**
-     * @generated from protobuf field: string comment = 6
+     * @generated from protobuf field: string comment = 10
      */
     comment: string;
     /**
-     * @generated from protobuf field: string created_at = 7
+     * @generated from protobuf field: string created_at = 11
      */
     createdAt: string;
 }
@@ -289,7 +313,8 @@ class Hotel$Type extends MessageType<Hotel> {
             { no: 10, name: "rating_service", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ },
             { no: 11, name: "rating_average", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ },
             { no: 12, name: "total_reviews", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
-            { no: 13, name: "starting_price", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ }
+            { no: 13, name: "starting_price", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 14, name: "availability", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
         ]);
     }
     create(value?: PartialMessage<Hotel>): Hotel {
@@ -307,6 +332,7 @@ class Hotel$Type extends MessageType<Hotel> {
         message.ratingAverage = 0;
         message.totalReviews = 0;
         message.startingPrice = 0n;
+        message.availability = 0;
         if (value !== undefined)
             reflectionMergePartial<Hotel>(this, message, value);
         return message;
@@ -354,6 +380,9 @@ class Hotel$Type extends MessageType<Hotel> {
                     break;
                 case /* int64 starting_price */ 13:
                     message.startingPrice = reader.int64().toBigInt();
+                    break;
+                case /* int32 availability */ 14:
+                    message.availability = reader.int32();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -406,6 +435,9 @@ class Hotel$Type extends MessageType<Hotel> {
         /* int64 starting_price = 13; */
         if (message.startingPrice !== 0n)
             writer.tag(13, WireType.Varint).int64(message.startingPrice);
+        /* int32 availability = 14; */
+        if (message.availability !== 0)
+            writer.tag(14, WireType.Varint).int32(message.availability);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -426,7 +458,8 @@ class HotelRoom$Type extends MessageType<HotelRoom> {
             { no: 4, name: "price_per_night", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
             { no: 5, name: "capacity", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 6, name: "facilities", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
-            { no: 7, name: "available_count", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+            { no: 7, name: "available_count", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 8, name: "image_url", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<HotelRoom>): HotelRoom {
@@ -438,6 +471,7 @@ class HotelRoom$Type extends MessageType<HotelRoom> {
         message.capacity = 0;
         message.facilities = [];
         message.availableCount = 0;
+        message.imageUrl = "";
         if (value !== undefined)
             reflectionMergePartial<HotelRoom>(this, message, value);
         return message;
@@ -467,6 +501,9 @@ class HotelRoom$Type extends MessageType<HotelRoom> {
                     break;
                 case /* int32 available_count */ 7:
                     message.availableCount = reader.int32();
+                    break;
+                case /* string image_url */ 8:
+                    message.imageUrl = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -501,6 +538,9 @@ class HotelRoom$Type extends MessageType<HotelRoom> {
         /* int32 available_count = 7; */
         if (message.availableCount !== 0)
             writer.tag(7, WireType.Varint).int32(message.availableCount);
+        /* string image_url = 8; */
+        if (message.imageUrl !== "")
+            writer.tag(8, WireType.LengthDelimited).string(message.imageUrl);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -519,9 +559,13 @@ class HotelReview$Type extends MessageType<HotelReview> {
             { no: 2, name: "hotel_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "user_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 4, name: "user_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 5, name: "rating_average", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ },
-            { no: 6, name: "comment", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 7, name: "created_at", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 5, name: "rating_cleanliness", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ },
+            { no: 6, name: "rating_comfort", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ },
+            { no: 7, name: "rating_location", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ },
+            { no: 8, name: "rating_service", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ },
+            { no: 9, name: "rating_average", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ },
+            { no: 10, name: "comment", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 11, name: "created_at", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<HotelReview>): HotelReview {
@@ -530,6 +574,10 @@ class HotelReview$Type extends MessageType<HotelReview> {
         message.hotelId = "";
         message.userId = "";
         message.userName = "";
+        message.ratingCleanliness = 0;
+        message.ratingComfort = 0;
+        message.ratingLocation = 0;
+        message.ratingService = 0;
         message.ratingAverage = 0;
         message.comment = "";
         message.createdAt = "";
@@ -554,13 +602,25 @@ class HotelReview$Type extends MessageType<HotelReview> {
                 case /* string user_name */ 4:
                     message.userName = reader.string();
                     break;
-                case /* float rating_average */ 5:
+                case /* float rating_cleanliness */ 5:
+                    message.ratingCleanliness = reader.float();
+                    break;
+                case /* float rating_comfort */ 6:
+                    message.ratingComfort = reader.float();
+                    break;
+                case /* float rating_location */ 7:
+                    message.ratingLocation = reader.float();
+                    break;
+                case /* float rating_service */ 8:
+                    message.ratingService = reader.float();
+                    break;
+                case /* float rating_average */ 9:
                     message.ratingAverage = reader.float();
                     break;
-                case /* string comment */ 6:
+                case /* string comment */ 10:
                     message.comment = reader.string();
                     break;
-                case /* string created_at */ 7:
+                case /* string created_at */ 11:
                     message.createdAt = reader.string();
                     break;
                 default:
@@ -587,15 +647,27 @@ class HotelReview$Type extends MessageType<HotelReview> {
         /* string user_name = 4; */
         if (message.userName !== "")
             writer.tag(4, WireType.LengthDelimited).string(message.userName);
-        /* float rating_average = 5; */
+        /* float rating_cleanliness = 5; */
+        if (message.ratingCleanliness !== 0)
+            writer.tag(5, WireType.Bit32).float(message.ratingCleanliness);
+        /* float rating_comfort = 6; */
+        if (message.ratingComfort !== 0)
+            writer.tag(6, WireType.Bit32).float(message.ratingComfort);
+        /* float rating_location = 7; */
+        if (message.ratingLocation !== 0)
+            writer.tag(7, WireType.Bit32).float(message.ratingLocation);
+        /* float rating_service = 8; */
+        if (message.ratingService !== 0)
+            writer.tag(8, WireType.Bit32).float(message.ratingService);
+        /* float rating_average = 9; */
         if (message.ratingAverage !== 0)
-            writer.tag(5, WireType.Bit32).float(message.ratingAverage);
-        /* string comment = 6; */
+            writer.tag(9, WireType.Bit32).float(message.ratingAverage);
+        /* string comment = 10; */
         if (message.comment !== "")
-            writer.tag(6, WireType.LengthDelimited).string(message.comment);
-        /* string created_at = 7; */
+            writer.tag(10, WireType.LengthDelimited).string(message.comment);
+        /* string created_at = 11; */
         if (message.createdAt !== "")
-            writer.tag(7, WireType.LengthDelimited).string(message.createdAt);
+            writer.tag(11, WireType.LengthDelimited).string(message.createdAt);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
