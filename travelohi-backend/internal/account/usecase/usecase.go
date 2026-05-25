@@ -4,6 +4,7 @@ package usecase
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/travelohi/backend/internal/account"
 )
@@ -73,6 +74,34 @@ func (uc *AccountUseCase) RefundWallet(ctx context.Context, userID string, amoun
 }
 
 func (uc *AccountUseCase) InternalCreateBooking(ctx context.Context, booking *account.Booking) (*account.Booking, error) {
+	// extract room id if hotel room
+	if booking.ItemType == "hotel_room" {
+		parts := strings.Split(booking.DisplayName, "|")
+		if len(parts) > 1 {
+			booking.DisplayName = parts[0]
+			booking.RoomID = parts[1]
+		}
+
+		if booking.RoomID != "" {
+			// fetch total inventory limit
+			inventory, err := uc.bookingRepo.GetRoomInventory(ctx, booking.RoomID)
+			if err != nil {
+				return nil, err
+			}
+
+			// Count existing overlapping bookings, yang aktif aj
+			count, err := uc.bookingRepo.GetOverlappingBookingsCount(ctx, booking.RoomID, booking.CheckInDate, booking.CheckOutDate)
+			if err != nil {
+				return nil, err
+			}
+
+			// Validate quota
+			if int(count) >= inventory {
+				return nil, errors.New("kamar penuh untuk tanggal yang dipilih")
+			}
+		}
+	}
+
 	// generate booking reference code
 	booking.BookingReferenceCode = "PNR-" + booking.ID[:8]
 	booking.Status = "completed"
@@ -81,6 +110,15 @@ func (uc *AccountUseCase) InternalCreateBooking(ctx context.Context, booking *ac
 	if err != nil {
 		return nil, err
 	}
+
+	// Also insert into bookings table for hotel service integration if it's a hotel room
+	if booking.ItemType == "hotel_room" && booking.RoomID != "" {
+		err = uc.bookingRepo.CreateRawBooking(ctx, booking.ID, booking.RoomID, booking.UserID, booking.CheckInDate, booking.CheckOutDate, "ongoing")
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	return booking, nil
 }
 

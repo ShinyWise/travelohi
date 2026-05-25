@@ -18,6 +18,7 @@ type BookingModel struct {
 	CheckOutDate         string    `gorm:"column:check_out_date"`
 	Status               string    `gorm:"column:status"`
 	BookingReferenceCode string    `gorm:"column:booking_reference_code"`
+	RoomID               string    `gorm:"column:room_id"`
 	CreatedAt            time.Time `gorm:"column:created_at;autoCreateTime"`
 }
 
@@ -32,6 +33,7 @@ func (m *BookingModel) ToDomain() account.Booking {
 		CheckOutDate:         m.CheckOutDate,
 		Status:               m.Status,
 		BookingReferenceCode: m.BookingReferenceCode,
+		RoomID:               m.RoomID,
 		CreatedAt:            m.CreatedAt,
 	}
 }
@@ -57,9 +59,37 @@ func (r *PostgresBookingRepository) CreateBooking(ctx context.Context, b *accoun
 		CheckOutDate:         b.CheckOutDate,
 		Status:               b.Status,
 		BookingReferenceCode: b.BookingReferenceCode,
+		RoomID:               b.RoomID,
 		CreatedAt:            b.CreatedAt,
 	}
 	return r.db.WithContext(ctx).Create(model).Error
+}
+
+func (r *PostgresBookingRepository) GetOverlappingBookingsCount(ctx context.Context, roomID string, checkInDate string, checkOutDate string) (int64, error) {
+	var count int64
+	err := r.db.WithContext(ctx).Model(&BookingModel{}).
+		Where("room_id = ? AND status != ? AND check_in_date < ? AND check_out_date > ?", roomID, "cancelled", checkOutDate, checkInDate).
+		Count(&count).Error
+	return count, err
+}
+
+func (r *PostgresBookingRepository) GetRoomInventory(ctx context.Context, roomID string) (int, error) {
+	var inventory int
+	err := r.db.WithContext(ctx).Table("hotel_rooms").
+		Where("id = ?", roomID).
+		Select("total_inventory").
+		Scan(&inventory).Error
+	if err != nil {
+		return 0, err
+	}
+	return inventory, nil
+}
+
+func (r *PostgresBookingRepository) CreateRawBooking(ctx context.Context, id, roomID, userID, checkInDate, checkOutDate, status string) error {
+	return r.db.WithContext(ctx).Exec(
+		"INSERT INTO bookings (id, room_id, user_id, check_in_date, check_out_date, status) VALUES (?, ?, ?, ?, ?, ?)",
+		id, roomID, userID, checkInDate, checkOutDate, status,
+	).Error
 }
 
 func (r *PostgresBookingRepository) GetBookingHistory(ctx context.Context, userID string, filterStatus string, limit, offset int32) ([]account.Booking, int64, error) {

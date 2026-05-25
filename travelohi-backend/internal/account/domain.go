@@ -15,6 +15,7 @@ type Booking struct {
 	CheckOutDate         string
 	Status               string
 	BookingReferenceCode string
+	RoomID               string
 	CreatedAt            time.Time
 }
 
@@ -49,6 +50,9 @@ type BookingRepository interface {
 	CreateBooking(ctx context.Context, booking *Booking) error
 	GetBookingHistory(ctx context.Context, userID string, filterStatus string, limit, offset int32) ([]Booking, int64, error)
 	GetBookingByID(ctx context.Context, bookingID string) (*Booking, error)
+	GetOverlappingBookingsCount(ctx context.Context, roomID string, checkInDate string, checkOutDate string) (int64, error)
+	GetRoomInventory(ctx context.Context, roomID string) (int, error)
+	CreateRawBooking(ctx context.Context, id, roomID, userID, checkInDate, checkOutDate, status string) error
 }
 
 type AccountUseCase interface {
