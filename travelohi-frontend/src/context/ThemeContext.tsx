@@ -43,11 +43,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     );
 
     const toggleTheme = () => {
+        document.documentElement.classList.add('no-transition');
         setThemeState((prev) => {
             const next = prev === 'light' ? 'dark' : 'light';
             localStorage.setItem(STORAGE_KEYS.theme, next);
             return next;
         });
+        setTimeout(() => {
+            document.documentElement.classList.remove('no-transition');
+        }, 50);
     };
 
     const setCurrency = (curr: Currency) => {
