@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"strings"
+	"time"
 
 	"github.com/travelohi/backend/internal/account"
 )
@@ -104,7 +105,11 @@ func (uc *AccountUseCase) InternalCreateBooking(ctx context.Context, booking *ac
 
 	// generate booking reference code
 	booking.BookingReferenceCode = "PNR-" + booking.ID[:8]
-	booking.Status = "completed"
+	booking.Status = "ongoing"
+	nowStr := time.Now().Format("2006-01-02")
+	if booking.CheckOutDate != "" && booking.CheckOutDate < nowStr {
+		booking.Status = "completed"
+	}
 
 	err := uc.bookingRepo.CreateBooking(ctx, booking)
 	if err != nil {

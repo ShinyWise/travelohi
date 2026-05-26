@@ -1,0 +1,124 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+    backdrop-filter: blur(4px);
+    padding: 20px;
+}
+
+.modalContent {
+    background-color: var(--bg-primary);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #0b5b9c;
+    color: #fff;
+    padding: 15px 25px;
+
+    h3 {
+        margin: 0;
+        font-size: 1.2rem;
+    }
+
+    .closeBtn {
+        background: transparent;
+        border: none;
+        color: #fff;
+        font-size: 1.2rem;
+        cursor: pointer;
+
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+}
+
+.loadingState,
+.errorState {
+    padding: 50px;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.errorState {
+    color: #e74c3c;
+}
+
+.ticketBody {
+    display: flex;
+    padding: 25px;
+    gap: 25px;
+
+    @media (max-width: 600px) {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+.detailsSection {
+    flex: 1;
+
+    h4 {
+        margin: 0 0 5px;
+        font-size: 1.3rem;
+        color: var(--text-primary);
+    }
+
+    .subtitle {
+        color: var(--text-secondary);
+        margin: 0 0 20px;
+        font-size: 0.95rem;
+        border-bottom: 1px dashed var(--border-color);
+        padding-bottom: 15px;
+    }
+}
+
+.infoGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+
+    .infoItem {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        span {
+            font-size: 1rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .statusBadge {
+            display: inline-block;
+            align-self: flex-start;
+            background-color: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+    }
+}
