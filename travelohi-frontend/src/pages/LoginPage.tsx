@@ -27,7 +27,10 @@ const LoginPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
     // success messages from redirect state
+    const queryParams = new URLSearchParams(location.search);
+    const isSessionExpired = queryParams.get('expired') === 'true';
     const message = location.state?.message;
+    const displayMessage = isSessionExpired ? t.session_expired_message : message;
     const validateEmail = (val: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.com$/;
         if (!emailRegex.test(val)) {
@@ -106,7 +109,7 @@ const LoginPage: React.FC = () => {
         <div className={styles.loginContainer}>
             <div className={styles.formCard}>
                 <h2>{t.login_title}</h2>
-                {message && <div className={styles.successMessage}>{message}</div>}
+                {displayMessage && <div className={styles.successMessage}>{displayMessage}</div>}
                 {grpcError && <div className={styles.serverError}>{grpcError}</div>}
                 {/* conditional forms for step 1 and step 2 */}
                 {step === 1 ? (

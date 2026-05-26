@@ -14,15 +14,22 @@ const authInterceptor: RpcInterceptor = {
             options.meta["authorization"] = `Bearer ${token}`;
         }
 
+        const tokenSent = token;
         const call = next(method, input, options);
 
         call.status.then(status => {
             if (status.code === 'UNAUTHENTICATED') {
-                handleSessionExpired();
+                const currentToken = localStorage.getItem("access_token");
+                if (tokenSent && tokenSent === currentToken && method.name !== 'Logout') {
+                    handleSessionExpired();
+                }
             }
         }).catch(err => {
             if (err.code === 'UNAUTHENTICATED' || err.message?.toLowerCase().includes('unauthenticated')) {
-                handleSessionExpired();
+                const currentToken = localStorage.getItem("access_token");
+                if (tokenSent && tokenSent === currentToken && method.name !== 'Logout') {
+                    handleSessionExpired();
+                }
             }
         });
 

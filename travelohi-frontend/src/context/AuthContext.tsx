@@ -21,6 +21,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     useEffect(() => {
         const initializeAuth = () => {
+            const isUrlExpired = window.location.search.includes('expired=true') || window.location.hash.includes('expired=true');
+
+            if (isUrlExpired) {
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('user_id');
+                localStorage.removeItem('profile_picture_url');
+                setToken(null);
+                setUserId(null);
+                setProfilePictureUrl(null);
+                setIsLoading(false);
+                if (!window.location.pathname.startsWith('/login')) {
+                    window.location.href = '/login?expired=true';
+                }
+                return;
+            }
+
             const storedToken = localStorage.getItem('access_token');
             const storedUserId = localStorage.getItem('user_id');
             const storedProfilePic = localStorage.getItem('profile_picture_url');
