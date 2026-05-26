@@ -26,7 +26,7 @@ const CheckoutConfirmationModal: React.FC<Props> = ({ isOpen, transactionId }) =
                     {t.confirm_modal_email_notice}
                 </p>
                 <div className={styles.actions}>
-                    <button className={styles.primaryBtn} onClick={() => navigate('/profile', { replace: true })}>
+                    <button className={styles.primaryBtn} onClick={() => navigate('/bookings', { replace: true })}>
                         {t.confirm_modal_view_bookings}
                     </button>
                     <button className={styles.secondaryBtn} onClick={() => navigate('/', { replace: true })}>

@@ -115,7 +115,16 @@ const CartPage: React.FC = () => {
             throw new Error(err.message || t.cart_update_date_error);
         }
     };
-    const hasExpiredItems = cartItems.some(item => item.status === 'expired');
+    const nowStr = new Date().toISOString().split('T')[0];
+    const hasExpiredItems = cartItems.some(item => {
+        if (item.status === 'expired') return true;
+        if (item.itemType === 'hotel_room') {
+            return item.checkOutDate && item.checkOutDate < nowStr;
+        } else if (item.itemType === 'flight_seat') {
+            return item.checkInDate && item.checkInDate < nowStr;
+        }
+        return false;
+    });
     if (isLoading) return <div className={styles.centeredState}>{t.cart_loading}</div>;
     if (cartItems.length === 0) {
         return (
