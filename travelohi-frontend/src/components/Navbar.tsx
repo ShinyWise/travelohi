@@ -8,11 +8,14 @@ import { transport } from '../utils/grpcClient';
 import { translations } from '../utils/translations';
 import { formatCurrency } from '../utils/currencyFormatter';
 import SearchInput from './SearchInput';
+import LogoutConfirmationModal from './LogoutConfirmationModal';
 import styles from './Navbar.module.scss';
+
+const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23999'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
 
 const Navbar: React.FC = () => {
     const { theme, toggleTheme, currency, setCurrency, language, setLanguage } = useAppContext();
-    const { isAuthenticated, userId, logout, profilePictureUrl } = useAuth();
+    const { isAuthenticated, userId, logout, profilePictureUrl, updateProfilePicture } = useAuth();
     const navigate = useNavigate();
     const t = translations[language];
 
@@ -23,6 +26,8 @@ const Navbar: React.FC = () => {
     const [isPaymentDropdownOpen, setIsPaymentDropdownOpen] = useState(false);
     const [ongoingCount, setOngoingCount] = useState<number>(0);
     const [profileInfo, setProfileInfo] = useState<{ firstName: string; hiWalletBalance?: bigint } | null>(null);
+    const [creditCards, setCreditCards] = useState<{ id: number; lastFour: string; type: string }[]>([]);
+    const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
     const dropdownRef = useRef<HTMLDivElement>(null);
     const currDropdownRef = useRef<HTMLDivElement>(null);
@@ -61,6 +66,9 @@ const Navbar: React.FC = () => {
                         firstName: response.profile.firstName,
                         hiWalletBalance: response.profile.hiWalletBalance
                     });
+                    if (response.profile.profilePictureUrl) {
+                        updateProfilePicture(response.profile.profilePictureUrl);
+                    }
                 }
 
                 const { response: bookingRes } = await client.getBookingHistory({
@@ -85,6 +93,23 @@ const Navbar: React.FC = () => {
         }
     }, [isAuthenticated, userId]);
 
+    useEffect(() => {
+        if (isAuthenticated && userId) {
+            const saved = localStorage.getItem(`travelohi_credit_cards_${userId}`);
+            if (saved) {
+                try {
+                    setCreditCards(JSON.parse(saved));
+                } catch (e) {
+                    console.error("Failed to parse credit cards from localStorage", e);
+                }
+            } else {
+                setCreditCards([]);
+            }
+        } else {
+            setCreditCards([]);
+        }
+    }, [isAuthenticated, userId, isPaymentDropdownOpen]);
+
     const handleLanguageSelect = (lang: 'ID' | 'EN') => {
         setLanguage(lang);
         setIsLangDropdownOpen(false);
@@ -95,7 +120,8 @@ const Navbar: React.FC = () => {
         setIsCurrDropdownOpen(false);
     };
 
-    const handleLogout = async () => {
+    const handleLogoutConfirm = async () => {
+        setIsLogoutModalOpen(false);
         setIsUserDropdownOpen(false);
         if (userId) {
             try {
@@ -167,38 +193,33 @@ const Navbar: React.FC = () => {
                                     <div className={`${styles.dropdownMenu} ${styles.paymentMenu}`}>
                                         <div className={styles.paymentHeader}>{t.payment_methods}</div>
 
-                                        <div className={styles.paymentSection}>
-                                            <div className={styles.sectionTitle}>{t.from_travelohi}</div>
-                                            <div className={styles.paymentOption}>
-                                                <span className={styles.paymentIcon}>👛</span>
-                                                <div className={styles.paymentDetails}>
-                                                    <span className={styles.optionName}>HI Wallet</span>
-                                                    {isAuthenticated && profileInfo?.hiWalletBalance !== undefined ? (
-                                                        <span className={styles.optionInfo}>
-                                                            {t.wallet_balance}: {formatCurrency(profileInfo.hiWalletBalance, currency)}
-                                                        </span>
-                                                    ) : (
-                                                        <span className={styles.optionInfo}>{t.login_to_see_balance}</span>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <div className={styles.paymentOption}>
-                                                <span className={styles.paymentIcon}>💳</span>
-                                                <div className={styles.paymentDetails}>
-                                                    <span className={styles.optionName}>Credit Card</span>
-                                                    <span className={styles.optionInfo}>Visa, Mastercard, JCB</span>
-                                                </div>
+                                        <div className={styles.paymentOption}>
+                                            <span className={styles.paymentIcon}>👛</span>
+                                            <div className={styles.paymentDetails}>
+                                                <span className={styles.optionName}>HI Wallet</span>
+                                                {isAuthenticated && profileInfo?.hiWalletBalance !== undefined ? (
+                                                    <span className={styles.optionInfo}>
+                                                        {t.wallet_balance}: {formatCurrency(profileInfo.hiWalletBalance, currency)}
+                                                    </span>
+                                                ) : (
+                                                    <span className={styles.optionInfo}>{t.login_to_see_balance}</span>
+                                                )}
                                             </div>
                                         </div>
 
-                                        <div className={styles.paymentSection}>
-                                            <div className={styles.sectionTitle}>{t.other_methods}</div>
-                                            <div className={styles.paymentOption}>
-                                                <span className={styles.paymentIcon}>🏦</span>
-                                                <div className={styles.paymentDetails}>
-                                                    <span className={styles.optionName}>HI Debt</span>
-                                                    <span className={styles.optionInfo}>Transfer Bank VA</span>
-                                                </div>
+                                        <div className={styles.paymentOption}>
+                                            <span className={styles.paymentIcon}>💳</span>
+                                            <div className={styles.paymentDetails}>
+                                                <span className={styles.optionName}>{t.cc_default_type}</span>
+                                                {isAuthenticated && creditCards.length > 0 ? (
+                                                    creditCards.map(card => (
+                                                        <span key={card.id} className={styles.optionInfo} style={{ display: 'block' }}>
+                                                            ******{card.lastFour}
+                                                        </span>
+                                                    ))
+                                                ) : (
+                                                    <span className={styles.optionInfo}>Visa, Mastercard, JCB</span>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -259,7 +280,7 @@ const Navbar: React.FC = () => {
                                     aria-label="User Menu"
                                 >
                                     <img
-                                        src={profilePictureUrl || '/assets/default-avatar.png'}
+                                        src={profilePictureUrl || DEFAULT_AVATAR}
                                         alt="Avatar"
                                         className={styles.userAvatar}
                                     />
@@ -280,7 +301,7 @@ const Navbar: React.FC = () => {
                                         >
                                             {t.profile}
                                         </button>
-                                        <button onClick={handleLogout} className={styles.dropdownItem}>
+                                        <button onClick={() => setIsLogoutModalOpen(true)} className={styles.dropdownItem}>
                                             {t.logout}
                                         </button>
                                     </div>
@@ -295,6 +316,11 @@ const Navbar: React.FC = () => {
                     </div>
                 </nav>
             </div>
+            <LogoutConfirmationModal
+                isOpen={isLogoutModalOpen}
+                onClose={() => setIsLogoutModalOpen(false)}
+                onConfirm={handleLogoutConfirm}
+            />
         </header>
     );
 };
