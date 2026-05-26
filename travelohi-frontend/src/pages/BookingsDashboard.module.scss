@@ -1,0 +1,17 @@
+.pageContainer {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.5px;
+}
+
+.viewContent {
+    transition: opacity 0.2s ease-in-out;
+}

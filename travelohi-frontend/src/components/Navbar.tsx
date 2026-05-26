@@ -168,7 +168,7 @@ const Navbar: React.FC = () => {
                             <>
                                 <span
                                     className={styles.navItemText}
-                                    onClick={() => navigate('/profile', { state: { activeTab: 'bookings' } })}
+                                    onClick={() => navigate('/bookings')}
                                 >
                                     {t.my_orders} {ongoingCount > 0 && <span className={styles.badge}>{ongoingCount}</span>}
                                 </span>

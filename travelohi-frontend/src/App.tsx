@@ -12,6 +12,7 @@ import FlightDetailPage from './pages/FlightDetailPage';
 import HotelDetailsPage from './pages/HotelDetailsPage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
+import BookingsDashboard from './pages/BookingsDashboard';
 
 // redirect ke login page kalo unauthenticated 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -40,6 +41,9 @@ function App() {
               <Route path="/hotel" element={<HotelDetailsPage />} />
               <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
               <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
+              <Route path="/bookings" element={<ProtectedRoute><BookingsDashboard /></ProtectedRoute>} />
+              <Route path="/my-tickets" element={<Navigate to="/bookings" replace />} />
+              <Route path="/booking-history" element={<Navigate to="/bookings" replace />} />
 
               <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
               <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
