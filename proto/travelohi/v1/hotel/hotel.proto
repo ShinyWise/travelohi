@@ -97,6 +97,7 @@ message AddHotelReviewRequest {
   float rating_service = 5;
   string comment = 6;
   bool is_anonymous = 7;
+  string booking_id = 8;
 }
 
 message AddHotelReviewResponse {

@@ -70,11 +70,11 @@ type HotelRepository interface {
 	GetHotelByID(ctx context.Context, id string) (Hotel, error)
 	GetAvailableRooms(ctx context.Context, hotelID string, checkIn, checkOut string) ([]HotelRoom, error)
 	GetRecentReviews(ctx context.Context, hotelID string) ([]HotelReview, error)
-	AddHotelReview(ctx context.Context, review HotelReview) error
+	AddHotelReview(ctx context.Context, review HotelReview, bookingID string) error
 }
 
 type HotelUseCase interface {
 	SearchHotels(ctx context.Context, filter SearchFilter) ([]Hotel, int32, error)
 	GetHotelDetails(ctx context.Context, hotelID string, checkIn, checkOut string) (Hotel, []HotelRoom, []HotelReview, error)
-	AddHotelReview(ctx context.Context, review HotelReview) error
+	AddHotelReview(ctx context.Context, review HotelReview, bookingID string) error
 }

@@ -16,6 +16,7 @@ type Booking struct {
 	Status               string
 	BookingReferenceCode string
 	RoomID               string
+	HotelID              string
 	CreatedAt            time.Time
 }
 

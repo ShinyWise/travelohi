@@ -1,0 +1,219 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.modalContent {
+    background: #ffffff;
+    width: 90%;
+    max-width: 520px;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.header {
+    background: linear-gradient(135deg, #0b5b9c 0%, #1e88e5 100%);
+    color: #ffffff;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    h3 {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 600;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .closeBtn {
+        background: rgba(255, 255, 255, 0.15);
+        border: none;
+        color: #ffffff;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.2s;
+        font-size: 0.9rem;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    }
+}
+
+.errorBox {
+    background: #fdf2f2;
+    border-left: 4px solid #f05252;
+    color: #c81e1e;
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    margin: 16px 24px 0 24px;
+    border-radius: 4px;
+}
+
+.formBody {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.ratingsGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: #f8fafc;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.commentGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    label {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #334155;
+    }
+
+    textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-family: inherit;
+        resize: vertical;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+
+        &:focus {
+            border-color: #1e88e5;
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.15);
+        }
+
+        &:disabled {
+            background: #f1f5f9;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+    }
+}
+
+.charCount {
+    font-size: 0.75rem;
+    color: #64748b;
+    align-self: flex-end;
+}
+
+.optionsGroup {
+    display: flex;
+    align-items: center;
+
+    .checkboxLabel {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+        color: #475569;
+        cursor: pointer;
+        user-select: none;
+
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+    }
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 10px;
+
+    button {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.1s, opacity 0.2s;
+    }
+
+    .cancelBtn {
+        background: #f1f5f9;
+        color: #475569;
+        border: 1px solid #e2e8f0;
+
+        &:hover:not(:disabled) {
+            background: #e2e8f0;
+        }
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    }
+
+    .submitBtn {
+        background: #27ae60;
+        color: #ffffff;
+        border: none;
+
+        &:hover:not(:disabled) {
+            background: #219653;
+        }
+
+        &:disabled {
+            background: #cbd5e1;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}

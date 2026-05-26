@@ -224,7 +224,11 @@ export interface BookingItem {
     status: string; // "ongoing", "completed", "cancelled"    /**
      * @generated from protobuf field: string booking_reference_code = 8
      */
-    bookingReferenceCode: string; // e.g., PNR "XYZ123"}
+    bookingReferenceCode: string; // e.g., PNR "XYZ123"    /**
+     * @generated from protobuf field: string hotel_id = 9
+     */
+    hotelId: string;
+}
 /**
  * request and response
  *
@@ -995,7 +999,8 @@ class BookingItem$Type extends MessageType<BookingItem> {
             { no: 5, name: "check_in_date", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 6, name: "check_out_date", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 7, name: "status", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 8, name: "booking_reference_code", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 8, name: "booking_reference_code", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 9, name: "hotel_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<BookingItem>): BookingItem {
@@ -1008,6 +1013,7 @@ class BookingItem$Type extends MessageType<BookingItem> {
         message.checkOutDate = "";
         message.status = "";
         message.bookingReferenceCode = "";
+        message.hotelId = "";
         if (value !== undefined)
             reflectionMergePartial<BookingItem>(this, message, value);
         return message;
@@ -1040,6 +1046,9 @@ class BookingItem$Type extends MessageType<BookingItem> {
                     break;
                 case /* string booking_reference_code */ 8:
                     message.bookingReferenceCode = reader.string();
+                    break;
+                case /* string hotel_id */ 9:
+                    message.hotelId = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1077,6 +1086,9 @@ class BookingItem$Type extends MessageType<BookingItem> {
         /* string booking_reference_code = 8; */
         if (message.bookingReferenceCode !== "")
             writer.tag(8, WireType.LengthDelimited).string(message.bookingReferenceCode);
+        /* string hotel_id = 9; */
+        if (message.hotelId !== "")
+            writer.tag(9, WireType.LengthDelimited).string(message.hotelId);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

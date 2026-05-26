@@ -97,6 +97,7 @@ message BookingItem {
   string check_out_date = 6; // Date or Arrival Time
   string status = 7; // "ongoing", "completed", "cancelled"
   string booking_reference_code = 8; // e.g., PNR "XYZ123"
+  string hotel_id = 9;
 }
 
 // request and response

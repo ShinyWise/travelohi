@@ -124,7 +124,16 @@ func (r *PostgresBookingRepository) GetBookingHistory(ctx context.Context, userI
 
 	var bookings []account.Booking
 	for _, m := range models {
-		bookings = append(bookings, m.ToDomain())
+		b := m.ToDomain()
+		if b.ItemType == "hotel_room" && b.RoomID != "" {
+			var hotelID string
+			_ = r.db.WithContext(ctx).Table("hotel_rooms").
+				Where("id = ?", b.RoomID).
+				Select("hotel_id").
+				Scan(&hotelID).Error
+			b.HotelID = hotelID
+		}
+		bookings = append(bookings, b)
 	}
 
 	return bookings, total, nil
@@ -137,5 +146,13 @@ func (r *PostgresBookingRepository) GetBookingByID(ctx context.Context, bookingI
 		return nil, err
 	}
 	domain := model.ToDomain()
+	if domain.ItemType == "hotel_room" && domain.RoomID != "" {
+		var hotelID string
+		_ = r.db.WithContext(ctx).Table("hotel_rooms").
+			Where("id = ?", domain.RoomID).
+			Select("hotel_id").
+			Scan(&hotelID).Error
+		domain.HotelID = hotelID
+	}
 	return &domain, nil
 }

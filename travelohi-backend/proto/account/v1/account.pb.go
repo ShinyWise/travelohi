@@ -607,6 +607,7 @@ type BookingItem struct {
 	CheckOutDate         string                 `protobuf:"bytes,6,opt,name=check_out_date,json=checkOutDate,proto3" json:"check_out_date,omitempty"`                         // Date or Arrival Time
 	Status               string                 `protobuf:"bytes,7,opt,name=status,proto3" json:"status,omitempty"`                                                           // "ongoing", "completed", "cancelled"
 	BookingReferenceCode string                 `protobuf:"bytes,8,opt,name=booking_reference_code,json=bookingReferenceCode,proto3" json:"booking_reference_code,omitempty"` // e.g., PNR "XYZ123"
+	HotelId              string                 `protobuf:"bytes,9,opt,name=hotel_id,json=hotelId,proto3" json:"hotel_id,omitempty"`
 	unknownFields        protoimpl.UnknownFields
 	sizeCache            protoimpl.SizeCache
 }
@@ -693,6 +694,13 @@ func (x *BookingItem) GetStatus() string {
 func (x *BookingItem) GetBookingReferenceCode() string {
 	if x != nil {
 		return x.BookingReferenceCode
+	}
+	return ""
+}
+
+func (x *BookingItem) GetHotelId() string {
+	if x != nil {
+		return x.HotelId
 	}
 	return ""
 }
@@ -1354,7 +1362,7 @@ const file_proto_travelohi_v1_account_account_proto_rawDesc = "" +
 	"\x11hi_wallet_balance\x18\t \x01(\x03R\x0fhiWalletBalance\x12!\n" +
 	"\fphone_number\x18\n" +
 	" \x01(\tR\vphoneNumber\x12\x18\n" +
-	"\aaddress\x18\v \x01(\tR\aaddress\"\xab\x02\n" +
+	"\aaddress\x18\v \x01(\tR\aaddress\"\xc6\x02\n" +
 	"\vBookingItem\x12\x1d\n" +
 	"\n" +
 	"booking_id\x18\x01 \x01(\tR\tbookingId\x12%\n" +
@@ -1364,7 +1372,8 @@ const file_proto_travelohi_v1_account_account_proto_rawDesc = "" +
 	"\rcheck_in_date\x18\x05 \x01(\tR\vcheckInDate\x12$\n" +
 	"\x0echeck_out_date\x18\x06 \x01(\tR\fcheckOutDate\x12\x16\n" +
 	"\x06status\x18\a \x01(\tR\x06status\x124\n" +
-	"\x16booking_reference_code\x18\b \x01(\tR\x14bookingReferenceCode\",\n" +
+	"\x16booking_reference_code\x18\b \x01(\tR\x14bookingReferenceCode\x12\x19\n" +
+	"\bhotel_id\x18\t \x01(\tR\ahotelId\",\n" +
 	"\x11GetProfileRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\"Q\n" +
 	"\x12GetProfileResponse\x12;\n" +

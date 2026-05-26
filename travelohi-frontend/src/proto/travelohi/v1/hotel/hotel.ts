@@ -283,6 +283,10 @@ export interface AddHotelReviewRequest {
      * @generated from protobuf field: bool is_anonymous = 7
      */
     isAnonymous: boolean;
+    /**
+     * @generated from protobuf field: string booking_id = 8
+     */
+    bookingId: string;
 }
 /**
  * @generated from protobuf message travelohi.v1.hotel.AddHotelReviewResponse
@@ -995,7 +999,8 @@ class AddHotelReviewRequest$Type extends MessageType<AddHotelReviewRequest> {
             { no: 4, name: "rating_location", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ },
             { no: 5, name: "rating_service", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ },
             { no: 6, name: "comment", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 7, name: "is_anonymous", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+            { no: 7, name: "is_anonymous", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 8, name: "booking_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<AddHotelReviewRequest>): AddHotelReviewRequest {
@@ -1007,6 +1012,7 @@ class AddHotelReviewRequest$Type extends MessageType<AddHotelReviewRequest> {
         message.ratingService = 0;
         message.comment = "";
         message.isAnonymous = false;
+        message.bookingId = "";
         if (value !== undefined)
             reflectionMergePartial<AddHotelReviewRequest>(this, message, value);
         return message;
@@ -1036,6 +1042,9 @@ class AddHotelReviewRequest$Type extends MessageType<AddHotelReviewRequest> {
                     break;
                 case /* bool is_anonymous */ 7:
                     message.isAnonymous = reader.bool();
+                    break;
+                case /* string booking_id */ 8:
+                    message.bookingId = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1070,6 +1079,9 @@ class AddHotelReviewRequest$Type extends MessageType<AddHotelReviewRequest> {
         /* bool is_anonymous = 7; */
         if (message.isAnonymous !== false)
             writer.tag(7, WireType.Varint).bool(message.isAnonymous);
+        /* string booking_id = 8; */
+        if (message.bookingId !== "")
+            writer.tag(8, WireType.LengthDelimited).string(message.bookingId);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

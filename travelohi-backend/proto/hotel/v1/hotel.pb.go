@@ -700,6 +700,7 @@ type AddHotelReviewRequest struct {
 	RatingService     float32                `protobuf:"fixed32,5,opt,name=rating_service,json=ratingService,proto3" json:"rating_service,omitempty"`
 	Comment           string                 `protobuf:"bytes,6,opt,name=comment,proto3" json:"comment,omitempty"`
 	IsAnonymous       bool                   `protobuf:"varint,7,opt,name=is_anonymous,json=isAnonymous,proto3" json:"is_anonymous,omitempty"`
+	BookingId         string                 `protobuf:"bytes,8,opt,name=booking_id,json=bookingId,proto3" json:"booking_id,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -781,6 +782,13 @@ func (x *AddHotelReviewRequest) GetIsAnonymous() bool {
 		return x.IsAnonymous
 	}
 	return false
+}
+
+func (x *AddHotelReviewRequest) GetBookingId() string {
+	if x != nil {
+		return x.BookingId
+	}
+	return ""
 }
 
 type AddHotelReviewResponse struct {
@@ -910,7 +918,7 @@ const file_proto_travelohi_v1_hotel_hotel_proto_rawDesc = "" +
 	"\x17GetHotelDetailsResponse\x12/\n" +
 	"\x05hotel\x18\x01 \x01(\v2\x19.travelohi.v1.hotel.HotelR\x05hotel\x12F\n" +
 	"\x0favailable_rooms\x18\x02 \x03(\v2\x1d.travelohi.v1.hotel.HotelRoomR\x0eavailableRooms\x12F\n" +
-	"\x0erecent_reviews\x18\x03 \x03(\v2\x1f.travelohi.v1.hotel.HotelReviewR\rrecentReviews\"\x95\x02\n" +
+	"\x0erecent_reviews\x18\x03 \x03(\v2\x1f.travelohi.v1.hotel.HotelReviewR\rrecentReviews\"\xb4\x02\n" +
 	"\x15AddHotelReviewRequest\x12\x19\n" +
 	"\bhotel_id\x18\x01 \x01(\tR\ahotelId\x12-\n" +
 	"\x12rating_cleanliness\x18\x02 \x01(\x02R\x11ratingCleanliness\x12%\n" +
@@ -918,7 +926,9 @@ const file_proto_travelohi_v1_hotel_hotel_proto_rawDesc = "" +
 	"\x0frating_location\x18\x04 \x01(\x02R\x0eratingLocation\x12%\n" +
 	"\x0erating_service\x18\x05 \x01(\x02R\rratingService\x12\x18\n" +
 	"\acomment\x18\x06 \x01(\tR\acomment\x12!\n" +
-	"\fis_anonymous\x18\a \x01(\bR\visAnonymous\"L\n" +
+	"\fis_anonymous\x18\a \x01(\bR\visAnonymous\x12\x1d\n" +
+	"\n" +
+	"booking_id\x18\b \x01(\tR\tbookingId\"L\n" +
 	"\x16AddHotelReviewResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage2\xcc\x02\n" +

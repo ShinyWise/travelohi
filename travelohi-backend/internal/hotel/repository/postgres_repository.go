@@ -281,7 +281,7 @@ func (r *PostgresHotelRepository) GetRecentReviews(ctx context.Context, hotelID 
 	return reviews, nil
 }
 
-func (r *PostgresHotelRepository) AddHotelReview(ctx context.Context, rev hotel.HotelReview) error {
+func (r *PostgresHotelRepository) AddHotelReview(ctx context.Context, rev hotel.HotelReview, bookingID string) error {
 	m := HotelReviewModel{
 		ID:                rev.ID,
 		HotelID:           rev.HotelID,
@@ -299,6 +299,12 @@ func (r *PostgresHotelRepository) AddHotelReview(ctx context.Context, rev hotel.
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		if err := tx.Create(&m).Error; err != nil {
 			return err
+		}
+
+		if bookingID != "" {
+			if err := tx.Table("booking_models").Where("id = ?", bookingID).Update("status", "reviewed").Error; err != nil {
+				return err
+			}
 		}
 
 		var ratings struct {

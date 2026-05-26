@@ -170,7 +170,7 @@ func (h *HotelHandler) AddHotelReview(ctx context.Context, req *hotelpb.AddHotel
 		CreatedAt:         time.Now(),
 	}
 
-	err = h.usecase.AddHotelReview(ctx, rev)
+	err = h.usecase.AddHotelReview(ctx, rev, req.BookingId)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to add hotel review: %v", err)
 	}

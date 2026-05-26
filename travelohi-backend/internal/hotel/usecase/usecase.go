@@ -37,6 +37,6 @@ func (uc *HotelUseCase) GetHotelDetails(ctx context.Context, hotelID string, che
 	return h, rooms, reviews, nil
 }
 
-func (uc *HotelUseCase) AddHotelReview(ctx context.Context, review hotel.HotelReview) error {
-	return uc.repo.AddHotelReview(ctx, review)
+func (uc *HotelUseCase) AddHotelReview(ctx context.Context, review hotel.HotelReview, bookingID string) error {
+	return uc.repo.AddHotelReview(ctx, review, bookingID)
 }
