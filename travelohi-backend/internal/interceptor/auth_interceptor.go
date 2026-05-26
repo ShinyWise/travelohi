@@ -47,7 +47,6 @@ func NewAuthInterceptor(tokenMaker token.Maker, cache auth.CacheRepository, role
 		"/travelohi.v1.flight.FlightService/SearchFlights":      true,
 		"/travelohi.v1.flight.FlightService/GetFlightDetails":   true,
 		"/travelohi.v1.flight.FlightService/GetFlightSeats":     true,
-		"/travelohi.v1.flight.FlightService/InternalLockSeat":   true,
 		"/travelohi.v1.flight.FlightService/InternalUnlockSeat": true,
 
 		// Telemetry Service public recommendations
