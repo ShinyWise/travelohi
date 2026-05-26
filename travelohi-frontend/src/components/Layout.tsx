@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAppContext } from '../context/ThemeContext';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import Navbar from './Navbar';
+import Footer from './Footer';
 import styles from './Layout.module.scss';
 interface LayoutProps {
     children: React.ReactNode;

@@ -2,17 +2,17 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AppProvider } from './context/ThemeContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Layout from './components/Layout';
-import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import ForgotPasswordPage from './pages/ForgotPasswordPage';
-import ProfilePage from './pages/ProfilePage';
-import SearchPage from './pages/SearchResultPage';
-import FlightDetailPage from './pages/FlightDetailPage';
-import HotelDetailsPage from './pages/HotelDetailsPage';
-import CartPage from './pages/CartPage';
-import CheckoutPage from './pages/CheckoutPage';
-import BookingsDashboard from './pages/BookingsDashboard';
+import HomePage from './pages/HomePage/HomePage';
+import LoginPage from './pages/LoginPage/LoginPage';
+import RegisterPage from './pages/RegisterPage/RegisterPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage/ForgotPasswordPage';
+import ProfilePage from './pages/ProfilePage/ProfilePage';
+import SearchPage from './pages/SearchResultPage/SearchResultPage';
+import FlightDetailPage from './pages/FlightDetailPage/FlightDetailPage';
+import HotelDetailsPage from './pages/HotelDetailsPage/HotelDetailsPage';
+import CartPage from './pages/CartPage/CartPage';
+import CheckoutPage from './pages/CheckoutPage/CheckoutPage';
+import BookingsDashboard from './pages/BookingsDashboard/BookingsDashboard';
 
 // redirect ke login page kalo unauthenticated 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
