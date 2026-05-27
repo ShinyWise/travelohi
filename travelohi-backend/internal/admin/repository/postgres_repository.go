@@ -97,6 +97,25 @@ func (r *postgresAdminRepo) UpdatePromoStatus(ctx context.Context, promoID strin
 		Update("is_active", isActive).Error
 }
 
+func (r *postgresAdminRepo) GetPromos(ctx context.Context) ([]*admin.Promo, error) {
+	var models []PromoModel
+	err := r.db.WithContext(ctx).Find(&models).Error
+	if err != nil {
+		return nil, err
+	}
+
+	var promos []*admin.Promo
+	for _, m := range models {
+		promos = append(promos, &admin.Promo{
+			ID:             m.ID,
+			PromoCode:      m.PromoCode,
+			DiscountAmount: m.DiscountAmount,
+			IsActive:       m.IsActive,
+		})
+	}
+	return promos, nil
+}
+
 func (r *postgresAdminRepo) GetUsers(ctx context.Context, limit, offset int32) ([]*admin.UserAdminView, int64, error) {
 	var models []AccountModel
 	var total int64

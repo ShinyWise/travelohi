@@ -89,6 +89,14 @@ func (h *AdminHandler) TogglePromoStatus(ctx context.Context, req *adminpb.Toggl
 	}, nil
 }
 
+func (h *AdminHandler) GetAllPromos(ctx context.Context, req *adminpb.GetAllPromosRequest) (*adminpb.GetAllPromosResponse, error) {
+	res, err := h.usecase.GetAllPromos(ctx, req)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to fetch promos: %v", err)
+	}
+	return res, nil
+}
+
 func (h *AdminHandler) GetAllUsers(ctx context.Context, req *adminpb.GetAllUsersRequest) (*adminpb.GetAllUsersResponse, error) {
 	res, err := h.usecase.GetAllUsers(ctx, req)
 	if err != nil {

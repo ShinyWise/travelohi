@@ -52,6 +52,7 @@ type AdminRepository interface {
 	// promo management
 	InsertPromo(ctx context.Context, promo *Promo) error
 	UpdatePromoStatus(ctx context.Context, promoID string, isActive bool) error
+	GetPromos(ctx context.Context) ([]*Promo, error)
 
 	// user management
 	GetUsers(ctx context.Context, limit, offset int32) ([]*UserAdminView, int64, error)
@@ -68,6 +69,7 @@ type UseCase interface {
 	// promo & user management
 	CreatePromo(ctx context.Context, req *adminpb.CreatePromoRequest) error
 	TogglePromoStatus(ctx context.Context, req *adminpb.TogglePromoRequest) error
+	GetAllPromos(ctx context.Context, req *adminpb.GetAllPromosRequest) (*adminpb.GetAllPromosResponse, error)
 	GetAllUsers(ctx context.Context, req *adminpb.GetAllUsersRequest) (*adminpb.GetAllUsersResponse, error)
 	BanUser(ctx context.Context, req *adminpb.BanUserRequest) error
 

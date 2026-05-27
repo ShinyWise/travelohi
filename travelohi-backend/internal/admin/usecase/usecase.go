@@ -62,6 +62,27 @@ func (u *adminUseCase) TogglePromoStatus(ctx context.Context, req *adminpb.Toggl
 	return u.repo.UpdatePromoStatus(ctx, req.GetPromoId(), req.GetIsActive())
 }
 
+func (u *adminUseCase) GetAllPromos(ctx context.Context, req *adminpb.GetAllPromosRequest) (*adminpb.GetAllPromosResponse, error) {
+	domainPromos, err := u.repo.GetPromos(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var pbPromos []*adminpb.PromoAdminView
+	for _, p := range domainPromos {
+		pbPromos = append(pbPromos, &adminpb.PromoAdminView{
+			Id:             p.ID,
+			PromoCode:      p.PromoCode,
+			DiscountAmount: p.DiscountAmount,
+			IsActive:       p.IsActive,
+		})
+	}
+
+	return &adminpb.GetAllPromosResponse{
+		Promos: pbPromos,
+	}, nil
+}
+
 func (u *adminUseCase) GetAllUsers(ctx context.Context, req *adminpb.GetAllUsersRequest) (*adminpb.GetAllUsersResponse, error) {
 	// default pagination
 	limit := req.GetLimit()
