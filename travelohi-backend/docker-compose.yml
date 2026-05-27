@@ -212,6 +212,22 @@ services:
     networks:
       - travelohi-net
 
+  # Database Seeder
+  seeder:
+    build:
+      context: .
+      dockerfile: deployments/seeder.Dockerfile
+    environment:
+      - DB_URL=postgres://root:secretpassword@postgres:5432/travelohi_db?sslmode=disable
+      - MEMCACHED_URL=memcached:11211
+    depends_on:
+      postgres:
+        condition: service_healthy
+      memcached:
+        condition: service_started
+    networks:
+      - travelohi-net
+
 networks:
   travelohi-net:
     driver: bridge
