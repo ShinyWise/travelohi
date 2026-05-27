@@ -1,0 +1,103 @@
+.broadcastContainer {
+    max-width: 800px;
+}
+
+.headerBox {
+    margin-bottom: 15px;
+
+    h3 {
+        margin: 0 0 10px;
+        color: var(--text-primary);
+    }
+
+    p {
+        margin: 0;
+        color: var(--text-secondary);
+        line-height: 1.5;
+        font-size: 0.95rem;
+    }
+}
+
+.emailForm {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.toast {
+    padding: 15px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin-bottom: 15px;
+
+    &.success {
+        background-color: rgba(46, 204, 113, 0.1);
+        color: #27ae60;
+        border: 1px solid rgba(46, 204, 113, 0.3);
+    }
+
+    &.error {
+        background-color: rgba(231, 76, 60, 0.1);
+        color: #e74c3c;
+        border: 1px solid rgba(231, 76, 60, 0.3);
+    }
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 15px;
+
+    label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+    }
+
+    input,
+    textarea {
+        padding: 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        background-color: var(--bg-secondary);
+        color: var(--text-primary);
+        font-family: inherit;
+        font-size: 1rem;
+
+        &:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+    }
+}
+
+.formActions {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 15px;
+
+    .submitBtn {
+        background-color: #0b5b9c;
+        color: #fff;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: opacity 0.2s;
+
+        &:hover:not(:disabled) {
+            opacity: 0.9;
+        }
+
+        &:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+    }
+}
