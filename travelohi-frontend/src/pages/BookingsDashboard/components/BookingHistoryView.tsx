@@ -99,7 +99,6 @@ const BookingHistoryView: React.FC<Props> = ({ searchQuery, itemTypeFilter }) =>
                 title: b.displayName.split('|')[0],
                 subtitle: `${t.profile_booking_code}: ${b.bookingReferenceCode}`,
                 dateString: `${b.checkInDate} - ${b.checkOutDate}`,
-                imageUrl: b.itemType === 'hotel_room' ? '/assets/default-hotel.jpg' : '/assets/default-flight.jpg',
                 hasReviewed: b.status === 'reviewed',
                 checkInDate: b.checkInDate,
                 checkOutDate: b.checkOutDate,
