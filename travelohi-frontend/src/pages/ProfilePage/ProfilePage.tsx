@@ -9,6 +9,7 @@ import { transport } from '../../utils/grpcClient';
 import ProfileForm from './components/ProfileForm';
 import CreditCardManager from './components/CreditCardManager';
 import LogoutConfirmationModal from '../../components/LogoutConfirmationModal';
+import ProgressiveImage from '../../components/ProgressiveImage';
 import styles from './ProfilePage.module.scss';
 
 const accountClient = new AccountServiceClient(transport);
@@ -66,10 +67,12 @@ const ProfilePage: React.FC = () => {
         <div className={styles.profileContainer}>
             <aside className={styles.sidebar}>
                 <div className={styles.userInfoMini}>
-                    <img
+                    <ProgressiveImage
                         src={profileData?.profilePictureUrl || DEFAULT_AVATAR}
                         alt="Profile"
                         className={styles.avatarMini}
+                        wrapperStyle={{ display: 'inline-flex', flexShrink: 0 }}
+                        skeletonStyle={{ borderRadius: '50%' }}
                     />
                     <div className={styles.nameMini}>
                         <h4>{profileData?.firstName} {profileData?.lastName}</h4>

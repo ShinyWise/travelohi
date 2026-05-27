@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
+import ProgressiveImage from '../../../components/ProgressiveImage';
 import styles from './RecommendationGrids.module.scss';
 
 interface PopularDestination {
@@ -52,7 +53,11 @@ const FlightRecommendationList: React.FC<Props> = ({ destinations }) => {
                         style={{ cursor: 'pointer' }}
                     >
                         <div className={styles.imageWrapper}>
-                            <img src={getFlightImage(dest.destinationAirport)} alt={dest.destinationAirport} />
+                            <ProgressiveImage 
+                                src={getFlightImage(dest.destinationAirport)} 
+                                alt={dest.destinationAirport} 
+                                wrapperStyle={{ width: '100%', height: '100%', display: 'block' }}
+                            />
                         </div>
                         <div className={styles.cardContent}>
                             <h4>{dest.destinationAirport}</h4>

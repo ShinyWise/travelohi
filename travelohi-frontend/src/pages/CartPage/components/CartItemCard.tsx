@@ -1,4 +1,6 @@
 import React from 'react';
+import { Calendar, Plane } from 'lucide-react';
+import ProgressiveImage from '../../../components/ProgressiveImage';
 import styles from './CartItemCard.module.scss';
 export interface CartItem {
     id: string;
@@ -23,7 +25,11 @@ const CartItemCard: React.FC<Props> = ({ item, onRemove, onEditDates }) => {
     return (
         <div className={`${styles.card} ${isExpired ? styles.expiredCard : ''}`}>
             <div className={styles.imageCol}>
-                <img src={item.imageUrl || (isHotel ? '/assets/default-hotel.jpg' : '/assets/default-flight.jpg')} alt={item.title} />
+                <ProgressiveImage 
+                    src={item.imageUrl || (isHotel ? '/assets/default-hotel.jpg' : '/assets/default-flight.jpg')} 
+                    alt={item.title} 
+                    wrapperStyle={{ width: '100%', height: '100%', display: 'block' }}
+                />
             </div>
             <div className={styles.infoCol}>
                 <div className={styles.headerRow}>
@@ -35,9 +41,15 @@ const CartItemCard: React.FC<Props> = ({ item, onRemove, onEditDates }) => {
                 <p className={styles.subtitle}>{item.subtitle}</p>
                 <div className={styles.dateInfo}>
                     {isHotel ? (
-                        <span>📅 {item.checkInDate} s/d {item.checkOutDate}</span>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                            <Calendar size={14} />
+                            <span>{item.checkInDate} s/d {item.checkOutDate}</span>
+                        </span>
                     ) : (
-                        <span>🛫 {item.checkInDate} (Kedatangan: {item.checkOutDate})</span>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                            <Plane size={14} />
+                            <span>{item.checkInDate} (Kedatangan: {item.checkOutDate})</span>
+                        </span>
                     )}
                 </div>
                 <div className={styles.actions}>

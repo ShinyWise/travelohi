@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
+import ProgressiveImage from '../../../components/ProgressiveImage';
 import styles from './ImageGallery.module.scss';
 interface Props {
     images: string[];
@@ -15,7 +16,12 @@ const ImageGallery: React.FC<Props> = ({ images }) => {
     return (
         <div className={styles.galleryContainer}>
             <div className={styles.mainImageWrapper}>
-                <img src={mainImage} alt="Main Hotel View" className={styles.mainImage} />
+                <ProgressiveImage 
+                    src={mainImage} 
+                    alt="Main Hotel View" 
+                    className={styles.mainImage} 
+                    wrapperStyle={{ width: '100%', height: '100%', display: 'block' }}
+                />
             </div>
             <div className={styles.thumbnailGrid}>
                 {images.slice(0, 4).map((img, idx) => (
@@ -24,7 +30,12 @@ const ImageGallery: React.FC<Props> = ({ images }) => {
                         className={`${styles.thumbnailWrapper} ${mainImage === img ? styles.active : ''}`}
                         onClick={() => setMainImage(img)}
                     >
-                        <img src={img} alt={`Thumbnail ${idx + 1}`} className={styles.thumbnail} />
+                        <ProgressiveImage 
+                            src={img} 
+                            alt={`Thumbnail ${idx + 1}`} 
+                            className={styles.thumbnail} 
+                            wrapperStyle={{ width: '100%', height: '100%', display: 'block' }}
+                        />
                     </div>
                 ))}
                 {images.length > 4 && (

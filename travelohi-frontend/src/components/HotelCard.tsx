@@ -2,8 +2,10 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/ThemeContext';
 import { translations } from '../utils/translations';
+import { MapPin } from 'lucide-react';
 import styles from './ResultCard.module.scss';
 import { formatCurrency } from '../utils/currencyFormatter';
+import ProgressiveImage from './ProgressiveImage';
 
 interface Props {
     hotel: any;
@@ -20,11 +22,19 @@ const HotelCard: React.FC<Props> = ({ hotel }) => {
         <div className={styles.card}>
             <div className={styles.hotelGrid}>
                 <div className={styles.imageCol}>
-                    <img src={hotel.pictureUrls?.[0] || '/assets/default-hotel.jpg'} alt={hotel.name} />
+                    <ProgressiveImage 
+                        src={hotel.pictureUrls?.[0] || '/assets/default-hotel.jpg'} 
+                        alt={hotel.name} 
+                        wrapperStyle={{ width: '100%', height: '150px', display: 'block' }}
+                        skeletonStyle={{ borderRadius: '6px' }}
+                    />
                 </div>
                 <div className={styles.infoCol}>
                     <h3>{hotel.name}</h3>
-                    <span className={styles.address}>📍 {hotel.address}</span>
+                    <span className={styles.address} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <MapPin size={16} />
+                        <span>{hotel.address}</span>
+                    </span>
                     <div className={styles.ratingBlock}>
                         <span className={styles.ratingBadge}>{hotel.ratingAverage?.toFixed(1)}</span>
                         <span className={styles.reviews}>({hotel.totalReviews} {t.hotel_card_reviews})</span>

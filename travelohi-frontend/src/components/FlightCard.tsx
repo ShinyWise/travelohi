@@ -4,6 +4,7 @@ import { useAppContext } from '../context/ThemeContext';
 import { translations } from '../utils/translations';
 import styles from './ResultCard.module.scss';
 import { formatCurrency } from '../utils/currencyFormatter';
+import ProgressiveImage from './ProgressiveImage';
 
 interface Props {
     flight: any;
@@ -52,7 +53,12 @@ const FlightCard: React.FC<Props> = ({ flight }) => {
         <div className={styles.card}>
             <div className={styles.flightHeader}>
                 <div className={styles.airlineInfo}>
-                    <img src={flight.airline?.logoUrl || '/assets/default-airline.png'} alt={flight.airline?.name} />
+                    <ProgressiveImage 
+                        src={flight.airline?.logoUrl || '/assets/default-airline.png'} 
+                        alt={flight.airline?.name} 
+                        wrapperStyle={{ height: '30px', display: 'flex' }}
+                        skeletonStyle={{ borderRadius: '4px' }}
+                    />
                     <span>{flight.airline?.name}</span>
                     <small>{flight.flightCode}</small>
                 </div>

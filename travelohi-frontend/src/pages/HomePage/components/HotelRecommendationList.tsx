@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
+import ProgressiveImage from '../../../components/ProgressiveImage';
 import styles from './RecommendationGrids.module.scss';
 
 interface PopularHotel {
@@ -50,7 +51,11 @@ const HotelRecommendationList: React.FC<Props> = ({ hotels }) => {
                         style={{ cursor: 'pointer' }}
                     >
                         <div className={styles.imageWrapper}>
-                            <img src={getHotelImage(hotel.name)} alt={hotel.name} />
+                            <ProgressiveImage 
+                                src={getHotelImage(hotel.name)} 
+                                alt={hotel.name} 
+                                wrapperStyle={{ width: '100%', height: '100%', display: 'block' }}
+                            />
                         </div>
                         <div className={styles.cardContent}>
                             <h4>{hotel.name}</h4>

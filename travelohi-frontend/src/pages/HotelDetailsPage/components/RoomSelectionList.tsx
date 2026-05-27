@@ -1,6 +1,8 @@
 import React from 'react';
 import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
+import ProgressiveImage from '../../../components/ProgressiveImage';
+import { Users } from 'lucide-react';
 import styles from './RoomSelectionList.module.scss';
 interface RoomType {
     id: string;
@@ -36,12 +38,17 @@ const RoomSelectionList: React.FC<Props> = ({ rooms, onAddToCart, isProcessingId
                     return (
                         <div key={room.id} className={styles.roomCard}>
                             <div className={styles.imageCol}>
-                                <img src={room.imageUrl || '/assets/default-room.jpg'} alt={room.name} />
+                                <ProgressiveImage 
+                                    src={room.imageUrl || '/assets/default-room.jpg'} 
+                                    alt={room.name} 
+                                    wrapperStyle={{ width: '100%', height: '100%', display: 'block' }}
+                                />
                             </div>
                             <div className={styles.infoCol}>
                                 <h4>{room.name}</h4>
-                                <div className={styles.capacity}>
-                                    <span className={styles.icon}>👥</span> {t.rooms_max_guests.replace('{count}', room.capacity.toString())}
+                                <div className={styles.capacity} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                    <span className={styles.icon} style={{ display: 'inline-flex', alignItems: 'center' }}><Users size={16} /></span> 
+                                    <span>{t.rooms_max_guests.replace('{count}', room.capacity.toString())}</span>
                                 </div>
                                 <div className={styles.facilities}>
                                     {room.facilities?.map((fac, idx) => (
