@@ -214,6 +214,7 @@ func (h *AccountGrpcHandler) GetBookingHistory(ctx context.Context, req *account
 			Status:               b.Status,
 			BookingReferenceCode: b.BookingReferenceCode,
 			HotelId:              b.HotelID,
+			ImageUrl:             b.ImageUrl,
 		})
 	}
 
@@ -247,6 +248,7 @@ func (h *AccountGrpcHandler) GetETicket(ctx context.Context, req *accountpb.GetE
 		Status:               booking.Status,
 		BookingReferenceCode: booking.BookingReferenceCode,
 		HotelId:              booking.HotelID,
+		ImageUrl:             booking.ImageUrl,
 	}
 
 	return &accountpb.GetETicketResponse{

@@ -99,6 +99,7 @@ message BookingItem {
   string status = 7; // "ongoing", "completed", "cancelled"
   string booking_reference_code = 8; // e.g., PNR "XYZ123"
   string hotel_id = 9;
+  string image_url = 10;
 }
 
 // request and response

@@ -132,6 +132,22 @@ func (r *PostgresBookingRepository) GetBookingHistory(ctx context.Context, userI
 				Select("hotel_id").
 				Scan(&hotelID).Error
 			b.HotelID = hotelID
+
+			var hotelImage string
+			_ = r.db.WithContext(ctx).Table("hotels").
+				Where("id = ?", hotelID).
+				Select("picture_urls->>0").
+				Scan(&hotelImage).Error
+			b.ImageUrl = hotelImage
+		} else if b.ItemType == "flight_seat" && b.RoomID != "" {
+			var airlineLogo string
+			_ = r.db.WithContext(ctx).Table("airlines").
+				Joins("JOIN flights ON flights.airline_id = airlines.id").
+				Joins("JOIN flight_seats ON flight_seats.flight_id = flights.id").
+				Where("flight_seats.id = ?", b.RoomID).
+				Select("airlines.logo_url").
+				Scan(&airlineLogo).Error
+			b.ImageUrl = airlineLogo
 		}
 		bookings = append(bookings, b)
 	}
@@ -153,6 +169,22 @@ func (r *PostgresBookingRepository) GetBookingByID(ctx context.Context, bookingI
 			Select("hotel_id").
 			Scan(&hotelID).Error
 		domain.HotelID = hotelID
+
+		var hotelImage string
+		_ = r.db.WithContext(ctx).Table("hotels").
+			Where("id = ?", hotelID).
+			Select("picture_urls->>0").
+			Scan(&hotelImage).Error
+		domain.ImageUrl = hotelImage
+	} else if domain.ItemType == "flight_seat" && domain.RoomID != "" {
+		var airlineLogo string
+		_ = r.db.WithContext(ctx).Table("airlines").
+			Joins("JOIN flights ON flights.airline_id = airlines.id").
+			Joins("JOIN flight_seats ON flight_seats.flight_id = flights.id").
+			Where("flight_seats.id = ?", domain.RoomID).
+			Select("airlines.logo_url").
+			Scan(&airlineLogo).Error
+		domain.ImageUrl = airlineLogo
 	}
 	return &domain, nil
 }
