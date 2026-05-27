@@ -192,6 +192,10 @@ export interface UserProfile {
      * @generated from protobuf field: string address = 11
      */
     address: string;
+    /**
+     * @generated from protobuf field: bool is_admin = 12
+     */
+    isAdmin: boolean;
 }
 /**
  * @generated from protobuf message travelohi.v1.account.BookingItem
@@ -875,7 +879,8 @@ class UserProfile$Type extends MessageType<UserProfile> {
             { no: 8, name: "newsletter_subscribed", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
             { no: 9, name: "hi_wallet_balance", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
             { no: 10, name: "phone_number", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 11, name: "address", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 11, name: "address", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 12, name: "is_admin", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
         ]);
     }
     create(value?: PartialMessage<UserProfile>): UserProfile {
@@ -891,6 +896,7 @@ class UserProfile$Type extends MessageType<UserProfile> {
         message.hiWalletBalance = 0n;
         message.phoneNumber = "";
         message.address = "";
+        message.isAdmin = false;
         if (value !== undefined)
             reflectionMergePartial<UserProfile>(this, message, value);
         return message;
@@ -932,6 +938,9 @@ class UserProfile$Type extends MessageType<UserProfile> {
                     break;
                 case /* string address */ 11:
                     message.address = reader.string();
+                    break;
+                case /* bool is_admin */ 12:
+                    message.isAdmin = reader.bool();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -978,6 +987,9 @@ class UserProfile$Type extends MessageType<UserProfile> {
         /* string address = 11; */
         if (message.address !== "")
             writer.tag(11, WireType.LengthDelimited).string(message.address);
+        /* bool is_admin = 12; */
+        if (message.isAdmin !== false)
+            writer.tag(12, WireType.Varint).bool(message.isAdmin);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

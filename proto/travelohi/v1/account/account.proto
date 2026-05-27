@@ -86,6 +86,7 @@ message UserProfile {
 
   string phone_number = 10;
   string address = 11;
+  bool is_admin = 12;
 }
 
 message BookingItem {

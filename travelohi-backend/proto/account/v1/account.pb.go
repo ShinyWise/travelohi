@@ -486,6 +486,7 @@ type UserProfile struct {
 	HiWalletBalance      int64                  `protobuf:"varint,9,opt,name=hi_wallet_balance,json=hiWalletBalance,proto3" json:"hi_wallet_balance,omitempty"`
 	PhoneNumber          string                 `protobuf:"bytes,10,opt,name=phone_number,json=phoneNumber,proto3" json:"phone_number,omitempty"`
 	Address              string                 `protobuf:"bytes,11,opt,name=address,proto3" json:"address,omitempty"`
+	IsAdmin              bool                   `protobuf:"varint,12,opt,name=is_admin,json=isAdmin,proto3" json:"is_admin,omitempty"`
 	unknownFields        protoimpl.UnknownFields
 	sizeCache            protoimpl.SizeCache
 }
@@ -595,6 +596,13 @@ func (x *UserProfile) GetAddress() string {
 		return x.Address
 	}
 	return ""
+}
+
+func (x *UserProfile) GetIsAdmin() bool {
+	if x != nil {
+		return x.IsAdmin
+	}
+	return false
 }
 
 type BookingItem struct {
@@ -1348,7 +1356,7 @@ const file_proto_travelohi_v1_account_account_proto_rawDesc = "" +
 	"\x15newsletter_subscribed\x18\a \x01(\bR\x14newsletterSubscribed\"I\n" +
 	"\x13InitProfileResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage\"\xe7\x02\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"\x82\x03\n" +
 	"\vUserProfile\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1d\n" +
@@ -1362,7 +1370,8 @@ const file_proto_travelohi_v1_account_account_proto_rawDesc = "" +
 	"\x11hi_wallet_balance\x18\t \x01(\x03R\x0fhiWalletBalance\x12!\n" +
 	"\fphone_number\x18\n" +
 	" \x01(\tR\vphoneNumber\x12\x18\n" +
-	"\aaddress\x18\v \x01(\tR\aaddress\"\xc6\x02\n" +
+	"\aaddress\x18\v \x01(\tR\aaddress\x12\x19\n" +
+	"\bis_admin\x18\f \x01(\bR\aisAdmin\"\xc6\x02\n" +
 	"\vBookingItem\x12\x1d\n" +
 	"\n" +
 	"booking_id\x18\x01 \x01(\tR\tbookingId\x12%\n" +

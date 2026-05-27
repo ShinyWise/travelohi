@@ -597,6 +597,154 @@ func (x *AdminResponse) GetMessage() string {
 	return ""
 }
 
+type GetAllPromosRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAllPromosRequest) Reset() {
+	*x = GetAllPromosRequest{}
+	mi := &file_proto_travelohi_v1_admin_admin_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAllPromosRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAllPromosRequest) ProtoMessage() {}
+
+func (x *GetAllPromosRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_travelohi_v1_admin_admin_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAllPromosRequest.ProtoReflect.Descriptor instead.
+func (*GetAllPromosRequest) Descriptor() ([]byte, []int) {
+	return file_proto_travelohi_v1_admin_admin_proto_rawDescGZIP(), []int{10}
+}
+
+type PromoAdminView struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Id             string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	PromoCode      string                 `protobuf:"bytes,2,opt,name=promo_code,json=promoCode,proto3" json:"promo_code,omitempty"`
+	DiscountAmount int64                  `protobuf:"varint,3,opt,name=discount_amount,json=discountAmount,proto3" json:"discount_amount,omitempty"`
+	IsActive       bool                   `protobuf:"varint,4,opt,name=is_active,json=isActive,proto3" json:"is_active,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *PromoAdminView) Reset() {
+	*x = PromoAdminView{}
+	mi := &file_proto_travelohi_v1_admin_admin_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PromoAdminView) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PromoAdminView) ProtoMessage() {}
+
+func (x *PromoAdminView) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_travelohi_v1_admin_admin_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PromoAdminView.ProtoReflect.Descriptor instead.
+func (*PromoAdminView) Descriptor() ([]byte, []int) {
+	return file_proto_travelohi_v1_admin_admin_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *PromoAdminView) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *PromoAdminView) GetPromoCode() string {
+	if x != nil {
+		return x.PromoCode
+	}
+	return ""
+}
+
+func (x *PromoAdminView) GetDiscountAmount() int64 {
+	if x != nil {
+		return x.DiscountAmount
+	}
+	return 0
+}
+
+func (x *PromoAdminView) GetIsActive() bool {
+	if x != nil {
+		return x.IsActive
+	}
+	return false
+}
+
+type GetAllPromosResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Promos        []*PromoAdminView      `protobuf:"bytes,1,rep,name=promos,proto3" json:"promos,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAllPromosResponse) Reset() {
+	*x = GetAllPromosResponse{}
+	mi := &file_proto_travelohi_v1_admin_admin_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAllPromosResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAllPromosResponse) ProtoMessage() {}
+
+func (x *GetAllPromosResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_travelohi_v1_admin_admin_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAllPromosResponse.ProtoReflect.Descriptor instead.
+func (*GetAllPromosResponse) Descriptor() ([]byte, []int) {
+	return file_proto_travelohi_v1_admin_admin_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *GetAllPromosResponse) GetPromos() []*PromoAdminView {
+	if x != nil {
+		return x.Promos
+	}
+	return nil
+}
+
 var File_proto_travelohi_v1_admin_admin_proto protoreflect.FileDescriptor
 
 const file_proto_travelohi_v1_admin_admin_proto_rawDesc = "" +
@@ -642,12 +790,22 @@ const file_proto_travelohi_v1_admin_admin_proto_rawDesc = "" +
 	"ban_status\x18\x02 \x01(\bR\tbanStatus\"C\n" +
 	"\rAdminResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage2\x9e\x05\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"\x15\n" +
+	"\x13GetAllPromosRequest\"\x85\x01\n" +
+	"\x0ePromoAdminView\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
+	"\n" +
+	"promo_code\x18\x02 \x01(\tR\tpromoCode\x12'\n" +
+	"\x0fdiscount_amount\x18\x03 \x01(\x03R\x0ediscountAmount\x12\x1b\n" +
+	"\tis_active\x18\x04 \x01(\bR\bisActive\"R\n" +
+	"\x14GetAllPromosResponse\x12:\n" +
+	"\x06promos\x18\x01 \x03(\v2\".travelohi.v1.admin.PromoAdminViewR\x06promos2\x83\x06\n" +
 	"\fAdminService\x12Z\n" +
 	"\vInsertHotel\x12&.travelohi.v1.admin.InsertHotelRequest\x1a!.travelohi.v1.admin.AdminResponse\"\x00\x12^\n" +
 	"\rInsertAirline\x12(.travelohi.v1.admin.InsertAirlineRequest\x1a!.travelohi.v1.admin.AdminResponse\"\x00\x12Z\n" +
 	"\vCreatePromo\x12&.travelohi.v1.admin.CreatePromoRequest\x1a!.travelohi.v1.admin.AdminResponse\"\x00\x12`\n" +
-	"\x11TogglePromoStatus\x12&.travelohi.v1.admin.TogglePromoRequest\x1a!.travelohi.v1.admin.AdminResponse\"\x00\x12`\n" +
+	"\x11TogglePromoStatus\x12&.travelohi.v1.admin.TogglePromoRequest\x1a!.travelohi.v1.admin.AdminResponse\"\x00\x12c\n" +
+	"\fGetAllPromos\x12'.travelohi.v1.admin.GetAllPromosRequest\x1a(.travelohi.v1.admin.GetAllPromosResponse\"\x00\x12`\n" +
 	"\vGetAllUsers\x12&.travelohi.v1.admin.GetAllUsersRequest\x1a'.travelohi.v1.admin.GetAllUsersResponse\"\x00\x12R\n" +
 	"\aBanUser\x12\".travelohi.v1.admin.BanUserRequest\x1a!.travelohi.v1.admin.AdminResponse\"\x00\x12^\n" +
 	"\rSendBroadcast\x12(.travelohi.v1.admin.SendBroadcastRequest\x1a!.travelohi.v1.admin.AdminResponse\"\x00B5Z3github.com/travelohi/backend/proto/admin/v1;adminpbb\x06proto3"
@@ -664,7 +822,7 @@ func file_proto_travelohi_v1_admin_admin_proto_rawDescGZIP() []byte {
 	return file_proto_travelohi_v1_admin_admin_proto_rawDescData
 }
 
-var file_proto_travelohi_v1_admin_admin_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_proto_travelohi_v1_admin_admin_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_proto_travelohi_v1_admin_admin_proto_goTypes = []any{
 	(*SendBroadcastRequest)(nil), // 0: travelohi.v1.admin.SendBroadcastRequest
 	(*InsertHotelRequest)(nil),   // 1: travelohi.v1.admin.InsertHotelRequest
@@ -676,28 +834,34 @@ var file_proto_travelohi_v1_admin_admin_proto_goTypes = []any{
 	(*GetAllUsersResponse)(nil),  // 7: travelohi.v1.admin.GetAllUsersResponse
 	(*BanUserRequest)(nil),       // 8: travelohi.v1.admin.BanUserRequest
 	(*AdminResponse)(nil),        // 9: travelohi.v1.admin.AdminResponse
+	(*GetAllPromosRequest)(nil),  // 10: travelohi.v1.admin.GetAllPromosRequest
+	(*PromoAdminView)(nil),       // 11: travelohi.v1.admin.PromoAdminView
+	(*GetAllPromosResponse)(nil), // 12: travelohi.v1.admin.GetAllPromosResponse
 }
 var file_proto_travelohi_v1_admin_admin_proto_depIdxs = []int32{
-	6, // 0: travelohi.v1.admin.GetAllUsersResponse.users:type_name -> travelohi.v1.admin.UserAdminView
-	1, // 1: travelohi.v1.admin.AdminService.InsertHotel:input_type -> travelohi.v1.admin.InsertHotelRequest
-	2, // 2: travelohi.v1.admin.AdminService.InsertAirline:input_type -> travelohi.v1.admin.InsertAirlineRequest
-	3, // 3: travelohi.v1.admin.AdminService.CreatePromo:input_type -> travelohi.v1.admin.CreatePromoRequest
-	4, // 4: travelohi.v1.admin.AdminService.TogglePromoStatus:input_type -> travelohi.v1.admin.TogglePromoRequest
-	5, // 5: travelohi.v1.admin.AdminService.GetAllUsers:input_type -> travelohi.v1.admin.GetAllUsersRequest
-	8, // 6: travelohi.v1.admin.AdminService.BanUser:input_type -> travelohi.v1.admin.BanUserRequest
-	0, // 7: travelohi.v1.admin.AdminService.SendBroadcast:input_type -> travelohi.v1.admin.SendBroadcastRequest
-	9, // 8: travelohi.v1.admin.AdminService.InsertHotel:output_type -> travelohi.v1.admin.AdminResponse
-	9, // 9: travelohi.v1.admin.AdminService.InsertAirline:output_type -> travelohi.v1.admin.AdminResponse
-	9, // 10: travelohi.v1.admin.AdminService.CreatePromo:output_type -> travelohi.v1.admin.AdminResponse
-	9, // 11: travelohi.v1.admin.AdminService.TogglePromoStatus:output_type -> travelohi.v1.admin.AdminResponse
-	7, // 12: travelohi.v1.admin.AdminService.GetAllUsers:output_type -> travelohi.v1.admin.GetAllUsersResponse
-	9, // 13: travelohi.v1.admin.AdminService.BanUser:output_type -> travelohi.v1.admin.AdminResponse
-	9, // 14: travelohi.v1.admin.AdminService.SendBroadcast:output_type -> travelohi.v1.admin.AdminResponse
-	8, // [8:15] is the sub-list for method output_type
-	1, // [1:8] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	6,  // 0: travelohi.v1.admin.GetAllUsersResponse.users:type_name -> travelohi.v1.admin.UserAdminView
+	11, // 1: travelohi.v1.admin.GetAllPromosResponse.promos:type_name -> travelohi.v1.admin.PromoAdminView
+	1,  // 2: travelohi.v1.admin.AdminService.InsertHotel:input_type -> travelohi.v1.admin.InsertHotelRequest
+	2,  // 3: travelohi.v1.admin.AdminService.InsertAirline:input_type -> travelohi.v1.admin.InsertAirlineRequest
+	3,  // 4: travelohi.v1.admin.AdminService.CreatePromo:input_type -> travelohi.v1.admin.CreatePromoRequest
+	4,  // 5: travelohi.v1.admin.AdminService.TogglePromoStatus:input_type -> travelohi.v1.admin.TogglePromoRequest
+	10, // 6: travelohi.v1.admin.AdminService.GetAllPromos:input_type -> travelohi.v1.admin.GetAllPromosRequest
+	5,  // 7: travelohi.v1.admin.AdminService.GetAllUsers:input_type -> travelohi.v1.admin.GetAllUsersRequest
+	8,  // 8: travelohi.v1.admin.AdminService.BanUser:input_type -> travelohi.v1.admin.BanUserRequest
+	0,  // 9: travelohi.v1.admin.AdminService.SendBroadcast:input_type -> travelohi.v1.admin.SendBroadcastRequest
+	9,  // 10: travelohi.v1.admin.AdminService.InsertHotel:output_type -> travelohi.v1.admin.AdminResponse
+	9,  // 11: travelohi.v1.admin.AdminService.InsertAirline:output_type -> travelohi.v1.admin.AdminResponse
+	9,  // 12: travelohi.v1.admin.AdminService.CreatePromo:output_type -> travelohi.v1.admin.AdminResponse
+	9,  // 13: travelohi.v1.admin.AdminService.TogglePromoStatus:output_type -> travelohi.v1.admin.AdminResponse
+	12, // 14: travelohi.v1.admin.AdminService.GetAllPromos:output_type -> travelohi.v1.admin.GetAllPromosResponse
+	7,  // 15: travelohi.v1.admin.AdminService.GetAllUsers:output_type -> travelohi.v1.admin.GetAllUsersResponse
+	9,  // 16: travelohi.v1.admin.AdminService.BanUser:output_type -> travelohi.v1.admin.AdminResponse
+	9,  // 17: travelohi.v1.admin.AdminService.SendBroadcast:output_type -> travelohi.v1.admin.AdminResponse
+	10, // [10:18] is the sub-list for method output_type
+	2,  // [2:10] is the sub-list for method input_type
+	2,  // [2:2] is the sub-list for extension type_name
+	2,  // [2:2] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_proto_travelohi_v1_admin_admin_proto_init() }
@@ -711,7 +875,7 @@ func file_proto_travelohi_v1_admin_admin_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_travelohi_v1_admin_admin_proto_rawDesc), len(file_proto_travelohi_v1_admin_admin_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

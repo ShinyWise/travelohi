@@ -169,6 +169,41 @@ export interface AdminResponse {
      */
     message: string;
 }
+/**
+ * @generated from protobuf message travelohi.v1.admin.GetAllPromosRequest
+ */
+export interface GetAllPromosRequest {
+}
+/**
+ * @generated from protobuf message travelohi.v1.admin.PromoAdminView
+ */
+export interface PromoAdminView {
+    /**
+     * @generated from protobuf field: string id = 1
+     */
+    id: string;
+    /**
+     * @generated from protobuf field: string promo_code = 2
+     */
+    promoCode: string;
+    /**
+     * @generated from protobuf field: int64 discount_amount = 3
+     */
+    discountAmount: bigint;
+    /**
+     * @generated from protobuf field: bool is_active = 4
+     */
+    isActive: boolean;
+}
+/**
+ * @generated from protobuf message travelohi.v1.admin.GetAllPromosResponse
+ */
+export interface GetAllPromosResponse {
+    /**
+     * @generated from protobuf field: repeated travelohi.v1.admin.PromoAdminView promos = 1
+     */
+    promos: PromoAdminView[];
+}
 // @generated message type with reflection information, may provide speed optimized methods
 class SendBroadcastRequest$Type extends MessageType<SendBroadcastRequest> {
     constructor() {
@@ -775,6 +810,162 @@ class AdminResponse$Type extends MessageType<AdminResponse> {
  * @generated MessageType for protobuf message travelohi.v1.admin.AdminResponse
  */
 export const AdminResponse = new AdminResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetAllPromosRequest$Type extends MessageType<GetAllPromosRequest> {
+    constructor() {
+        super("travelohi.v1.admin.GetAllPromosRequest", []);
+    }
+    create(value?: PartialMessage<GetAllPromosRequest>): GetAllPromosRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<GetAllPromosRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetAllPromosRequest): GetAllPromosRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetAllPromosRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.admin.GetAllPromosRequest
+ */
+export const GetAllPromosRequest = new GetAllPromosRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class PromoAdminView$Type extends MessageType<PromoAdminView> {
+    constructor() {
+        super("travelohi.v1.admin.PromoAdminView", [
+            { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "promo_code", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "discount_amount", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 4, name: "is_active", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+        ]);
+    }
+    create(value?: PartialMessage<PromoAdminView>): PromoAdminView {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.id = "";
+        message.promoCode = "";
+        message.discountAmount = 0n;
+        message.isActive = false;
+        if (value !== undefined)
+            reflectionMergePartial<PromoAdminView>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: PromoAdminView): PromoAdminView {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string id */ 1:
+                    message.id = reader.string();
+                    break;
+                case /* string promo_code */ 2:
+                    message.promoCode = reader.string();
+                    break;
+                case /* int64 discount_amount */ 3:
+                    message.discountAmount = reader.int64().toBigInt();
+                    break;
+                case /* bool is_active */ 4:
+                    message.isActive = reader.bool();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: PromoAdminView, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string id = 1; */
+        if (message.id !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.id);
+        /* string promo_code = 2; */
+        if (message.promoCode !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.promoCode);
+        /* int64 discount_amount = 3; */
+        if (message.discountAmount !== 0n)
+            writer.tag(3, WireType.Varint).int64(message.discountAmount);
+        /* bool is_active = 4; */
+        if (message.isActive !== false)
+            writer.tag(4, WireType.Varint).bool(message.isActive);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.admin.PromoAdminView
+ */
+export const PromoAdminView = new PromoAdminView$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetAllPromosResponse$Type extends MessageType<GetAllPromosResponse> {
+    constructor() {
+        super("travelohi.v1.admin.GetAllPromosResponse", [
+            { no: 1, name: "promos", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => PromoAdminView }
+        ]);
+    }
+    create(value?: PartialMessage<GetAllPromosResponse>): GetAllPromosResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.promos = [];
+        if (value !== undefined)
+            reflectionMergePartial<GetAllPromosResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetAllPromosResponse): GetAllPromosResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated travelohi.v1.admin.PromoAdminView promos */ 1:
+                    message.promos.push(PromoAdminView.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetAllPromosResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated travelohi.v1.admin.PromoAdminView promos = 1; */
+        for (let i = 0; i < message.promos.length; i++)
+            PromoAdminView.internalBinaryWrite(message.promos[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.admin.GetAllPromosResponse
+ */
+export const GetAllPromosResponse = new GetAllPromosResponse$Type();
 /**
  * @generated ServiceType for protobuf service travelohi.v1.admin.AdminService
  */
@@ -783,6 +974,7 @@ export const AdminService = new ServiceType("travelohi.v1.admin.AdminService", [
     { name: "InsertAirline", options: {}, I: InsertAirlineRequest, O: AdminResponse },
     { name: "CreatePromo", options: {}, I: CreatePromoRequest, O: AdminResponse },
     { name: "TogglePromoStatus", options: {}, I: TogglePromoRequest, O: AdminResponse },
+    { name: "GetAllPromos", options: {}, I: GetAllPromosRequest, O: GetAllPromosResponse },
     { name: "GetAllUsers", options: {}, I: GetAllUsersRequest, O: GetAllUsersResponse },
     { name: "BanUser", options: {}, I: BanUserRequest, O: AdminResponse },
     { name: "SendBroadcast", options: {}, I: SendBroadcastRequest, O: AdminResponse }

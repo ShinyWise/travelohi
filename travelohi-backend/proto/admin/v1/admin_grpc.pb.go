@@ -23,6 +23,7 @@ const (
 	AdminService_InsertAirline_FullMethodName     = "/travelohi.v1.admin.AdminService/InsertAirline"
 	AdminService_CreatePromo_FullMethodName       = "/travelohi.v1.admin.AdminService/CreatePromo"
 	AdminService_TogglePromoStatus_FullMethodName = "/travelohi.v1.admin.AdminService/TogglePromoStatus"
+	AdminService_GetAllPromos_FullMethodName      = "/travelohi.v1.admin.AdminService/GetAllPromos"
 	AdminService_GetAllUsers_FullMethodName       = "/travelohi.v1.admin.AdminService/GetAllUsers"
 	AdminService_BanUser_FullMethodName           = "/travelohi.v1.admin.AdminService/BanUser"
 	AdminService_SendBroadcast_FullMethodName     = "/travelohi.v1.admin.AdminService/SendBroadcast"
@@ -38,6 +39,7 @@ type AdminServiceClient interface {
 	// Promo Management
 	CreatePromo(ctx context.Context, in *CreatePromoRequest, opts ...grpc.CallOption) (*AdminResponse, error)
 	TogglePromoStatus(ctx context.Context, in *TogglePromoRequest, opts ...grpc.CallOption) (*AdminResponse, error)
+	GetAllPromos(ctx context.Context, in *GetAllPromosRequest, opts ...grpc.CallOption) (*GetAllPromosResponse, error)
 	// User Management
 	GetAllUsers(ctx context.Context, in *GetAllUsersRequest, opts ...grpc.CallOption) (*GetAllUsersResponse, error)
 	BanUser(ctx context.Context, in *BanUserRequest, opts ...grpc.CallOption) (*AdminResponse, error)
@@ -93,6 +95,16 @@ func (c *adminServiceClient) TogglePromoStatus(ctx context.Context, in *TogglePr
 	return out, nil
 }
 
+func (c *adminServiceClient) GetAllPromos(ctx context.Context, in *GetAllPromosRequest, opts ...grpc.CallOption) (*GetAllPromosResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAllPromosResponse)
+	err := c.cc.Invoke(ctx, AdminService_GetAllPromos_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *adminServiceClient) GetAllUsers(ctx context.Context, in *GetAllUsersRequest, opts ...grpc.CallOption) (*GetAllUsersResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetAllUsersResponse)
@@ -133,6 +145,7 @@ type AdminServiceServer interface {
 	// Promo Management
 	CreatePromo(context.Context, *CreatePromoRequest) (*AdminResponse, error)
 	TogglePromoStatus(context.Context, *TogglePromoRequest) (*AdminResponse, error)
+	GetAllPromos(context.Context, *GetAllPromosRequest) (*GetAllPromosResponse, error)
 	// User Management
 	GetAllUsers(context.Context, *GetAllUsersRequest) (*GetAllUsersResponse, error)
 	BanUser(context.Context, *BanUserRequest) (*AdminResponse, error)
@@ -159,6 +172,9 @@ func (UnimplementedAdminServiceServer) CreatePromo(context.Context, *CreatePromo
 }
 func (UnimplementedAdminServiceServer) TogglePromoStatus(context.Context, *TogglePromoRequest) (*AdminResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method TogglePromoStatus not implemented")
+}
+func (UnimplementedAdminServiceServer) GetAllPromos(context.Context, *GetAllPromosRequest) (*GetAllPromosResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetAllPromos not implemented")
 }
 func (UnimplementedAdminServiceServer) GetAllUsers(context.Context, *GetAllUsersRequest) (*GetAllUsersResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetAllUsers not implemented")
@@ -262,6 +278,24 @@ func _AdminService_TogglePromoStatus_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AdminService_GetAllPromos_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllPromosRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).GetAllPromos(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminService_GetAllPromos_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).GetAllPromos(ctx, req.(*GetAllPromosRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _AdminService_GetAllUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetAllUsersRequest)
 	if err := dec(in); err != nil {
@@ -338,6 +372,10 @@ var AdminService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TogglePromoStatus",
 			Handler:    _AdminService_TogglePromoStatus_Handler,
+		},
+		{
+			MethodName: "GetAllPromos",
+			Handler:    _AdminService_GetAllPromos_Handler,
 		},
 		{
 			MethodName: "GetAllUsers",

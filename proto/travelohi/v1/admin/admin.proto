@@ -12,6 +12,7 @@ service AdminService {
   // Promo Management
   rpc CreatePromo(CreatePromoRequest) returns (AdminResponse) {}
   rpc TogglePromoStatus(TogglePromoRequest) returns (AdminResponse) {}
+  rpc GetAllPromos(GetAllPromosRequest) returns (GetAllPromosResponse) {}
 
   // User Management
   rpc GetAllUsers(GetAllUsersRequest) returns (GetAllUsersResponse) {}
@@ -76,4 +77,17 @@ message BanUserRequest {
 message AdminResponse {
   bool success = 1;
   string message = 2;
+}
+
+message GetAllPromosRequest {}
+
+message PromoAdminView {
+  string id = 1;
+  string promo_code = 2;
+  int64 discount_amount = 3;
+  bool is_active = 4;
+}
+
+message GetAllPromosResponse {
+  repeated PromoAdminView promos = 1;
 }

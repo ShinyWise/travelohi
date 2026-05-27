@@ -8,6 +8,8 @@ import type { SendBroadcastRequest } from "./admin";
 import type { BanUserRequest } from "./admin";
 import type { GetAllUsersResponse } from "./admin";
 import type { GetAllUsersRequest } from "./admin";
+import type { GetAllPromosResponse } from "./admin";
+import type { GetAllPromosRequest } from "./admin";
 import type { TogglePromoRequest } from "./admin";
 import type { CreatePromoRequest } from "./admin";
 import type { InsertAirlineRequest } from "./admin";
@@ -40,6 +42,10 @@ export interface IAdminServiceClient {
      * @generated from protobuf rpc: TogglePromoStatus
      */
     togglePromoStatus(input: TogglePromoRequest, options?: RpcOptions): UnaryCall<TogglePromoRequest, AdminResponse>;
+    /**
+     * @generated from protobuf rpc: GetAllPromos
+     */
+    getAllPromos(input: GetAllPromosRequest, options?: RpcOptions): UnaryCall<GetAllPromosRequest, GetAllPromosResponse>;
     /**
      * User Management
      *
@@ -99,19 +105,26 @@ export class AdminServiceClient implements IAdminServiceClient, ServiceInfo {
         return stackIntercept<TogglePromoRequest, AdminResponse>("unary", this._transport, method, opt, input);
     }
     /**
+     * @generated from protobuf rpc: GetAllPromos
+     */
+    getAllPromos(input: GetAllPromosRequest, options?: RpcOptions): UnaryCall<GetAllPromosRequest, GetAllPromosResponse> {
+        const method = this.methods[4], opt = this._transport.mergeOptions(options);
+        return stackIntercept<GetAllPromosRequest, GetAllPromosResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
      * User Management
      *
      * @generated from protobuf rpc: GetAllUsers
      */
     getAllUsers(input: GetAllUsersRequest, options?: RpcOptions): UnaryCall<GetAllUsersRequest, GetAllUsersResponse> {
-        const method = this.methods[4], opt = this._transport.mergeOptions(options);
+        const method = this.methods[5], opt = this._transport.mergeOptions(options);
         return stackIntercept<GetAllUsersRequest, GetAllUsersResponse>("unary", this._transport, method, opt, input);
     }
     /**
      * @generated from protobuf rpc: BanUser
      */
     banUser(input: BanUserRequest, options?: RpcOptions): UnaryCall<BanUserRequest, AdminResponse> {
-        const method = this.methods[5], opt = this._transport.mergeOptions(options);
+        const method = this.methods[6], opt = this._transport.mergeOptions(options);
         return stackIntercept<BanUserRequest, AdminResponse>("unary", this._transport, method, opt, input);
     }
     /**
@@ -120,7 +133,7 @@ export class AdminServiceClient implements IAdminServiceClient, ServiceInfo {
      * @generated from protobuf rpc: SendBroadcast
      */
     sendBroadcast(input: SendBroadcastRequest, options?: RpcOptions): UnaryCall<SendBroadcastRequest, AdminResponse> {
-        const method = this.methods[6], opt = this._transport.mergeOptions(options);
+        const method = this.methods[7], opt = this._transport.mergeOptions(options);
         return stackIntercept<SendBroadcastRequest, AdminResponse>("unary", this._transport, method, opt, input);
     }
 }
