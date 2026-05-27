@@ -7,8 +7,10 @@ import { AuthServiceClient } from '../proto/travelohi/v1/auth/auth.client';
 import { transport } from '../utils/grpcClient';
 import { translations } from '../utils/translations';
 import { formatCurrency } from '../utils/currencyFormatter';
+import { ShoppingCart, CreditCard, Wallet, Sun, Moon } from 'lucide-react';
 import SearchInput from './SearchInput';
 import LogoutConfirmationModal from './LogoutConfirmationModal';
+import ProgressiveImage from './ProgressiveImage';
 import styles from './Navbar.module.scss';
 
 const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23999'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
@@ -165,9 +167,9 @@ const Navbar: React.FC = () => {
                     <div className={styles.navItems}>
                         <button onClick={toggleTheme} className={`${styles.themeToggle} ${styles[theme]}`} aria-label="Toggle Theme">
                             {theme === 'light' ? (
-                                <img src="/dark-mode-night-moon-svgrepo-com.svg" alt="Dark Mode" className={styles.themeIcon} />
+                                <Moon size={20} className={styles.themeIcon} />
                             ) : (
-                                <img src="/light-mode-svgrepo-com.svg" alt="Light Mode" className={styles.themeIcon} />
+                                <Sun size={20} className={styles.themeIcon} />
                             )}
                         </button>
 
@@ -184,8 +186,9 @@ const Navbar: React.FC = () => {
                                     >
                                         {t.my_orders} {ongoingCount > 0 && <span className={styles.badge}>{ongoingCount}</span>}
                                     </span>
-                                    <span className={styles.navItemText} onClick={() => navigate('/cart')}>
-                                        🛒 {t.cart}
+                                    <span className={styles.navItemText} onClick={() => navigate('/cart')} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                                        <ShoppingCart size={18} />
+                                        <span>{t.cart}</span>
                                     </span>
                                 </>
                             )
@@ -198,8 +201,10 @@ const Navbar: React.FC = () => {
                                         className={styles.dropdownToggle}
                                         onClick={() => setIsPaymentDropdownOpen(!isPaymentDropdownOpen)}
                                         aria-label="Select Payment Info"
+                                        style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                                     >
-                                        <span>💳 {t.payment}</span>
+                                        <CreditCard size={18} />
+                                        <span>{t.payment}</span>
                                         <span className={styles.caret}>▼</span>
                                     </button>
 
@@ -208,7 +213,9 @@ const Navbar: React.FC = () => {
                                             <div className={styles.paymentHeader}>{t.payment_methods}</div>
 
                                             <div className={styles.paymentOption}>
-                                                <span className={styles.paymentIcon}>👛</span>
+                                                <span className={styles.paymentIcon}>
+                                                    <Wallet size={16} />
+                                                </span>
                                                 <div className={styles.paymentDetails}>
                                                     <span className={styles.optionName}>HI Wallet</span>
                                                     {isAuthenticated && profileInfo?.hiWalletBalance !== undefined ? (
@@ -222,7 +229,9 @@ const Navbar: React.FC = () => {
                                             </div>
 
                                             <div className={styles.paymentOption}>
-                                                <span className={styles.paymentIcon}>💳</span>
+                                                <span className={styles.paymentIcon}>
+                                                    <CreditCard size={16} />
+                                                </span>
                                                 <div className={styles.paymentDetails}>
                                                     <span className={styles.optionName}>{t.cc_default_type}</span>
                                                     {isAuthenticated && creditCards.length > 0 ? (
@@ -296,10 +305,12 @@ const Navbar: React.FC = () => {
                                     onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
                                     aria-label="User Menu"
                                 >
-                                    <img
+                                    <ProgressiveImage
                                         src={profilePictureUrl || DEFAULT_AVATAR}
                                         alt="Avatar"
                                         className={styles.userAvatar}
+                                        wrapperStyle={{ display: 'inline-flex', flexShrink: 0 }}
+                                        skeletonStyle={{ borderRadius: '50%' }}
                                     />
                                     <span className={styles.userName}>
                                         {profileInfo ? profileInfo.firstName : 'Memuat...'}

@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { TelemetryServiceClient } from '../proto/travelohi/v1/telemetry/telemetry.client';
 import { transport } from '../utils/grpcClient';
 import { useAuth } from '../context/AuthContext';
 import { useDebounce } from '../utils/useDebounce';
 import { useAppContext } from '../context/ThemeContext';
 import { translations } from '../utils/translations';
+import { Search } from 'lucide-react';
 import SearchDropdown from './SearchDropdown';
 import styles from './SearchInput.module.scss';
 const telemetryClient = new TelemetryServiceClient(transport);
@@ -19,8 +20,16 @@ const SearchInput: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
+    const location = useLocation();
     const { userId } = useAuth();
     const debouncedQuery = useDebounce(query, 500);
+
+    // clear search when returning to home
+    useEffect(() => {
+        if (location.pathname === '/') {
+            setQuery('');
+        }
+    }, [location.pathname]);
     // close dropdown when clicking outside of the search container
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -79,7 +88,9 @@ const SearchInput: React.FC = () => {
     return (
         <div className={styles.searchContainer} ref={containerRef}>
             <div className={styles.inputWrapper}>
-                <span className={styles.searchIcon}>🔍</span>
+                <span className={styles.searchIcon} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Search size={18} />
+                </span>
                 <input
                     type="text"
                     className={styles.searchInput}
