@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAppContext } from '../context/ThemeContext';
 import { translations } from '../utils/translations';
+import { Search } from 'lucide-react';
 import styles from './TicketSearchBar.module.scss';
 
 interface Props {
@@ -14,7 +15,9 @@ const TicketSearchBar: React.FC<Props> = ({ searchQuery, onSearchChange }) => {
 
     return (
         <div className={styles.searchContainer}>
-            <span className={styles.searchIcon}>🔍</span>
+            <span className={styles.searchIcon}>
+                <Search size={18} />
+            </span>
             <input
                 type="text"
                 className={styles.searchInput}

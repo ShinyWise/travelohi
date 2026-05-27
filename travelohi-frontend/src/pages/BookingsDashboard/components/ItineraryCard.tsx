@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
+import { Calendar } from 'lucide-react';
 import styles from './ItineraryCard.module.scss';
 
 export interface BookingItem {
@@ -46,8 +47,9 @@ const ItineraryCard: React.FC<Props> = ({ booking, onViewTicket }) => {
                 <p className={styles.subtitle}>
                     {t.profile_booking_code}: <strong>{booking.bookingReferenceCode}</strong>
                 </p>
-                <span className={styles.date}>
-                    📅 {booking.checkInDate} - {booking.checkOutDate}
+                <span className={styles.date} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    <Calendar size={14} />
+                    <span>{booking.checkInDate} - {booking.checkOutDate}</span>
                 </span>
             </div>
 

@@ -9,6 +9,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useAppContext } from '../../context/ThemeContext';
 import { translations } from '../../utils/translations';
 import { useToast } from '../../components/Toast';
+import { ShoppingCart } from 'lucide-react';
 import PriceSummaryPanel from './components/PrimarySummaryPanel';
 import styles from './CartPage.module.scss';
 const cartClient = new CartServiceClient(transport);
@@ -143,7 +144,9 @@ const CartPage: React.FC = () => {
         return (
             <div className={styles.emptyStateContainer}>
                 <div className={styles.emptyStateCard}>
-                    <span className={styles.emptyIcon}>🛒</span>
+                    <span className={styles.emptyIcon} style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center', marginBottom: '16px' }}>
+                        <ShoppingCart size={48} />
+                    </span>
                     <h2>{t.cart_empty_title}</h2>
                     <p>{t.cart_empty_desc}</p>
                     <button className={styles.exploreBtn} onClick={() => navigate('/')}>

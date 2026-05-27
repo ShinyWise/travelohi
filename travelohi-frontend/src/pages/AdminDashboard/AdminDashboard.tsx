@@ -6,6 +6,7 @@ import InsertAirlineForm from './components/InsertAirlineForm';
 import PromoManager from './components/PromoManager';
 import UserManagerTable from './components/UserManagerTable';
 import BroadcastEmailForm from './components/BroadcastEmailForm';
+import { Hotel, Plane, Ticket, Users, Megaphone } from 'lucide-react';
 import styles from './AdminDashboard.module.scss';
 
 type AdminTab = 'hotel' | 'airline' | 'promo' | 'users' | 'broadcast';
@@ -71,32 +72,42 @@ const AdminDashboard: React.FC = () => {
                     <button
                         className={`${styles.navItem} ${activeTab === 'hotel' ? styles.active : ''}`}
                         onClick={() => changeTab('hotel')}
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                     >
-                        🏨 Manajemen Hotel
+                        <Hotel size={18} />
+                        <span>Manajemen Hotel</span>
                     </button>
                     <button
                         className={`${styles.navItem} ${activeTab === 'airline' ? styles.active : ''}`}
                         onClick={() => changeTab('airline')}
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                     >
-                        ✈️ Manajemen Maskapai
+                        <Plane size={18} />
+                        <span>Manajemen Maskapai</span>
                     </button>
                     <button
                         className={`${styles.navItem} ${activeTab === 'promo' ? styles.active : ''}`}
                         onClick={() => changeTab('promo')}
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                     >
-                        🎟️ Manajemen Promo
+                        <Ticket size={18} />
+                        <span>Manajemen Promo</span>
                     </button>
                     <button
                         className={`${styles.navItem} ${activeTab === 'users' ? styles.active : ''}`}
                         onClick={() => changeTab('users')}
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                     >
-                        👥 Manajemen Pengguna
+                        <Users size={18} />
+                        <span>Manajemen Pengguna</span>
                     </button>
                     <button
                         className={`${styles.navItem} ${activeTab === 'broadcast' ? styles.active : ''}`}
                         onClick={() => changeTab('broadcast')}
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                     >
-                        📢 Broadcast Email
+                        <Megaphone size={18} />
+                        <span>Broadcast Email</span>
                     </button>
                 </nav>
             </aside>

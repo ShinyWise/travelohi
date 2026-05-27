@@ -7,6 +7,7 @@ import PaginationControls from '../../components/PaginationControls';
 import { FlightServiceClient } from '../../proto/travelohi/v1/flight/flight.client';
 import { HotelServiceClient } from '../../proto/travelohi/v1/hotel/hotel.client';
 import { transport } from '../../utils/grpcClient';
+import { Plane, Hotel, Search } from 'lucide-react';
 import styles from './SearchResultPage.module.scss';
 const flightClient = new FlightServiceClient(transport);
 const hotelClient = new HotelServiceClient(transport);
@@ -97,14 +98,18 @@ const SearchResultsPage: React.FC = () => {
                     <button
                         className={searchType === 'flight' ? styles.activeTab : ''}
                         onClick={() => handleTypeSwitch('flight')}
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                     >
-                        ✈️ Tiket Pesawat
+                        <Plane size={18} />
+                        <span>Tiket Pesawat</span>
                     </button>
                     <button
                         className={searchType === 'hotel' ? styles.activeTab : ''}
                         onClick={() => handleTypeSwitch('hotel')}
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                     >
-                        🏨 Hotel
+                        <Hotel size={18} />
+                        <span>Hotel</span>
                     </button>
                 </div>
             </div>
@@ -117,7 +122,9 @@ const SearchResultsPage: React.FC = () => {
                         ))
                     ) : results.length === 0 ? (
                         <div className={styles.emptyState}>
-                            <span className={styles.emptyIcon}>🔍</span>
+                            <span className={styles.emptyIcon} style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center', marginBottom: '16px' }}>
+                                <Search size={48} />
+                            </span>
                             <h3>Oops! Hasil tidak ditemukan.</h3>
                             <p>Coba gunakan kata kunci lain atau kurangi filter yang digunakan.</p>
                         </div>

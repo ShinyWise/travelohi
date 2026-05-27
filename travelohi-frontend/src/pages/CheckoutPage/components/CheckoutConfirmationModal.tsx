@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
+import { CheckCircle } from 'lucide-react';
 import styles from './CheckoutConfirmationModal.module.scss';
 interface Props {
     isOpen: boolean;
@@ -15,7 +16,9 @@ const CheckoutConfirmationModal: React.FC<Props> = ({ isOpen, transactionId }) =
     return (
         <div className={styles.overlay}>
             <div className={styles.modalContent}>
-                <div className={styles.successIcon}>🎉</div>
+                <div className={styles.successIcon} style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center', margin: '0 auto 16px', color: '#10b981' }}>
+                    <CheckCircle size={48} />
+                </div>
                 <h2>{t.confirm_modal_title}</h2>
                 <p className={styles.subtitle}>{t.confirm_modal_subtitle}</p>
                 <div className={styles.transactionBox}>

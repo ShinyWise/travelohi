@@ -6,6 +6,7 @@ import { transport } from '../../../utils/grpcClient';
 import { useAuth } from '../../../context/AuthContext';
 import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
+import { Briefcase } from 'lucide-react';
 import styles from './ActiveItinerariesView.module.scss';
 
 const accountClient = new AccountServiceClient(transport);
@@ -89,7 +90,9 @@ const ActiveItinerariesView: React.FC<Props> = ({ searchQuery, itemTypeFilter })
     if (filteredBookings.length === 0) {
         return (
             <div className={styles.emptyState}>
-                <span className={styles.emptyIcon}>🧳</span>
+                <span className={styles.emptyIcon} style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center', marginBottom: '16px' }}>
+                    <Briefcase size={48} />
+                </span>
                 <h3>{t.tickets_empty_active}</h3>
                 <p>{t.tickets_empty_desc}</p>
             </div>

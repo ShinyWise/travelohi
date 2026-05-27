@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
+import { CheckCircle } from 'lucide-react';
 import styles from './PromoCodeInput.module.scss';
 interface Props {
     onApply: (code: string) => Promise<void>;
@@ -31,7 +32,9 @@ const PromoCodeInput: React.FC<Props> = ({
         return (
             <div className={styles.appliedContainer}>
                 <div className={styles.successBadge}>
-                    <span className={styles.icon}>✅</span>
+                    <span className={styles.icon} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <CheckCircle size={16} />
+                    </span>
                     <div className={styles.details}>
                         <strong>{t.promo_applied}</strong>
                         <span>{appliedCode}</span>

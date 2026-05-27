@@ -3,6 +3,7 @@ import FormInput from '../../../components/FormInput';
 import { useAuth } from '../../../context/AuthContext';
 import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
+import { CreditCard } from 'lucide-react';
 import styles from './CreditCardManager.module.scss';
 const CreditCardManager: React.FC = () => {
     const { userId } = useAuth();
@@ -44,8 +45,10 @@ const CreditCardManager: React.FC = () => {
                 <div className={styles.cardList}>
                     {cards.map(card => (
                         <div key={card.id} className={styles.cardItem}>
-                            <div className={styles.cardInfo}>
-                                <span className={styles.cardIcon}>💳</span>
+                            <div className={styles.cardInfo} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                                <span className={styles.cardIcon} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <CreditCard size={18} />
+                                </span>
                                 <span>**** **** **** {card.lastFour}</span>
                             </div>
                             <button className={styles.removeBtn} onClick={() => handleRemoveCard(card.id)}>{t.cc_manager_delete}</button>
@@ -55,7 +58,7 @@ const CreditCardManager: React.FC = () => {
             )}
             {isAdding ? (
                 <form onSubmit={handleAddCard} className={styles.addCardForm}>
-                     <FormInput
+                    <FormInput
                         label={t.cc_manager_num_label}
                         type="text"
                         value={newCardNumber}

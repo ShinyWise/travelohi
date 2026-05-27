@@ -6,6 +6,7 @@ import { TelemetryServiceClient } from '../../proto/travelohi/v1/telemetry/telem
 import { transport } from '../../utils/grpcClient';
 import { useAppContext } from '../../context/ThemeContext';
 import { translations } from '../../utils/translations';
+import { CreditCard, RefreshCw, Headphones } from 'lucide-react';
 import styles from './HomePage.module.scss';
 const telemetryClient = new TelemetryServiceClient(transport);
 const HomePage: React.FC = () => {
@@ -48,17 +49,23 @@ const HomePage: React.FC = () => {
                 <h2>{t.why_choose_us}</h2>
                 <div className={styles.featuresGrid}>
                     <div className={styles.featureCard}>
-                        <span className={styles.featureIcon}>💳</span>
+                        <span className={styles.featureIcon} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <CreditCard size={28} />
+                        </span>
                         <h3>{t.best_price_title}</h3>
                         <p>{t.best_price_desc}</p>
                     </div>
                     <div className={styles.featureCard}>
-                        <span className={styles.featureIcon}>🔄</span>
+                        <span className={styles.featureIcon} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <RefreshCw size={28} />
+                        </span>
                         <h3>{t.easy_reschedule_title}</h3>
                         <p>{t.easy_reschedule_desc}</p>
                     </div>
                     <div className={styles.featureCard}>
-                        <span className={styles.featureIcon}>🎧</span>
+                        <span className={styles.featureIcon} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Headphones size={28} />
+                        </span>
                         <h3>{t.support_title}</h3>
                         <p>{t.support_desc}</p>
                     </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
+import { Calendar, CheckCircle } from 'lucide-react';
 import styles from './ItineraryCardExpired.module.scss';
 
 export interface HistoryItem {
@@ -30,7 +31,10 @@ const ExpiredItineraryCard: React.FC<Props> = ({ item, onLeaveReview }) => {
                     <span className={styles.typeBadge}>
                         {item.type === 'flight' ? t.profile_booking_flight : t.profile_booking_hotel}
                     </span>
-                    <span className={styles.date}>📅 {item.dateString}</span>
+                    <span className={styles.date} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <Calendar size={14} />
+                        <span>{item.dateString}</span>
+                    </span>
                 </div>
 
                 <h4>{item.title}</h4>
@@ -40,7 +44,10 @@ const ExpiredItineraryCard: React.FC<Props> = ({ item, onLeaveReview }) => {
             <div className={styles.actionBox}>
                 {item.type === 'hotel' ? (
                     item.hasReviewed ? (
-                        <span className={styles.reviewedBadge}>✅ {t.tickets_history_review_submitted}</span>
+                        <span className={styles.reviewedBadge} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                            <CheckCircle size={14} />
+                            <span>{t.tickets_history_review_submitted}</span>
+                        </span>
                     ) : (
                         <button className={styles.reviewBtn} onClick={() => onLeaveReview(item)}>
                             {t.tickets_history_btn_review}

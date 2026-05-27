@@ -8,6 +8,7 @@ import { transport } from '../../../utils/grpcClient';
 import { useAuth } from '../../../context/AuthContext';
 import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
+import { History } from 'lucide-react';
 import styles from './BookingHistoryView.module.scss';
 
 const accountClient = new AccountServiceClient(transport);
@@ -133,7 +134,9 @@ const BookingHistoryView: React.FC<Props> = ({ searchQuery, itemTypeFilter }) =>
             <div className={styles.listContainer}>
                 {filteredHistoryItems.length === 0 && !isLoading && !error ? (
                     <div className={styles.emptyState}>
-                        <span className={styles.emptyIcon}>🕰️</span>
+                        <span className={styles.emptyIcon} style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center', marginBottom: '16px' }}>
+                            <History size={48} />
+                        </span>
                         <h3>{t.tickets_empty_history}</h3>
                         <p>{t.tickets_empty_history_desc}</p>
                     </div>

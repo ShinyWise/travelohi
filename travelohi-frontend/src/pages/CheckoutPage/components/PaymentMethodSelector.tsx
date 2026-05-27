@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
+import { Wallet, CreditCard } from 'lucide-react';
 import styles from './PaymentMethodSelector.module.scss';
 export type PaymentMethod = 'hi_wallet' | 'credit_card' | null;
 interface CreditCard {
@@ -38,8 +39,10 @@ const PaymentMethodSelector: React.FC<Props> = ({
                 onClick={() => isWalletSufficient && onSelectMethod('hi_wallet')}
             >
                 <div className={styles.methodHeader}>
-                    <div className={styles.methodName}>
-                        <span className={styles.icon}>👛</span>
+                    <div className={styles.methodName} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                        <span className={styles.icon} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Wallet size={18} />
+                        </span>
                         <strong>HI-Wallet</strong>
                     </div>
                     <div className={styles.radioCircle}>
@@ -59,8 +62,10 @@ const PaymentMethodSelector: React.FC<Props> = ({
                 onClick={() => onSelectMethod('credit_card')}
             >
                 <div className={styles.methodHeader}>
-                    <div className={styles.methodName}>
-                        <span className={styles.icon}>💳</span>
+                    <div className={styles.methodName} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                        <span className={styles.icon} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <CreditCard size={18} />
+                        </span>
                         <strong>{t.payment_cc_label}</strong>
                     </div>
                     <div className={styles.radioCircle}>
