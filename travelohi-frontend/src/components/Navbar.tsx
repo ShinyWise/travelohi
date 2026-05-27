@@ -91,6 +91,13 @@ const Navbar: React.FC = () => {
             setProfileInfo(null);
             setOngoingCount(0);
         }
+
+        const handleBookingUpdate = () => {
+            if (isAuthenticated) fetchProfileAndOngoingBookings();
+        };
+
+        window.addEventListener('booking_updated', handleBookingUpdate);
+        return () => window.removeEventListener('booking_updated', handleBookingUpdate);
     }, [isAuthenticated, userId]);
 
     useEffect(() => {

@@ -93,6 +93,7 @@ const CheckoutPage: React.FC = () => {
             if (response.success && response.transactionId) {
                 localStorage.removeItem('travelohi_applied_promo');
                 setTransactionId(response.transactionId);
+                window.dispatchEvent(new Event('booking_updated'));
             } else {
                 setError(response.message || t.checkout_process_fail);
             }
