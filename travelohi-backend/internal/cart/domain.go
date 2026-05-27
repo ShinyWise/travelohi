@@ -48,7 +48,7 @@ type CartRepository interface {
 
 type CartUseCase interface {
 	AddToCart(ctx context.Context, userID, itemType, referenceID, checkIn, checkOut string, quantity int32, luggageWeight int32) error
-	ViewCart(ctx context.Context, userID string) ([]CartItem, int64, int64, int64, string, error) // items, subtotal, discount, total, applied_promo
+	ViewCart(ctx context.Context, userID string, promoCode string) ([]CartItem, int64, int64, int64, string, error) // items, subtotal, discount, total, applied_promo
 	UpdateCartItem(ctx context.Context, userID, itemID, newCheckIn, newCheckOut string) error
 	RemoveFromCart(ctx context.Context, userID, itemID string) error
 	ApplyPromo(ctx context.Context, userID, promoCode string) (int64, error)

@@ -108,7 +108,7 @@ func (uc *cartUseCase) AddToCart(ctx context.Context, userID, itemType, referenc
 	return nil
 }
 
-func (uc *cartUseCase) ViewCart(ctx context.Context, userID string) ([]cart.CartItem, int64, int64, int64, string, error) {
+func (uc *cartUseCase) ViewCart(ctx context.Context, userID string, promoCode string) ([]cart.CartItem, int64, int64, int64, string, error) {
 	items, err := uc.repo.GetActiveCartItems(ctx, userID)
 	if err != nil {
 		return nil, 0, 0, 0, "", err
@@ -119,7 +119,23 @@ func (uc *cartUseCase) ViewCart(ctx context.Context, userID string) ([]cart.Cart
 		subtotal += item.Price * int64(item.Quantity)
 	}
 
-	return items, subtotal, 0, subtotal, "", nil
+	var discountAmount int64 = 0
+	var totalPrice int64 = subtotal
+	var appliedPromo string = ""
+
+	if promoCode != "" {
+		promo, err := uc.repo.GetPromoByCode(ctx, promoCode)
+		if err == nil && promo.CurrentUses < promo.MaxUses {
+			discountAmount = promo.DiscountAmount
+			totalPrice = subtotal - discountAmount
+			if totalPrice < 0 {
+				totalPrice = 0
+			}
+			appliedPromo = promoCode
+		}
+	}
+
+	return items, subtotal, discountAmount, totalPrice, appliedPromo, nil
 }
 
 func (uc *cartUseCase) UpdateCartItem(ctx context.Context, userID, itemID, newCheckIn, newCheckOut string) error {
@@ -201,7 +217,7 @@ func (uc *cartUseCase) Checkout(ctx context.Context, userID, paymentMethod, cred
 	}
 
 	// financial deduction
-	if paymentMethod == "hi_wallet" {
+	if paymentMethod == "hi_wallet" && totalPrice > 0 {
 		_, err := uc.accountClient.DeductWallet(ctx, &accountpb.DeductWalletRequest{
 			UserId: userID,
 			Amount: totalPrice,

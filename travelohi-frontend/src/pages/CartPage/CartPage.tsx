@@ -31,7 +31,8 @@ const CartPage: React.FC = () => {
     const fetchCart = async () => {
         if (!userId) return;
         try {
-            const { response } = await cartClient.viewCart({});
+            const promoCode = localStorage.getItem('travelohi_applied_promo') || '';
+            const { response } = await cartClient.viewCart({ promoCode });
             const mappedItems: CartItem[] = (response.items || []).map((item: any) => ({
                 id: item.id,
                 itemType: item.itemType as 'flight_seat' | 'hotel_room',
@@ -49,6 +50,9 @@ const CartPage: React.FC = () => {
             setCartItems(mappedItems);
             setAppliedPromo(response.appliedPromoCode || null);
             setDiscountAmount(Number(response.discountAmount) || 0);
+            if (!response.appliedPromoCode) {
+                localStorage.removeItem('travelohi_applied_promo');
+            }
         } catch (err: any) {
             setError(err.message || t.cart_load_error);
         } finally {
@@ -61,6 +65,11 @@ const CartPage: React.FC = () => {
         setPromoSuccess(null);
         try {
             const { response } = await cartClient.applyPromo({ promoCode: code });
+            if (response.appliedPromoCode) {
+                localStorage.setItem('travelohi_applied_promo', response.appliedPromoCode);
+            } else {
+                localStorage.removeItem('travelohi_applied_promo');
+            }
             setAppliedPromo(response.appliedPromoCode || null);
             setDiscountAmount(Number(response.discountAmount) || 0);
             setPromoSuccess(
@@ -80,8 +89,10 @@ const CartPage: React.FC = () => {
         try {
             // apply empty promo code to clear on server
             const { response } = await cartClient.applyPromo({ promoCode: '' });
+            localStorage.removeItem('travelohi_applied_promo');
             setAppliedPromo(response.appliedPromoCode || null);
             setDiscountAmount(Number(response.discountAmount) || 0);
+            await fetchCart();
         } catch (err: any) {
             console.error("Gagal menghapus kupon", err);
         }

@@ -78,7 +78,7 @@ func (h *CartHandler) ViewCart(ctx context.Context, req *cartpb.ViewCartRequest)
 		return nil, status.Error(codes.Unauthenticated, err.Error())
 	}
 
-	items, subtotal, discount, total, appliedPromo, err := h.usecase.ViewCart(ctx, userID)
+	items, subtotal, discount, total, appliedPromo, err := h.usecase.ViewCart(ctx, userID, req.GetPromoCode())
 	if err != nil {
 		return nil, err
 	}
@@ -143,22 +143,15 @@ func (h *CartHandler) ApplyPromo(ctx context.Context, req *cartpb.ApplyPromoRequ
 		return nil, status.Error(codes.Unauthenticated, err.Error())
 	}
 
-	discount, err := h.usecase.ApplyPromo(ctx, userID, req.PromoCode)
+	_, err = h.usecase.ApplyPromo(ctx, userID, req.PromoCode)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	cartView, err := h.ViewCart(ctx, &cartpb.ViewCartRequest{})
+	cartView, err := h.ViewCart(ctx, &cartpb.ViewCartRequest{PromoCode: req.PromoCode})
 	if err != nil {
 		return nil, err
 	}
-
-	cartView.DiscountAmount = discount
-	cartView.TotalPrice = cartView.Subtotal - discount
-	if cartView.TotalPrice < 0 {
-		cartView.TotalPrice = 0
-	}
-	cartView.AppliedPromoCode = req.PromoCode
 
 	return cartView, nil
 }

@@ -40,7 +40,7 @@ const HotelDetailsPage: React.FC = () => {
     const fetchCartItems = async () => {
         if (!isAuthenticated) return;
         try {
-            const { response } = await cartClient.viewCart({});
+            const { response } = await cartClient.viewCart({ promoCode: '' });
             const ids = (response.items || [])
                 .filter((item: any) => item.itemType === 'hotel_room')
                 .map((item: any) => item.referenceId);

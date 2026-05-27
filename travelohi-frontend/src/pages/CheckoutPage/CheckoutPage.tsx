@@ -36,9 +36,10 @@ const CheckoutPage: React.FC = () => {
         }
         const fetchCheckoutData = async () => {
             try {
+                const promoCode = localStorage.getItem('travelohi_applied_promo') || '';
                 // parallel fetching buat cart and profile data
                 const [cartRes, profileRes] = await Promise.all([
-                    cartClient.viewCart({}),
+                    cartClient.viewCart({ promoCode }),
                     accountClient.getProfile({ userId })
                 ]);
                 const items = cartRes.response.items || [];
@@ -90,6 +91,7 @@ const CheckoutPage: React.FC = () => {
                 appliedPromoCode: appliedPromoCode || ''
             });
             if (response.success && response.transactionId) {
+                localStorage.removeItem('travelohi_applied_promo');
                 setTransactionId(response.transactionId);
             } else {
                 setError(response.message || t.checkout_process_fail);

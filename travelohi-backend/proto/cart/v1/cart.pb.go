@@ -231,6 +231,7 @@ func (x *AddToCartRequest) GetLuggageWeight() int32 {
 
 type ViewCartRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	PromoCode     string                 `protobuf:"bytes,1,opt,name=promo_code,json=promoCode,proto3" json:"promo_code,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -263,6 +264,13 @@ func (x *ViewCartRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use ViewCartRequest.ProtoReflect.Descriptor instead.
 func (*ViewCartRequest) Descriptor() ([]byte, []int) {
 	return file_proto_travelohi_v1_cart_cart_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ViewCartRequest) GetPromoCode() string {
+	if x != nil {
+		return x.PromoCode
+	}
+	return ""
 }
 
 type ViewCartResponse struct {
@@ -806,8 +814,10 @@ const file_proto_travelohi_v1_cart_cart_proto_rawDesc = "" +
 	"\rcheck_in_date\x18\x03 \x01(\tR\vcheckInDate\x12$\n" +
 	"\x0echeck_out_date\x18\x04 \x01(\tR\fcheckOutDate\x12\x1a\n" +
 	"\bquantity\x18\x05 \x01(\x05R\bquantity\x12%\n" +
-	"\x0eluggage_weight\x18\x06 \x01(\x05R\rluggageWeight\"\x11\n" +
-	"\x0fViewCartRequest\"\xd9\x01\n" +
+	"\x0eluggage_weight\x18\x06 \x01(\x05R\rluggageWeight\"0\n" +
+	"\x0fViewCartRequest\x12\x1d\n" +
+	"\n" +
+	"promo_code\x18\x01 \x01(\tR\tpromoCode\"\xd9\x01\n" +
 	"\x10ViewCartResponse\x121\n" +
 	"\x05items\x18\x01 \x03(\v2\x1b.travelohi.v1.cart.CartItemR\x05items\x12\x1a\n" +
 	"\bsubtotal\x18\x02 \x01(\x03R\bsubtotal\x12'\n" +

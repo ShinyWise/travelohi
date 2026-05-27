@@ -89,6 +89,10 @@ export interface AddToCartRequest {
  * @generated from protobuf message travelohi.v1.cart.ViewCartRequest
  */
 export interface ViewCartRequest {
+    /**
+     * @generated from protobuf field: string promo_code = 1
+     */
+    promoCode: string;
 }
 /**
  * @generated from protobuf message travelohi.v1.cart.ViewCartResponse
@@ -447,10 +451,13 @@ export const AddToCartRequest = new AddToCartRequest$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class ViewCartRequest$Type extends MessageType<ViewCartRequest> {
     constructor() {
-        super("travelohi.v1.cart.ViewCartRequest", []);
+        super("travelohi.v1.cart.ViewCartRequest", [
+            { no: 1, name: "promo_code", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
     }
     create(value?: PartialMessage<ViewCartRequest>): ViewCartRequest {
         const message = globalThis.Object.create((this.messagePrototype!));
+        message.promoCode = "";
         if (value !== undefined)
             reflectionMergePartial<ViewCartRequest>(this, message, value);
         return message;
@@ -460,6 +467,9 @@ class ViewCartRequest$Type extends MessageType<ViewCartRequest> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
+                case /* string promo_code */ 1:
+                    message.promoCode = reader.string();
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -472,6 +482,9 @@ class ViewCartRequest$Type extends MessageType<ViewCartRequest> {
         return message;
     }
     internalBinaryWrite(message: ViewCartRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string promo_code = 1; */
+        if (message.promoCode !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.promoCode);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

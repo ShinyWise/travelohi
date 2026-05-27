@@ -45,7 +45,9 @@ message AddToCartRequest {
   int32 luggage_weight = 6; // kalo pilih flight
 }
 
-message ViewCartRequest {}
+message ViewCartRequest {
+  string promo_code = 1;
+}
 
 message ViewCartResponse {
   repeated CartItem items = 1;
