@@ -13,7 +13,6 @@ export interface BookingItem {
     status: string;
     bookingReferenceCode: string;
     hotelId: string;
-    imageUrl?: string;
 }
 
 interface Props {
@@ -31,7 +30,7 @@ const ItineraryCard: React.FC<Props> = ({ booking, onViewTicket }) => {
         <div className={styles.card}>
             <div className={styles.imageBox}>
                 <img
-                    src={booking.imageUrl || (isHotel ? '/assets/default-hotel.jpg' : '/assets/default-flight.jpg')}
+                    src={isHotel ? '/assets/default-hotel.jpg' : '/assets/default-flight.jpg'}
                     alt={booking.displayName}
                     onError={(e) => {
                         e.currentTarget.src = isHotel

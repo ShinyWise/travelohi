@@ -616,7 +616,6 @@ type BookingItem struct {
 	Status               string                 `protobuf:"bytes,7,opt,name=status,proto3" json:"status,omitempty"`                                                           // "ongoing", "completed", "cancelled"
 	BookingReferenceCode string                 `protobuf:"bytes,8,opt,name=booking_reference_code,json=bookingReferenceCode,proto3" json:"booking_reference_code,omitempty"` // e.g., PNR "XYZ123"
 	HotelId              string                 `protobuf:"bytes,9,opt,name=hotel_id,json=hotelId,proto3" json:"hotel_id,omitempty"`
-	ImageUrl             string                 `protobuf:"bytes,10,opt,name=image_url,json=imageUrl,proto3" json:"image_url,omitempty"`
 	unknownFields        protoimpl.UnknownFields
 	sizeCache            protoimpl.SizeCache
 }
@@ -710,13 +709,6 @@ func (x *BookingItem) GetBookingReferenceCode() string {
 func (x *BookingItem) GetHotelId() string {
 	if x != nil {
 		return x.HotelId
-	}
-	return ""
-}
-
-func (x *BookingItem) GetImageUrl() string {
-	if x != nil {
-		return x.ImageUrl
 	}
 	return ""
 }
@@ -1379,7 +1371,7 @@ const file_proto_travelohi_v1_account_account_proto_rawDesc = "" +
 	"\fphone_number\x18\n" +
 	" \x01(\tR\vphoneNumber\x12\x18\n" +
 	"\aaddress\x18\v \x01(\tR\aaddress\x12\x19\n" +
-	"\bis_admin\x18\f \x01(\bR\aisAdmin\"\xe3\x02\n" +
+	"\bis_admin\x18\f \x01(\bR\aisAdmin\"\xc6\x02\n" +
 	"\vBookingItem\x12\x1d\n" +
 	"\n" +
 	"booking_id\x18\x01 \x01(\tR\tbookingId\x12%\n" +
@@ -1390,9 +1382,7 @@ const file_proto_travelohi_v1_account_account_proto_rawDesc = "" +
 	"\x0echeck_out_date\x18\x06 \x01(\tR\fcheckOutDate\x12\x16\n" +
 	"\x06status\x18\a \x01(\tR\x06status\x124\n" +
 	"\x16booking_reference_code\x18\b \x01(\tR\x14bookingReferenceCode\x12\x19\n" +
-	"\bhotel_id\x18\t \x01(\tR\ahotelId\x12\x1b\n" +
-	"\timage_url\x18\n" +
-	" \x01(\tR\bimageUrl\",\n" +
+	"\bhotel_id\x18\t \x01(\tR\ahotelId\",\n" +
 	"\x11GetProfileRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\"Q\n" +
 	"\x12GetProfileResponse\x12;\n" +

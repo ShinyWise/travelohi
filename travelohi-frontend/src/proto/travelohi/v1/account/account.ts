@@ -232,10 +232,6 @@ export interface BookingItem {
      * @generated from protobuf field: string hotel_id = 9
      */
     hotelId: string;
-    /**
-     * @generated from protobuf field: string image_url = 10
-     */
-    imageUrl: string;
 }
 /**
  * request and response
@@ -1016,8 +1012,7 @@ class BookingItem$Type extends MessageType<BookingItem> {
             { no: 6, name: "check_out_date", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 7, name: "status", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 8, name: "booking_reference_code", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 9, name: "hotel_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 10, name: "image_url", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 9, name: "hotel_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<BookingItem>): BookingItem {
@@ -1031,7 +1026,6 @@ class BookingItem$Type extends MessageType<BookingItem> {
         message.status = "";
         message.bookingReferenceCode = "";
         message.hotelId = "";
-        message.imageUrl = "";
         if (value !== undefined)
             reflectionMergePartial<BookingItem>(this, message, value);
         return message;
@@ -1067,9 +1061,6 @@ class BookingItem$Type extends MessageType<BookingItem> {
                     break;
                 case /* string hotel_id */ 9:
                     message.hotelId = reader.string();
-                    break;
-                case /* string image_url */ 10:
-                    message.imageUrl = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1110,9 +1101,6 @@ class BookingItem$Type extends MessageType<BookingItem> {
         /* string hotel_id = 9; */
         if (message.hotelId !== "")
             writer.tag(9, WireType.LengthDelimited).string(message.hotelId);
-        /* string image_url = 10; */
-        if (message.imageUrl !== "")
-            writer.tag(10, WireType.LengthDelimited).string(message.imageUrl);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
