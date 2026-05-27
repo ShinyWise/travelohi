@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { AdminServiceClient } from '../../../proto/travelohi/v1/admin/admin.client';
 import { transport } from '../../../utils/grpcClient';
+import { useToast } from '../../../components/Toast';
 import styles from './UserManagerTable.module.scss';
 
 const adminClient = new AdminServiceClient(transport);
@@ -15,6 +16,7 @@ interface UserRecord {
 }
 
 const UserManagementTable: React.FC = () => {
+    const { showToast } = useToast();
     const [users, setUsers] = useState<UserRecord[]>([]);
     const [offset, setOffset] = useState(0);
     const [totalUsers, setTotalUsers] = useState(0);
@@ -55,7 +57,7 @@ const UserManagementTable: React.FC = () => {
             // rollback klo error
             console.error("Gagal mengubah status pengguna:", err);
             setUsers(previousUsersRef.current);
-            alert("Gagal menghubungi server. Status pengguna dikembalikan.");
+            showToast('Gagal menghubungi server. Status pengguna dikembalikan.', 'error');
         }
     };
 

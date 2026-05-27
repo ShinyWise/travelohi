@@ -9,6 +9,7 @@ import { transport } from '../../utils/grpcClient';
 import { useAuth } from '../../context/AuthContext';
 import { useAppContext } from '../../context/ThemeContext';
 import { translations } from '../../utils/translations';
+import { useToast } from '../../components/Toast';
 import styles from './FlightDetailPage.module.scss';
 const flightClient = new FlightServiceClient(transport);
 const cartClient = new CartServiceClient(transport);
@@ -19,6 +20,7 @@ const FlightDetailsPage: React.FC = () => {
     const { isAuthenticated } = useAuth();
     const { language } = useAppContext();
     const t = translations[language];
+    const { showToast } = useToast();
     const [flightData, setFlightData] = useState<any>(null);
     const [seats, setSeats] = useState<any[]>([]);
     const [baggageOptions, setBaggageOptions] = useState<any[]>([]);
@@ -66,7 +68,7 @@ const FlightDetailsPage: React.FC = () => {
             });
             if (response.success) {
                 if (redirect) navigate('/cart');
-                else alert(t.flight_add_cart_success);
+                else showToast(t.flight_add_cart_success, 'success');
             } else {
                 setError(response.message || t.flight_add_cart_fail);
             }

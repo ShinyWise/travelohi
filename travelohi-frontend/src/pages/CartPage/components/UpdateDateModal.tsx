@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
+import { useToast } from '../../../components/Toast';
 import styles from './UpdateDateModal.module.scss';
 interface Props {
     isOpen: boolean;
@@ -13,6 +14,7 @@ interface Props {
 const UpdateDateModal: React.FC<Props> = ({ isOpen, onClose, itemId, currentCheckIn, currentCheckOut, onUpdate }) => {
     const { language } = useAppContext();
     const t = translations[language];
+    const { showToast } = useToast();
     const [checkIn, setCheckIn] = useState(currentCheckIn);
     const [checkOut, setCheckOut] = useState(currentCheckOut);
     const [isUpdating, setIsUpdating] = useState(false);
@@ -31,7 +33,7 @@ const UpdateDateModal: React.FC<Props> = ({ isOpen, onClose, itemId, currentChec
             await onUpdate(itemId, checkIn, checkOut);
             onClose();
         } catch (error) {
-            alert(t.modal_date_error);
+            showToast(t.modal_date_error, 'error');
         } finally {
             setIsUpdating(false);
         }

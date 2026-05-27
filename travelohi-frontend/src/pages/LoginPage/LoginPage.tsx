@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import ReCAPTCHA from 'react-google-recaptcha';
 import FormInput from '../../components/FormInput';
@@ -8,6 +8,7 @@ import { useAppContext } from '../../context/ThemeContext';
 import { translations } from '../../utils/translations';
 import { AuthServiceClient } from '../../proto/travelohi/v1/auth/auth.client';
 import { transport } from '../../utils/grpcClient';
+import { useToast } from '../../components/Toast';
 import styles from './LoginPage.module.scss';
 const client = new AuthServiceClient(transport);
 const LoginPage: React.FC = () => {
@@ -16,6 +17,7 @@ const LoginPage: React.FC = () => {
     const { login } = useAuth();
     const { language } = useAppContext();
     const t = translations[language];
+    const { showToast } = useToast();
     const recaptchaRef = useRef<ReCAPTCHA>(null);
     // core flow state
     const [step, setStep] = useState<1 | 2>(1);
@@ -26,11 +28,14 @@ const LoginPage: React.FC = () => {
     const [grpcError, setGrpcError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
-    // success messages from redirect state
+    // show redirect message (e.g. after registration) as a toast
     const queryParams = new URLSearchParams(location.search);
     const isSessionExpired = queryParams.get('expired') === 'true';
     const message = location.state?.message;
     const displayMessage = isSessionExpired ? t.session_expired_message : message;
+    useEffect(() => {
+        if (displayMessage) showToast(displayMessage, isSessionExpired ? 'error' : 'success');
+    }, []);
     const validateEmail = (val: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.com$/;
         if (!emailRegex.test(val)) {
@@ -109,7 +114,6 @@ const LoginPage: React.FC = () => {
         <div className={styles.loginContainer}>
             <div className={styles.formCard}>
                 <h2>{t.login_title}</h2>
-                {displayMessage && <div className={styles.successMessage}>{displayMessage}</div>}
                 {grpcError && <div className={styles.serverError}>{grpcError}</div>}
                 {/* conditional forms for step 1 and step 2 */}
                 {step === 1 ? (

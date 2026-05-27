@@ -8,6 +8,7 @@ import { transport } from '../../utils/grpcClient';
 import { useAuth } from '../../context/AuthContext';
 import { useAppContext } from '../../context/ThemeContext';
 import { translations } from '../../utils/translations';
+import { useToast } from '../../components/Toast';
 import PriceSummaryPanel from './components/PrimarySummaryPanel';
 import styles from './CartPage.module.scss';
 const cartClient = new CartServiceClient(transport);
@@ -16,6 +17,7 @@ const CartPage: React.FC = () => {
     const { userId } = useAuth();
     const { language } = useAppContext();
     const t = translations[language];
+    const { showToast } = useToast();
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -109,7 +111,7 @@ const CartPage: React.FC = () => {
         } catch (err) {
             console.error("Gagal menghapus item dari server", err);
             setCartItems(previousCartRef.current);
-            alert(t.cart_remove_rollback_error);
+            showToast(t.cart_remove_rollback_error, 'error');
         }
     };
     const handleUpdateDates = async (itemId: string, newCheckIn: string, newCheckOut: string) => {

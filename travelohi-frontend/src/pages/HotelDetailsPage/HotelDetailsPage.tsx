@@ -11,6 +11,7 @@ import { transport } from '../../utils/grpcClient';
 import { useAuth } from '../../context/AuthContext';
 import { useAppContext } from '../../context/ThemeContext';
 import { translations } from '../../utils/translations';
+import { useToast } from '../../components/Toast';
 import styles from './HotelDetailsPage.module.scss';
 const hotelClient = new HotelServiceClient(transport);
 const cartClient = new CartServiceClient(transport);
@@ -21,6 +22,7 @@ const HotelDetailsPage: React.FC = () => {
     const { isAuthenticated } = useAuth();
     const { language } = useAppContext();
     const t = translations[language];
+    const { showToast } = useToast();
     // initialize dates: check-in today, check-out tomorrow
     const getToday = () => new Date().toISOString().split('T')[0];
     const getTomorrow = () => {
@@ -102,7 +104,7 @@ const HotelDetailsPage: React.FC = () => {
                 luggageWeight: 0,
             });
             if (response.success) {
-                alert(t.hotel_add_cart_success);
+                showToast(t.hotel_add_cart_success, 'success');
                 fetchCartItems();
             } else {
                 setError(response.message || t.hotel_add_cart_fail);
