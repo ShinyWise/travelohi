@@ -85,7 +85,7 @@ const LoginPage: React.FC = () => {
                 captchaToken,
             });
             if (response.accessToken && response.userId) {
-                login(response.accessToken, response.userId);
+                await login(response.accessToken, response.userId);
                 const from = location.state?.from?.pathname || "/";
                 navigate(from, { replace: true });
             } else {
@@ -99,8 +99,8 @@ const LoginPage: React.FC = () => {
             setIsLoading(false);
         }
     };
-    const handleOTPLoginSuccess = (token: string, userId: string) => {
-        login(token, userId);
+    const handleOTPLoginSuccess = async (token: string, userId: string) => {
+        await login(token, userId);
         setIsOtpModalOpen(false);
         const from = location.state?.from?.pathname || "/";
         navigate(from, { replace: true });

@@ -33,6 +33,7 @@ type Account struct {
 	HiWalletBalance      int64
 	PhoneNumber          string
 	Address              string
+	IsAdmin              bool
 }
 
 type AccountRepository interface {

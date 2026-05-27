@@ -23,6 +23,7 @@ type AccountModel struct {
 	HiWalletBalance int64  `gorm:"column:hi_wallet_balance"`
 	PhoneNumber     string `gorm:"column:phone_number"`
 	Address         string `gorm:"column:address"`
+	IsAdmin         bool   `gorm:"column:is_admin"`
 }
 
 // function buat bantu mapping gorm data into pure domain
@@ -45,6 +46,7 @@ func (m *AccountModel) ToDomain() *account.Account {
 		HiWalletBalance:      m.HiWalletBalance,
 		PhoneNumber:          m.PhoneNumber,
 		Address:              m.Address,
+		IsAdmin:              m.IsAdmin,
 	}
 }
 
@@ -74,6 +76,7 @@ func (r *PostgresAccountRepository) Create(ctx context.Context, acc *account.Acc
 		IsActive:             acc.IsActive,
 		HiWalletBalance:      acc.HiWalletBalance,
 		NewsletterSubscribed: acc.NewsletterSubscribed,
+		IsAdmin:              acc.IsAdmin,
 	}
 
 	return r.db.WithContext(ctx).Create(model).Error

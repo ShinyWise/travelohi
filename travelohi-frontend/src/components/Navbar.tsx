@@ -15,7 +15,7 @@ const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/
 
 const Navbar: React.FC = () => {
     const { theme, toggleTheme, currency, setCurrency, language, setLanguage } = useAppContext();
-    const { isAuthenticated, userId, logout, profilePictureUrl, updateProfilePicture } = useAuth();
+    const { isAuthenticated, userId, logout, profilePictureUrl, updateProfilePicture, isAdmin } = useAuth();
     const navigate = useNavigate();
     const t = translations[language];
 
@@ -165,66 +165,74 @@ const Navbar: React.FC = () => {
                         </button>
 
                         {isAuthenticated && (
-                            <>
-                                <span
-                                    className={styles.navItemText}
-                                    onClick={() => navigate('/bookings')}
-                                >
-                                    {t.my_orders} {ongoingCount > 0 && <span className={styles.badge}>{ongoingCount}</span>}
+                            isAdmin ? (
+                                <span className={styles.navItemText} onClick={() => navigate('/admin')}>
+                                    Admin Panel
                                 </span>
-                                <span className={styles.navItemText} onClick={() => navigate('/cart')}>
-                                    🛒 {t.cart}
-                                </span>
-                            </>
+                            ) : (
+                                <>
+                                    <span
+                                        className={styles.navItemText}
+                                        onClick={() => navigate('/bookings')}
+                                    >
+                                        {t.my_orders} {ongoingCount > 0 && <span className={styles.badge}>{ongoingCount}</span>}
+                                    </span>
+                                    <span className={styles.navItemText} onClick={() => navigate('/cart')}>
+                                        🛒 {t.cart}
+                                    </span>
+                                </>
+                            )
                         )}
 
                         <div className={styles.preferencesGroup}>
-                            <div className={styles.customDropdown} ref={paymentDropdownRef}>
-                                <button
-                                    className={styles.dropdownToggle}
-                                    onClick={() => setIsPaymentDropdownOpen(!isPaymentDropdownOpen)}
-                                    aria-label="Select Payment Info"
-                                >
-                                    <span>💳 {t.payment}</span>
-                                    <span className={styles.caret}>▼</span>
-                                </button>
+                            {!isAdmin && (
+                                <div className={styles.customDropdown} ref={paymentDropdownRef}>
+                                    <button
+                                        className={styles.dropdownToggle}
+                                        onClick={() => setIsPaymentDropdownOpen(!isPaymentDropdownOpen)}
+                                        aria-label="Select Payment Info"
+                                    >
+                                        <span>💳 {t.payment}</span>
+                                        <span className={styles.caret}>▼</span>
+                                    </button>
 
-                                {isPaymentDropdownOpen && (
-                                    <div className={`${styles.dropdownMenu} ${styles.paymentMenu}`}>
-                                        <div className={styles.paymentHeader}>{t.payment_methods}</div>
+                                    {isPaymentDropdownOpen && (
+                                        <div className={`${styles.dropdownMenu} ${styles.paymentMenu}`}>
+                                            <div className={styles.paymentHeader}>{t.payment_methods}</div>
 
-                                        <div className={styles.paymentOption}>
-                                            <span className={styles.paymentIcon}>👛</span>
-                                            <div className={styles.paymentDetails}>
-                                                <span className={styles.optionName}>HI Wallet</span>
-                                                {isAuthenticated && profileInfo?.hiWalletBalance !== undefined ? (
-                                                    <span className={styles.optionInfo}>
-                                                        {t.wallet_balance}: {formatCurrency(profileInfo.hiWalletBalance, currency)}
-                                                    </span>
-                                                ) : (
-                                                    <span className={styles.optionInfo}>{t.login_to_see_balance}</span>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        <div className={styles.paymentOption}>
-                                            <span className={styles.paymentIcon}>💳</span>
-                                            <div className={styles.paymentDetails}>
-                                                <span className={styles.optionName}>{t.cc_default_type}</span>
-                                                {isAuthenticated && creditCards.length > 0 ? (
-                                                    creditCards.map(card => (
-                                                        <span key={card.id} className={styles.optionInfo} style={{ display: 'block' }}>
-                                                            ******{card.lastFour}
+                                            <div className={styles.paymentOption}>
+                                                <span className={styles.paymentIcon}>👛</span>
+                                                <div className={styles.paymentDetails}>
+                                                    <span className={styles.optionName}>HI Wallet</span>
+                                                    {isAuthenticated && profileInfo?.hiWalletBalance !== undefined ? (
+                                                        <span className={styles.optionInfo}>
+                                                            {t.wallet_balance}: {formatCurrency(profileInfo.hiWalletBalance, currency)}
                                                         </span>
-                                                    ))
-                                                ) : (
-                                                    <span className={styles.optionInfo}>Visa, Mastercard, JCB</span>
-                                                )}
+                                                    ) : (
+                                                        <span className={styles.optionInfo}>{t.login_to_see_balance}</span>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            <div className={styles.paymentOption}>
+                                                <span className={styles.paymentIcon}>💳</span>
+                                                <div className={styles.paymentDetails}>
+                                                    <span className={styles.optionName}>{t.cc_default_type}</span>
+                                                    {isAuthenticated && creditCards.length > 0 ? (
+                                                        creditCards.map(card => (
+                                                            <span key={card.id} className={styles.optionInfo} style={{ display: 'block' }}>
+                                                                ******{card.lastFour}
+                                                            </span>
+                                                        ))
+                                                    ) : (
+                                                        <span className={styles.optionInfo}>Visa, Mastercard, JCB</span>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                )}
-                            </div>
+                                    )}
+                                </div>
+                            )}
 
                             <div className={styles.customDropdown} ref={dropdownRef}>
                                 <button
@@ -249,27 +257,29 @@ const Navbar: React.FC = () => {
                                 )}
                             </div>
 
-                            <div className={styles.customDropdown} ref={currDropdownRef}>
-                                <button
-                                    className={styles.dropdownToggle}
-                                    onClick={() => setIsCurrDropdownOpen(!isCurrDropdownOpen)}
-                                    aria-label="Select Currency"
-                                >
-                                    <span>{currency}</span>
-                                    <span className={styles.caret}>▼</span>
-                                </button>
+                            {!isAdmin && (
+                                <div className={styles.customDropdown} ref={currDropdownRef}>
+                                    <button
+                                        className={styles.dropdownToggle}
+                                        onClick={() => setIsCurrDropdownOpen(!isCurrDropdownOpen)}
+                                        aria-label="Select Currency"
+                                    >
+                                        <span>{currency}</span>
+                                        <span className={styles.caret}>▼</span>
+                                    </button>
 
-                                {isCurrDropdownOpen && (
-                                    <div className={`${styles.dropdownMenu} ${styles.currencyMenu}`}>
-                                        <button onClick={() => handleCurrencySelect('IDR')} className={`${styles.dropdownItem} ${styles.currencyItem}`}>
-                                            IDR
-                                        </button>
-                                        <button onClick={() => handleCurrencySelect('USD')} className={`${styles.dropdownItem} ${styles.currencyItem}`}>
-                                            USD
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
+                                    {isCurrDropdownOpen && (
+                                        <div className={`${styles.dropdownMenu} ${styles.currencyMenu}`}>
+                                            <button onClick={() => handleCurrencySelect('IDR')} className={`${styles.dropdownItem} ${styles.currencyItem}`}>
+                                                IDR
+                                            </button>
+                                            <button onClick={() => handleCurrencySelect('USD')} className={`${styles.dropdownItem} ${styles.currencyItem}`}>
+                                                USD
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
 
                         {isAuthenticated ? (
@@ -292,6 +302,17 @@ const Navbar: React.FC = () => {
 
                                 {isUserDropdownOpen && (
                                     <div className={`${styles.dropdownMenu} ${styles.userMenu}`}>
+                                        {isAdmin && (
+                                            <button
+                                                onClick={() => {
+                                                    setIsUserDropdownOpen(false);
+                                                    navigate('/admin');
+                                                }}
+                                                className={styles.dropdownItem}
+                                            >
+                                                Admin Panel
+                                            </button>
+                                        )}
                                         <button
                                             onClick={() => {
                                                 setIsUserDropdownOpen(false);

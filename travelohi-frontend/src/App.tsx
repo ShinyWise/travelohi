@@ -13,6 +13,7 @@ import HotelDetailsPage from './pages/HotelDetailsPage/HotelDetailsPage';
 import CartPage from './pages/CartPage/CartPage';
 import CheckoutPage from './pages/CheckoutPage/CheckoutPage';
 import BookingsDashboard from './pages/BookingsDashboard/BookingsDashboard';
+import AdminDashboard from './pages/AdminDashboard';
 
 // redirect ke login page kalo unauthenticated 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -50,6 +51,7 @@ function App() {
               <Route path="/forgot-password" element={<GuestRoute><ForgotPasswordPage /></GuestRoute>} />
 
               <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+              <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
             </Routes>
           </Layout>
         </Router>

@@ -76,6 +76,7 @@ func (h *AccountGrpcHandler) GetProfile(ctx context.Context, req *accountpb.GetP
 			HiWalletBalance:      acc.HiWalletBalance,
 			PhoneNumber:          acc.PhoneNumber,
 			Address:              acc.Address,
+			IsAdmin:              acc.IsAdmin,
 		},
 	}, nil
 }
@@ -116,6 +117,7 @@ func (h *AccountGrpcHandler) UpdateProfile(ctx context.Context, req *accountpb.U
 			HiWalletBalance:      updatedAccount.HiWalletBalance,
 			PhoneNumber:          updatedAccount.PhoneNumber,
 			Address:              updatedAccount.Address,
+			IsAdmin:              updatedAccount.IsAdmin,
 		},
 	}, nil
 
