@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"io"
 	"log"
 
 	"github.com/travelohi/backend/internal/communication"
@@ -25,23 +24,17 @@ func NewCommunicationHandler(hub communication.HubUseCase, chatUseCase communica
 	}
 }
 
-func (h *CommunicationHandler) StreamChat(stream communicationpb.CommunicationService_StreamChatServer) error {
+func (h *CommunicationHandler) StreamChat(req *communicationpb.StreamChatRequest, stream communicationpb.CommunicationService_StreamChatServer) error {
 	ctx := stream.Context()
 
-	// extract user id
+	// extract user id securely from JWT
 	userIDObj := ctx.Value(interceptor.UserIDKey)
 	if userIDObj == nil {
 		return status.Errorf(codes.Unauthenticated, "unauthorized chat access")
 	}
 	userID := userIDObj.(string)
 
-	// initial connection payload
-	firstEvent, err := stream.Recv()
-	if err != nil {
-		return status.Errorf(codes.InvalidArgument, "failed to read initial chat payload: %v", err)
-	}
-
-	conversationID := firstEvent.GetConversationId()
+	conversationID := req.GetConversationId()
 	if conversationID == "" {
 		return status.Errorf(codes.InvalidArgument, "conversation_id is required to join a room")
 	}
@@ -51,62 +44,43 @@ func (h *CommunicationHandler) StreamChat(stream communicationpb.CommunicationSe
 	h.hub.Register(conversationID, userID, sendCh)
 
 	// unregister client on disconnect
-	defer h.hub.Unregister(conversationID, userID)
+	defer h.hub.Unregister(conversationID, userID, sendCh)
+	for {
+		select {
+		case <-ctx.Done():
+			return ctx.Err() // client disconnect
+		case msg, ok := <-sendCh:
+			if !ok {
+				return nil // tutup
+			}
+			if err := stream.Send(msg); err != nil {
+				log.Printf("[StreamChat] Error pushing to user %s: %v", userID, err)
+				return err
+			}
+		}
+	}
+}
 
-	firstEvent.SenderId = userID
-	if err := h.chatUseCase.ProcessIncomingEvent(ctx, firstEvent); err != nil {
-		log.Printf("[StreamChat] Failed to process initial event for DB: %v", err)
+func (h *CommunicationHandler) SendEvent(ctx context.Context, req *communicationpb.ChatEvent) (*communicationpb.SendEventResponse, error) {
+	// extract user id securely
+	userIDObj := ctx.Value(interceptor.UserIDKey)
+	if userIDObj == nil {
+		return nil, status.Errorf(codes.Unauthenticated, "unauthorized access")
+	}
+	userID := userIDObj.(string)
+
+	req.SenderId = userID
+
+	if req.GetConversationId() == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "conversation_id is required")
 	}
 
-	// channels for error handling
-	errCh := make(chan error, 1)
+	res, err := h.chatUseCase.SendEvent(ctx, req)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to process event: %v", err)
+	}
 
-	// goroutine 1: sender
-	go func() {
-		for {
-			select {
-			case <-ctx.Done():
-				errCh <- ctx.Err()
-				return
-			case msg, ok := <-sendCh:
-				if !ok {
-					errCh <- nil
-					return
-				}
-				if err := stream.Send(msg); err != nil {
-					log.Printf("[StreamChat] Error sending to user %s: %v", userID, err)
-					errCh <- err
-					return
-				}
-			}
-		}
-	}()
-
-	// goroutine 2: receiver
-	go func() {
-		for {
-			event, err := stream.Recv()
-			if err != nil {
-				if err == io.EOF {
-					errCh <- nil
-					return
-				}
-				log.Printf("[StreamChat] Error receiving from user %s: %v", userID, err)
-				errCh <- err
-				return
-			}
-
-			event.SenderId = userID
-
-			if err := h.chatUseCase.ProcessIncomingEvent(ctx, event); err != nil {
-				log.Printf("[StreamChat] Failed to process event for DB: %v", err)
-			}
-		}
-	}()
-
-	// wait for stream completion
-	err = <-errCh
-	return err
+	return res, nil
 }
 
 func (h *CommunicationHandler) GetChatHistory(ctx context.Context, req *communicationpb.GetChatHistoryRequest) (*communicationpb.GetChatHistoryResponse, error) {
@@ -131,6 +105,42 @@ func (h *CommunicationHandler) GetActiveConversations(ctx context.Context, req *
 	adminID := userIDObj.(string)
 
 	res, err := h.chatUseCase.GetActiveConversations(ctx, req, adminID)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func (h *CommunicationHandler) GetOrCreateConversation(ctx context.Context, req *communicationpb.GetOrCreateConversationRequest) (*communicationpb.GetOrCreateConversationResponse, error) {
+	userIDObj := ctx.Value(interceptor.UserIDKey)
+	if userIDObj == nil {
+		return nil, status.Errorf(codes.Unauthenticated, "unauthorized access")
+	}
+	userID := userIDObj.(string)
+
+	req.UserId = userID
+
+	res, err := h.chatUseCase.GetOrCreateConversation(ctx, req)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get or create conversation: %v", err)
+	}
+
+	return res, nil
+}
+
+func (h *CommunicationHandler) CloseConversation(ctx context.Context, req *communicationpb.CloseConversationRequest) (*communicationpb.CloseConversationResponse, error) {
+	userIDObj := ctx.Value(interceptor.UserIDKey)
+	if userIDObj == nil {
+		return nil, status.Errorf(codes.Unauthenticated, "unauthorized access")
+	}
+	adminID := userIDObj.(string)
+
+	if req.GetConversationId() == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "conversation_id is required")
+	}
+
+	res, err := h.chatUseCase.CloseConversation(ctx, req, adminID)
 	if err != nil {
 		return nil, err
 	}
