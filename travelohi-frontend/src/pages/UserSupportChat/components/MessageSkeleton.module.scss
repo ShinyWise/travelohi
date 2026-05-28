@@ -1,0 +1,44 @@
+.skeletonContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+}
+
+.bubble {
+    height: 40px;
+    border-radius: 12px;
+    background-color: var(--bg-secondary);
+    animation: pulse 1.5s infinite ease-in-out;
+
+    &.left {
+        align-self: flex-start;
+        width: 60%;
+        border-bottom-left-radius: 4px;
+    }
+
+    &.right {
+        align-self: flex-end;
+        width: 45%;
+        border-bottom-right-radius: 4px;
+        background-color: rgba(0, 165, 212, 0.2);
+    }
+
+    &.short {
+        width: 30%;
+    }
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.5;
+    }
+}

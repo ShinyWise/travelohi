@@ -390,7 +390,22 @@ export const translations = {
         tickets_history_filter_all: "Semua Tipe",
         tickets_history_filter_flight: "Penerbangan",
         tickets_history_filter_hotel: "Hotel",
-        tickets_history_all_shown: "Semua riwayat perjalanan telah ditampilkan."
+        tickets_history_all_shown: "Semua riwayat perjalanan telah ditampilkan.",
+
+        // Support Chat Page
+        chat_support_title: "Customer Support",
+        chat_loading_profile: "Memuat Profil...",
+        chat_connecting: "Menghubungkan...",
+        chat_connected: "Terhubung",
+        chat_ready: "Siap Melayani",
+        chat_closed: "Percakapan Selesai",
+        chat_closed_desc: "Masalah Anda telah ditandai selesai oleh tim support kami.",
+        chat_new_btn: "Mulai Percakapan Baru",
+        chat_input_placeholder: "Ketik pesan Anda di sini...",
+        chat_send: "Kirim",
+        chat_sending: "Mengirim...",
+        chat_empty: "Belum ada pesan. Silakan sapa agen kami!",
+        chat_start: "Ini adalah awal riwayat obrolan Anda."
     },
     EN: {
         // Common / Navbar
@@ -781,6 +796,21 @@ export const translations = {
         tickets_history_filter_all: "All Types",
         tickets_history_filter_flight: "Flight",
         tickets_history_filter_hotel: "Hotel",
-        tickets_history_all_shown: "All travel history has been shown."
+        tickets_history_all_shown: "All travel history has been shown.",
+
+        // Support Chat Page
+        chat_support_title: "Customer Support",
+        chat_loading_profile: "Loading Profile...",
+        chat_connecting: "Connecting...",
+        chat_connected: "Connected",
+        chat_ready: "Ready to Help",
+        chat_closed: "Conversation Resolved",
+        chat_closed_desc: "Your issue has been marked as resolved by our support team.",
+        chat_new_btn: "Start New Conversation",
+        chat_input_placeholder: "Type your message here...",
+        chat_send: "Send",
+        chat_sending: "Sending...",
+        chat_empty: "No messages yet. Say hello to our agent!",
+        chat_start: "This is the start of your chat history."
     }
 };

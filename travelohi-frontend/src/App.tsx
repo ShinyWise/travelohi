@@ -14,6 +14,13 @@ import CartPage from './pages/CartPage/CartPage';
 import CheckoutPage from './pages/CheckoutPage/CheckoutPage';
 import BookingsDashboard from './pages/BookingsDashboard/BookingsDashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import UserSupportChat from './pages/UserSupportChat/UserSupportChat';
+import AdminSupportDashboard from './pages/AdminSupportDashboard/AdminSupportDashboard';
+
+const DynamicSupportRoute: React.FC = () => {
+  const { isAdmin } = useAuth();
+  return isAdmin ? <AdminSupportDashboard /> : <UserSupportChat />;
+};
 
 // redirect ke login page kalo unauthenticated 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -52,6 +59,7 @@ function App() {
 
               <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
               <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+              <Route path="/support" element={<ProtectedRoute><DynamicSupportRoute /></ProtectedRoute>} />
             </Routes>
           </Layout>
         </Router>

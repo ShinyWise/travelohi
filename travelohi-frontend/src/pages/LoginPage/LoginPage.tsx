@@ -29,13 +29,22 @@ const LoginPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
     // show redirect message (e.g. after registration) as a toast
-    const queryParams = new URLSearchParams(location.search);
+    const queryParams = new URLSearchParams(window.location.search);
     const isSessionExpired = queryParams.get('expired') === 'true';
     const message = location.state?.message;
     const displayMessage = isSessionExpired ? t.session_expired_message : message;
+    const hasShownToastRef = useRef(false);
     useEffect(() => {
-        if (displayMessage) showToast(displayMessage, isSessionExpired ? 'error' : 'success');
-    }, []);
+        if (displayMessage && !hasShownToastRef.current) {
+            hasShownToastRef.current = true;
+            showToast(displayMessage, isSessionExpired ? 'error' : 'success');
+            if (isSessionExpired) {
+                const url = new URL(window.location.href);
+                url.searchParams.delete('expired');
+                window.history.replaceState({}, '', url.pathname + url.search);
+            }
+        }
+    }, [displayMessage, isSessionExpired, showToast]);
     const validateEmail = (val: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.com$/;
         if (!emailRegex.test(val)) {
