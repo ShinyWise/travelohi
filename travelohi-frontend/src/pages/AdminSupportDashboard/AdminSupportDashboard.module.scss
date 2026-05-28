@@ -1,0 +1,45 @@
+.dashboardContainer {
+    display: flex;
+    max-width: 100%;
+    margin: 0;
+    height: 100%;
+    background-color: var(--bg-primary);
+    border: none;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: none;
+}
+
+.mainContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-secondary);
+}
+
+.noSelectionState {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    text-align: center;
+    padding: 40px;
+
+    .icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        opacity: 0.3;
+    }
+
+    h2 {
+        margin: 0 0 10px;
+        color: var(--text-primary);
+    }
+
+    p {
+        color: var(--text-secondary);
+        max-width: 300px;
+        line-height: 1.5;
+    }
+}
