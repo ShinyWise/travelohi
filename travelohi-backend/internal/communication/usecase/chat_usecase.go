@@ -23,19 +23,22 @@ func NewChatUseCase(repo communication.Repository, hub communication.HubUseCase)
 	}
 }
 
-func (u *chatUseCase) ProcessIncomingEvent(ctx context.Context, event *communicationpb.ChatEvent) error {
+func (u *chatUseCase) SendEvent(ctx context.Context, event *communicationpb.ChatEvent) (*communicationpb.SendEventResponse, error) {
+	var resMsgID string
+	var resTimestamp string
+
 	// identify payload type
 	switch payload := event.EventPayload.(type) {
-
 	case *communicationpb.ChatEvent_Message:
-
 		msgID := payload.Message.GetMessageId()
 		if msgID == "" {
 			msgID = uuid.New().String()
 			payload.Message.MessageId = msgID
 		}
+		resMsgID = msgID
 
-		payload.Message.Timestamp = time.Now().Format(time.RFC3339)
+		resTimestamp = time.Now().Format(time.RFC3339)
+		payload.Message.Timestamp = resTimestamp
 
 		// save message
 		domainMsg := &communication.Message{
@@ -46,23 +49,26 @@ func (u *chatUseCase) ProcessIncomingEvent(ctx context.Context, event *communica
 		}
 
 		if err := u.repo.SaveMessage(ctx, domainMsg); err != nil {
-			return err
+			return nil, err
 		}
 
 	case *communicationpb.ChatEvent_ReadReceipt:
 		// update status
 		if err := u.repo.UpdateMessageStatus(ctx, payload.ReadReceipt.GetMessageId(), payload.ReadReceipt.GetNewStatus()); err != nil {
-			return err
+			return nil, err
 		}
 
 	case *communicationpb.ChatEvent_TypingIndicator:
-
+		// Nothing to save to DB, just passing it through
 	}
 
-	// broadcast event di hub
 	u.hub.RouteEvent(event)
 
-	return nil
+	return &communicationpb.SendEventResponse{
+		Success:   true,
+		MessageId: resMsgID,
+		Timestamp: resTimestamp,
+	}, nil
 }
 
 func (u *chatUseCase) GetChatHistory(ctx context.Context, req *communicationpb.GetChatHistoryRequest) (*communicationpb.GetChatHistoryResponse, error) {
@@ -82,6 +88,8 @@ func (u *chatUseCase) GetChatHistory(ctx context.Context, req *communicationpb.G
 			MessageId: m.ID,
 			Content:   m.Content,
 			Timestamp: m.CreatedAt.Format(time.RFC3339),
+			SenderId:  m.SenderID,
+			Status:    m.Status,
 		})
 	}
 
@@ -125,6 +133,7 @@ func (u *chatUseCase) GetActiveConversations(ctx context.Context, req *communica
 			LatestMessageContent:   c.LatestMessageContent,
 			LatestMessageTimestamp: timestampStr,
 			UnreadCount:            c.UnreadCount,
+			ProfilePictureUrl:      c.ProfilePictureUrl,
 		})
 	}
 
@@ -132,4 +141,38 @@ func (u *chatUseCase) GetActiveConversations(ctx context.Context, req *communica
 		Conversations: pbConvos,
 		TotalActive:   total,
 	}, nil
+}
+
+func (u *chatUseCase) GetOrCreateConversation(ctx context.Context, req *communicationpb.GetOrCreateConversationRequest) (*communicationpb.GetOrCreateConversationResponse, error) {
+	convID, err := u.repo.GetOrCreateConversation(ctx, req.GetUserId(), req.GetCreateIfNotExists())
+	if err != nil {
+		return nil, err
+	}
+	return &communicationpb.GetOrCreateConversationResponse{
+		ConversationId: convID,
+	}, nil
+}
+
+func (u *chatUseCase) CloseConversation(ctx context.Context, req *communicationpb.CloseConversationRequest, adminID string) (*communicationpb.CloseConversationResponse, error) {
+	// validate admin
+	isAdmin, err := u.repo.IsUserAdmin(ctx, adminID)
+	if err != nil || !isAdmin {
+		return nil, status.Errorf(codes.PermissionDenied, "permission denied: administrator privileges required")
+	}
+
+	// cek conversation status
+	if err := u.repo.CloseConversation(ctx, req.GetConversationId()); err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to close conversation: %v", err)
+	}
+
+	// broadcast conversationClosed event
+	u.hub.RouteEvent(&communicationpb.ChatEvent{
+		ConversationId: req.GetConversationId(),
+		SenderId:       adminID,
+		EventPayload: &communicationpb.ChatEvent_ConversationClosed{
+			ConversationClosed: &communicationpb.ConversationClosedPayload{},
+		},
+	})
+
+	return &communicationpb.CloseConversationResponse{Success: true}, nil
 }

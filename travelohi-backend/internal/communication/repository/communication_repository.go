@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/travelohi/backend/internal/communication"
 	"gorm.io/gorm"
 )
@@ -115,6 +116,7 @@ func (r *postgresCommunicationRepo) GetActiveConversations(ctx context.Context, 
 			c.id AS conversation_id,
 			c.user_id,
 			u.first_name || ' ' || u.last_name AS full_name,
+			u.profile_picture_url AS profile_picture_url,
 			(SELECT content FROM support_messages sm WHERE sm.conversation_id = c.id ORDER BY created_at DESC LIMIT 1) AS latest_message_content,
 			(SELECT created_at FROM support_messages sm WHERE sm.conversation_id = c.id ORDER BY created_at DESC LIMIT 1) AS latest_message_timestamp,
 			(SELECT COUNT(*) FROM support_messages sm WHERE sm.conversation_id = c.id AND sm.sender_id = c.user_id AND sm.status = 'sent') AS unread_count
@@ -128,4 +130,49 @@ func (r *postgresCommunicationRepo) GetActiveConversations(ctx context.Context, 
 	}
 
 	return results, int32(total), nil
+}
+
+type SupportConversationModel struct {
+	ID        string    `gorm:"primaryKey;column:id;type:varchar(255)"`
+	UserID    string    `gorm:"column:user_id;type:varchar(255);not null"`
+	Status    string    `gorm:"column:status;type:varchar(50);default:'active'"`
+	CreatedAt time.Time `gorm:"column:created_at;autoCreateTime"`
+	UpdatedAt time.Time `gorm:"column:updated_at;autoUpdateTime"`
+}
+
+func (SupportConversationModel) TableName() string { return "support_conversations" }
+
+func (r *postgresCommunicationRepo) GetOrCreateConversation(ctx context.Context, userID string, createIfNotExist bool) (string, error) {
+	var model SupportConversationModel
+	err := r.db.WithContext(ctx).
+		Where("user_id = ? AND status = 'active'", userID).
+		First(&model).Error
+	if err == nil {
+		return model.ID, nil
+	}
+	if err != gorm.ErrRecordNotFound {
+		return "", err
+	}
+
+	if !createIfNotExist {
+		return "", nil
+	}
+
+	newID := uuid.New().String()
+	newModel := &SupportConversationModel{
+		ID:     newID,
+		UserID: userID,
+		Status: "active",
+	}
+	if err := r.db.WithContext(ctx).Create(newModel).Error; err != nil {
+		return "", err
+	}
+	return newID, nil
+}
+
+func (r *postgresCommunicationRepo) CloseConversation(ctx context.Context, conversationID string) error {
+	return r.db.WithContext(ctx).
+		Model(&SupportConversationModel{}).
+		Where("id = ?", conversationID).
+		Update("status", "closed").Error
 }

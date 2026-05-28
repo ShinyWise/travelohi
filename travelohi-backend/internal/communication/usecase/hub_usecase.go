@@ -29,16 +29,21 @@ func (h *hubUseCase) Register(conversationID, userID string, sendCh chan *commun
 		h.rooms[conversationID] = make(map[string]chan *communicationpb.ChatEvent)
 	}
 
+	// ngeprevents leaks and race condition
+	if oldCh, ok := h.rooms[conversationID][userID]; ok {
+		close(oldCh)
+	}
+
 	h.rooms[conversationID][userID] = sendCh
 	log.Printf("[Chat Hub] User %s joined conversation %s", userID, conversationID)
 }
 
-func (h *hubUseCase) Unregister(conversationID, userID string) {
+func (h *hubUseCase) Unregister(conversationID, userID string, sendCh chan *communicationpb.ChatEvent) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
 
 	if room, exists := h.rooms[conversationID]; exists {
-		if ch, ok := room[userID]; ok {
+		if ch, ok := room[userID]; ok && ch == sendCh {
 			close(ch) // close channel
 			delete(room, userID)
 			log.Printf("[Chat Hub] User %s left conversation %s", userID, conversationID)

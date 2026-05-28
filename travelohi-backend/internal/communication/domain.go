@@ -20,6 +20,7 @@ type ConversationPreview struct {
 	ConversationID         string
 	UserID                 string
 	FullName               string
+	ProfilePictureUrl      string
 	LatestMessageContent   string
 	LatestMessageTimestamp time.Time
 	UnreadCount            int32
@@ -27,7 +28,7 @@ type ConversationPreview struct {
 
 type HubUseCase interface {
 	Register(conversationID, userID string, sendCh chan *communicationpb.ChatEvent)
-	Unregister(conversationID, userID string)
+	Unregister(conversationID, userID string, sendCh chan *communicationpb.ChatEvent)
 	RouteEvent(event *communicationpb.ChatEvent)
 }
 
@@ -37,10 +38,14 @@ type Repository interface {
 	GetMessages(ctx context.Context, conversationID string, limit, offset int32) ([]*Message, error)
 	GetActiveConversations(ctx context.Context, searchQuery string, limit, offset int32) ([]*ConversationPreview, int32, error)
 	IsUserAdmin(ctx context.Context, userID string) (bool, error)
+	GetOrCreateConversation(ctx context.Context, userID string, createIfNotExist bool) (string, error)
+	CloseConversation(ctx context.Context, conversationID string) error
 }
 
 type ChatUseCase interface {
-	ProcessIncomingEvent(ctx context.Context, event *communicationpb.ChatEvent) error
+	SendEvent(ctx context.Context, event *communicationpb.ChatEvent) (*communicationpb.SendEventResponse, error)
 	GetChatHistory(ctx context.Context, req *communicationpb.GetChatHistoryRequest) (*communicationpb.GetChatHistoryResponse, error)
 	GetActiveConversations(ctx context.Context, req *communicationpb.GetActiveConversationsRequest, adminID string) (*communicationpb.GetActiveConversationsResponse, error)
+	GetOrCreateConversation(ctx context.Context, req *communicationpb.GetOrCreateConversationRequest) (*communicationpb.GetOrCreateConversationResponse, error)
+	CloseConversation(ctx context.Context, req *communicationpb.CloseConversationRequest, adminID string) (*communicationpb.CloseConversationResponse, error)
 }
