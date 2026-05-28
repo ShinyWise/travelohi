@@ -402,9 +402,14 @@
             gap: 20px;
         }
 
+        .themeToggle {
+            align-self: flex-start;
+        }
+
         .preferencesGroup {
             width: 100%;
             justify-content: flex-start;
+            flex-wrap: wrap;
         }
 
         .authButtons {
@@ -416,6 +421,18 @@
                 width: 100%;
                 text-align: center;
             }
+        }
+
+        .paymentMenu {
+            left: 0;
+            right: auto;
+            min-width: min(260px, calc(100vw - 48px));
+            max-width: calc(100vw - 48px);
+        }
+
+        .dropdownMenu {
+            left: 0;
+            right: auto;
         }
     }
 }

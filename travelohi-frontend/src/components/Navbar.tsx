@@ -11,6 +11,7 @@ import { ShoppingCart, CreditCard, Wallet, Sun, Moon } from 'lucide-react';
 import SearchInput from './SearchInput';
 import LogoutConfirmationModal from './LogoutConfirmationModal';
 import ProgressiveImage from './ProgressiveImage';
+import { useNotification } from '../context/NotificationContext';
 import styles from './Navbar.module.scss';
 
 const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23999'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
@@ -20,6 +21,7 @@ const Navbar: React.FC = () => {
     const { isAuthenticated, userId, logout, profilePictureUrl, updateProfilePicture, isAdmin } = useAuth();
     const navigate = useNavigate();
     const t = translations[language];
+    const { unreadChatCount } = useNotification();
 
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
@@ -165,36 +167,52 @@ const Navbar: React.FC = () => {
 
                 <nav className={`${styles.navLinks} ${isMobileMenuOpen ? styles.active : ''}`}>
                     <div className={styles.navItems}>
-                        <button onClick={toggleTheme} className={`${styles.themeToggle} ${styles[theme]}`} aria-label="Toggle Theme">
-                            {theme === 'light' ? (
-                                <Moon size={20} className={styles.themeIcon} />
-                            ) : (
-                                <Sun size={20} className={styles.themeIcon} />
-                            )}
-                        </button>
+
 
                         {isAuthenticated && (
                             isAdmin ? (
-                                <span className={styles.navItemText} onClick={() => navigate('/admin')}>
-                                    Admin Panel
-                                </span>
+                                <>
+                                    <span className={styles.navItemText} onClick={() => { setIsMobileMenuOpen(false); navigate('/admin'); }}>
+                                        Admin Panel
+                                    </span>
+                                    <span
+                                        className={styles.navItemText}
+                                        onClick={() => { setIsMobileMenuOpen(false); navigate('/support'); }}
+                                    >
+                                        {t.customer_service} {unreadChatCount > 0 && <span className={styles.badge}>{unreadChatCount}</span>}
+                                    </span>
+                                </>
                             ) : (
                                 <>
                                     <span
                                         className={styles.navItemText}
-                                        onClick={() => navigate('/bookings')}
+                                        onClick={() => { setIsMobileMenuOpen(false); navigate('/bookings'); }}
                                     >
                                         {t.my_orders} {ongoingCount > 0 && <span className={styles.badge}>{ongoingCount}</span>}
                                     </span>
-                                    <span className={styles.navItemText} onClick={() => navigate('/cart')} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                                    <span className={styles.navItemText} onClick={() => { setIsMobileMenuOpen(false); navigate('/cart'); }} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                                         <ShoppingCart size={18} />
                                         <span>{t.cart}</span>
+                                    </span>
+                                    <span
+                                        className={styles.navItemText}
+                                        onClick={() => { setIsMobileMenuOpen(false); navigate('/support'); }}
+                                    >
+                                        {t.customer_service} {unreadChatCount > 0 && <span className={styles.badge}>{unreadChatCount}</span>}
                                     </span>
                                 </>
                             )
                         )}
 
                         <div className={styles.preferencesGroup}>
+                            <button onClick={toggleTheme} className={`${styles.themeToggle} ${styles[theme]}`} aria-label="Toggle Theme">
+                                {theme === 'light' ? (
+                                    <Moon size={20} className={styles.themeIcon} />
+                                ) : (
+                                    <Sun size={20} className={styles.themeIcon} />
+                                )}
+                            </button>
+
                             {!isAdmin && (
                                 <div className={styles.customDropdown} ref={paymentDropdownRef}>
                                     <button
@@ -348,8 +366,8 @@ const Navbar: React.FC = () => {
                             </div>
                         ) : (
                             <div className={styles.authButtons}>
-                                <button className={styles.loginBtn} onClick={() => navigate('/login')}>{t.login}</button>
-                                <button className={styles.registerBtn} onClick={() => navigate('/register')}>{t.register}</button>
+                                <button className={styles.loginBtn} onClick={() => { setIsMobileMenuOpen(false); navigate('/login'); }}>{t.login}</button>
+                                <button className={styles.registerBtn} onClick={() => { setIsMobileMenuOpen(false); navigate('/register'); }}>{t.register}</button>
                             </div>
                         )}
                     </div>

@@ -1,23 +1,31 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { useAppContext } from '../context/ThemeContext';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import { ToastProvider } from './Toast';
+import { NotificationProvider } from '../context/NotificationContext';
 import styles from './Layout.module.scss';
 interface LayoutProps {
     children: React.ReactNode;
 }
 const Layout: React.FC<LayoutProps> = ({ children }) => {
     const { theme } = useAppContext();
+    const location = useLocation();
+    const isSupportPage = location.pathname === '/support';
+    const hideFooter = isSupportPage || location.pathname === '/admin';
+
     return (
         <ToastProvider>
-            <div className={`${styles.layoutContainer} ${styles[theme]}`}>
-                <Navbar />
-                <main className={styles.mainContent}>
-                    {children}
-                </main>
-                <Footer />
-            </div>
+            <NotificationProvider>
+                <div className={`${styles.layoutContainer} ${styles[theme]} ${isSupportPage ? styles.supportLayout : ''}`}>
+                    <Navbar />
+                    <main className={`${styles.mainContent} ${isSupportPage ? styles.supportMain : ''}`}>
+                        {children}
+                    </main>
+                    {!hideFooter && <Footer />}
+                </div>
+            </NotificationProvider>
         </ToastProvider>
     );
 };

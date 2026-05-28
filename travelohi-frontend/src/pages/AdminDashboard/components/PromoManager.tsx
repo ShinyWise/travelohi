@@ -122,41 +122,43 @@ const PromoManager: React.FC = () => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px dashed var(--border-color)', marginBottom: '20px', paddingBottom: '15px' }}>
                     <h3 style={{ margin: 0, border: 'none', padding: 0 }}>Daftar Kode Promo</h3>
                 </div>
-                <table className={styles.promoTable}>
-                    <thead>
-                        <tr>
-                            <th>Kode Promo</th>
-                            <th>Potongan (IDR)</th>
-                            <th className={styles.centerCol}>Status</th>
-                            <th className={styles.centerCol}>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {promos.length === 0 ? (
-                            <tr><td colSpan={4} className={styles.emptyText}>Belum ada promo terdaftar.</td></tr>
-                        ) : (
-                            promos.map(promo => (
-                                <tr key={promo.id}>
-                                    <td><strong>{promo.code}</strong></td>
-                                    <td>Rp {promo.discountAmount.toLocaleString('id-ID')}</td>
-                                    <td className={styles.centerCol}>
-                                        <span className={`${styles.badge} ${promo.isActive ? styles.active : styles.inactive}`}>
-                                            {promo.isActive ? 'Aktif' : 'Non-Aktif'}
-                                        </span>
-                                    </td>
-                                    <td className={styles.centerCol}>
-                                        <button
-                                            className={styles.toggleBtn}
-                                            onClick={() => handleToggleStatus(promo.id, promo.isActive)}
-                                        >
-                                            {promo.isActive ? 'Matikan' : 'Aktifkan'}
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
+                <div className={styles.tableContainer}>
+                    <table className={styles.promoTable}>
+                        <thead>
+                            <tr>
+                                <th>Kode Promo</th>
+                                <th>Potongan (IDR)</th>
+                                <th className={styles.centerCol}>Status</th>
+                                <th className={styles.centerCol}>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {promos.length === 0 ? (
+                                <tr><td colSpan={4} className={styles.emptyText}>Belum ada promo terdaftar.</td></tr>
+                            ) : (
+                                promos.map(promo => (
+                                    <tr key={promo.id}>
+                                        <td><strong>{promo.code}</strong></td>
+                                        <td>Rp {promo.discountAmount.toLocaleString('id-ID')}</td>
+                                        <td className={styles.centerCol}>
+                                            <span className={`${styles.badge} ${promo.isActive ? styles.active : styles.inactive}`}>
+                                                {promo.isActive ? 'Aktif' : 'Non-Aktif'}
+                                            </span>
+                                        </td>
+                                        <td className={styles.centerCol}>
+                                            <button
+                                                className={styles.toggleBtn}
+                                                onClick={() => handleToggleStatus(promo.id, promo.isActive)}
+                                            >
+                                                {promo.isActive ? 'Matikan' : 'Aktifkan'}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );
