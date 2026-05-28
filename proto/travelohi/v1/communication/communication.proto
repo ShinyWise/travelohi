@@ -6,13 +6,33 @@ option go_package = "github.com/travelohi/backend/proto/communication/v1;communi
 
 service CommunicationService {
   // Real-Time Transport
-  rpc StreamChat(stream ChatEvent) returns (stream ChatEvent) {}
+  rpc StreamChat(StreamChatRequest) returns (stream ChatEvent) {}
+
+  // pager/unary 
+  rpc SendEvent(ChatEvent) returns (SendEventResponse) {}
 
   // Message Persistence
   rpc GetChatHistory(GetChatHistoryRequest) returns (GetChatHistoryResponse) {}
 
   // Admin Dashboard Logic
   rpc GetActiveConversations(GetActiveConversationsRequest) returns (GetActiveConversationsResponse) {}
+
+  // User Conversation initialization
+  rpc GetOrCreateConversation(GetOrCreateConversationRequest) returns (GetOrCreateConversationResponse) {}
+
+  // Admin: close a resolved conversation
+  rpc CloseConversation(CloseConversationRequest) returns (CloseConversationResponse) {}
+}
+
+message StreamChatRequest {
+  string conversation_id = 1;
+  string user_id = 2;
+}
+
+message SendEventResponse {
+  bool success = 1;
+  string message_id = 2;
+  string timestamp = 3;
 }
 
 message ChatEvent {
@@ -23,6 +43,7 @@ message ChatEvent {
     MessagePayload message = 3;
     TypingIndicatorPayload typing_indicator = 4;
     ReadReceiptPayload read_receipt = 5;
+    ConversationClosedPayload conversation_closed = 6;
   }
 }
 
@@ -30,6 +51,8 @@ message MessagePayload {
   string message_id = 1;
   string content = 2;
   string timestamp = 3;
+  string sender_id = 4;
+  string status = 5; // sent, seen
 }
 
 message TypingIndicatorPayload {
@@ -65,9 +88,29 @@ message ConversationPreview {
   string latest_message_content = 4;
   string latest_message_timestamp = 5;
   int32 unread_count = 6;
+  string profile_picture_url = 7;
 }
 
 message GetActiveConversationsResponse {
   repeated ConversationPreview conversations = 1;
   int32 total_active = 2;
 }
+
+message GetOrCreateConversationRequest {
+  string user_id = 1;
+  bool create_if_not_exists = 2;
+}
+
+message GetOrCreateConversationResponse {
+  string conversation_id = 1;
+}
+
+message CloseConversationRequest {
+  string conversation_id = 1;
+}
+
+message CloseConversationResponse {
+  bool success = 1;
+}
+
+message ConversationClosedPayload {}

@@ -4,14 +4,20 @@
 import type { RpcTransport } from "@protobuf-ts/runtime-rpc";
 import type { ServiceInfo } from "@protobuf-ts/runtime-rpc";
 import { CommunicationService } from "./communication";
+import type { CloseConversationResponse } from "./communication";
+import type { CloseConversationRequest } from "./communication";
+import type { GetOrCreateConversationResponse } from "./communication";
+import type { GetOrCreateConversationRequest } from "./communication";
 import type { GetActiveConversationsResponse } from "./communication";
 import type { GetActiveConversationsRequest } from "./communication";
 import type { GetChatHistoryResponse } from "./communication";
 import type { GetChatHistoryRequest } from "./communication";
+import type { SendEventResponse } from "./communication";
 import type { UnaryCall } from "@protobuf-ts/runtime-rpc";
 import { stackIntercept } from "@protobuf-ts/runtime-rpc";
 import type { ChatEvent } from "./communication";
-import type { DuplexStreamingCall } from "@protobuf-ts/runtime-rpc";
+import type { StreamChatRequest } from "./communication";
+import type { ServerStreamingCall } from "@protobuf-ts/runtime-rpc";
 import type { RpcOptions } from "@protobuf-ts/runtime-rpc";
 /**
  * @generated from protobuf service travelohi.v1.communication.CommunicationService
@@ -22,7 +28,13 @@ export interface ICommunicationServiceClient {
      *
      * @generated from protobuf rpc: StreamChat
      */
-    streamChat(options?: RpcOptions): DuplexStreamingCall<ChatEvent, ChatEvent>;
+    streamChat(input: StreamChatRequest, options?: RpcOptions): ServerStreamingCall<StreamChatRequest, ChatEvent>;
+    /**
+     * pager/unary
+     *
+     * @generated from protobuf rpc: SendEvent
+     */
+    sendEvent(input: ChatEvent, options?: RpcOptions): UnaryCall<ChatEvent, SendEventResponse>;
     /**
      * Message Persistence
      *
@@ -35,6 +47,18 @@ export interface ICommunicationServiceClient {
      * @generated from protobuf rpc: GetActiveConversations
      */
     getActiveConversations(input: GetActiveConversationsRequest, options?: RpcOptions): UnaryCall<GetActiveConversationsRequest, GetActiveConversationsResponse>;
+    /**
+     * User Conversation initialization
+     *
+     * @generated from protobuf rpc: GetOrCreateConversation
+     */
+    getOrCreateConversation(input: GetOrCreateConversationRequest, options?: RpcOptions): UnaryCall<GetOrCreateConversationRequest, GetOrCreateConversationResponse>;
+    /**
+     * Admin: close a resolved conversation
+     *
+     * @generated from protobuf rpc: CloseConversation
+     */
+    closeConversation(input: CloseConversationRequest, options?: RpcOptions): UnaryCall<CloseConversationRequest, CloseConversationResponse>;
 }
 /**
  * @generated from protobuf service travelohi.v1.communication.CommunicationService
@@ -50,9 +74,18 @@ export class CommunicationServiceClient implements ICommunicationServiceClient, 
      *
      * @generated from protobuf rpc: StreamChat
      */
-    streamChat(options?: RpcOptions): DuplexStreamingCall<ChatEvent, ChatEvent> {
+    streamChat(input: StreamChatRequest, options?: RpcOptions): ServerStreamingCall<StreamChatRequest, ChatEvent> {
         const method = this.methods[0], opt = this._transport.mergeOptions(options);
-        return stackIntercept<ChatEvent, ChatEvent>("duplex", this._transport, method, opt);
+        return stackIntercept<StreamChatRequest, ChatEvent>("serverStreaming", this._transport, method, opt, input);
+    }
+    /**
+     * pager/unary
+     *
+     * @generated from protobuf rpc: SendEvent
+     */
+    sendEvent(input: ChatEvent, options?: RpcOptions): UnaryCall<ChatEvent, SendEventResponse> {
+        const method = this.methods[1], opt = this._transport.mergeOptions(options);
+        return stackIntercept<ChatEvent, SendEventResponse>("unary", this._transport, method, opt, input);
     }
     /**
      * Message Persistence
@@ -60,7 +93,7 @@ export class CommunicationServiceClient implements ICommunicationServiceClient, 
      * @generated from protobuf rpc: GetChatHistory
      */
     getChatHistory(input: GetChatHistoryRequest, options?: RpcOptions): UnaryCall<GetChatHistoryRequest, GetChatHistoryResponse> {
-        const method = this.methods[1], opt = this._transport.mergeOptions(options);
+        const method = this.methods[2], opt = this._transport.mergeOptions(options);
         return stackIntercept<GetChatHistoryRequest, GetChatHistoryResponse>("unary", this._transport, method, opt, input);
     }
     /**
@@ -69,7 +102,25 @@ export class CommunicationServiceClient implements ICommunicationServiceClient, 
      * @generated from protobuf rpc: GetActiveConversations
      */
     getActiveConversations(input: GetActiveConversationsRequest, options?: RpcOptions): UnaryCall<GetActiveConversationsRequest, GetActiveConversationsResponse> {
-        const method = this.methods[2], opt = this._transport.mergeOptions(options);
+        const method = this.methods[3], opt = this._transport.mergeOptions(options);
         return stackIntercept<GetActiveConversationsRequest, GetActiveConversationsResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * User Conversation initialization
+     *
+     * @generated from protobuf rpc: GetOrCreateConversation
+     */
+    getOrCreateConversation(input: GetOrCreateConversationRequest, options?: RpcOptions): UnaryCall<GetOrCreateConversationRequest, GetOrCreateConversationResponse> {
+        const method = this.methods[4], opt = this._transport.mergeOptions(options);
+        return stackIntercept<GetOrCreateConversationRequest, GetOrCreateConversationResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * Admin: close a resolved conversation
+     *
+     * @generated from protobuf rpc: CloseConversation
+     */
+    closeConversation(input: CloseConversationRequest, options?: RpcOptions): UnaryCall<CloseConversationRequest, CloseConversationResponse> {
+        const method = this.methods[5], opt = this._transport.mergeOptions(options);
+        return stackIntercept<CloseConversationRequest, CloseConversationResponse>("unary", this._transport, method, opt, input);
     }
 }

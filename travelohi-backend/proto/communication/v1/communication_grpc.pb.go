@@ -19,9 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	CommunicationService_StreamChat_FullMethodName             = "/travelohi.v1.communication.CommunicationService/StreamChat"
-	CommunicationService_GetChatHistory_FullMethodName         = "/travelohi.v1.communication.CommunicationService/GetChatHistory"
-	CommunicationService_GetActiveConversations_FullMethodName = "/travelohi.v1.communication.CommunicationService/GetActiveConversations"
+	CommunicationService_StreamChat_FullMethodName              = "/travelohi.v1.communication.CommunicationService/StreamChat"
+	CommunicationService_SendEvent_FullMethodName               = "/travelohi.v1.communication.CommunicationService/SendEvent"
+	CommunicationService_GetChatHistory_FullMethodName          = "/travelohi.v1.communication.CommunicationService/GetChatHistory"
+	CommunicationService_GetActiveConversations_FullMethodName  = "/travelohi.v1.communication.CommunicationService/GetActiveConversations"
+	CommunicationService_GetOrCreateConversation_FullMethodName = "/travelohi.v1.communication.CommunicationService/GetOrCreateConversation"
+	CommunicationService_CloseConversation_FullMethodName       = "/travelohi.v1.communication.CommunicationService/CloseConversation"
 )
 
 // CommunicationServiceClient is the client API for CommunicationService service.
@@ -29,11 +32,17 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CommunicationServiceClient interface {
 	// Real-Time Transport
-	StreamChat(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[ChatEvent, ChatEvent], error)
+	StreamChat(ctx context.Context, in *StreamChatRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ChatEvent], error)
+	// pager/unary
+	SendEvent(ctx context.Context, in *ChatEvent, opts ...grpc.CallOption) (*SendEventResponse, error)
 	// Message Persistence
 	GetChatHistory(ctx context.Context, in *GetChatHistoryRequest, opts ...grpc.CallOption) (*GetChatHistoryResponse, error)
 	// Admin Dashboard Logic
 	GetActiveConversations(ctx context.Context, in *GetActiveConversationsRequest, opts ...grpc.CallOption) (*GetActiveConversationsResponse, error)
+	// User Conversation initialization
+	GetOrCreateConversation(ctx context.Context, in *GetOrCreateConversationRequest, opts ...grpc.CallOption) (*GetOrCreateConversationResponse, error)
+	// Admin: close a resolved conversation
+	CloseConversation(ctx context.Context, in *CloseConversationRequest, opts ...grpc.CallOption) (*CloseConversationResponse, error)
 }
 
 type communicationServiceClient struct {
@@ -44,18 +53,34 @@ func NewCommunicationServiceClient(cc grpc.ClientConnInterface) CommunicationSer
 	return &communicationServiceClient{cc}
 }
 
-func (c *communicationServiceClient) StreamChat(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[ChatEvent, ChatEvent], error) {
+func (c *communicationServiceClient) StreamChat(ctx context.Context, in *StreamChatRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ChatEvent], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	stream, err := c.cc.NewStream(ctx, &CommunicationService_ServiceDesc.Streams[0], CommunicationService_StreamChat_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &grpc.GenericClientStream[ChatEvent, ChatEvent]{ClientStream: stream}
+	x := &grpc.GenericClientStream[StreamChatRequest, ChatEvent]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
 	return x, nil
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type CommunicationService_StreamChatClient = grpc.BidiStreamingClient[ChatEvent, ChatEvent]
+type CommunicationService_StreamChatClient = grpc.ServerStreamingClient[ChatEvent]
+
+func (c *communicationServiceClient) SendEvent(ctx context.Context, in *ChatEvent, opts ...grpc.CallOption) (*SendEventResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SendEventResponse)
+	err := c.cc.Invoke(ctx, CommunicationService_SendEvent_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
 
 func (c *communicationServiceClient) GetChatHistory(ctx context.Context, in *GetChatHistoryRequest, opts ...grpc.CallOption) (*GetChatHistoryResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
@@ -77,16 +102,42 @@ func (c *communicationServiceClient) GetActiveConversations(ctx context.Context,
 	return out, nil
 }
 
+func (c *communicationServiceClient) GetOrCreateConversation(ctx context.Context, in *GetOrCreateConversationRequest, opts ...grpc.CallOption) (*GetOrCreateConversationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetOrCreateConversationResponse)
+	err := c.cc.Invoke(ctx, CommunicationService_GetOrCreateConversation_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *communicationServiceClient) CloseConversation(ctx context.Context, in *CloseConversationRequest, opts ...grpc.CallOption) (*CloseConversationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CloseConversationResponse)
+	err := c.cc.Invoke(ctx, CommunicationService_CloseConversation_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CommunicationServiceServer is the server API for CommunicationService service.
 // All implementations must embed UnimplementedCommunicationServiceServer
 // for forward compatibility.
 type CommunicationServiceServer interface {
 	// Real-Time Transport
-	StreamChat(grpc.BidiStreamingServer[ChatEvent, ChatEvent]) error
+	StreamChat(*StreamChatRequest, grpc.ServerStreamingServer[ChatEvent]) error
+	// pager/unary
+	SendEvent(context.Context, *ChatEvent) (*SendEventResponse, error)
 	// Message Persistence
 	GetChatHistory(context.Context, *GetChatHistoryRequest) (*GetChatHistoryResponse, error)
 	// Admin Dashboard Logic
 	GetActiveConversations(context.Context, *GetActiveConversationsRequest) (*GetActiveConversationsResponse, error)
+	// User Conversation initialization
+	GetOrCreateConversation(context.Context, *GetOrCreateConversationRequest) (*GetOrCreateConversationResponse, error)
+	// Admin: close a resolved conversation
+	CloseConversation(context.Context, *CloseConversationRequest) (*CloseConversationResponse, error)
 	mustEmbedUnimplementedCommunicationServiceServer()
 }
 
@@ -97,14 +148,23 @@ type CommunicationServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedCommunicationServiceServer struct{}
 
-func (UnimplementedCommunicationServiceServer) StreamChat(grpc.BidiStreamingServer[ChatEvent, ChatEvent]) error {
+func (UnimplementedCommunicationServiceServer) StreamChat(*StreamChatRequest, grpc.ServerStreamingServer[ChatEvent]) error {
 	return status.Error(codes.Unimplemented, "method StreamChat not implemented")
+}
+func (UnimplementedCommunicationServiceServer) SendEvent(context.Context, *ChatEvent) (*SendEventResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SendEvent not implemented")
 }
 func (UnimplementedCommunicationServiceServer) GetChatHistory(context.Context, *GetChatHistoryRequest) (*GetChatHistoryResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetChatHistory not implemented")
 }
 func (UnimplementedCommunicationServiceServer) GetActiveConversations(context.Context, *GetActiveConversationsRequest) (*GetActiveConversationsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetActiveConversations not implemented")
+}
+func (UnimplementedCommunicationServiceServer) GetOrCreateConversation(context.Context, *GetOrCreateConversationRequest) (*GetOrCreateConversationResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetOrCreateConversation not implemented")
+}
+func (UnimplementedCommunicationServiceServer) CloseConversation(context.Context, *CloseConversationRequest) (*CloseConversationResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CloseConversation not implemented")
 }
 func (UnimplementedCommunicationServiceServer) mustEmbedUnimplementedCommunicationServiceServer() {}
 func (UnimplementedCommunicationServiceServer) testEmbeddedByValue()                              {}
@@ -128,11 +188,33 @@ func RegisterCommunicationServiceServer(s grpc.ServiceRegistrar, srv Communicati
 }
 
 func _CommunicationService_StreamChat_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(CommunicationServiceServer).StreamChat(&grpc.GenericServerStream[ChatEvent, ChatEvent]{ServerStream: stream})
+	m := new(StreamChatRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(CommunicationServiceServer).StreamChat(m, &grpc.GenericServerStream[StreamChatRequest, ChatEvent]{ServerStream: stream})
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type CommunicationService_StreamChatServer = grpc.BidiStreamingServer[ChatEvent, ChatEvent]
+type CommunicationService_StreamChatServer = grpc.ServerStreamingServer[ChatEvent]
+
+func _CommunicationService_SendEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChatEvent)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CommunicationServiceServer).SendEvent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CommunicationService_SendEvent_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CommunicationServiceServer).SendEvent(ctx, req.(*ChatEvent))
+	}
+	return interceptor(ctx, in, info, handler)
+}
 
 func _CommunicationService_GetChatHistory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetChatHistoryRequest)
@@ -170,6 +252,42 @@ func _CommunicationService_GetActiveConversations_Handler(srv interface{}, ctx c
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CommunicationService_GetOrCreateConversation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOrCreateConversationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CommunicationServiceServer).GetOrCreateConversation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CommunicationService_GetOrCreateConversation_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CommunicationServiceServer).GetOrCreateConversation(ctx, req.(*GetOrCreateConversationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CommunicationService_CloseConversation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CloseConversationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CommunicationServiceServer).CloseConversation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CommunicationService_CloseConversation_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CommunicationServiceServer).CloseConversation(ctx, req.(*CloseConversationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CommunicationService_ServiceDesc is the grpc.ServiceDesc for CommunicationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -178,6 +296,10 @@ var CommunicationService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*CommunicationServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "SendEvent",
+			Handler:    _CommunicationService_SendEvent_Handler,
+		},
+		{
 			MethodName: "GetChatHistory",
 			Handler:    _CommunicationService_GetChatHistory_Handler,
 		},
@@ -185,13 +307,20 @@ var CommunicationService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "GetActiveConversations",
 			Handler:    _CommunicationService_GetActiveConversations_Handler,
 		},
+		{
+			MethodName: "GetOrCreateConversation",
+			Handler:    _CommunicationService_GetOrCreateConversation_Handler,
+		},
+		{
+			MethodName: "CloseConversation",
+			Handler:    _CommunicationService_CloseConversation_Handler,
+		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "StreamChat",
 			Handler:       _CommunicationService_StreamChat_Handler,
 			ServerStreams: true,
-			ClientStreams: true,
 		},
 	},
 	Metadata: "proto/travelohi/v1/communication/communication.proto",

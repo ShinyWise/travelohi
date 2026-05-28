@@ -21,6 +21,118 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type StreamChatRequest struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	ConversationId string                 `protobuf:"bytes,1,opt,name=conversation_id,json=conversationId,proto3" json:"conversation_id,omitempty"`
+	UserId         string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *StreamChatRequest) Reset() {
+	*x = StreamChatRequest{}
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StreamChatRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StreamChatRequest) ProtoMessage() {}
+
+func (x *StreamChatRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StreamChatRequest.ProtoReflect.Descriptor instead.
+func (*StreamChatRequest) Descriptor() ([]byte, []int) {
+	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *StreamChatRequest) GetConversationId() string {
+	if x != nil {
+		return x.ConversationId
+	}
+	return ""
+}
+
+func (x *StreamChatRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+type SendEventResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	MessageId     string                 `protobuf:"bytes,2,opt,name=message_id,json=messageId,proto3" json:"message_id,omitempty"`
+	Timestamp     string                 `protobuf:"bytes,3,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SendEventResponse) Reset() {
+	*x = SendEventResponse{}
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SendEventResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SendEventResponse) ProtoMessage() {}
+
+func (x *SendEventResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SendEventResponse.ProtoReflect.Descriptor instead.
+func (*SendEventResponse) Descriptor() ([]byte, []int) {
+	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *SendEventResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *SendEventResponse) GetMessageId() string {
+	if x != nil {
+		return x.MessageId
+	}
+	return ""
+}
+
+func (x *SendEventResponse) GetTimestamp() string {
+	if x != nil {
+		return x.Timestamp
+	}
+	return ""
+}
+
 type ChatEvent struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	ConversationId string                 `protobuf:"bytes,1,opt,name=conversation_id,json=conversationId,proto3" json:"conversation_id,omitempty"`
@@ -30,6 +142,7 @@ type ChatEvent struct {
 	//	*ChatEvent_Message
 	//	*ChatEvent_TypingIndicator
 	//	*ChatEvent_ReadReceipt
+	//	*ChatEvent_ConversationClosed
 	EventPayload  isChatEvent_EventPayload `protobuf_oneof:"event_payload"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -37,7 +150,7 @@ type ChatEvent struct {
 
 func (x *ChatEvent) Reset() {
 	*x = ChatEvent{}
-	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[0]
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -49,7 +162,7 @@ func (x *ChatEvent) String() string {
 func (*ChatEvent) ProtoMessage() {}
 
 func (x *ChatEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[0]
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -62,7 +175,7 @@ func (x *ChatEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChatEvent.ProtoReflect.Descriptor instead.
 func (*ChatEvent) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{0}
+	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *ChatEvent) GetConversationId() string {
@@ -113,6 +226,15 @@ func (x *ChatEvent) GetReadReceipt() *ReadReceiptPayload {
 	return nil
 }
 
+func (x *ChatEvent) GetConversationClosed() *ConversationClosedPayload {
+	if x != nil {
+		if x, ok := x.EventPayload.(*ChatEvent_ConversationClosed); ok {
+			return x.ConversationClosed
+		}
+	}
+	return nil
+}
+
 type isChatEvent_EventPayload interface {
 	isChatEvent_EventPayload()
 }
@@ -129,24 +251,32 @@ type ChatEvent_ReadReceipt struct {
 	ReadReceipt *ReadReceiptPayload `protobuf:"bytes,5,opt,name=read_receipt,json=readReceipt,proto3,oneof"`
 }
 
+type ChatEvent_ConversationClosed struct {
+	ConversationClosed *ConversationClosedPayload `protobuf:"bytes,6,opt,name=conversation_closed,json=conversationClosed,proto3,oneof"`
+}
+
 func (*ChatEvent_Message) isChatEvent_EventPayload() {}
 
 func (*ChatEvent_TypingIndicator) isChatEvent_EventPayload() {}
 
 func (*ChatEvent_ReadReceipt) isChatEvent_EventPayload() {}
 
+func (*ChatEvent_ConversationClosed) isChatEvent_EventPayload() {}
+
 type MessagePayload struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	MessageId     string                 `protobuf:"bytes,1,opt,name=message_id,json=messageId,proto3" json:"message_id,omitempty"`
 	Content       string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
 	Timestamp     string                 `protobuf:"bytes,3,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	SenderId      string                 `protobuf:"bytes,4,opt,name=sender_id,json=senderId,proto3" json:"sender_id,omitempty"`
+	Status        string                 `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"` // sent, seen
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *MessagePayload) Reset() {
 	*x = MessagePayload{}
-	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[1]
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -158,7 +288,7 @@ func (x *MessagePayload) String() string {
 func (*MessagePayload) ProtoMessage() {}
 
 func (x *MessagePayload) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[1]
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -171,7 +301,7 @@ func (x *MessagePayload) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MessagePayload.ProtoReflect.Descriptor instead.
 func (*MessagePayload) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{1}
+	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *MessagePayload) GetMessageId() string {
@@ -195,6 +325,20 @@ func (x *MessagePayload) GetTimestamp() string {
 	return ""
 }
 
+func (x *MessagePayload) GetSenderId() string {
+	if x != nil {
+		return x.SenderId
+	}
+	return ""
+}
+
+func (x *MessagePayload) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
 type TypingIndicatorPayload struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	IsTyping      bool                   `protobuf:"varint,1,opt,name=is_typing,json=isTyping,proto3" json:"is_typing,omitempty"`
@@ -204,7 +348,7 @@ type TypingIndicatorPayload struct {
 
 func (x *TypingIndicatorPayload) Reset() {
 	*x = TypingIndicatorPayload{}
-	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[2]
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -216,7 +360,7 @@ func (x *TypingIndicatorPayload) String() string {
 func (*TypingIndicatorPayload) ProtoMessage() {}
 
 func (x *TypingIndicatorPayload) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[2]
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -229,7 +373,7 @@ func (x *TypingIndicatorPayload) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TypingIndicatorPayload.ProtoReflect.Descriptor instead.
 func (*TypingIndicatorPayload) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{2}
+	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *TypingIndicatorPayload) GetIsTyping() bool {
@@ -249,7 +393,7 @@ type ReadReceiptPayload struct {
 
 func (x *ReadReceiptPayload) Reset() {
 	*x = ReadReceiptPayload{}
-	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[3]
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -261,7 +405,7 @@ func (x *ReadReceiptPayload) String() string {
 func (*ReadReceiptPayload) ProtoMessage() {}
 
 func (x *ReadReceiptPayload) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[3]
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -274,7 +418,7 @@ func (x *ReadReceiptPayload) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadReceiptPayload.ProtoReflect.Descriptor instead.
 func (*ReadReceiptPayload) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{3}
+	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *ReadReceiptPayload) GetMessageId() string {
@@ -302,7 +446,7 @@ type GetChatHistoryRequest struct {
 
 func (x *GetChatHistoryRequest) Reset() {
 	*x = GetChatHistoryRequest{}
-	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[4]
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -314,7 +458,7 @@ func (x *GetChatHistoryRequest) String() string {
 func (*GetChatHistoryRequest) ProtoMessage() {}
 
 func (x *GetChatHistoryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[4]
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -327,7 +471,7 @@ func (x *GetChatHistoryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetChatHistoryRequest.ProtoReflect.Descriptor instead.
 func (*GetChatHistoryRequest) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{4}
+	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *GetChatHistoryRequest) GetConversationId() string {
@@ -360,7 +504,7 @@ type GetChatHistoryResponse struct {
 
 func (x *GetChatHistoryResponse) Reset() {
 	*x = GetChatHistoryResponse{}
-	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[5]
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -372,7 +516,7 @@ func (x *GetChatHistoryResponse) String() string {
 func (*GetChatHistoryResponse) ProtoMessage() {}
 
 func (x *GetChatHistoryResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[5]
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -385,7 +529,7 @@ func (x *GetChatHistoryResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetChatHistoryResponse.ProtoReflect.Descriptor instead.
 func (*GetChatHistoryResponse) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{5}
+	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GetChatHistoryResponse) GetMessages() []*MessagePayload {
@@ -407,7 +551,7 @@ type GetActiveConversationsRequest struct {
 
 func (x *GetActiveConversationsRequest) Reset() {
 	*x = GetActiveConversationsRequest{}
-	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[6]
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -419,7 +563,7 @@ func (x *GetActiveConversationsRequest) String() string {
 func (*GetActiveConversationsRequest) ProtoMessage() {}
 
 func (x *GetActiveConversationsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[6]
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -432,7 +576,7 @@ func (x *GetActiveConversationsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetActiveConversationsRequest.ProtoReflect.Descriptor instead.
 func (*GetActiveConversationsRequest) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{6}
+	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GetActiveConversationsRequest) GetSearchQuery() string {
@@ -464,13 +608,14 @@ type ConversationPreview struct {
 	LatestMessageContent   string                 `protobuf:"bytes,4,opt,name=latest_message_content,json=latestMessageContent,proto3" json:"latest_message_content,omitempty"`
 	LatestMessageTimestamp string                 `protobuf:"bytes,5,opt,name=latest_message_timestamp,json=latestMessageTimestamp,proto3" json:"latest_message_timestamp,omitempty"`
 	UnreadCount            int32                  `protobuf:"varint,6,opt,name=unread_count,json=unreadCount,proto3" json:"unread_count,omitempty"`
+	ProfilePictureUrl      string                 `protobuf:"bytes,7,opt,name=profile_picture_url,json=profilePictureUrl,proto3" json:"profile_picture_url,omitempty"`
 	unknownFields          protoimpl.UnknownFields
 	sizeCache              protoimpl.SizeCache
 }
 
 func (x *ConversationPreview) Reset() {
 	*x = ConversationPreview{}
-	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[7]
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -482,7 +627,7 @@ func (x *ConversationPreview) String() string {
 func (*ConversationPreview) ProtoMessage() {}
 
 func (x *ConversationPreview) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[7]
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -495,7 +640,7 @@ func (x *ConversationPreview) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ConversationPreview.ProtoReflect.Descriptor instead.
 func (*ConversationPreview) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{7}
+	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *ConversationPreview) GetConversationId() string {
@@ -540,6 +685,13 @@ func (x *ConversationPreview) GetUnreadCount() int32 {
 	return 0
 }
 
+func (x *ConversationPreview) GetProfilePictureUrl() string {
+	if x != nil {
+		return x.ProfilePictureUrl
+	}
+	return ""
+}
+
 type GetActiveConversationsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Conversations []*ConversationPreview `protobuf:"bytes,1,rep,name=conversations,proto3" json:"conversations,omitempty"`
@@ -550,7 +702,7 @@ type GetActiveConversationsResponse struct {
 
 func (x *GetActiveConversationsResponse) Reset() {
 	*x = GetActiveConversationsResponse{}
-	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[8]
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -562,7 +714,7 @@ func (x *GetActiveConversationsResponse) String() string {
 func (*GetActiveConversationsResponse) ProtoMessage() {}
 
 func (x *GetActiveConversationsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[8]
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -575,7 +727,7 @@ func (x *GetActiveConversationsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetActiveConversationsResponse.ProtoReflect.Descriptor instead.
 func (*GetActiveConversationsResponse) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{8}
+	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *GetActiveConversationsResponse) GetConversations() []*ConversationPreview {
@@ -592,23 +744,254 @@ func (x *GetActiveConversationsResponse) GetTotalActive() int32 {
 	return 0
 }
 
+type GetOrCreateConversationRequest struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	UserId            string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	CreateIfNotExists bool                   `protobuf:"varint,2,opt,name=create_if_not_exists,json=createIfNotExists,proto3" json:"create_if_not_exists,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *GetOrCreateConversationRequest) Reset() {
+	*x = GetOrCreateConversationRequest{}
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetOrCreateConversationRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetOrCreateConversationRequest) ProtoMessage() {}
+
+func (x *GetOrCreateConversationRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetOrCreateConversationRequest.ProtoReflect.Descriptor instead.
+func (*GetOrCreateConversationRequest) Descriptor() ([]byte, []int) {
+	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *GetOrCreateConversationRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *GetOrCreateConversationRequest) GetCreateIfNotExists() bool {
+	if x != nil {
+		return x.CreateIfNotExists
+	}
+	return false
+}
+
+type GetOrCreateConversationResponse struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	ConversationId string                 `protobuf:"bytes,1,opt,name=conversation_id,json=conversationId,proto3" json:"conversation_id,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *GetOrCreateConversationResponse) Reset() {
+	*x = GetOrCreateConversationResponse{}
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetOrCreateConversationResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetOrCreateConversationResponse) ProtoMessage() {}
+
+func (x *GetOrCreateConversationResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetOrCreateConversationResponse.ProtoReflect.Descriptor instead.
+func (*GetOrCreateConversationResponse) Descriptor() ([]byte, []int) {
+	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *GetOrCreateConversationResponse) GetConversationId() string {
+	if x != nil {
+		return x.ConversationId
+	}
+	return ""
+}
+
+type CloseConversationRequest struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	ConversationId string                 `protobuf:"bytes,1,opt,name=conversation_id,json=conversationId,proto3" json:"conversation_id,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *CloseConversationRequest) Reset() {
+	*x = CloseConversationRequest{}
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloseConversationRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloseConversationRequest) ProtoMessage() {}
+
+func (x *CloseConversationRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloseConversationRequest.ProtoReflect.Descriptor instead.
+func (*CloseConversationRequest) Descriptor() ([]byte, []int) {
+	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *CloseConversationRequest) GetConversationId() string {
+	if x != nil {
+		return x.ConversationId
+	}
+	return ""
+}
+
+type CloseConversationResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CloseConversationResponse) Reset() {
+	*x = CloseConversationResponse{}
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloseConversationResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloseConversationResponse) ProtoMessage() {}
+
+func (x *CloseConversationResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloseConversationResponse.ProtoReflect.Descriptor instead.
+func (*CloseConversationResponse) Descriptor() ([]byte, []int) {
+	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *CloseConversationResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+type ConversationClosedPayload struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ConversationClosedPayload) Reset() {
+	*x = ConversationClosedPayload{}
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ConversationClosedPayload) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ConversationClosedPayload) ProtoMessage() {}
+
+func (x *ConversationClosedPayload) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_travelohi_v1_communication_communication_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ConversationClosedPayload.ProtoReflect.Descriptor instead.
+func (*ConversationClosedPayload) Descriptor() ([]byte, []int) {
+	return file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP(), []int{15}
+}
+
 var File_proto_travelohi_v1_communication_communication_proto protoreflect.FileDescriptor
 
 const file_proto_travelohi_v1_communication_communication_proto_rawDesc = "" +
 	"\n" +
-	"4proto/travelohi/v1/communication/communication.proto\x12\x1atravelohi.v1.communication\"\xe0\x02\n" +
+	"4proto/travelohi/v1/communication/communication.proto\x12\x1atravelohi.v1.communication\"U\n" +
+	"\x11StreamChatRequest\x12'\n" +
+	"\x0fconversation_id\x18\x01 \x01(\tR\x0econversationId\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\tR\x06userId\"j\n" +
+	"\x11SendEventResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x1d\n" +
+	"\n" +
+	"message_id\x18\x02 \x01(\tR\tmessageId\x12\x1c\n" +
+	"\ttimestamp\x18\x03 \x01(\tR\ttimestamp\"\xca\x03\n" +
 	"\tChatEvent\x12'\n" +
 	"\x0fconversation_id\x18\x01 \x01(\tR\x0econversationId\x12\x1b\n" +
 	"\tsender_id\x18\x02 \x01(\tR\bsenderId\x12F\n" +
 	"\amessage\x18\x03 \x01(\v2*.travelohi.v1.communication.MessagePayloadH\x00R\amessage\x12_\n" +
 	"\x10typing_indicator\x18\x04 \x01(\v22.travelohi.v1.communication.TypingIndicatorPayloadH\x00R\x0ftypingIndicator\x12S\n" +
-	"\fread_receipt\x18\x05 \x01(\v2..travelohi.v1.communication.ReadReceiptPayloadH\x00R\vreadReceiptB\x0f\n" +
-	"\revent_payload\"g\n" +
+	"\fread_receipt\x18\x05 \x01(\v2..travelohi.v1.communication.ReadReceiptPayloadH\x00R\vreadReceipt\x12h\n" +
+	"\x13conversation_closed\x18\x06 \x01(\v25.travelohi.v1.communication.ConversationClosedPayloadH\x00R\x12conversationClosedB\x0f\n" +
+	"\revent_payload\"\x9c\x01\n" +
 	"\x0eMessagePayload\x12\x1d\n" +
 	"\n" +
 	"message_id\x18\x01 \x01(\tR\tmessageId\x12\x18\n" +
 	"\acontent\x18\x02 \x01(\tR\acontent\x12\x1c\n" +
-	"\ttimestamp\x18\x03 \x01(\tR\ttimestamp\"5\n" +
+	"\ttimestamp\x18\x03 \x01(\tR\ttimestamp\x12\x1b\n" +
+	"\tsender_id\x18\x04 \x01(\tR\bsenderId\x12\x16\n" +
+	"\x06status\x18\x05 \x01(\tR\x06status\"5\n" +
 	"\x16TypingIndicatorPayload\x12\x1b\n" +
 	"\tis_typing\x18\x01 \x01(\bR\bisTyping\"R\n" +
 	"\x12ReadReceiptPayload\x12\x1d\n" +
@@ -625,22 +1008,36 @@ const file_proto_travelohi_v1_communication_communication_proto_rawDesc = "" +
 	"\x1dGetActiveConversationsRequest\x12!\n" +
 	"\fsearch_query\x18\x01 \x01(\tR\vsearchQuery\x12\x14\n" +
 	"\x05limit\x18\x02 \x01(\x05R\x05limit\x12\x16\n" +
-	"\x06offset\x18\x03 \x01(\x05R\x06offset\"\x87\x02\n" +
+	"\x06offset\x18\x03 \x01(\x05R\x06offset\"\xb7\x02\n" +
 	"\x13ConversationPreview\x12'\n" +
 	"\x0fconversation_id\x18\x01 \x01(\tR\x0econversationId\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x1b\n" +
 	"\tfull_name\x18\x03 \x01(\tR\bfullName\x124\n" +
 	"\x16latest_message_content\x18\x04 \x01(\tR\x14latestMessageContent\x128\n" +
 	"\x18latest_message_timestamp\x18\x05 \x01(\tR\x16latestMessageTimestamp\x12!\n" +
-	"\funread_count\x18\x06 \x01(\x05R\vunreadCount\"\x9a\x01\n" +
+	"\funread_count\x18\x06 \x01(\x05R\vunreadCount\x12.\n" +
+	"\x13profile_picture_url\x18\a \x01(\tR\x11profilePictureUrl\"\x9a\x01\n" +
 	"\x1eGetActiveConversationsResponse\x12U\n" +
 	"\rconversations\x18\x01 \x03(\v2/.travelohi.v1.communication.ConversationPreviewR\rconversations\x12!\n" +
-	"\ftotal_active\x18\x02 \x01(\x05R\vtotalActive2\x87\x03\n" +
-	"\x14CommunicationService\x12`\n" +
+	"\ftotal_active\x18\x02 \x01(\x05R\vtotalActive\"j\n" +
+	"\x1eGetOrCreateConversationRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12/\n" +
+	"\x14create_if_not_exists\x18\x02 \x01(\bR\x11createIfNotExists\"J\n" +
+	"\x1fGetOrCreateConversationResponse\x12'\n" +
+	"\x0fconversation_id\x18\x01 \x01(\tR\x0econversationId\"C\n" +
+	"\x18CloseConversationRequest\x12'\n" +
+	"\x0fconversation_id\x18\x01 \x01(\tR\x0econversationId\"5\n" +
+	"\x19CloseConversationResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\"\x1b\n" +
+	"\x19ConversationClosedPayload2\x8e\x06\n" +
+	"\x14CommunicationService\x12f\n" +
 	"\n" +
-	"StreamChat\x12%.travelohi.v1.communication.ChatEvent\x1a%.travelohi.v1.communication.ChatEvent\"\x00(\x010\x01\x12y\n" +
+	"StreamChat\x12-.travelohi.v1.communication.StreamChatRequest\x1a%.travelohi.v1.communication.ChatEvent\"\x000\x01\x12c\n" +
+	"\tSendEvent\x12%.travelohi.v1.communication.ChatEvent\x1a-.travelohi.v1.communication.SendEventResponse\"\x00\x12y\n" +
 	"\x0eGetChatHistory\x121.travelohi.v1.communication.GetChatHistoryRequest\x1a2.travelohi.v1.communication.GetChatHistoryResponse\"\x00\x12\x91\x01\n" +
-	"\x16GetActiveConversations\x129.travelohi.v1.communication.GetActiveConversationsRequest\x1a:.travelohi.v1.communication.GetActiveConversationsResponse\"\x00BEZCgithub.com/travelohi/backend/proto/communication/v1;communicationpbb\x06proto3"
+	"\x16GetActiveConversations\x129.travelohi.v1.communication.GetActiveConversationsRequest\x1a:.travelohi.v1.communication.GetActiveConversationsResponse\"\x00\x12\x94\x01\n" +
+	"\x17GetOrCreateConversation\x12:.travelohi.v1.communication.GetOrCreateConversationRequest\x1a;.travelohi.v1.communication.GetOrCreateConversationResponse\"\x00\x12\x82\x01\n" +
+	"\x11CloseConversation\x124.travelohi.v1.communication.CloseConversationRequest\x1a5.travelohi.v1.communication.CloseConversationResponse\"\x00BEZCgithub.com/travelohi/backend/proto/communication/v1;communicationpbb\x06proto3"
 
 var (
 	file_proto_travelohi_v1_communication_communication_proto_rawDescOnce sync.Once
@@ -654,35 +1051,49 @@ func file_proto_travelohi_v1_communication_communication_proto_rawDescGZIP() []b
 	return file_proto_travelohi_v1_communication_communication_proto_rawDescData
 }
 
-var file_proto_travelohi_v1_communication_communication_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_proto_travelohi_v1_communication_communication_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
 var file_proto_travelohi_v1_communication_communication_proto_goTypes = []any{
-	(*ChatEvent)(nil),                      // 0: travelohi.v1.communication.ChatEvent
-	(*MessagePayload)(nil),                 // 1: travelohi.v1.communication.MessagePayload
-	(*TypingIndicatorPayload)(nil),         // 2: travelohi.v1.communication.TypingIndicatorPayload
-	(*ReadReceiptPayload)(nil),             // 3: travelohi.v1.communication.ReadReceiptPayload
-	(*GetChatHistoryRequest)(nil),          // 4: travelohi.v1.communication.GetChatHistoryRequest
-	(*GetChatHistoryResponse)(nil),         // 5: travelohi.v1.communication.GetChatHistoryResponse
-	(*GetActiveConversationsRequest)(nil),  // 6: travelohi.v1.communication.GetActiveConversationsRequest
-	(*ConversationPreview)(nil),            // 7: travelohi.v1.communication.ConversationPreview
-	(*GetActiveConversationsResponse)(nil), // 8: travelohi.v1.communication.GetActiveConversationsResponse
+	(*StreamChatRequest)(nil),               // 0: travelohi.v1.communication.StreamChatRequest
+	(*SendEventResponse)(nil),               // 1: travelohi.v1.communication.SendEventResponse
+	(*ChatEvent)(nil),                       // 2: travelohi.v1.communication.ChatEvent
+	(*MessagePayload)(nil),                  // 3: travelohi.v1.communication.MessagePayload
+	(*TypingIndicatorPayload)(nil),          // 4: travelohi.v1.communication.TypingIndicatorPayload
+	(*ReadReceiptPayload)(nil),              // 5: travelohi.v1.communication.ReadReceiptPayload
+	(*GetChatHistoryRequest)(nil),           // 6: travelohi.v1.communication.GetChatHistoryRequest
+	(*GetChatHistoryResponse)(nil),          // 7: travelohi.v1.communication.GetChatHistoryResponse
+	(*GetActiveConversationsRequest)(nil),   // 8: travelohi.v1.communication.GetActiveConversationsRequest
+	(*ConversationPreview)(nil),             // 9: travelohi.v1.communication.ConversationPreview
+	(*GetActiveConversationsResponse)(nil),  // 10: travelohi.v1.communication.GetActiveConversationsResponse
+	(*GetOrCreateConversationRequest)(nil),  // 11: travelohi.v1.communication.GetOrCreateConversationRequest
+	(*GetOrCreateConversationResponse)(nil), // 12: travelohi.v1.communication.GetOrCreateConversationResponse
+	(*CloseConversationRequest)(nil),        // 13: travelohi.v1.communication.CloseConversationRequest
+	(*CloseConversationResponse)(nil),       // 14: travelohi.v1.communication.CloseConversationResponse
+	(*ConversationClosedPayload)(nil),       // 15: travelohi.v1.communication.ConversationClosedPayload
 }
 var file_proto_travelohi_v1_communication_communication_proto_depIdxs = []int32{
-	1, // 0: travelohi.v1.communication.ChatEvent.message:type_name -> travelohi.v1.communication.MessagePayload
-	2, // 1: travelohi.v1.communication.ChatEvent.typing_indicator:type_name -> travelohi.v1.communication.TypingIndicatorPayload
-	3, // 2: travelohi.v1.communication.ChatEvent.read_receipt:type_name -> travelohi.v1.communication.ReadReceiptPayload
-	1, // 3: travelohi.v1.communication.GetChatHistoryResponse.messages:type_name -> travelohi.v1.communication.MessagePayload
-	7, // 4: travelohi.v1.communication.GetActiveConversationsResponse.conversations:type_name -> travelohi.v1.communication.ConversationPreview
-	0, // 5: travelohi.v1.communication.CommunicationService.StreamChat:input_type -> travelohi.v1.communication.ChatEvent
-	4, // 6: travelohi.v1.communication.CommunicationService.GetChatHistory:input_type -> travelohi.v1.communication.GetChatHistoryRequest
-	6, // 7: travelohi.v1.communication.CommunicationService.GetActiveConversations:input_type -> travelohi.v1.communication.GetActiveConversationsRequest
-	0, // 8: travelohi.v1.communication.CommunicationService.StreamChat:output_type -> travelohi.v1.communication.ChatEvent
-	5, // 9: travelohi.v1.communication.CommunicationService.GetChatHistory:output_type -> travelohi.v1.communication.GetChatHistoryResponse
-	8, // 10: travelohi.v1.communication.CommunicationService.GetActiveConversations:output_type -> travelohi.v1.communication.GetActiveConversationsResponse
-	8, // [8:11] is the sub-list for method output_type
-	5, // [5:8] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	3,  // 0: travelohi.v1.communication.ChatEvent.message:type_name -> travelohi.v1.communication.MessagePayload
+	4,  // 1: travelohi.v1.communication.ChatEvent.typing_indicator:type_name -> travelohi.v1.communication.TypingIndicatorPayload
+	5,  // 2: travelohi.v1.communication.ChatEvent.read_receipt:type_name -> travelohi.v1.communication.ReadReceiptPayload
+	15, // 3: travelohi.v1.communication.ChatEvent.conversation_closed:type_name -> travelohi.v1.communication.ConversationClosedPayload
+	3,  // 4: travelohi.v1.communication.GetChatHistoryResponse.messages:type_name -> travelohi.v1.communication.MessagePayload
+	9,  // 5: travelohi.v1.communication.GetActiveConversationsResponse.conversations:type_name -> travelohi.v1.communication.ConversationPreview
+	0,  // 6: travelohi.v1.communication.CommunicationService.StreamChat:input_type -> travelohi.v1.communication.StreamChatRequest
+	2,  // 7: travelohi.v1.communication.CommunicationService.SendEvent:input_type -> travelohi.v1.communication.ChatEvent
+	6,  // 8: travelohi.v1.communication.CommunicationService.GetChatHistory:input_type -> travelohi.v1.communication.GetChatHistoryRequest
+	8,  // 9: travelohi.v1.communication.CommunicationService.GetActiveConversations:input_type -> travelohi.v1.communication.GetActiveConversationsRequest
+	11, // 10: travelohi.v1.communication.CommunicationService.GetOrCreateConversation:input_type -> travelohi.v1.communication.GetOrCreateConversationRequest
+	13, // 11: travelohi.v1.communication.CommunicationService.CloseConversation:input_type -> travelohi.v1.communication.CloseConversationRequest
+	2,  // 12: travelohi.v1.communication.CommunicationService.StreamChat:output_type -> travelohi.v1.communication.ChatEvent
+	1,  // 13: travelohi.v1.communication.CommunicationService.SendEvent:output_type -> travelohi.v1.communication.SendEventResponse
+	7,  // 14: travelohi.v1.communication.CommunicationService.GetChatHistory:output_type -> travelohi.v1.communication.GetChatHistoryResponse
+	10, // 15: travelohi.v1.communication.CommunicationService.GetActiveConversations:output_type -> travelohi.v1.communication.GetActiveConversationsResponse
+	12, // 16: travelohi.v1.communication.CommunicationService.GetOrCreateConversation:output_type -> travelohi.v1.communication.GetOrCreateConversationResponse
+	14, // 17: travelohi.v1.communication.CommunicationService.CloseConversation:output_type -> travelohi.v1.communication.CloseConversationResponse
+	12, // [12:18] is the sub-list for method output_type
+	6,  // [6:12] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_proto_travelohi_v1_communication_communication_proto_init() }
@@ -690,10 +1101,11 @@ func file_proto_travelohi_v1_communication_communication_proto_init() {
 	if File_proto_travelohi_v1_communication_communication_proto != nil {
 		return
 	}
-	file_proto_travelohi_v1_communication_communication_proto_msgTypes[0].OneofWrappers = []any{
+	file_proto_travelohi_v1_communication_communication_proto_msgTypes[2].OneofWrappers = []any{
 		(*ChatEvent_Message)(nil),
 		(*ChatEvent_TypingIndicator)(nil),
 		(*ChatEvent_ReadReceipt)(nil),
+		(*ChatEvent_ConversationClosed)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -701,7 +1113,7 @@ func file_proto_travelohi_v1_communication_communication_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_travelohi_v1_communication_communication_proto_rawDesc), len(file_proto_travelohi_v1_communication_communication_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   16,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

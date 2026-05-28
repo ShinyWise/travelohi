@@ -12,6 +12,36 @@ import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 /**
+ * @generated from protobuf message travelohi.v1.communication.StreamChatRequest
+ */
+export interface StreamChatRequest {
+    /**
+     * @generated from protobuf field: string conversation_id = 1
+     */
+    conversationId: string;
+    /**
+     * @generated from protobuf field: string user_id = 2
+     */
+    userId: string;
+}
+/**
+ * @generated from protobuf message travelohi.v1.communication.SendEventResponse
+ */
+export interface SendEventResponse {
+    /**
+     * @generated from protobuf field: bool success = 1
+     */
+    success: boolean;
+    /**
+     * @generated from protobuf field: string message_id = 2
+     */
+    messageId: string;
+    /**
+     * @generated from protobuf field: string timestamp = 3
+     */
+    timestamp: string;
+}
+/**
  * @generated from protobuf message travelohi.v1.communication.ChatEvent
  */
 export interface ChatEvent {
@@ -45,6 +75,12 @@ export interface ChatEvent {
          */
         readReceipt: ReadReceiptPayload;
     } | {
+        oneofKind: "conversationClosed";
+        /**
+         * @generated from protobuf field: travelohi.v1.communication.ConversationClosedPayload conversation_closed = 6
+         */
+        conversationClosed: ConversationClosedPayload;
+    } | {
         oneofKind: undefined;
     };
 }
@@ -64,7 +100,14 @@ export interface MessagePayload {
      * @generated from protobuf field: string timestamp = 3
      */
     timestamp: string;
-}
+    /**
+     * @generated from protobuf field: string sender_id = 4
+     */
+    senderId: string;
+    /**
+     * @generated from protobuf field: string status = 5
+     */
+    status: string; // sent, seen}
 /**
  * @generated from protobuf message travelohi.v1.communication.TypingIndicatorPayload
  */
@@ -158,6 +201,10 @@ export interface ConversationPreview {
      * @generated from protobuf field: int32 unread_count = 6
      */
     unreadCount: number;
+    /**
+     * @generated from protobuf field: string profile_picture_url = 7
+     */
+    profilePictureUrl: string;
 }
 /**
  * @generated from protobuf message travelohi.v1.communication.GetActiveConversationsResponse
@@ -172,6 +219,169 @@ export interface GetActiveConversationsResponse {
      */
     totalActive: number;
 }
+/**
+ * @generated from protobuf message travelohi.v1.communication.GetOrCreateConversationRequest
+ */
+export interface GetOrCreateConversationRequest {
+    /**
+     * @generated from protobuf field: string user_id = 1
+     */
+    userId: string;
+    /**
+     * @generated from protobuf field: bool create_if_not_exists = 2
+     */
+    createIfNotExists: boolean;
+}
+/**
+ * @generated from protobuf message travelohi.v1.communication.GetOrCreateConversationResponse
+ */
+export interface GetOrCreateConversationResponse {
+    /**
+     * @generated from protobuf field: string conversation_id = 1
+     */
+    conversationId: string;
+}
+/**
+ * @generated from protobuf message travelohi.v1.communication.CloseConversationRequest
+ */
+export interface CloseConversationRequest {
+    /**
+     * @generated from protobuf field: string conversation_id = 1
+     */
+    conversationId: string;
+}
+/**
+ * @generated from protobuf message travelohi.v1.communication.CloseConversationResponse
+ */
+export interface CloseConversationResponse {
+    /**
+     * @generated from protobuf field: bool success = 1
+     */
+    success: boolean;
+}
+/**
+ * @generated from protobuf message travelohi.v1.communication.ConversationClosedPayload
+ */
+export interface ConversationClosedPayload {
+}
+// @generated message type with reflection information, may provide speed optimized methods
+class StreamChatRequest$Type extends MessageType<StreamChatRequest> {
+    constructor() {
+        super("travelohi.v1.communication.StreamChatRequest", [
+            { no: 1, name: "conversation_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "user_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<StreamChatRequest>): StreamChatRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.conversationId = "";
+        message.userId = "";
+        if (value !== undefined)
+            reflectionMergePartial<StreamChatRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: StreamChatRequest): StreamChatRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string conversation_id */ 1:
+                    message.conversationId = reader.string();
+                    break;
+                case /* string user_id */ 2:
+                    message.userId = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: StreamChatRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string conversation_id = 1; */
+        if (message.conversationId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.conversationId);
+        /* string user_id = 2; */
+        if (message.userId !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.userId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.communication.StreamChatRequest
+ */
+export const StreamChatRequest = new StreamChatRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class SendEventResponse$Type extends MessageType<SendEventResponse> {
+    constructor() {
+        super("travelohi.v1.communication.SendEventResponse", [
+            { no: 1, name: "success", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 2, name: "message_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "timestamp", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<SendEventResponse>): SendEventResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.success = false;
+        message.messageId = "";
+        message.timestamp = "";
+        if (value !== undefined)
+            reflectionMergePartial<SendEventResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: SendEventResponse): SendEventResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bool success */ 1:
+                    message.success = reader.bool();
+                    break;
+                case /* string message_id */ 2:
+                    message.messageId = reader.string();
+                    break;
+                case /* string timestamp */ 3:
+                    message.timestamp = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: SendEventResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* bool success = 1; */
+        if (message.success !== false)
+            writer.tag(1, WireType.Varint).bool(message.success);
+        /* string message_id = 2; */
+        if (message.messageId !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.messageId);
+        /* string timestamp = 3; */
+        if (message.timestamp !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.timestamp);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.communication.SendEventResponse
+ */
+export const SendEventResponse = new SendEventResponse$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class ChatEvent$Type extends MessageType<ChatEvent> {
     constructor() {
@@ -180,7 +390,8 @@ class ChatEvent$Type extends MessageType<ChatEvent> {
             { no: 2, name: "sender_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "message", kind: "message", oneof: "eventPayload", T: () => MessagePayload },
             { no: 4, name: "typing_indicator", kind: "message", oneof: "eventPayload", T: () => TypingIndicatorPayload },
-            { no: 5, name: "read_receipt", kind: "message", oneof: "eventPayload", T: () => ReadReceiptPayload }
+            { no: 5, name: "read_receipt", kind: "message", oneof: "eventPayload", T: () => ReadReceiptPayload },
+            { no: 6, name: "conversation_closed", kind: "message", oneof: "eventPayload", T: () => ConversationClosedPayload }
         ]);
     }
     create(value?: PartialMessage<ChatEvent>): ChatEvent {
@@ -221,6 +432,12 @@ class ChatEvent$Type extends MessageType<ChatEvent> {
                         readReceipt: ReadReceiptPayload.internalBinaryRead(reader, reader.uint32(), options, (message.eventPayload as any).readReceipt)
                     };
                     break;
+                case /* travelohi.v1.communication.ConversationClosedPayload conversation_closed */ 6:
+                    message.eventPayload = {
+                        oneofKind: "conversationClosed",
+                        conversationClosed: ConversationClosedPayload.internalBinaryRead(reader, reader.uint32(), options, (message.eventPayload as any).conversationClosed)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -248,6 +465,9 @@ class ChatEvent$Type extends MessageType<ChatEvent> {
         /* travelohi.v1.communication.ReadReceiptPayload read_receipt = 5; */
         if (message.eventPayload.oneofKind === "readReceipt")
             ReadReceiptPayload.internalBinaryWrite(message.eventPayload.readReceipt, writer.tag(5, WireType.LengthDelimited).fork(), options).join();
+        /* travelohi.v1.communication.ConversationClosedPayload conversation_closed = 6; */
+        if (message.eventPayload.oneofKind === "conversationClosed")
+            ConversationClosedPayload.internalBinaryWrite(message.eventPayload.conversationClosed, writer.tag(6, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -264,7 +484,9 @@ class MessagePayload$Type extends MessageType<MessagePayload> {
         super("travelohi.v1.communication.MessagePayload", [
             { no: 1, name: "message_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "content", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "timestamp", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 3, name: "timestamp", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "sender_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 5, name: "status", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<MessagePayload>): MessagePayload {
@@ -272,6 +494,8 @@ class MessagePayload$Type extends MessageType<MessagePayload> {
         message.messageId = "";
         message.content = "";
         message.timestamp = "";
+        message.senderId = "";
+        message.status = "";
         if (value !== undefined)
             reflectionMergePartial<MessagePayload>(this, message, value);
         return message;
@@ -289,6 +513,12 @@ class MessagePayload$Type extends MessageType<MessagePayload> {
                     break;
                 case /* string timestamp */ 3:
                     message.timestamp = reader.string();
+                    break;
+                case /* string sender_id */ 4:
+                    message.senderId = reader.string();
+                    break;
+                case /* string status */ 5:
+                    message.status = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -311,6 +541,12 @@ class MessagePayload$Type extends MessageType<MessagePayload> {
         /* string timestamp = 3; */
         if (message.timestamp !== "")
             writer.tag(3, WireType.LengthDelimited).string(message.timestamp);
+        /* string sender_id = 4; */
+        if (message.senderId !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.senderId);
+        /* string status = 5; */
+        if (message.status !== "")
+            writer.tag(5, WireType.LengthDelimited).string(message.status);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -605,7 +841,8 @@ class ConversationPreview$Type extends MessageType<ConversationPreview> {
             { no: 3, name: "full_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 4, name: "latest_message_content", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 5, name: "latest_message_timestamp", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 6, name: "unread_count", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+            { no: 6, name: "unread_count", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 7, name: "profile_picture_url", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<ConversationPreview>): ConversationPreview {
@@ -616,6 +853,7 @@ class ConversationPreview$Type extends MessageType<ConversationPreview> {
         message.latestMessageContent = "";
         message.latestMessageTimestamp = "";
         message.unreadCount = 0;
+        message.profilePictureUrl = "";
         if (value !== undefined)
             reflectionMergePartial<ConversationPreview>(this, message, value);
         return message;
@@ -642,6 +880,9 @@ class ConversationPreview$Type extends MessageType<ConversationPreview> {
                     break;
                 case /* int32 unread_count */ 6:
                     message.unreadCount = reader.int32();
+                    break;
+                case /* string profile_picture_url */ 7:
+                    message.profilePictureUrl = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -673,6 +914,9 @@ class ConversationPreview$Type extends MessageType<ConversationPreview> {
         /* int32 unread_count = 6; */
         if (message.unreadCount !== 0)
             writer.tag(6, WireType.Varint).int32(message.unreadCount);
+        /* string profile_picture_url = 7; */
+        if (message.profilePictureUrl !== "")
+            writer.tag(7, WireType.LengthDelimited).string(message.profilePictureUrl);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -738,11 +982,248 @@ class GetActiveConversationsResponse$Type extends MessageType<GetActiveConversat
  * @generated MessageType for protobuf message travelohi.v1.communication.GetActiveConversationsResponse
  */
 export const GetActiveConversationsResponse = new GetActiveConversationsResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetOrCreateConversationRequest$Type extends MessageType<GetOrCreateConversationRequest> {
+    constructor() {
+        super("travelohi.v1.communication.GetOrCreateConversationRequest", [
+            { no: 1, name: "user_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "create_if_not_exists", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+        ]);
+    }
+    create(value?: PartialMessage<GetOrCreateConversationRequest>): GetOrCreateConversationRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.userId = "";
+        message.createIfNotExists = false;
+        if (value !== undefined)
+            reflectionMergePartial<GetOrCreateConversationRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetOrCreateConversationRequest): GetOrCreateConversationRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string user_id */ 1:
+                    message.userId = reader.string();
+                    break;
+                case /* bool create_if_not_exists */ 2:
+                    message.createIfNotExists = reader.bool();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetOrCreateConversationRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string user_id = 1; */
+        if (message.userId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.userId);
+        /* bool create_if_not_exists = 2; */
+        if (message.createIfNotExists !== false)
+            writer.tag(2, WireType.Varint).bool(message.createIfNotExists);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.communication.GetOrCreateConversationRequest
+ */
+export const GetOrCreateConversationRequest = new GetOrCreateConversationRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetOrCreateConversationResponse$Type extends MessageType<GetOrCreateConversationResponse> {
+    constructor() {
+        super("travelohi.v1.communication.GetOrCreateConversationResponse", [
+            { no: 1, name: "conversation_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<GetOrCreateConversationResponse>): GetOrCreateConversationResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.conversationId = "";
+        if (value !== undefined)
+            reflectionMergePartial<GetOrCreateConversationResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetOrCreateConversationResponse): GetOrCreateConversationResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string conversation_id */ 1:
+                    message.conversationId = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetOrCreateConversationResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string conversation_id = 1; */
+        if (message.conversationId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.conversationId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.communication.GetOrCreateConversationResponse
+ */
+export const GetOrCreateConversationResponse = new GetOrCreateConversationResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class CloseConversationRequest$Type extends MessageType<CloseConversationRequest> {
+    constructor() {
+        super("travelohi.v1.communication.CloseConversationRequest", [
+            { no: 1, name: "conversation_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<CloseConversationRequest>): CloseConversationRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.conversationId = "";
+        if (value !== undefined)
+            reflectionMergePartial<CloseConversationRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CloseConversationRequest): CloseConversationRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string conversation_id */ 1:
+                    message.conversationId = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: CloseConversationRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string conversation_id = 1; */
+        if (message.conversationId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.conversationId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.communication.CloseConversationRequest
+ */
+export const CloseConversationRequest = new CloseConversationRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class CloseConversationResponse$Type extends MessageType<CloseConversationResponse> {
+    constructor() {
+        super("travelohi.v1.communication.CloseConversationResponse", [
+            { no: 1, name: "success", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+        ]);
+    }
+    create(value?: PartialMessage<CloseConversationResponse>): CloseConversationResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.success = false;
+        if (value !== undefined)
+            reflectionMergePartial<CloseConversationResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CloseConversationResponse): CloseConversationResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bool success */ 1:
+                    message.success = reader.bool();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: CloseConversationResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* bool success = 1; */
+        if (message.success !== false)
+            writer.tag(1, WireType.Varint).bool(message.success);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.communication.CloseConversationResponse
+ */
+export const CloseConversationResponse = new CloseConversationResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ConversationClosedPayload$Type extends MessageType<ConversationClosedPayload> {
+    constructor() {
+        super("travelohi.v1.communication.ConversationClosedPayload", []);
+    }
+    create(value?: PartialMessage<ConversationClosedPayload>): ConversationClosedPayload {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<ConversationClosedPayload>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ConversationClosedPayload): ConversationClosedPayload {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ConversationClosedPayload, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.communication.ConversationClosedPayload
+ */
+export const ConversationClosedPayload = new ConversationClosedPayload$Type();
 /**
  * @generated ServiceType for protobuf service travelohi.v1.communication.CommunicationService
  */
 export const CommunicationService = new ServiceType("travelohi.v1.communication.CommunicationService", [
-    { name: "StreamChat", serverStreaming: true, clientStreaming: true, options: {}, I: ChatEvent, O: ChatEvent },
+    { name: "StreamChat", serverStreaming: true, options: {}, I: StreamChatRequest, O: ChatEvent },
+    { name: "SendEvent", options: {}, I: ChatEvent, O: SendEventResponse },
     { name: "GetChatHistory", options: {}, I: GetChatHistoryRequest, O: GetChatHistoryResponse },
-    { name: "GetActiveConversations", options: {}, I: GetActiveConversationsRequest, O: GetActiveConversationsResponse }
+    { name: "GetActiveConversations", options: {}, I: GetActiveConversationsRequest, O: GetActiveConversationsResponse },
+    { name: "GetOrCreateConversation", options: {}, I: GetOrCreateConversationRequest, O: GetOrCreateConversationResponse },
+    { name: "CloseConversation", options: {}, I: CloseConversationRequest, O: CloseConversationResponse }
 ]);
