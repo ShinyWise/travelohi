@@ -78,13 +78,6 @@ INSERT INTO support_conversations (id, user_id, status, created_at, updated_at)
 VALUES ('conv-test-001', 'user-002', 'active', NOW(), NOW())
 ON CONFLICT (id) DO NOTHING;
 
--- seed support messages
-INSERT INTO support_messages (id, conversation_id, sender_id, content, status, created_at) 
-VALUES 
-('msg-hist-1', 'conv-test-001', 'user-002', 'Hi, I need help with my hotel booking.', 'seen', NOW() - INTERVAL '10 minutes'),
-('msg-hist-2', 'conv-test-001', 'admin-001', 'Hello! I am here to help. What seems to be the problem?', 'seen', NOW() - INTERVAL '9 minutes'),
-('msg-hist-3', 'conv-test-001', 'user-002', 'The address on the e-ticket looks wrong.', 'sent', NOW() - INTERVAL '2 minutes')
-ON CONFLICT (id) DO NOTHING;
 
 -- seed search histories for user-002
 INSERT INTO search_histories (id, user_id, search_query, created_at) VALUES
