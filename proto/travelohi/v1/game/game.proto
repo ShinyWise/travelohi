@@ -39,6 +39,7 @@ message MatchFoundEvent {
   string room_id = 1;
   string opponent_name = 2;
   int32 start_countdown = 3;
+  bool is_player_one = 4;
 }
 
 message GameStateUpdate {

@@ -109,6 +109,10 @@ export interface MatchFoundEvent {
      * @generated from protobuf field: int32 start_countdown = 3
      */
     startCountdown: number;
+    /**
+     * @generated from protobuf field: bool is_player_one = 4
+     */
+    isPlayerOne: boolean;
 }
 /**
  * @generated from protobuf message travelohi.v1.game.GameStateUpdate
@@ -396,7 +400,8 @@ class MatchFoundEvent$Type extends MessageType<MatchFoundEvent> {
         super("travelohi.v1.game.MatchFoundEvent", [
             { no: 1, name: "room_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "opponent_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "start_countdown", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+            { no: 3, name: "start_countdown", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 4, name: "is_player_one", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
         ]);
     }
     create(value?: PartialMessage<MatchFoundEvent>): MatchFoundEvent {
@@ -404,6 +409,7 @@ class MatchFoundEvent$Type extends MessageType<MatchFoundEvent> {
         message.roomId = "";
         message.opponentName = "";
         message.startCountdown = 0;
+        message.isPlayerOne = false;
         if (value !== undefined)
             reflectionMergePartial<MatchFoundEvent>(this, message, value);
         return message;
@@ -421,6 +427,9 @@ class MatchFoundEvent$Type extends MessageType<MatchFoundEvent> {
                     break;
                 case /* int32 start_countdown */ 3:
                     message.startCountdown = reader.int32();
+                    break;
+                case /* bool is_player_one */ 4:
+                    message.isPlayerOne = reader.bool();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -443,6 +452,9 @@ class MatchFoundEvent$Type extends MessageType<MatchFoundEvent> {
         /* int32 start_countdown = 3; */
         if (message.startCountdown !== 0)
             writer.tag(3, WireType.Varint).int32(message.startCountdown);
+        /* bool is_player_one = 4; */
+        if (message.isPlayerOne !== false)
+            writer.tag(4, WireType.Varint).bool(message.isPlayerOne);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

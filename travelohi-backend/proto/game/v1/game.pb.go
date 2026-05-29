@@ -320,6 +320,7 @@ type MatchFoundEvent struct {
 	RoomId         string                 `protobuf:"bytes,1,opt,name=room_id,json=roomId,proto3" json:"room_id,omitempty"`
 	OpponentName   string                 `protobuf:"bytes,2,opt,name=opponent_name,json=opponentName,proto3" json:"opponent_name,omitempty"`
 	StartCountdown int32                  `protobuf:"varint,3,opt,name=start_countdown,json=startCountdown,proto3" json:"start_countdown,omitempty"`
+	IsPlayerOne    bool                   `protobuf:"varint,4,opt,name=is_player_one,json=isPlayerOne,proto3" json:"is_player_one,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -373,6 +374,13 @@ func (x *MatchFoundEvent) GetStartCountdown() int32 {
 		return x.StartCountdown
 	}
 	return 0
+}
+
+func (x *MatchFoundEvent) GetIsPlayerOne() bool {
+	if x != nil {
+		return x.IsPlayerOne
+	}
+	return false
 }
 
 type GameStateUpdate struct {
@@ -553,11 +561,12 @@ const file_proto_travelohi_v1_game_game_proto_rawDesc = "" +
 	"\fstate_update\x18\x02 \x01(\v2\".travelohi.v1.game.GameStateUpdateH\x00R\vstateUpdate\x12?\n" +
 	"\tmatch_end\x18\x03 \x01(\v2 .travelohi.v1.game.MatchEndEventH\x00R\bmatchEnd\x125\n" +
 	"\x05error\x18\x04 \x01(\v2\x1d.travelohi.v1.game.ErrorEventH\x00R\x05errorB\t\n" +
-	"\apayload\"x\n" +
+	"\apayload\"\x9c\x01\n" +
 	"\x0fMatchFoundEvent\x12\x17\n" +
 	"\aroom_id\x18\x01 \x01(\tR\x06roomId\x12#\n" +
 	"\ropponent_name\x18\x02 \x01(\tR\fopponentName\x12'\n" +
-	"\x0fstart_countdown\x18\x03 \x01(\x05R\x0estartCountdown\"\x80\x01\n" +
+	"\x0fstart_countdown\x18\x03 \x01(\x05R\x0estartCountdown\x12\"\n" +
+	"\ris_player_one\x18\x04 \x01(\bR\visPlayerOne\"\x80\x01\n" +
 	"\x0fGameStateUpdate\x12\"\n" +
 	"\rplayer_one_hp\x18\x01 \x01(\x05R\vplayerOneHp\x12\"\n" +
 	"\rplayer_two_hp\x18\x02 \x01(\x05R\vplayerTwoHp\x12%\n" +
