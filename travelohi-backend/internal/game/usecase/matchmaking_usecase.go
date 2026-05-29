@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -31,13 +32,23 @@ func NewMatchmakingUseCase(cache game.CacheRepository, roomUseCase game.RoomUseC
 }
 
 func (u *matchmakingUseCase) HandleJoinQueue(ctx context.Context, player *game.Player) error {
-	// enforce memcached rate limit
+	// cek memcached rate limit
 	rateLimitKey := "game_rate_limit:" + player.UserID
 	var playCount int
+	var expiry int64
 
 	cachedBytes, err := u.cache.Get(ctx, rateLimitKey)
 	if err == nil && cachedBytes != nil {
-		playCount, _ = strconv.Atoi(string(cachedBytes))
+		parts := strings.Split(string(cachedBytes), ":")
+		if len(parts) == 2 {
+			playCount, _ = strconv.Atoi(parts[0])
+			expiry, _ = strconv.ParseInt(parts[1], 10, 64)
+		}
+	}
+
+	if expiry > 0 && time.Now().Unix() > expiry {
+		playCount = 0
+		expiry = 0
 	}
 
 	if playCount >= 3 {
@@ -46,7 +57,20 @@ func (u *matchmakingUseCase) HandleJoinQueue(ctx context.Context, player *game.P
 	}
 
 	playCount++
-	_ = u.cache.Set(ctx, rateLimitKey, []byte(strconv.Itoa(playCount)), 10*time.Minute)
+	var ttl time.Duration
+	if expiry == 0 {
+		// 10 menit window
+		expiry = time.Now().Add(10 * time.Minute).Unix()
+		ttl = 10 * time.Minute
+	} else {
+		ttl = time.Until(time.Unix(expiry, 0))
+		if ttl <= 0 {
+			ttl = time.Second
+		}
+	}
+
+	val := fmt.Sprintf("%d:%d", playCount, expiry)
+	_ = u.cache.Set(ctx, rateLimitKey, []byte(val), ttl)
 
 	// add to matchmaking pool
 	u.mu.Lock()
@@ -79,6 +103,7 @@ func (u *matchmakingUseCase) startMatch(p1, p2 *game.Player) {
 				RoomId:         roomID,
 				OpponentName:   "Opponent (" + p2.UserID + ")",
 				StartCountdown: 3,
+				IsPlayerOne:    true,
 			},
 		},
 	}
@@ -90,6 +115,7 @@ func (u *matchmakingUseCase) startMatch(p1, p2 *game.Player) {
 				RoomId:         roomID,
 				OpponentName:   "Opponent (" + p1.UserID + ")",
 				StartCountdown: 3,
+				IsPlayerOne:    false,
 			},
 		},
 	}
@@ -110,8 +136,6 @@ func (u *matchmakingUseCase) HandleDisconnect(userID string) {
 		}
 	}
 }
-
-
 
 func (u *matchmakingUseCase) sendErrorPayload(conn *websocket.Conn, message string) {
 	event := &gamepb.GameServerEvent{
