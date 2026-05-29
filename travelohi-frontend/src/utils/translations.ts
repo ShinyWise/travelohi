@@ -405,7 +405,42 @@ export const translations = {
         chat_send: "Kirim",
         chat_sending: "Mengirim...",
         chat_empty: "Belum ada pesan. Silakan sapa agen kami!",
-        chat_start: "Ini adalah awal riwayat obrolan Anda."
+        chat_start: "Ini adalah awal riwayat obrolan Anda.",
+
+        // Game Arena
+        game_arena_title: "Game Arena",
+        game_arena_desc: "Uji ketangkasanmu melawan pemain lain secara real-time! Dapatkan kesempatan untuk memenangkan poin HI Wallet.",
+        game_find_opponent: "Cari Lawan",
+        game_connecting: "Menghubungkan...",
+        game_connecting_desc: "Sedang menghubungkan ke server game. Harap tunggu...",
+        game_finding_opponent: "Mencari Lawan...",
+        game_matching_desc: "Sedang mencocokkan Anda dengan pemain lain...",
+        game_cancel: "Batalkan",
+        game_limit_reached: "Batas Bermain Tercapai",
+        game_limit_desc: "Anda telah mencapai batas bermain maksimum (3 kali per 10 menit).",
+        game_back: "Kembali",
+        game_conn_error: "Kesalahan Koneksi",
+        game_conn_error_desc: "Terjadi kesalahan pada koneksi server game.",
+        game_close: "Tutup",
+        game_victory: "VICTORY",
+        game_draw: "DRAW",
+        game_defeat: "DEFEAT",
+        game_find_new: "Cari Lawan Baru",
+        game_close_arena: "Tutup Arena",
+
+        // Game Messages
+        game_msg_opponent_disconnected: "Lawan terputus. Anda memenangkan pertandingan!",
+        game_msg_ko_win: "KO! Anda menang!",
+        game_msg_ko_lose: "KO! Anda kalah!",
+        game_msg_time_up_win: "Waktu habis. Anda menang!",
+        game_msg_time_up_lose: "Waktu habis. Anda kalah!",
+        game_msg_time_up_draw: "Waktu habis. Hasil seri!",
+        game_msg_finished: "Pertandingan selesai.",
+        game_msg_rate_limited: "Batas bermain tercapai (Maks 3 kali per 10 menit). Silakan coba lagi nanti.",
+        game_msg_rate_limited_short: "Batas bermain tercapai.",
+        game_msg_conn_aborted: "Koneksi terputus secara tidak wajar.",
+        game_msg_conn_error: "Terjadi kesalahan pada koneksi server game.",
+        game_msg_login_required: "Anda harus login untuk bermain."
     },
     EN: {
         // Common / Navbar
@@ -811,6 +846,41 @@ export const translations = {
         chat_send: "Send",
         chat_sending: "Sending...",
         chat_empty: "No messages yet. Say hello to our agent!",
-        chat_start: "This is the start of your chat history."
+        chat_start: "This is the start of your chat history.",
+
+        // Game Arena
+        game_arena_title: "Game Arena",
+        game_arena_desc: "Test your skills against other players in real-time! Get a chance to win HI Wallet points.",
+        game_find_opponent: "Find Opponent",
+        game_connecting: "Connecting...",
+        game_connecting_desc: "Connecting to the game server. Please wait...",
+        game_finding_opponent: "Finding Opponent...",
+        game_matching_desc: "Matching you with another player...",
+        game_cancel: "Cancel",
+        game_limit_reached: "Play Limit Reached",
+        game_limit_desc: "You have reached the maximum play limit (3 times per 10 minutes).",
+        game_back: "Back",
+        game_conn_error: "Connection Error",
+        game_conn_error_desc: "An error occurred on the game server connection.",
+        game_close: "Close",
+        game_victory: "VICTORY",
+        game_draw: "DRAW",
+        game_defeat: "DEFEAT",
+        game_find_new: "Find New Opponent",
+        game_close_arena: "Close Arena",
+
+        // Game Messages
+        game_msg_opponent_disconnected: "Opponent disconnected. You won the match!",
+        game_msg_ko_win: "KO! You win!",
+        game_msg_ko_lose: "KO! You lose!",
+        game_msg_time_up_win: "Time's up. You win!",
+        game_msg_time_up_lose: "Time's up. You lose!",
+        game_msg_time_up_draw: "Time's up. Draw!",
+        game_msg_finished: "Match finished.",
+        game_msg_rate_limited: "Play limit reached (Max 3 times per 10 minutes). Please try again later.",
+        game_msg_rate_limited_short: "Play limit reached.",
+        game_msg_conn_aborted: "Connection disconnected unexpectedly.",
+        game_msg_conn_error: "An error occurred on the game server connection.",
+        game_msg_login_required: "You must log in to play."
     }
 };
