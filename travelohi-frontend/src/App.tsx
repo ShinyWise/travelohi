@@ -16,6 +16,8 @@ import BookingsDashboard from './pages/BookingsDashboard/BookingsDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import UserSupportChat from './pages/UserSupportChat/UserSupportChat';
 import AdminSupportDashboard from './pages/AdminSupportDashboard/AdminSupportDashboard';
+import GameArena from './pages/GameArenaPage';
+import { GameSocketProvider } from './context/GameSocketContext';
 
 const DynamicSupportRoute: React.FC = () => {
   const { isAdmin } = useAuth();
@@ -40,29 +42,32 @@ function App() {
   return (
     <AppProvider>
       <AuthProvider>
-        <Router>
-          <Layout>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/search" element={<SearchPage />} />
-              <Route path="/flight" element={<FlightDetailPage />} />
-              <Route path="/hotel" element={<HotelDetailsPage />} />
-              <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
-              <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
-              <Route path="/bookings" element={<ProtectedRoute><BookingsDashboard /></ProtectedRoute>} />
-              <Route path="/my-tickets" element={<Navigate to="/bookings" replace />} />
-              <Route path="/booking-history" element={<Navigate to="/bookings" replace />} />
+        <GameSocketProvider>
+          <Router>
+            <Layout>
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/search" element={<SearchPage />} />
+                <Route path="/flight" element={<FlightDetailPage />} />
+                <Route path="/hotel" element={<HotelDetailsPage />} />
+                <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
+                <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
+                <Route path="/bookings" element={<ProtectedRoute><BookingsDashboard /></ProtectedRoute>} />
+                <Route path="/my-tickets" element={<Navigate to="/bookings" replace />} />
+                <Route path="/booking-history" element={<Navigate to="/bookings" replace />} />
 
-              <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
-              <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
-              <Route path="/forgot-password" element={<GuestRoute><ForgotPasswordPage /></GuestRoute>} />
+                <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
+                <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
+                <Route path="/forgot-password" element={<GuestRoute><ForgotPasswordPage /></GuestRoute>} />
 
-              <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-              <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-              <Route path="/support" element={<ProtectedRoute><DynamicSupportRoute /></ProtectedRoute>} />
-            </Routes>
-          </Layout>
-        </Router>
+                <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+                <Route path="/game" element={<ProtectedRoute><GameArena /></ProtectedRoute>} />
+                <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+                <Route path="/support" element={<ProtectedRoute><DynamicSupportRoute /></ProtectedRoute>} />
+              </Routes>
+            </Layout>
+          </Router>
+        </GameSocketProvider>
       </AuthProvider>
     </AppProvider>
   );

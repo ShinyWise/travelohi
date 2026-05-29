@@ -200,6 +200,12 @@ const Navbar: React.FC = () => {
                                     >
                                         {t.customer_service} {unreadChatCount > 0 && <span className={styles.badge}>{unreadChatCount}</span>}
                                     </span>
+                                    <span
+                                        className={styles.navItemText}
+                                        onClick={() => { setIsMobileMenuOpen(false); navigate('/game'); }}
+                                    >
+                                        {t.game_arena_title}
+                                    </span>
                                 </>
                             )
                         )}
