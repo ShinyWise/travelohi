@@ -42,7 +42,8 @@ func (w *NotificationDispatcher) DispatchBroadcast(subject, body string) {
 		// process queue
 		successCount := 0
 		for _, sub := range subscribers {
-			err := w.mailer.SendEmail([]string{sub.Email}, subject, body)
+			htmlBody := mailer.GenerateBroadcastEmail(subject, body)
+			err := w.mailer.SendEmail([]string{sub.Email}, subject, htmlBody)
 			if err != nil {
 				log.Printf("[Email Error] -> Failed to send to: %s (%s) | Error: %v\n", sub.Email, sub.Name, err)
 			} else {

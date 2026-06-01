@@ -3,6 +3,7 @@
     flex-direction: column;
     gap: 20px;
     max-width: 800px;
+    width: 100%;
 }
 
 .toast {
@@ -103,6 +104,13 @@
                 background-color: rgba(231, 76, 60, 0.1);
             }
         }
+
+        @media (max-width: 600px) {
+            flex-direction: column;
+            .removeBtn {
+                padding: 10px;
+            }
+        }
     }
 
     .addBtn {
@@ -164,6 +172,10 @@
 
     @media (max-width: 700px) {
         grid-template-columns: repeat(2, 1fr);
+    }
+    
+    @media (max-width: 480px) {
+        grid-template-columns: repeat(1, 1fr);
     }
 }
 
@@ -343,9 +355,11 @@
 .customTagInputRow {
     display: flex;
     gap: 10px;
+    flex-wrap: wrap;
 
     input {
         flex: 1;
+        min-width: 200px;
         padding: 10px;
         border: 1px solid var(--border-color);
         border-radius: 6px;
@@ -362,9 +376,14 @@
         border-radius: 6px;
         font-weight: bold;
         cursor: pointer;
+        white-space: nowrap;
 
         &:hover {
             opacity: 0.9;
+        }
+
+        @media (max-width: 480px) {
+            width: 100%;
         }
     }
 }
