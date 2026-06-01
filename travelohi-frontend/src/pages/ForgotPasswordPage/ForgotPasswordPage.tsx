@@ -1,21 +1,30 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import FormInput from '../../components/FormInput';
-import SecurityQuestionDropdown from '../../components/SecurityQuestionDropdown';
 import { useAppContext } from '../../context/ThemeContext';
 import { translations } from '../../utils/translations';
+import { isValidPassword } from '../../utils/validation';
 import { AuthServiceClient } from '../../proto/travelohi/v1/auth/auth.client';
 import { transport } from '../../utils/grpcClient';
 import styles from './ForgotPasswordPage.module.scss';
+
 const client = new AuthServiceClient(transport);
+
+const SECURITY_QUESTIONS = [
+    { id: 1, text: "What is your favorite childhood pet's name?" },
+    { id: 2, text: "In which city where you born?" },
+    { id: 3, text: "What is the name of your favorite book or movie?" },
+    { id: 4, text: "What is the name of the elementary school you attended?" },
+    { id: 5, text: "What is the model of your first car?" },
+];
 const ForgotPasswordPage: React.FC = () => {
     const navigate = useNavigate();
     const { language } = useAppContext();
     const t = translations[language];
     const [step, setStep] = useState<1 | 2>(1);
     const [email, setEmail] = useState('');
+    const [fetchedQuestionId, setFetchedQuestionId] = useState<number | null>(null);
     const [formData, setFormData] = useState({
-        securityQuestionId: 0,
         securityAnswer: '',
         newPassword: '',
         confirmPassword: '',
@@ -38,7 +47,8 @@ const ForgotPasswordPage: React.FC = () => {
         setIsLoading(true);
         try {
             // cek emailnya ad ga
-            await client.getSecurityQuestion({ email });
+            const res = await client.getSecurityQuestion({ email });
+            setFetchedQuestionId(res.response.securityQuestionId);
             setStep(2);
         } catch (err: any) {
             if (err.message && err.message.toLowerCase().includes("suspended")) {
@@ -52,14 +62,13 @@ const ForgotPasswordPage: React.FC = () => {
     };
     const validateStepTwo = (): boolean => {
         const newErrors: Record<string, string> = {};
-        if (formData.securityQuestionId === 0) {
+        if (!fetchedQuestionId) {
             newErrors.securityQuestionId = t.question_validation_error;
         }
         if (!formData.securityAnswer.trim()) {
             newErrors.securityAnswer = t.answer_validation_error;
         }
-        const pwdRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,30}$/;
-        if (!pwdRegex.test(formData.newPassword)) {
+        if (!isValidPassword(formData.newPassword)) {
             newErrors.newPassword = t.password_validation_error;
         }
         if (formData.newPassword !== formData.confirmPassword) {
@@ -76,7 +85,7 @@ const ForgotPasswordPage: React.FC = () => {
         try {
             await client.resetPassword({
                 email,
-                securityQuestionId: formData.securityQuestionId,
+                securityQuestionId: fetchedQuestionId || 0,
                 securityAnswer: formData.securityAnswer,
                 newPassword: formData.newPassword,
             });
@@ -140,21 +149,20 @@ const ForgotPasswordPage: React.FC = () => {
                                 onClick={() => {
                                     setStep(1);
                                     setGrpcError(null);
-                                    setFormData({ securityQuestionId: 0, securityAnswer: '', newPassword: '', confirmPassword: '' });
+                                    setFetchedQuestionId(null);
+                                    setFormData({ securityAnswer: '', newPassword: '', confirmPassword: '' });
                                 }}
                             >
                                 {t.change_email_btn}
                             </button>
                         </div>
-                        <SecurityQuestionDropdown
-                            value={formData.securityQuestionId}
-                            onChange={(id) => {
-                                setFormData(prev => ({ ...prev, securityQuestionId: id }));
-                                if (errors.securityQuestionId) {
-                                    setErrors(prev => ({ ...prev, securityQuestionId: '' }));
-                                }
-                            }}
-                            error={errors.securityQuestionId}
+                        <FormInput
+                            label={t.security_question}
+                            name="securityQuestionDisplay"
+                            type="text"
+                            value={SECURITY_QUESTIONS.find(q => q.id === fetchedQuestionId)?.text || ''}
+                            onChange={() => { }}
+                            disabled={true}
                         />
                         <FormInput
                             label={t.security_answer}
@@ -164,7 +172,18 @@ const ForgotPasswordPage: React.FC = () => {
                             onChange={handleChange}
                             error={errors.securityAnswer}
                             placeholder={t.security_answer_placeholder}
+                            autoComplete="off"
                             required
+                        />
+
+                        <input
+                            type="text"
+                            name="username"
+                            autoComplete="username"
+                            style={{ display: 'none' }}
+                            defaultValue={email}
+                            tabIndex={-1}
+                            aria-hidden="true"
                         />
                         <FormInput
                             label={t.new_password}
@@ -173,6 +192,7 @@ const ForgotPasswordPage: React.FC = () => {
                             value={formData.newPassword}
                             onChange={handleChange}
                             error={errors.newPassword}
+                            autoComplete="new-password"
                             required
                         />
                         <FormInput
@@ -182,6 +202,7 @@ const ForgotPasswordPage: React.FC = () => {
                             value={formData.confirmPassword}
                             onChange={handleChange}
                             error={errors.confirmPassword}
+                            autoComplete="new-password"
                             required
                         />
                         <button type="submit" className={styles.actionBtn} disabled={isLoading}>

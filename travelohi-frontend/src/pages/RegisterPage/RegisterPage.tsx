@@ -5,6 +5,7 @@ import FormInput from '../../components/FormInput';
 import SecurityQuestionDropdown from '../../components/SecurityQuestionDropdown';
 import { useAppContext } from '../../context/ThemeContext';
 import { translations } from '../../utils/translations';
+import { isValidPassword } from '../../utils/validation';
 import { AuthServiceClient } from '../../proto/travelohi/v1/auth/auth.client';
 import { transport } from '../../utils/grpcClient';
 import styles from './RegisterPage.module.scss';
@@ -94,9 +95,7 @@ const RegisterPage: React.FC = () => {
         const age = Math.abs(ageDate.getUTCFullYear() - 1970);
         if (!formData.dob || age < 13) newErrors.dob = t.age_validation_error;
         if (!formData.gender) newErrors.gender = t.gender_validation_error;
-        // 8-30 chars, allowed: uppercase, lowercase, numbers, symbols (no spaces)
-        const pwdRegex = /^[\x21-\x7E]{8,30}$/;
-        if (!pwdRegex.test(formData.password)) {
+        if (!isValidPassword(formData.password)) {
             newErrors.password = t.password_validation_error;
         }
         if (formData.password !== formData.confirmPassword) {

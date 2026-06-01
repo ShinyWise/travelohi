@@ -351,6 +351,9 @@ func (uc *authUseCase) ResetPassword(ctx context.Context, email string, question
 	if err := validateEmailPattern(email); err != nil {
 		return nil, err
 	}
+	if err := validatePasswordPattern(newPassword); err != nil {
+		return nil, err
+	}
 	user, err := uc.repo.GetByEmail(ctx, email)
 	if err != nil {
 		return nil, errors.New("incorrect security question or answer")
