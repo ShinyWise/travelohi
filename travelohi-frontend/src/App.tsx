@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage/HomePage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import RegisterPage from './pages/RegisterPage/RegisterPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage/ForgotPasswordPage';
+import ActivatePage from './pages/ActivatePage/ActivatePage';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import SearchPage from './pages/SearchResultPage/SearchResultPage';
 import FlightDetailPage from './pages/FlightDetailPage/FlightDetailPage';
@@ -59,6 +60,7 @@ function App() {
                 <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
                 <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
                 <Route path="/forgot-password" element={<GuestRoute><ForgotPasswordPage /></GuestRoute>} />
+                <Route path="/activate" element={<GuestRoute><ActivatePage /></GuestRoute>} />
 
                 <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
                 <Route path="/game" element={<ProtectedRoute><GameArena /></ProtectedRoute>} />

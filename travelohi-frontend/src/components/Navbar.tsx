@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppContext } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { AccountServiceClient } from '../proto/travelohi/v1/account/account.client';
@@ -21,6 +21,7 @@ const Navbar: React.FC = () => {
     const { theme, toggleTheme, currency, setCurrency, language, setLanguage } = useAppContext();
     const { isAuthenticated, userId, logout, profilePictureUrl, updateProfilePicture, isAdmin } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const t = translations[language];
     const { unreadChatCount } = useNotification();
 
@@ -40,6 +41,10 @@ const Navbar: React.FC = () => {
     const paymentDropdownRef = useRef<HTMLDivElement>(null);
 
     const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+
+    useEffect(() => {
+        setIsMobileMenuOpen(false);
+    }, [location.pathname]);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -179,12 +184,6 @@ const Navbar: React.FC = () => {
                                     <span className={styles.navItemText} onClick={() => { setIsMobileMenuOpen(false); navigate('/admin'); }}>
                                         Admin Panel
                                     </span>
-                                    <span
-                                        className={styles.navItemText}
-                                        onClick={() => { setIsMobileMenuOpen(false); navigate('/support'); }}
-                                    >
-                                        {t.customer_service} {unreadChatCount > 0 && <span className={styles.badge}>{unreadChatCount}</span>}
-                                    </span>
                                 </>
                             ) : (
                                 <>
@@ -197,12 +196,6 @@ const Navbar: React.FC = () => {
                                     <span className={styles.navItemText} onClick={() => { setIsMobileMenuOpen(false); navigate('/cart'); }} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                                         <ShoppingCart size={18} />
                                         <span>{t.cart}</span>
-                                    </span>
-                                    <span
-                                        className={styles.navItemText}
-                                        onClick={() => { setIsMobileMenuOpen(false); navigate('/support'); }}
-                                    >
-                                        {t.customer_service} {unreadChatCount > 0 && <span className={styles.badge}>{unreadChatCount}</span>}
                                     </span>
                                     <span
                                         className={styles.navItemText}
