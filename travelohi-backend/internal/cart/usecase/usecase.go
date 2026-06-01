@@ -4,12 +4,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/google/uuid"
 	"google.golang.org/grpc/metadata"
 
 	"github.com/travelohi/backend/internal/cart"
+	"github.com/travelohi/backend/pkg/mailer"
 	accountpb "github.com/travelohi/backend/proto/account/v1"
 	flightpb "github.com/travelohi/backend/proto/flight/v1"
 )
@@ -18,13 +20,15 @@ type cartUseCase struct {
 	repo          cart.CartRepository
 	flightClient  flightpb.FlightServiceClient
 	accountClient accountpb.AccountServiceClient
+	mailer        mailer.EmailSender
 }
 
-func NewCartUseCase(repo cart.CartRepository, flightClient flightpb.FlightServiceClient, accountClient accountpb.AccountServiceClient) cart.CartUseCase {
+func NewCartUseCase(repo cart.CartRepository, flightClient flightpb.FlightServiceClient, accountClient accountpb.AccountServiceClient, m mailer.EmailSender) cart.CartUseCase {
 	return &cartUseCase{
 		repo:          repo,
 		flightClient:  flightClient,
 		accountClient: accountClient,
+		mailer:        m,
 	}
 }
 
@@ -278,6 +282,26 @@ func (uc *cartUseCase) Checkout(ctx context.Context, userID, paymentMethod, cred
 			}
 			return "", fmt.Errorf("failed to create booking record: %w", err)
 		}
+	}
+
+	// send payment receipt email
+	profileResp, profileErr := uc.accountClient.GetProfile(ctx, &accountpb.GetProfileRequest{UserId: userID})
+	if profileErr == nil && profileResp.Profile != nil {
+		emailItems := make([]mailer.PaymentEmailItem, 0, len(items))
+		for _, item := range items {
+			emailItems = append(emailItems, mailer.PaymentEmailItem{
+				Name:  item.DisplayName,
+				Price: item.Price * int64(item.Quantity),
+			})
+		}
+		htmlBody := mailer.GeneratePaymentSuccessEmail(transactionID, totalPrice, emailItems)
+		if err := uc.mailer.SendEmail([]string{profileResp.Profile.Email}, "Payment Confirmation - TraveloHI", htmlBody); err != nil {
+			log.Printf("[Cart] Failed to send payment receipt email to user %s: %v\n", userID, err)
+		} else {
+			log.Printf("📧 Payment receipt email sent for transaction %s\n", transactionID)
+		}
+	} else {
+		log.Printf("[Cart] Failed to fetch profile for user %s: %v\n", userID, profileErr)
 	}
 
 	return transactionID, nil

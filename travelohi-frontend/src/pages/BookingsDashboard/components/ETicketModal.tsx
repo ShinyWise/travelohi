@@ -77,7 +77,7 @@ const ETicketModal: React.FC<Props> = ({ isOpen, onClose, bookingId }) => {
                         </div>
 
                         <div className={styles.detailsSection}>
-                            <h4>{bookingDetails.displayName}</h4>
+                            <h4>{bookingDetails.displayName.split('|')[0]}</h4>
                             <p className={styles.subtitle}>
                                 {bookingDetails.itemType === 'hotel_room' ? t.profile_hotel_voucher : t.profile_boarding_pass}
                             </p>

@@ -14,11 +14,12 @@ import (
 	"gorm.io/gorm"
 
 	authrepo "github.com/travelohi/backend/internal/auth/repository"
-	carthandler "github.com/travelohi/backend/internal/cart/handler" // perfectly fine if you named the folder this!
+	carthandler "github.com/travelohi/backend/internal/cart/handler"
 	"github.com/travelohi/backend/internal/cart/repository"
 	"github.com/travelohi/backend/internal/cart/usecase"
 	"github.com/travelohi/backend/internal/cart/worker"
 	"github.com/travelohi/backend/internal/interceptor"
+	"github.com/travelohi/backend/pkg/mailer"
 	"github.com/travelohi/backend/pkg/token"
 	accountpb "github.com/travelohi/backend/proto/account/v1"
 	cartpb "github.com/travelohi/backend/proto/cart/v1"
@@ -31,6 +32,11 @@ func main() {
 	jwtSecret := os.Getenv("JWT_SECRET")
 	flightServiceURL := os.Getenv("FLIGHT_SERVICE_URL")
 	accountServiceURL := os.Getenv("ACCOUNT_SERVICE_URL")
+
+	smtpHost := os.Getenv("SMTP_HOST")
+	smtpPort := os.Getenv("SMTP_PORT")
+	smtpUser := os.Getenv("SMTP_USER")
+	smtpPass := os.Getenv("SMTP_PASS")
 
 	// 1. infrastructure connections
 	dbConn, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
@@ -63,8 +69,11 @@ func main() {
 	cartRepo := repository.NewPostgresCartRepository(dbConn)
 	cacheRepo := authrepo.NewMemcachedRepository(memcachedClient)
 
+	// mailer
+	smtpMailer := mailer.NewSMTPMailer(smtpHost, smtpPort, smtpUser, smtpPass)
+
 	// usecases
-	cartUC := usecase.NewCartUseCase(cartRepo, flightClient, accountClient)
+	cartUC := usecase.NewCartUseCase(cartRepo, flightClient, accountClient, smtpMailer)
 
 	// handlers
 	cartHandler := carthandler.NewCartHandler(cartUC)
