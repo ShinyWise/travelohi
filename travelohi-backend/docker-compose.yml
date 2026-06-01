@@ -37,6 +37,10 @@ services:
       - DB_URL=postgres://root:secretpassword@postgres:5432/travelohi_db?sslmode=disable
       - MEMCACHED_URL=memcached:11211
       - JWT_SECRET=your-super-secret-key
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
     depends_on:
       postgres:
         condition: service_healthy
@@ -128,6 +132,10 @@ services:
       - DB_URL=postgres://root:secretpassword@postgres:5432/travelohi_db?sslmode=disable
       - MEMCACHED_URL=memcached:11211
       - JWT_SECRET=your-super-secret-key
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
     depends_on:
       postgres:
         condition: service_healthy
@@ -225,6 +233,15 @@ services:
         condition: service_healthy
       memcached:
         condition: service_started
+    networks:
+      - travelohi-net
+
+  frontend:
+    build:
+      context: ../travelohi-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
     networks:
       - travelohi-net
 
