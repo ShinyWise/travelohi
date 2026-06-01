@@ -67,14 +67,14 @@ const SearchInput: React.FC<SearchInputProps> = ({ onFocus }) => {
                 setRecentSearches(recentRes.response?.queries?.slice(0, 3) || []);
 
 
-                const mappedPopHotels = (popHotelsRes.response?.hotels || []).slice(0, 3).map(h => ({
+                const mappedPopHotels = (popHotelsRes.response?.hotels || []).slice(0, 5).map(h => ({
                     id: h.hotelId,
                     name: h.name,
                     location: h.location,
                     imageUrl: h.imageUrl
                 }));
 
-                const mappedPopFlights = (popFlightsRes.response?.destinations || []).slice(0, 3).map(d => ({
+                const mappedPopFlights = (popFlightsRes.response?.destinations || []).slice(0, 5).map(d => ({
                     id: d.destinationAirport,
                     name: getDisplayAirportName(d.destinationAirport),
                     displayTitle: `Flights to ${getDisplayAirportName(d.destinationAirport)}`,

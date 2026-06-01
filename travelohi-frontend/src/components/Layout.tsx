@@ -14,7 +14,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const { theme } = useAppContext();
     const location = useLocation();
     const isSupportPage = location.pathname === '/support';
-    const hideFooter = isSupportPage || location.pathname === '/admin';
+    
+    const hideFooterPaths = [
+        '/login', '/register', '/forgot-password', '/activate',
+        '/checkout', '/cart', '/profile', '/bookings', '/game',
+        '/admin', '/support'
+    ];
+    
+    const hideFooter = hideFooterPaths.some(path => location.pathname.startsWith(path));
 
     React.useEffect(() => {
         document.body.style.backgroundColor = theme === 'dark' ? '#121212' : '#ffffff';
