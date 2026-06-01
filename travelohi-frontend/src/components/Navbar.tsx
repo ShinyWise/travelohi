@@ -7,6 +7,7 @@ import { AuthServiceClient } from '../proto/travelohi/v1/auth/auth.client';
 import { transport } from '../utils/grpcClient';
 import { translations } from '../utils/translations';
 import { formatCurrency } from '../utils/currencyFormatter';
+import { bytesToDataUrl } from '../utils/imageUtils';
 import { ShoppingCart, CreditCard, Wallet, Sun, Moon } from 'lucide-react';
 import SearchInput from './SearchInput';
 import LogoutConfirmationModal from './LogoutConfirmationModal';
@@ -70,8 +71,9 @@ const Navbar: React.FC = () => {
                         firstName: response.profile.firstName,
                         hiWalletBalance: response.profile.hiWalletBalance
                     });
-                    if (response.profile.profilePictureUrl) {
-                        updateProfilePicture(response.profile.profilePictureUrl);
+                    if (response.profile.profilePicture && response.profile.profilePicture.length > 0) {
+                        const dataUrl = bytesToDataUrl(response.profile.profilePicture);
+                        updateProfilePicture(dataUrl);
                     }
                 }
 
@@ -101,7 +103,9 @@ const Navbar: React.FC = () => {
         };
 
         window.addEventListener('booking_updated', handleBookingUpdate);
-        return () => window.removeEventListener('booking_updated', handleBookingUpdate);
+        return () => {
+            window.removeEventListener('booking_updated', handleBookingUpdate);
+        };
     }, [isAuthenticated, userId]);
 
     useEffect(() => {
@@ -153,11 +157,11 @@ const Navbar: React.FC = () => {
     return (
         <header className={styles.navbar}>
             <div className={styles.navContainer}>
-                <div className={styles.logo} onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
-                    <h2>TraveloHI</h2>
+                <div className={styles.logo} onClick={() => navigate('/')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                    <img src="/travelohi.png" alt="TraveloHI Logo" style={{ height: '36px' }} />
                 </div>
 
-                <SearchInput />
+                <SearchInput onFocus={() => setIsMobileMenuOpen(false)} />
 
                 <button className={styles.hamburger} onClick={toggleMenu} aria-label="Toggle Menu">
                     <span className={styles.bar}></span>

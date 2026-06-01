@@ -1,27 +1,38 @@
 import React from 'react';
 import { useAppContext } from '../context/ThemeContext';
 import { translations } from '../utils/translations';
-import { Clock, Flame } from 'lucide-react';
+import { Clock, Building, Plane } from 'lucide-react';
+import { HotelSearchResult, AirlineSearchResult } from '../proto/travelohi/v1/telemetry/telemetry';
 import styles from './SearchDropdown.module.scss';
 interface SearchDropdownProps {
     isOpen: boolean;
     recentSearches: string[];
-    recommendations: string[];
+    hotels?: HotelSearchResult[];
+    airlines?: AirlineSearchResult[];
     onSelect: (query: string) => void;
     isLoading: boolean;
 }
 const SearchDropdown: React.FC<SearchDropdownProps> = ({
     isOpen,
     recentSearches,
-    recommendations,
+    hotels = [],
+    airlines = [],
     onSelect,
     isLoading
 }) => {
     const { language } = useAppContext();
     const t = translations[language];
     if (!isOpen) return null;
+
+    const handleKeyDown = (e: React.KeyboardEvent, query: string) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onSelect(query);
+        }
+    };
+
     return (
-        <div className={styles.dropdownContainer}>
+        <div className={styles.dropdownContainer} role="listbox">
             {isLoading ? (
                 <div className={styles.loadingText}>{t.search_loading}</div>
             ) : (
@@ -31,7 +42,14 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
                             <h4>{t.search_recent}</h4>
                             <ul className={styles.list}>
                                 {recentSearches.map((query, idx) => (
-                                    <li key={`recent-${idx}`} onClick={() => onSelect(query)} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <li 
+                                        key={`recent-${idx}`} 
+                                        onClick={() => onSelect(query)} 
+                                        onKeyDown={(e) => handleKeyDown(e, query)}
+                                        role="option"
+                                        tabIndex={0}
+                                        style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+                                    >
                                         <span className={styles.icon} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>
                                             <Clock size={16} />
                                         </span>
@@ -41,16 +59,48 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
                             </ul>
                         </div>
                     )}
-                    {recommendations.length > 0 && (
+                    {airlines.length > 0 && (
                         <div className={styles.section}>
-                            <h4>{t.search_global}</h4>
+                            <h4>Airlines</h4>
                             <ul className={styles.list}>
-                                {recommendations.map((query, idx) => (
-                                    <li key={`rec-${idx}`} onClick={() => onSelect(query)} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <span className={styles.icon} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444' }}>
-                                            <Flame size={16} />
+                                {airlines.map((airline, idx) => (
+                                    <li 
+                                        key={`airline-${airline.id || idx}`} 
+                                        onClick={() => onSelect(airline.name)} 
+                                        onKeyDown={(e) => handleKeyDown(e, airline.name)}
+                                        role="option"
+                                        tabIndex={0}
+                                        style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+                                    >
+                                        <span className={styles.icon} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-color)' }}>
+                                            <Plane size={16} />
                                         </span>
-                                        <span>{query}</span>
+                                        <span style={{ fontWeight: '500' }}>{airline.name}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                    {hotels.length > 0 && (
+                        <div className={styles.section}>
+                            <h4>Hotels</h4>
+                            <ul className={styles.list}>
+                                {hotels.map((hotel, idx) => (
+                                    <li 
+                                        key={`hotel-${hotel.id || idx}`} 
+                                        onClick={() => onSelect(hotel.name)} 
+                                        onKeyDown={(e) => handleKeyDown(e, hotel.name)}
+                                        role="option"
+                                        tabIndex={0}
+                                        style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+                                    >
+                                        <span className={styles.icon} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-color)' }}>
+                                            <Building size={16} />
+                                        </span>
+                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                            <span style={{ fontWeight: '500' }}>{hotel.name}</span>
+                                            <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{hotel.location}</span>
+                                        </div>
                                     </li>
                                 ))}
                             </ul>

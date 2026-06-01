@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { TelemetryServiceClient } from '../proto/travelohi/v1/telemetry/telemetry.client';
+import { HotelSearchResult, AirlineSearchResult } from '../proto/travelohi/v1/telemetry/telemetry';
 import { transport } from '../utils/grpcClient';
 import { useAuth } from '../context/AuthContext';
 import { useDebounce } from '../utils/useDebounce';
@@ -9,16 +10,24 @@ import { translations } from '../utils/translations';
 import { Search } from 'lucide-react';
 import SearchDropdown from './SearchDropdown';
 import styles from './SearchInput.module.scss';
+interface SearchInputProps {
+    onFocus?: () => void;
+}
+
 const telemetryClient = new TelemetryServiceClient(transport);
-const SearchInput: React.FC = () => {
+const SearchInput: React.FC<SearchInputProps> = ({ onFocus }) => {
     const { language } = useAppContext();
     const t = translations[language];
     const [query, setQuery] = useState('');
     const [isFocused, setIsFocused] = useState(false);
     const [recentSearches, setRecentSearches] = useState<string[]>([]);
-    const [recommendations, setRecommendations] = useState<string[]>([]);
+    const [hotelResults, setHotelResults] = useState<HotelSearchResult[]>([]);
+    const [airlineResults, setAirlineResults] = useState<AirlineSearchResult[]>([]);
+    const [popHotels, setPopHotels] = useState<HotelSearchResult[]>([]);
+    const [popFlights, setPopFlights] = useState<AirlineSearchResult[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate();
     const location = useLocation();
     const { userId } = useAuth();
@@ -47,14 +56,36 @@ const SearchInput: React.FC = () => {
             setIsLoading(true);
             try {
                 // parallel fetching for performance
-                const [recentRes, globalRes] = await Promise.all([
+                const [recentRes, popHotelsRes, popFlightsRes] = await Promise.all([
                     userId
                         ? telemetryClient.getRecentSearches({ userId })
                         : Promise.resolve({ response: { queries: [] } }),
-                    telemetryClient.getGlobalRecommendations({})
+                    telemetryClient.getPopularHotels({}),
+                    telemetryClient.getPopularFlightDestinations({})
                 ]);
                 setRecentSearches(recentRes.response?.queries?.slice(0, 3) || []);
-                setRecommendations(globalRes.response?.recommendedQueries?.slice(0, 5) || []);
+                
+                
+                const mappedPopHotels = (popHotelsRes.response?.hotels || []).slice(0, 3).map(h => ({
+                    id: h.hotelId,
+                    name: h.name,
+                    location: h.location,
+                    imageUrl: h.imageUrl
+                }));
+                
+                const mappedPopFlights = (popFlightsRes.response?.destinations || []).slice(0, 3).map(d => ({
+                    id: d.destinationAirport,
+                    name: `Flights to ${d.destinationAirport}`,
+                    logoUrl: d.imageUrl
+                }));
+
+                setPopHotels(mappedPopHotels);
+                setPopFlights(mappedPopFlights as AirlineSearchResult[]);
+
+                if (!debouncedQuery) {
+                    setHotelResults(mappedPopHotels);
+                    setAirlineResults(mappedPopFlights as AirlineSearchResult[]);
+                }
             } catch (error) {
                 console.error("Failed to load search telemetry via gRPC", error);
             } finally {
@@ -62,12 +93,23 @@ const SearchInput: React.FC = () => {
             }
         };
         fetchTelemetryData();
-    }, [isFocused, userId]);
+    }, [isFocused, userId, debouncedQuery]);
     useEffect(() => {
         if (debouncedQuery) {
             console.debug("Ready to trigger lightweight autocomplete for:", debouncedQuery);
+            setIsLoading(true);
+            telemetryClient.globalSearch({ query: debouncedQuery })
+                .then(({ response }) => {
+                    setHotelResults(response.hotels || []);
+                    setAirlineResults(response.airlines || []);
+                })
+                .catch(err => console.error("Global search error:", err))
+                .finally(() => setIsLoading(false));
+        } else {
+            setHotelResults(popHotels);
+            setAirlineResults(popFlights);
         }
-    }, [debouncedQuery]);
+    }, [debouncedQuery, popHotels, popFlights]);
     const executeSearch = async (searchQuery: string) => {
         const trimmedQuery = searchQuery.trim();
         setIsFocused(false);
@@ -88,24 +130,39 @@ const SearchInput: React.FC = () => {
     return (
         <div className={styles.searchContainer} ref={containerRef}>
             <div className={styles.inputWrapper}>
-                <span className={styles.searchIcon} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span 
+                    className={styles.searchIcon} 
+                    style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                    onClick={() => {
+                        if (query.trim()) {
+                            executeSearch(query);
+                        } else {
+                            inputRef.current?.focus();
+                        }
+                    }}
+                >
                     <Search size={18} />
                 </span>
                 <input
+                    ref={inputRef}
                     type="text"
                     className={styles.searchInput}
                     placeholder={t.search_placeholder}
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    onFocus={() => setIsFocused(true)}
+                    onFocus={() => {
+                        setIsFocused(true);
+                        onFocus?.();
+                    }}
                     onKeyDown={handleKeyDown}
                     aria-label="Global Search"
                 />
             </div>
             <SearchDropdown
-                isOpen={isFocused && (recentSearches.length > 0 || recommendations.length > 0 || isLoading)}
+                isOpen={isFocused && (recentSearches.length > 0 || hotelResults.length > 0 || airlineResults.length > 0 || isLoading)}
                 recentSearches={recentSearches}
-                recommendations={recommendations}
+                hotels={hotelResults}
+                airlines={airlineResults}
                 onSelect={executeSearch}
                 isLoading={isLoading}
             />

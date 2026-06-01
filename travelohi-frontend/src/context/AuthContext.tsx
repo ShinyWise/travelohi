@@ -97,7 +97,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const updateProfilePicture = (url: string) => {
         setProfilePictureUrl(url);
-        localStorage.setItem('profile_picture_url', url);
+        if (url) {
+            localStorage.setItem('profile_picture_url', url);
+        } else {
+            localStorage.removeItem('profile_picture_url');
+        }
     };
 
     return (
