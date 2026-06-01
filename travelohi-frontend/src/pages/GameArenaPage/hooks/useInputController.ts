@@ -61,11 +61,11 @@ export const useInputController = (
             if (key === 'a' || key === 'arrowleft') {
                 keysRef.current.left = true;
                 sendGameAction('move_left');
-                state.player.action = 'move';
+                state.player.action = 'move_left';
             } else if (key === 'd' || key === 'arrowright') {
                 keysRef.current.right = true;
                 sendGameAction('move_right');
-                state.player.action = 'move';
+                state.player.action = 'move_right';
             }
         };
 
@@ -90,6 +90,7 @@ export const useInputController = (
                     gameStateRef.current.player.action = 'idle';
                 } else {
                     sendGameAction('move_right');
+                    gameStateRef.current.player.action = 'move_right';
                 }
             } else if (key === 'd' || key === 'arrowright') {
                 keysRef.current.right = false;
@@ -98,6 +99,7 @@ export const useInputController = (
                     gameStateRef.current.player.action = 'idle';
                 } else {
                     sendGameAction('move_left');
+                    gameStateRef.current.player.action = 'move_left';
                 }
             }
         };

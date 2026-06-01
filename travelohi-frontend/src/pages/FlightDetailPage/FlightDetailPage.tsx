@@ -78,7 +78,22 @@ const FlightDetailsPage: React.FC = () => {
             setIsProcessing(false);
         }
     };
-    if (isLoading) return <div className={styles.loadingWrapper}>{t.flight_loading}</div>;
+    if (isLoading) {
+        return (
+            <div className={styles.pageContainer}>
+                <div className={styles.headerBannerSkeleton} />
+                <div className={styles.contentLayout}>
+                    <div className={styles.mainCol}>
+                        <div className={styles.seatMapSkeleton} />
+                        <div className={styles.luggageSkeleton} />
+                    </div>
+                    <aside className={styles.sideCol}>
+                        <div className={styles.summaryCardSkeleton} />
+                    </aside>
+                </div>
+            </div>
+        );
+    }
     if (error && !flightData) return <div className={styles.errorWrapper}>{error}</div>;
     return (
         <div className={styles.pageContainer}>

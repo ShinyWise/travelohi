@@ -9,6 +9,7 @@ import { AuthServiceClient } from '../../proto/travelohi/v1/auth/auth.client';
 import { transport } from '../../utils/grpcClient';
 import styles from './RegisterPage.module.scss';
 const client = new AuthServiceClient(transport);
+const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23999'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
 const RegisterPage: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -31,6 +32,42 @@ const RegisterPage: React.FC = () => {
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isLoading, setIsLoading] = useState(false);
     const [grpcError, setGrpcError] = useState<string | null>(null);
+    const [profilePictureBase64, setProfilePictureBase64] = useState<string>('');
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        if (file.size > 2097152) {
+            setErrors(prev => ({ ...prev, profilePicture: 'File too large. Maximum size is 2MB.' }));
+            e.target.value = '';
+            return;
+        }
+
+        setErrors(prev => ({ ...prev, profilePicture: '' }));
+
+        if (previewUrl && previewUrl.startsWith('blob:')) {
+            URL.revokeObjectURL(previewUrl);
+        }
+        const newPreview = URL.createObjectURL(file);
+        setPreviewUrl(newPreview);
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const b64 = event.target?.result as string;
+            setProfilePictureBase64(b64);
+        };
+        reader.readAsDataURL(file);
+    };
+
+    React.useEffect(() => {
+        return () => {
+            if (previewUrl && previewUrl.startsWith('blob:')) {
+                URL.revokeObjectURL(previewUrl);
+            }
+        };
+    }, [previewUrl]);
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target;
         const val = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
@@ -92,6 +129,7 @@ const RegisterPage: React.FC = () => {
                 captchaToken: captchaToken,
                 securityQuestionId: formData.securityQuestionId,
                 securityAnswer: formData.securityAnswer,
+                profilePicture: profilePictureBase64,
             });
             navigate('/login', { state: { message: t.register_success } });
         } catch (err: any) {
@@ -128,6 +166,25 @@ const RegisterPage: React.FC = () => {
                     <div className={styles.row}>
                         <FormInput label={t.password_label} type="password" name="password" value={formData.password} onChange={handleChange} error={errors.password} />
                         <FormInput label={t.confirm_password} type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} error={errors.confirmPassword} />
+                    </div>
+                    <div className={styles.row}>
+                        <div className={styles.fileInputGroup}>
+                            <label className={styles.fileInputLabel}>{t.profile_pic_url || "Foto Profil"}</label>
+                            <div className={styles.fileInputWrapper}>
+                                <img 
+                                    src={previewUrl || DEFAULT_AVATAR} 
+                                    alt="Preview" 
+                                    className={styles.formAvatarPreview} 
+                                />
+                                <input 
+                                    type="file" 
+                                    accept="image/png, image/jpeg" 
+                                    onChange={handleFileChange} 
+                                    className={styles.fileInput} 
+                                />
+                            </div>
+                            {errors.profilePicture && <span className={styles.errorText}>{errors.profilePicture}</span>}
+                        </div>
                     </div>
                     <SecurityQuestionDropdown
                         value={formData.securityQuestionId}

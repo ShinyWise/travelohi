@@ -106,6 +106,21 @@ const OTPModal: React.FC<OTPModalProps> = ({ isOpen, onClose, email, onSuccess }
             inputRefs.current[index - 1]?.focus();
         }
     };
+    const handleOtpPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        const pastedData = e.clipboardData.getData('text').trim();
+        if (!/^\d+$/.test(pastedData)) return;
+
+        const newOtp = [...otpValues];
+        const pasteLen = Math.min(pastedData.length, 6);
+        for (let i = 0; i < pasteLen; i++) {
+            newOtp[i] = pastedData[i];
+        }
+        setOtpValues(newOtp);
+
+        const focusIndex = pasteLen < 6 ? pasteLen : 5;
+        inputRefs.current[focusIndex]?.focus();
+    };
     return (
         <div className={styles.modalOverlay}>
             <div className={styles.modalContent}>
@@ -167,6 +182,7 @@ const OTPModal: React.FC<OTPModalProps> = ({ isOpen, onClose, email, onSuccess }
                                     value={value}
                                     onChange={(e) => handleOtpChange(index, e.target.value)}
                                     onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                                    onPaste={handleOtpPaste}
                                     autoFocus={index === 0}
                                 />
                             ))}

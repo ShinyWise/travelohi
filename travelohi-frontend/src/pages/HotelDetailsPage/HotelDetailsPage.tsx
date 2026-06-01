@@ -115,7 +115,18 @@ const HotelDetailsPage: React.FC = () => {
             setProcessingRoomId(null);
         }
     };
-    if (isLoading && !hotelData) return <div className={styles.centeredMessage}>{t.hotel_loading}</div>;
+    if (isLoading && !hotelData) {
+        return (
+            <div className={styles.pageContainer}>
+                <div className={styles.headerSkeleton} />
+                <div className={styles.gallerySkeleton} />
+                <div className={styles.layoutGrid}>
+                    <div className={styles.mainContentSkeleton} />
+                    <div className={styles.sidebarSkeleton} />
+                </div>
+            </div>
+        );
+    }
     if (error && !hotelData) return <div className={`${styles.centeredMessage} ${styles.error}`}>{error}</div>;
     return (
         <div className={styles.pageContainer}>

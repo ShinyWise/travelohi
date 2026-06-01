@@ -118,3 +118,38 @@
     border-radius: 6px;
     border: 1px solid rgba(231, 76, 60, 0.3);
 }
+
+.headerBannerSkeleton {
+    height: 120px;
+    background-color: var(--bg-primary);
+    margin-bottom: 30px;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+.seatMapSkeleton {
+    height: 350px;
+    background-color: var(--bg-primary);
+    border-radius: 8px;
+    margin-bottom: 30px;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+.luggageSkeleton {
+    height: 150px;
+    background-color: var(--bg-primary);
+    border-radius: 8px;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+.summaryCardSkeleton {
+    height: 250px;
+    background-color: var(--bg-primary);
+    border-radius: 8px;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}

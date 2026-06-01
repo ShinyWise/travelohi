@@ -141,3 +141,39 @@
         }
     }
 }
+
+.headerSkeleton {
+    height: 60px;
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    margin-bottom: 30px;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+.gallerySkeleton {
+    height: 350px;
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    margin-bottom: 40px;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+.mainContentSkeleton {
+    height: 400px;
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+.sidebarSkeleton {
+    height: 250px;
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}

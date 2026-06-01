@@ -139,7 +139,22 @@ const CartPage: React.FC = () => {
         }
         return false;
     });
-    if (isLoading) return <div className={styles.centeredState}>{t.cart_loading}</div>;
+    if (isLoading) {
+        return (
+            <div className={styles.pageContainer}>
+                <h2 className={styles.pageTitle}>{t.cart_title}</h2>
+                <div className={styles.layout}>
+                    <div className={styles.mainCol}>
+                        <div className={styles.cartListSkeleton}>
+                            {Array.from({ length: 3 }).map((_, i) => (
+                                <div key={i} className={styles.skeletonCard} />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
     if (cartItems.length === 0) {
         return (
             <div className={styles.emptyStateContainer}>

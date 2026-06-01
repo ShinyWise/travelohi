@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { AdminServiceClient } from '../../../proto/travelohi/v1/admin/admin.client';
 import { transport } from '../../../utils/grpcClient';
 import { formatCurrency } from '../../../utils/currencyFormatter';
@@ -23,8 +23,12 @@ const InsertHotelForm: React.FC = () => {
     const [address, setAddress] = useState('');
     const [startingPrice, setStartingPrice] = useState('');
 
-    //dynamic arr
-    const [pictureUrls, setPictureUrls] = useState<string[]>(['']);
+    const MAX_SLOTS = 4;
+    const [imageSlots, setImageSlots] = useState<({ file: File; previewUrl: string; bytes: Uint8Array } | null)[]>(
+        Array(4).fill(null)
+    );
+    const activeUrlsRef = useRef<string[]>([]);
+    const slotInputRefs = useRef<(HTMLInputElement | null)[]>([null, null, null, null]);
 
     // Facilities states
     const [checkedFacilities, setCheckedFacilities] = useState<string[]>([]);
@@ -35,21 +39,55 @@ const InsertHotelForm: React.FC = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [toast, setToast] = useState<{ type: 'success' | 'error', msg: string } | null>(null);
 
-    // dynamic ar handler
-    const handleArrayChange = (setter: React.Dispatch<React.SetStateAction<string[]>>, index: number, value: string) => {
-        setter(prev => {
+    useEffect(() => {
+        return () => {
+            activeUrlsRef.current.forEach(url => URL.revokeObjectURL(url));
+        };
+    }, []);
+
+    const handleSlotFileChange = async (slotIndex: number, e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const maxBytes = 2097152; // 2MB
+        if (file.size > maxBytes) {
+            setToast({ type: 'error', msg: `Gambar slot ${slotIndex + 1} melebihi batas 2MB.` });
+            e.target.value = '';
+            return;
+        }
+
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const bytes = new Uint8Array(arrayBuffer);
+            const previewUrl = URL.createObjectURL(file);
+            activeUrlsRef.current.push(previewUrl);
+
+            setImageSlots(prev => {
+                const updated = [...prev];
+                if (updated[slotIndex]?.previewUrl) {
+                    URL.revokeObjectURL(updated[slotIndex]!.previewUrl);
+                    activeUrlsRef.current = activeUrlsRef.current.filter(u => u !== updated[slotIndex]!.previewUrl);
+                }
+                updated[slotIndex] = { file, previewUrl, bytes };
+                return updated;
+            });
+            setToast(null);
+        } catch (err) {
+            setToast({ type: 'error', msg: 'Gagal membaca berkas gambar.' });
+        }
+        e.target.value = '';
+    };
+
+    const removeSlot = (slotIndex: number) => {
+        setImageSlots(prev => {
             const updated = [...prev];
-            updated[index] = value;
+            if (updated[slotIndex]?.previewUrl) {
+                URL.revokeObjectURL(updated[slotIndex]!.previewUrl);
+                activeUrlsRef.current = activeUrlsRef.current.filter(u => u !== updated[slotIndex]!.previewUrl);
+            }
+            updated[slotIndex] = null;
             return updated;
         });
-    };
-
-    const addArrayField = (setter: React.Dispatch<React.SetStateAction<string[]>>) => {
-        setter(prev => [...prev, '']);
-    };
-
-    const removeArrayField = (setter: React.Dispatch<React.SetStateAction<string[]>>, index: number) => {
-        setter(prev => prev.filter((_, i) => i !== index));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -58,24 +96,30 @@ const InsertHotelForm: React.FC = () => {
         setToast(null);
 
         try {
-            // difilter dlu
-            const cleanUrls = pictureUrls.filter(url => url.trim() !== '');
             const cleanFacilities = [...checkedFacilities, ...customFacilities.filter(fac => fac.trim() !== '')];
+            const rawPictures = imageSlots.filter(Boolean).map(slot => slot!.bytes);
+
+            if (rawPictures.length === 0) {
+                setToast({ type: 'error', msg: 'Harap unggah minimal 1 foto hotel.' });
+                setIsSubmitting(false);
+                return;
+            }
 
             const { response } = await adminClient.insertHotel({
                 name,
                 description,
                 address,
                 startingPrice: BigInt(startingPrice || '0'),
-                pictureUrls: cleanUrls,
+                pictures: rawPictures,
                 facilities: cleanFacilities
             });
 
             if (response.success) {
                 setToast({ type: 'success', msg: `Hotel "${name}" berhasil ditambahkan ke dalam sistem!` });
-                // reset 
                 setName(''); setDescription(''); setAddress(''); setStartingPrice('');
-                setPictureUrls(['']);
+                activeUrlsRef.current.forEach(url => URL.revokeObjectURL(url));
+                activeUrlsRef.current = [];
+                setImageSlots(Array(MAX_SLOTS).fill(null));
                 setCheckedFacilities([]);
                 setCustomFacilities([]);
                 setNewCustomFacility('');
@@ -123,39 +167,54 @@ const InsertHotelForm: React.FC = () => {
             </div>
 
             <div className={styles.dynamicGroup}>
-                <label>Galeri Foto Hotel</label>
-                <div className={styles.imageGrid}>
-                    {pictureUrls.map((url, idx) => (
-                        <div key={idx} className={styles.imageInputCard}>
-                            <div className={styles.previewContainer}>
-                                {url.trim().startsWith('http') ? (
-                                    <img
-                                        src={url}
-                                        alt={`Preview ${idx + 1}`}
-                                        onError={(e) => {
-                                            (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23e74c3c"%3E%3Cpath d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/%3E%3C/svg%3E';
-                                        }}
-                                    />
-                                ) : (
-                                    <div className={styles.emptyPreview}>Tidak ada pratinjau</div>
-                                )}
-                            </div>
-                            <div className={styles.imageInputRow}>
-                                <input
-                                    type="url"
-                                    value={url}
-                                    onChange={(e) => handleArrayChange(setPictureUrls, idx, e.target.value)}
-                                    placeholder="https://..."
-                                    required={idx === 0}
-                                />
-                                {pictureUrls.length > 1 && (
-                                    <button type="button" className={styles.removeCardBtn} onClick={() => removeArrayField(setPictureUrls, idx)}>Hapus</button>
-                                )}
-                            </div>
+                <label>Galeri Foto Hotel <span className={styles.slotHint}>(Maks. 4 foto — sesuai tampilan thumbnail)</span></label>
+                <div className={styles.imageSlotGrid}>
+                    {imageSlots.map((slot, idx) => (
+                        <div key={idx} className={styles.imageSlotCard}>
+                            <input
+                                ref={el => { slotInputRefs.current[idx] = el; }}
+                                type="file"
+                                accept="image/*"
+                                style={{ display: 'none' }}
+                                onChange={(e) => handleSlotFileChange(idx, e)}
+                            />
+                            {slot ? (
+                                <>
+                                    <div
+                                        className={styles.slotPreview}
+                                        onClick={() => slotInputRefs.current[idx]?.click()}
+                                        title="Klik untuk ganti foto"
+                                    >
+                                        <img src={slot.previewUrl} alt={`Foto ${idx + 1}`} />
+                                        <div className={styles.slotOverlay}>
+                                            <span>🔄 Ganti</span>
+                                        </div>
+                                    </div>
+                                    <div className={styles.slotFooter}>
+                                        <span className={styles.slotLabel}>Foto {idx + 1}</span>
+                                        <button
+                                            type="button"
+                                            className={styles.removeCardBtn}
+                                            onClick={() => removeSlot(idx)}
+                                        >
+                                            Hapus
+                                        </button>
+                                    </div>
+                                </>
+                            ) : (
+                                <div
+                                    className={styles.slotEmpty}
+                                    onClick={() => slotInputRefs.current[idx]?.click()}
+                                >
+                                    <span className={styles.slotPlusIcon}>＋</span>
+                                    <span className={styles.slotEmptyLabel}>Foto {idx + 1}</span>
+                                    <span className={styles.slotEmptyHint}>Klik untuk unggah</span>
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>
-                <button type="button" className={styles.addBtn} onClick={() => addArrayField(setPictureUrls)}>+ Tambah URL Gambar</button>
+                <p className={styles.galleryNote}>Foto akan ditampilkan sebagai galeri 1 besar + 4 thumbnail di halaman detail hotel.</p>
             </div>
 
             <div className={styles.dynamicGroup}>

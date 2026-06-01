@@ -86,7 +86,7 @@
 .avatar {
     width: 35px;
     height: 35px;
-    background-color: #0b5b9c;
+    background-color: var(--accent-color);
     color: #fff;
     border-radius: 50%;
     display: flex;
@@ -126,7 +126,7 @@
             }
 
             &.seen {
-                color: #3498db;
+                 color: var(--accent-color);
             }
         }
     }

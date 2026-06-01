@@ -156,55 +156,76 @@
     margin-top: 4px;
 }
 
-.imageGrid {
+.imageSlotGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 15px;
-    margin-bottom: 10px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 8px;
+
+    @media (max-width: 700px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-.imageInputCard {
+.imageSlotCard {
     background-color: var(--bg-primary);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.previewContainer {
-    width: 100%;
-    height: 120px;
-    background-color: var(--bg-secondary);
-    border-radius: 6px;
+    border-radius: 10px;
     overflow: hidden;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--border-color);
+    flex-direction: column;
+}
+
+.slotPreview {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4/3;
+    cursor: pointer;
+    overflow: hidden;
 
     img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        display: block;
+        transition: transform 0.25s ease;
+    }
+
+    &:hover img {
+        transform: scale(1.05);
+    }
+
+    // slotOverlay is a sibling in JSX — use :global trick is not needed;
+    // we make slotOverlay visible by toggling opacity via CSS only on the card hover
+    &:hover > div {
+        opacity: 1;
     }
 }
 
-.emptyPreview {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    text-align: center;
+.slotOverlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    gap: 6px;
+    pointer-events: none;
 }
 
 .removeCardBtn {
     background: transparent;
     color: #e74c3c;
     border: 1px solid #e74c3c;
-    padding: 8px 12px;
+    padding: 5px 10px;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 0.85rem;
+    font-size: 0.78rem;
     font-weight: 600;
     transition: background-color 0.2s;
 
@@ -213,20 +234,74 @@
     }
 }
 
-.imageInputRow {
+.slotFooter {
     display: flex;
-    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--bg-secondary);
+}
 
-    input {
-        flex: 1;
-        padding: 8px;
-        border: 1px solid var(--border-color);
-        border-radius: 6px;
-        font-size: 0.9rem;
-        background-color: var(--bg-primary);
-        color: var(--text-primary);
+.slotLabel {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.slotEmpty {
+    width: 100%;
+    aspect-ratio: 4/3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    border: 2px dashed var(--border-color);
+    border-radius: 10px;
+    background-color: var(--bg-secondary);
+    transition: border-color 0.2s, background-color 0.2s;
+    padding: 10px;
+
+    &:hover {
+        border-color: var(--accent-color);
+        background-color: rgba(0, 165, 212, 0.05);
     }
 }
+
+.slotPlusIcon {
+    font-size: 1.8rem;
+    color: var(--text-secondary);
+    line-height: 1;
+}
+
+.slotEmptyLabel {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+
+.slotEmptyHint {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    opacity: 0.65;
+}
+
+.slotHint {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+    margin-left: 6px;
+}
+
+.galleryNote {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin: 4px 0 0;
+    opacity: 0.75;
+}
+
 
 .checkboxGrid {
     display: grid;

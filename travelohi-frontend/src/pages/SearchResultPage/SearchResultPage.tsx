@@ -14,12 +14,12 @@ const hotelClient = new HotelServiceClient(transport);
 const SearchResultsPage: React.FC = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const query = searchParams.get('q') || '';
-    const searchType = (searchParams.get('type') as 'flight' | 'hotel') || 'flight';
+    const searchType = (searchParams.get('type') as 'all' | 'flight' | 'hotel') || 'all';
     const [results, setResults] = useState<any[]>([]);
     const [totalResults, setTotalResults] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
 
-    const handleTypeSwitch = (type: 'flight' | 'hotel') => {
+    const handleTypeSwitch = (type: 'all' | 'flight' | 'hotel') => {
         const newParams = new URLSearchParams();
         newParams.set('q', query);
         newParams.set('type', type);
@@ -47,7 +47,57 @@ const SearchResultsPage: React.FC = () => {
             const today = new Date().toISOString().split('T')[0];
             const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
             try {
-                if (searchType === 'flight') {
+                if (searchType === 'all') {
+                    const fetchFlights = async () => {
+                        try {
+                            return await flightClient.searchFlights({
+                                originAirport: query,
+                                destinationAirport: query,
+                                departureDate: today,
+                                limit: Math.ceil(limit / 2),
+                                offset: Math.ceil(offset / 2),
+                                minPrice,
+                                maxPrice,
+                                transitFilter: '',
+                                sortBy: '',
+                                sortOrder: 'asc'
+                            });
+                        } catch {
+                            return { response: { flights: [], totalResults: 0 } };
+                        }
+                    };
+
+                    const fetchHotels = async () => {
+                        try {
+                            return await hotelClient.searchHotels({
+                                query,
+                                checkInDate: today,
+                                checkOutDate: tomorrow,
+                                limit: Math.floor(limit / 2),
+                                offset: Math.floor(offset / 2),
+                                minPrice,
+                                maxPrice,
+                                minRating: 0,
+                                facilities: [],
+                                sortBy: '',
+                                sortOrder: 'asc'
+                            });
+                        } catch {
+                            return { response: { hotels: [], totalResults: 0 } };
+                        }
+                    };
+
+                    const [flightRes, hotelRes] = await Promise.all([fetchFlights(), fetchHotels()]);
+
+                    const flights = (flightRes.response?.flights || []).map(f => ({ ...f, _type: 'flight' }));
+                    const hotels = (hotelRes.response?.hotels || []).map(h => ({ ...h, _type: 'hotel' }));
+
+                    // Group all flights first, then all hotels
+                    const combined = [...flights, ...hotels];
+
+                    setResults(combined);
+                    setTotalResults((flightRes.response?.totalResults || 0) + (hotelRes.response?.totalResults || 0));
+                } else if (searchType === 'flight') {
                     const { response } = await flightClient.searchFlights({
                         originAirport: query,
                         destinationAirport: query,
@@ -96,6 +146,14 @@ const SearchResultsPage: React.FC = () => {
                 <h2>Menampilkan hasil untuk: <span>"{query}"</span></h2>
                 <div className={styles.typeTabs}>
                     <button
+                        className={searchType === 'all' ? styles.activeTab : ''}
+                        onClick={() => handleTypeSwitch('all')}
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                    >
+                        <Search size={18} />
+                        <span>Semua</span>
+                    </button>
+                    <button
                         className={searchType === 'flight' ? styles.activeTab : ''}
                         onClick={() => handleTypeSwitch('flight')}
                         style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
@@ -131,9 +189,9 @@ const SearchResultsPage: React.FC = () => {
                     ) : (
                         <>
                             {results.map((item, idx) => (
-                                searchType === 'flight'
-                                    ? <FlightCard key={item.id || idx} flight={item} />
-                                    : <HotelCard key={item.id || idx} hotel={item} />
+                                item._type === 'flight' || (!item._type && searchType === 'flight')
+                                    ? <FlightCard key={`flight-${item.id || idx}`} flight={item} />
+                                    : <HotelCard key={`hotel-${item.id || idx}`} hotel={item} />
                             ))}
                             <PaginationControls totalResults={totalResults} />
                         </>

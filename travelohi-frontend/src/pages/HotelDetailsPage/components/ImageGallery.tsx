@@ -29,17 +29,38 @@ const ImageGallery: React.FC<Props> = ({ images }) => {
                         key={idx}
                         className={`${styles.thumbnailWrapper} ${mainImage === img ? styles.active : ''}`}
                         onClick={() => setMainImage(img)}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`View photo ${idx + 1}`}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                setMainImage(img);
+                            }
+                        }}
                     >
                         <ProgressiveImage 
                             src={img} 
-                            alt={`Thumbnail ${idx + 1}`} 
+                            alt={`Hotel photo ${idx + 1}`} 
                             className={styles.thumbnail} 
                             wrapperStyle={{ width: '100%', height: '100%', display: 'block' }}
                         />
                     </div>
                 ))}
                 {images.length > 4 && (
-                    <div className={styles.moreOverlay} onClick={() => setMainImage(images[4])}>
+                    <div
+                        className={styles.moreOverlay}
+                        onClick={() => setMainImage(images[4])}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`View ${images.length - 4} more photos`}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                setMainImage(images[4]);
+                            }
+                        }}
+                    >
                         <span>+{images.length - 4} {t.gallery_photos_label}</span>
                     </div>
                 )}

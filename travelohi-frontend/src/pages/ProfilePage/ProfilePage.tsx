@@ -6,6 +6,7 @@ import { translations } from '../../utils/translations';
 import { AccountServiceClient } from '../../proto/travelohi/v1/account/account.client';
 import { AuthServiceClient } from '../../proto/travelohi/v1/auth/auth.client';
 import { transport } from '../../utils/grpcClient';
+import { bytesToDataUrl } from '../../utils/imageUtils';
 import ProfileForm from './components/ProfileForm';
 import CreditCardManager from './components/CreditCardManager';
 import LogoutConfirmationModal from '../../components/LogoutConfirmationModal';
@@ -18,7 +19,7 @@ const authClient = new AuthServiceClient(transport);
 const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23999'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
 
 const ProfilePage: React.FC = () => {
-    const { userId, logout, updateProfilePicture } = useAuth();
+    const { userId, logout, updateProfilePicture, profilePictureUrl } = useAuth();
     const { language } = useAppContext();
     const t = translations[language];
     const navigate = useNavigate();
@@ -34,8 +35,9 @@ const ProfilePage: React.FC = () => {
             try {
                 const { response } = await accountClient.getProfile({ userId });
                 setProfileData(response.profile);
-                if (response.profile?.profilePictureUrl) {
-                    updateProfilePicture(response.profile.profilePictureUrl);
+                if (response.profile?.profilePicture && response.profile.profilePicture.length > 0) {
+                    const dataUrl = bytesToDataUrl(response.profile.profilePicture);
+                    updateProfilePicture(dataUrl);
                 }
             } catch (err: any) {
                 setError(err.message || "Gagal memuat data profil.");
@@ -68,7 +70,7 @@ const ProfilePage: React.FC = () => {
             <aside className={styles.sidebar}>
                 <div className={styles.userInfoMini}>
                     <ProgressiveImage
-                        src={profileData?.profilePictureUrl || DEFAULT_AVATAR}
+                        src={profilePictureUrl || DEFAULT_AVATAR}
                         alt="Profile"
                         className={styles.avatarMini}
                         wrapperStyle={{ display: 'inline-flex', flexShrink: 0 }}

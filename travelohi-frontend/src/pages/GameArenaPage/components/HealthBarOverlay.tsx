@@ -10,6 +10,8 @@ const HealthBarOverlay: React.FC<Props> = ({ gameStateRef }) => {
     const p1HealthRef = useRef<HTMLDivElement>(null);
     const p2HealthRef = useRef<HTMLDivElement>(null);
     const timerRef = useRef<HTMLDivElement>(null);
+    const p1NameRef = useRef<HTMLDivElement>(null);
+    const p2NameRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         let animationFrameId: number;
@@ -29,6 +31,14 @@ const HealthBarOverlay: React.FC<Props> = ({ gameStateRef }) => {
                 timerRef.current.innerText = Math.ceil(state.timeRemaining).toString();
             }
 
+            if (p1NameRef.current && p1NameRef.current.innerText !== state.player.name) {
+                p1NameRef.current.innerText = state.player.name;
+            }
+
+            if (p2NameRef.current && p2NameRef.current.innerText !== state.enemy.name) {
+                p2NameRef.current.innerText = state.enemy.name;
+            }
+
             animationFrameId = requestAnimationFrame(updateUI);
         };
 
@@ -40,7 +50,7 @@ const HealthBarOverlay: React.FC<Props> = ({ gameStateRef }) => {
     return (
         <div className={styles.hudContainer}>
             <div className={styles.playerPanel}>
-                <div className={styles.name}>{gameStateRef.current.player.name}</div>
+                <div ref={p1NameRef} className={styles.name}>{gameStateRef.current.player.name}</div>
                 <div className={styles.healthBarTrack}>
                     <div ref={p1HealthRef} className={styles.healthBarFill} />
                 </div>
@@ -51,7 +61,7 @@ const HealthBarOverlay: React.FC<Props> = ({ gameStateRef }) => {
             </div>
 
             <div className={styles.enemyPanel}>
-                <div className={styles.name}>{gameStateRef.current.enemy.name}</div>
+                <div ref={p2NameRef} className={styles.name}>{gameStateRef.current.enemy.name}</div>
                 <div className={styles.healthBarTrack}>
                     <div ref={p2HealthRef} className={styles.healthBarFill} />
                 </div>

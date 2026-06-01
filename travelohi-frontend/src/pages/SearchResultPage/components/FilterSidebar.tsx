@@ -4,7 +4,7 @@ import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
 import styles from './FilterSidebar.module.scss';
 interface Props {
-    searchType: 'flight' | 'hotel';
+    searchType: 'all' | 'flight' | 'hotel';
 }
 const FilterSidebar: React.FC<Props> = ({ searchType }) => {
     const { language } = useAppContext();
@@ -100,10 +100,11 @@ const FilterSidebar: React.FC<Props> = ({ searchType }) => {
                 </button>
             </div>
             {/* sorting */}
-            <div className={styles.filterGroup}>
-                <h4>{t.sort_by}</h4>
-                <div className={styles.options}>
-                    {searchType === 'hotel' ? (
+            {searchType !== 'all' && (
+                <div className={styles.filterGroup}>
+                    <h4>{t.sort_by}</h4>
+                    <div className={styles.options}>
+                        {searchType === 'hotel' ? (
                         <>
                             <label>
                                 <input type="radio" checked={isChecked('sort_by', 'price_asc')} onChange={() => updateFilter('sort_by', 'price_asc')} />
@@ -148,6 +149,7 @@ const FilterSidebar: React.FC<Props> = ({ searchType }) => {
                     )}
                 </div>
             </div>
+            )}
             {/* flight filters */}
             {searchType === 'flight' && (
                 <div className={styles.filterGroup}>

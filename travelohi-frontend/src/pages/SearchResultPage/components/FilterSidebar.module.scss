@@ -1,5 +1,6 @@
 .sidebar {
-    width: 280px;
+    width: 100%;
+    max-width: 280px;
     background-color: var(--bg-primary);
     border: 1px solid var(--border-color);
     border-radius: 8px;
@@ -7,9 +8,10 @@
     align-self: flex-start;
     position: sticky;
     top: 80px;
+    flex-shrink: 0;
 
     @media (max-width: 768px) {
-        width: 100%;
+        max-width: none;
         position: relative;
         top: 0;
     }
