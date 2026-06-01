@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 140" width="520" height="140" role="img" aria-label="travelohi">
+  <title>travelohi</title>
+
+  <!-- Wordmark: "travelohi" -->
+  <text
+    x="10"
+    y="118"
+    font-family="'Nunito', 'Varela Round', 'Helvetica Neue', Arial, sans-serif"
+    font-size="118"
+    font-weight="700"
+    fill="#29ABE2"
+    letter-spacing="-2"
+  >travelohi</text>
+
+  <!-- Dolphin icon (top-right, jumping rightward) -->
+  <g transform="translate(448, 2) scale(0.72)" fill="#29ABE2">
+    <!-- Body -->
+    <path d="
+      M 10 60
+      C 20 20, 70 0, 100 15
+      C 120 25, 130 50, 120 70
+      C 110 90, 85 95, 65 85
+      C 50 78, 40 65, 10 60
+      Z
+    "/>
+    <!-- Tail fin -->
+    <path d="
+      M 10 60
+      C 0 50, -15 35, -5 25
+      C 5 15, 20 30, 25 45
+      C 15 55, 8 58, 10 60
+      Z
+    "/>
+    <!-- Dorsal fin -->
+    <path d="
+      M 75 18
+      C 80 0, 100 -5, 105 10
+      C 95 15, 85 18, 75 18
+      Z
+    "/>
+    <!-- Pectoral fin -->
+    <path d="
+      M 70 55
+      C 65 70, 50 80, 45 72
+      C 55 65, 65 58, 70 55
+      Z
+    "/>
+    <!-- Eye -->
+    <circle cx="105" cy="28" r="4" fill="white"/>
+    <circle cx="106" cy="28" r="2" fill="#1a7aaa"/>
+    <!-- Smile line -->
+    <path d="M 95 42 Q 108 46 115 40" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <!-- Water droplet/splash -->
+    <ellipse cx="30" cy="72" rx="6" ry="4" fill="#29ABE2" opacity="0.6" transform="rotate(-20,30,72)"/>
+    <ellipse cx="18" cy="78" rx="4" ry="3" fill="#29ABE2" opacity="0.4" transform="rotate(10,18,78)"/>
+  </g>
+</svg>
