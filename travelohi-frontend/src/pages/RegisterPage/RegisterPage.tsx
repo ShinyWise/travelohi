@@ -133,7 +133,6 @@ const RegisterPage: React.FC = () => {
             });
             navigate('/login', { state: { message: t.register_success } });
         } catch (err: any) {
-            // handle grpc errors (e.g., email already exists)
             setGrpcError(err.message || t.register_failed);
             recaptchaRef.current?.reset();
         } finally {
@@ -155,10 +154,10 @@ const RegisterPage: React.FC = () => {
                         <FormInput label={t.dob} type="date" name="dob" value={formData.dob} onChange={handleChange} error={errors.dob} />
                         <div className={styles.genderGroup}>
                             <label>{t.gender}</label>
-                            <select 
-                                name="gender" 
-                                value={formData.gender} 
-                                onChange={handleChange} 
+                            <select
+                                name="gender"
+                                value={formData.gender}
+                                onChange={handleChange}
                                 className={`${errors.gender ? styles.errorBorder : ''} ${!formData.gender ? styles.placeholderSelect : ''}`}
                             >
                                 <option value="" disabled>{t.gender_placeholder}</option>
@@ -176,16 +175,16 @@ const RegisterPage: React.FC = () => {
                         <div className={styles.fileInputGroup}>
                             <label className={styles.fileInputLabel}>{t.profile_pic_url || "Foto Profil"}</label>
                             <div className={styles.fileInputWrapper}>
-                                <img 
-                                    src={previewUrl || DEFAULT_AVATAR} 
-                                    alt="Preview" 
-                                    className={styles.formAvatarPreview} 
+                                <img
+                                    src={previewUrl || DEFAULT_AVATAR}
+                                    alt="Preview"
+                                    className={styles.formAvatarPreview}
                                 />
-                                <input 
-                                    type="file" 
-                                    accept="image/png, image/jpeg" 
-                                    onChange={handleFileChange} 
-                                    className={styles.fileInput} 
+                                <input
+                                    type="file"
+                                    accept="image/png, image/jpeg"
+                                    onChange={handleFileChange}
+                                    className={styles.fileInput}
                                 />
                             </div>
                             {errors.profilePicture && <span className={styles.errorText}>{errors.profilePicture}</span>}

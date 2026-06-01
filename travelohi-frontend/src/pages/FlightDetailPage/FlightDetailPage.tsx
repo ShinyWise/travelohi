@@ -100,7 +100,38 @@ const FlightDetailsPage: React.FC = () => {
             <div className={styles.headerBanner}>
                 <div className={styles.flightSummary}>
                     <h2>{t.flight_detail_title.replace('{destination}', flightData?.destinationAirport || '')}</h2>
-                    <p>{flightData?.originAirport} ➔ {flightData?.destinationAirport} | {t.flight_duration_minutes.replace('{minutes}', flightData?.durationMinutes?.toString() || '')}</p>
+                    <div className={styles.flightMeta}>
+                        <div className={styles.flightMetaItem}>
+                            <span className={styles.flightMetaLabel}>{t.flight_airline}</span>
+                            <span className={styles.flightMetaValue}>{flightData?.airline?.name || '—'}</span>
+                        </div>
+                        <div className={styles.flightMetaItem}>
+                            <span className={styles.flightMetaLabel}>{t.flight_aircraft}</span>
+                            <span className={styles.flightMetaValue}>{flightData?.flightCode || '—'}</span>
+                        </div>
+                        <div className={styles.flightMetaItem}>
+                            <span className={styles.flightMetaLabel}>{t.flight_departure}</span>
+                            <span className={styles.flightMetaValue}>
+                                {flightData?.departureTime
+                                    ? new Date(flightData.departureTime).toLocaleString(language === 'ID' ? 'id-ID' : 'en-US', { dateStyle: 'medium', timeStyle: 'short' })
+                                    : '—'}
+                            </span>
+                        </div>
+                        <div className={styles.flightMetaItem}>
+                            <span className={styles.flightMetaLabel}>{t.flight_arrival}</span>
+                            <span className={styles.flightMetaValue}>
+                                {flightData?.arrivalTime
+                                    ? new Date(flightData.arrivalTime).toLocaleString(language === 'ID' ? 'id-ID' : 'en-US', { dateStyle: 'medium', timeStyle: 'short' })
+                                    : '—'}
+                            </span>
+                        </div>
+                    </div>
+                    <p className={styles.flightRoute}>
+                        {flightData?.originAirport} ➔ {flightData?.destinationAirport}
+                        <span className={styles.flightDuration}>
+                            &nbsp;·&nbsp;{t.flight_duration_minutes.replace('{minutes}', flightData?.durationMinutes?.toString() || '')}
+                        </span>
+                    </p>
                 </div>
             </div>
             {error && <div className={styles.errorBox}>{error}</div>}
