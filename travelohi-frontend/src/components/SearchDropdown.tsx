@@ -4,11 +4,14 @@ import { translations } from '../utils/translations';
 import { Clock, Building, Plane } from 'lucide-react';
 import { HotelSearchResult, AirlineSearchResult } from '../proto/travelohi/v1/telemetry/telemetry';
 import styles from './SearchDropdown.module.scss';
+
+export type DropdownAirline = AirlineSearchResult & { displayTitle?: string };
+
 interface SearchDropdownProps {
     isOpen: boolean;
     recentSearches: string[];
     hotels?: HotelSearchResult[];
-    airlines?: AirlineSearchResult[];
+    airlines?: DropdownAirline[];
     onSelect: (query: string) => void;
     isLoading: boolean;
 }
@@ -75,7 +78,7 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
                                         <span className={styles.icon} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-color)' }}>
                                             <Plane size={16} />
                                         </span>
-                                        <span style={{ fontWeight: '500' }}>{airline.name}</span>
+                                        <span style={{ fontWeight: '500' }}>{airline.displayTitle || airline.name}</span>
                                     </li>
                                 ))}
                             </ul>

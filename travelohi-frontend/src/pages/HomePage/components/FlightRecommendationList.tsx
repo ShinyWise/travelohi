@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
 import ProgressiveImage from '../../../components/ProgressiveImage';
+import { getDisplayAirportName } from '../../../utils/airportMapper';
 import styles from './RecommendationGrids.module.scss';
 
 interface PopularDestination {
@@ -37,8 +38,8 @@ const FlightRecommendationList: React.FC<Props> = ({ destinations }) => {
     if (!destinations || destinations.length === 0) return null;
 
     const handleCardClick = (airportName: string) => {
-        const cleaned = airportName.split(' ')[0]; // E.g., "Bali" or "Jakarta"
-        navigate(`/search?type=flight&q=${encodeURIComponent(cleaned)}`);
+        const friendlyName = getDisplayAirportName(airportName);
+        navigate(`/search?type=flight&q=${encodeURIComponent(friendlyName)}`);
     };
 
     return (
@@ -60,7 +61,7 @@ const FlightRecommendationList: React.FC<Props> = ({ destinations }) => {
                             />
                         </div>
                         <div className={styles.cardContent}>
-                            <h4>{dest.destinationAirport}</h4>
+                            <h4>{getDisplayAirportName(dest.destinationAirport)}</h4>
                             <p>
                                 {t.home_flight_booked_count.replace('{count}', dest.bookingCount.toString())}
                             </p>

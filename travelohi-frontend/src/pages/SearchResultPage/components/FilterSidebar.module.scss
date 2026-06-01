@@ -1,6 +1,6 @@
 .sidebar {
     width: 100%;
-    max-width: 280px;
+    max-width: 320px;
     background-color: var(--bg-primary);
     border: 1px solid var(--border-color);
     border-radius: 8px;
@@ -72,42 +72,65 @@
     }
 }
 
-.priceRangeInput {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    margin-bottom: 10px;
+.priceDropdown {
+    width: 100%;
+    padding: 10px 30px 10px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
 
-    input {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid var(--border-color);
-        border-radius: 4px;
-        background-color: var(--bg-primary);
-        color: var(--text-primary);
-        font-size: 0.9rem;
-        outline: none;
-
-        &:focus {
-            border-color: var(--accent-color);
-        }
-    }
-
-    span {
-        color: var(--text-secondary);
+    &:focus {
+        border-color: var(--accent-color);
     }
 }
 
-.applyPriceBtn {
+.starContainer {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.starBtn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.1s ease;
+
+    &:hover {
+        transform: scale(1.1);
+    }
+}
+
+.starLabel {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.applyAllBtn {
     width: 100%;
-    padding: 8px;
+    padding: 12px;
+    margin-top: 10px;
     background-color: var(--accent-color);
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     font-weight: 600;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 1rem;
     transition: opacity 0.2s ease;
 
     &:hover {

@@ -8,6 +8,9 @@ import { FlightServiceClient } from '../../proto/travelohi/v1/flight/flight.clie
 import { HotelServiceClient } from '../../proto/travelohi/v1/hotel/hotel.client';
 import { transport } from '../../utils/grpcClient';
 import { Plane, Hotel, Search } from 'lucide-react';
+import { getDisplayAirportName, getCodeFromCityName } from '../../utils/airportMapper';
+import { useAppContext } from '../../context/ThemeContext';
+import { translations } from '../../utils/translations';
 import styles from './SearchResultPage.module.scss';
 const flightClient = new FlightServiceClient(transport);
 const hotelClient = new HotelServiceClient(transport);
@@ -18,6 +21,9 @@ const SearchResultsPage: React.FC = () => {
     const [results, setResults] = useState<any[]>([]);
     const [totalResults, setTotalResults] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
+
+    const { language } = useAppContext();
+    const t = translations[language];
 
     const handleTypeSwitch = (type: 'all' | 'flight' | 'hotel') => {
         const newParams = new URLSearchParams();
@@ -46,13 +52,15 @@ const SearchResultsPage: React.FC = () => {
             const transitFilter = transitParam === '1_transit' ? 'transit' : (transitParam === 'direct' ? 'direct' : '');
             const today = new Date().toISOString().split('T')[0];
             const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+            const flightQuery = getCodeFromCityName(query);
+
             try {
                 if (searchType === 'all') {
                     const fetchFlights = async () => {
                         try {
                             return await flightClient.searchFlights({
-                                originAirport: query,
-                                destinationAirport: query,
+                                originAirport: '',
+                                destinationAirport: flightQuery,
                                 departureDate: today,
                                 limit: Math.ceil(limit / 2),
                                 offset: Math.ceil(offset / 2),
@@ -99,8 +107,8 @@ const SearchResultsPage: React.FC = () => {
                     setTotalResults((flightRes.response?.totalResults || 0) + (hotelRes.response?.totalResults || 0));
                 } else if (searchType === 'flight') {
                     const { response } = await flightClient.searchFlights({
-                        originAirport: query,
-                        destinationAirport: query,
+                        originAirport: '',
+                        destinationAirport: flightQuery,
                         departureDate: today,
                         transitFilter,
                         sortBy: sortByField,
@@ -119,7 +127,7 @@ const SearchResultsPage: React.FC = () => {
                         checkOutDate: tomorrow,
                         minPrice,
                         maxPrice,
-                        minRating,
+                        minRating: minRating * 2,
                         facilities,
                         sortBy: sortByField,
                         sortOrder: sortOrder,
@@ -143,7 +151,13 @@ const SearchResultsPage: React.FC = () => {
     return (
         <div className={styles.pageContainer}>
             <div className={styles.searchHeader}>
-                <h2>Menampilkan hasil untuk: <span>"{query}"</span></h2>
+                <h2>
+                    {query ? (
+                        <>{t.search_results_title} <span>{getDisplayAirportName(query)}</span></>
+                    ) : (
+                        <>{t.search_results_empty_title}</>
+                    )}
+                </h2>
                 <div className={styles.typeTabs}>
                     <button
                         className={searchType === 'all' ? styles.activeTab : ''}
@@ -151,7 +165,7 @@ const SearchResultsPage: React.FC = () => {
                         style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                     >
                         <Search size={18} />
-                        <span>Semua</span>
+                        <span>{t.search_tab_all}</span>
                     </button>
                     <button
                         className={searchType === 'flight' ? styles.activeTab : ''}
@@ -159,7 +173,7 @@ const SearchResultsPage: React.FC = () => {
                         style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                     >
                         <Plane size={18} />
-                        <span>Tiket Pesawat</span>
+                        <span>{t.search_tab_flights}</span>
                     </button>
                     <button
                         className={searchType === 'hotel' ? styles.activeTab : ''}
@@ -167,7 +181,7 @@ const SearchResultsPage: React.FC = () => {
                         style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                     >
                         <Hotel size={18} />
-                        <span>Hotel</span>
+                        <span>{t.search_tab_hotels}</span>
                     </button>
                 </div>
             </div>
@@ -183,8 +197,8 @@ const SearchResultsPage: React.FC = () => {
                             <span className={styles.emptyIcon} style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center', marginBottom: '16px' }}>
                                 <Search size={48} />
                             </span>
-                            <h3>Oops! Hasil tidak ditemukan.</h3>
-                            <p>Coba gunakan kata kunci lain atau kurangi filter yang digunakan.</p>
+                            <h3>{t.search_no_results_title}</h3>
+                            <p>{t.search_no_results_desc}</p>
                         </div>
                     ) : (
                         <>

@@ -2,60 +2,91 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
+import { Star } from 'lucide-react';
 import styles from './FilterSidebar.module.scss';
+
+
+const PRICE_BUCKETS = [
+    { id: 0, min: null, max: null },
+    { id: 1, min: null, max: 500000 },
+    { id: 2, min: 500000, max: 1000000 },
+    { id: 3, min: 1000000, max: 3000000 },
+    { id: 4, min: 3000000, max: null },
+];
+
 interface Props {
     searchType: 'all' | 'flight' | 'hotel';
 }
 const FilterSidebar: React.FC<Props> = ({ searchType }) => {
-    const { language } = useAppContext();
+    const { language, currency } = useAppContext();
     const t = translations[language];
     const [searchParams, setSearchParams] = useSearchParams();
-    const [minPriceInput, setMinPriceInput] = useState(searchParams.get('min_price') || '');
-    const [maxPriceInput, setMaxPriceInput] = useState(searchParams.get('max_price') || '');
+    const [localPriceBucketIndex, setLocalPriceBucketIndex] = useState<number>(0);
+    const [localSortBy, setLocalSortBy] = useState('');
+    const [localTransit, setLocalTransit] = useState('');
+    const [localMinRating, setLocalMinRating] = useState<number>(0);
+    const [hoverRating, setHoverRating] = useState<number>(0);
+    const [localFacilities, setLocalFacilities] = useState<string[]>([]);
+
     useEffect(() => {
-        setMinPriceInput(searchParams.get('min_price') || '');
-        setMaxPriceInput(searchParams.get('max_price') || '');
-    }, [searchParams]);
-    const updateFilter = (key: string, value: string) => {
-        const newParams = new URLSearchParams(searchParams);
-        if (newParams.get(key) === value) {
-            newParams.delete(key);
-        } else {
-            newParams.set(key, value);
-        }
-        newParams.set('page', '1'); // reset pagination
-        setSearchParams(newParams);
+        const minUrl = searchParams.get('min_price') || '';
+        const maxUrl = searchParams.get('max_price') || '';
+
+        const index = PRICE_BUCKETS.findIndex(b => 
+            (b.min === null ? minUrl === '' : String(b.min) === minUrl) &&
+            (b.max === null ? maxUrl === '' : String(b.max) === maxUrl)
+        );
+        setLocalPriceBucketIndex(index >= 0 ? index : 0);
+
+        setLocalSortBy(searchParams.get('sort_by') || '');
+        setLocalTransit(searchParams.get('transit') || '');
+        const ratingUrl = searchParams.get('min_rating');
+        setLocalMinRating(ratingUrl ? Number(ratingUrl) : 0);
+        setLocalFacilities(searchParams.getAll('facility'));
+    }, [searchParams, currency]);
+
+    const renderBucketLabel = (bucket: typeof PRICE_BUCKETS[0]) => {
+        if (bucket.id === 0) return t.price_any;
+        
+        const prefix = currency === 'USD' ? '$' : 'Rp ';
+        const format = (val: number) => {
+            if (currency === 'USD') {
+                return Math.round((val / 16000) / 10) * 10;
+            }
+            return parseInt(String(val), 10).toLocaleString('id-ID');
+        };
+
+        if (bucket.min === null) return `< ${prefix}${format(bucket.max!)}`;
+        if (bucket.max === null) return `> ${prefix}${format(bucket.min!)}`;
+        return `${prefix}${format(bucket.min)} - ${prefix}${format(bucket.max)}`;
     };
-    const isChecked = (key: string, value: string) => searchParams.get(key) === value;
-    const toggleFacility = (facility: string) => {
+
+    const toggleArrayItem = (setter: React.Dispatch<React.SetStateAction<string[]>>, val: string) => {
+        setter(prev => prev.includes(val) ? prev.filter(i => i !== val) : [...prev, val]);
+    };
+
+    const applyAllFilters = () => {
         const newParams = new URLSearchParams(searchParams);
-        const currentFacilities = newParams.getAll('facility');
+        
+        const bucket = PRICE_BUCKETS[localPriceBucketIndex];
+        if (bucket.min) newParams.set('min_price', String(bucket.min));
+        else newParams.delete('min_price');
+
+        if (bucket.max) newParams.set('max_price', String(bucket.max));
+        else newParams.delete('max_price');
+
+        if (localSortBy) newParams.set('sort_by', localSortBy);
+        else newParams.delete('sort_by');
+
+        if (localTransit) newParams.set('transit', localTransit);
+        else newParams.delete('transit');
+
+        if (localMinRating > 0) newParams.set('min_rating', String(localMinRating));
+        else newParams.delete('min_rating');
+
         newParams.delete('facility');
-        let updated: string[];
-        if (currentFacilities.includes(facility)) {
-            updated = currentFacilities.filter(f => f !== facility);
-        } else {
-            updated = [...currentFacilities, facility];
-        }
-        updated.forEach(f => newParams.append('facility', f));
-        newParams.set('page', '1');
-        setSearchParams(newParams);
-    };
-    const isFacilityChecked = (facility: string) => {
-        return searchParams.getAll('facility').includes(facility);
-    };
-    const applyPriceFilter = () => {
-        const newParams = new URLSearchParams(searchParams);
-        if (minPriceInput) {
-            newParams.set('min_price', minPriceInput);
-        } else {
-            newParams.delete('min_price');
-        }
-        if (maxPriceInput) {
-            newParams.set('max_price', maxPriceInput);
-        } else {
-            newParams.delete('max_price');
-        }
+        localFacilities.forEach(f => newParams.append('facility', f));
+
         newParams.set('page', '1');
         setSearchParams(newParams);
     };
@@ -69,8 +100,7 @@ const FilterSidebar: React.FC<Props> = ({ searchType }) => {
                         const reset = new URLSearchParams();
                         reset.set('q', searchParams.get('q') || '');
                         reset.set('type', searchType);
-                        setMinPriceInput('');
-                        setMaxPriceInput('');
+                        setLocalPriceBucketIndex(0);
                         setSearchParams(reset);
                     }}
                 >
@@ -80,24 +110,17 @@ const FilterSidebar: React.FC<Props> = ({ searchType }) => {
             {/* price filter */}
             <div className={styles.filterGroup}>
                 <h4>{t.price_limit}</h4>
-                <div className={styles.priceRangeInput}>
-                    <input
-                        type="number"
-                        placeholder={t.min_price}
-                        value={minPriceInput}
-                        onChange={(e) => setMinPriceInput(e.target.value)}
-                    />
-                    <span>-</span>
-                    <input
-                        type="number"
-                        placeholder={t.max_price}
-                        value={maxPriceInput}
-                        onChange={(e) => setMaxPriceInput(e.target.value)}
-                    />
-                </div>
-                <button className={styles.applyPriceBtn} onClick={applyPriceFilter}>
-                    {t.apply_price}
-                </button>
+                <select 
+                    className={styles.priceDropdown}
+                    value={localPriceBucketIndex}
+                    onChange={(e) => setLocalPriceBucketIndex(Number(e.target.value))}
+                >
+                    {PRICE_BUCKETS.map((bucket, idx) => (
+                        <option key={idx} value={idx}>
+                            {renderBucketLabel(bucket)}
+                        </option>
+                    ))}
+                </select>
             </div>
             {/* sorting */}
             {searchType !== 'all' && (
@@ -107,42 +130,42 @@ const FilterSidebar: React.FC<Props> = ({ searchType }) => {
                         {searchType === 'hotel' ? (
                         <>
                             <label>
-                                <input type="radio" checked={isChecked('sort_by', 'price_asc')} onChange={() => updateFilter('sort_by', 'price_asc')} />
+                                <input type="radio" checked={localSortBy === 'price_asc'} onChange={() => setLocalSortBy('price_asc')} />
                                 {t.lowest_price}
                             </label>
                             <label>
-                                <input type="radio" checked={isChecked('sort_by', 'price_desc')} onChange={() => updateFilter('sort_by', 'price_desc')} />
+                                <input type="radio" checked={localSortBy === 'price_desc'} onChange={() => setLocalSortBy('price_desc')} />
                                 {t.highest_price}
                             </label>
                             <label>
-                                <input type="radio" checked={isChecked('sort_by', 'rating_desc')} onChange={() => updateFilter('sort_by', 'rating_desc')} />
+                                <input type="radio" checked={localSortBy === 'rating_desc'} onChange={() => setLocalSortBy('rating_desc')} />
                                 {t.highest_rating}
                             </label>
                             <label>
-                                <input type="radio" checked={isChecked('sort_by', 'reviews_desc')} onChange={() => updateFilter('sort_by', 'reviews_desc')} />
+                                <input type="radio" checked={localSortBy === 'reviews_desc'} onChange={() => setLocalSortBy('reviews_desc')} />
                                 {t.most_reviews}
                             </label>
                             <label>
-                                <input type="radio" checked={isChecked('sort_by', 'availability_desc')} onChange={() => updateFilter('sort_by', 'availability_desc')} />
+                                <input type="radio" checked={localSortBy === 'availability_desc'} onChange={() => setLocalSortBy('availability_desc')} />
                                 {t.room_availability}
                             </label>
                         </>
                     ) : (
                         <>
                             <label>
-                                <input type="radio" checked={isChecked('sort_by', 'duration_asc')} onChange={() => updateFilter('sort_by', 'duration_asc')} />
+                                <input type="radio" checked={localSortBy === 'duration_asc'} onChange={() => setLocalSortBy('duration_asc')} />
                                 {t.fastest_duration}
                             </label>
                             <label>
-                                <input type="radio" checked={isChecked('sort_by', 'price_asc')} onChange={() => updateFilter('sort_by', 'price_asc')} />
+                                <input type="radio" checked={localSortBy === 'price_asc'} onChange={() => setLocalSortBy('price_asc')} />
                                 {t.lowest_price}
                             </label>
                             <label>
-                                <input type="radio" checked={isChecked('sort_by', 'price_desc')} onChange={() => updateFilter('sort_by', 'price_desc')} />
+                                <input type="radio" checked={localSortBy === 'price_desc'} onChange={() => setLocalSortBy('price_desc')} />
                                 {t.highest_price}
                             </label>
                             <label>
-                                <input type="radio" checked={isChecked('sort_by', 'transits_asc')} onChange={() => updateFilter('sort_by', 'transits_asc')} />
+                                <input type="radio" checked={localSortBy === 'transits_asc'} onChange={() => setLocalSortBy('transits_asc')} />
                                 {t.least_transits}
                             </label>
                         </>
@@ -156,11 +179,11 @@ const FilterSidebar: React.FC<Props> = ({ searchType }) => {
                     <h4>{t.transit}</h4>
                     <div className={styles.options}>
                         <label>
-                            <input type="checkbox" checked={isChecked('transit', 'direct')} onChange={() => updateFilter('transit', 'direct')} />
+                            <input type="checkbox" checked={localTransit === 'direct'} onChange={() => setLocalTransit(prev => prev === 'direct' ? '' : 'direct')} />
                             {t.direct}
                         </label>
                         <label>
-                            <input type="checkbox" checked={isChecked('transit', '1_transit')} onChange={() => updateFilter('transit', '1_transit')} />
+                            <input type="checkbox" checked={localTransit === '1_transit'} onChange={() => setLocalTransit(prev => prev === '1_transit' ? '' : '1_transit')} />
                             {t.transit_flight}
                         </label>
                     </div>
@@ -171,38 +194,54 @@ const FilterSidebar: React.FC<Props> = ({ searchType }) => {
                 <>
                     <div className={styles.filterGroup}>
                         <h4>{t.star_rating}</h4>
-                        <div className={styles.options}>
-                            {[5, 4, 3].map(star => (
-                                <label key={star}>
-                                    <input type="checkbox" checked={isChecked('min_rating', String(star))} onChange={() => updateFilter('min_rating', String(star))} />
-                                    {star} {t.star_above}
-                                </label>
+                        <div className={styles.starContainer}>
+                            {[1, 2, 3, 4, 5].map((star) => (
+                                <button
+                                    key={star}
+                                    type="button"
+                                    className={styles.starBtn}
+                                    onMouseEnter={() => setHoverRating(star)}
+                                    onMouseLeave={() => setHoverRating(0)}
+                                    onClick={() => setLocalMinRating(star === localMinRating ? 0 : star)}
+                                >
+                                    <Star 
+                                        size={28} 
+                                        fill={(hoverRating || localMinRating) >= star ? '#3b82f6' : 'none'}
+                                        color={(hoverRating || localMinRating) >= star ? '#3b82f6' : 'var(--text-secondary)'}
+                                        style={{ transition: 'all 0.2s ease' }}
+                                    />
+                                </button>
                             ))}
                         </div>
+                        {localMinRating > 0 && <div className={styles.starLabel}>{localMinRating} {t.star_above}</div>}
                     </div>
                     <div className={styles.filterGroup}>
                         <h4>{t.facilities}</h4>
                         <div className={styles.options}>
                             <label>
-                                <input type="checkbox" checked={isFacilityChecked('WiFi')} onChange={() => toggleFacility('WiFi')} />
+                                <input type="checkbox" checked={localFacilities.includes('WiFi')} onChange={() => toggleArrayItem(setLocalFacilities, 'WiFi')} />
                                 WiFi
                             </label>
                             <label>
-                                <input type="checkbox" checked={isFacilityChecked('Pool')} onChange={() => toggleFacility('Pool')} />
+                                <input type="checkbox" checked={localFacilities.includes('Pool')} onChange={() => toggleArrayItem(setLocalFacilities, 'Pool')} />
                                 {t.pool}
                             </label>
                             <label>
-                                <input type="checkbox" checked={isFacilityChecked('Gym')} onChange={() => toggleFacility('Gym')} />
+                                <input type="checkbox" checked={localFacilities.includes('Gym')} onChange={() => toggleArrayItem(setLocalFacilities, 'Gym')} />
                                 {t.gym}
                             </label>
                             <label>
-                                <input type="checkbox" checked={isFacilityChecked('Restaurant')} onChange={() => toggleFacility('Restaurant')} />
+                                <input type="checkbox" checked={localFacilities.includes('Restaurant')} onChange={() => toggleArrayItem(setLocalFacilities, 'Restaurant')} />
                                 {t.restaurant}
                             </label>
                         </div>
                     </div>
                 </>
             )}
+
+            <button className={styles.applyAllBtn} onClick={applyAllFilters}>
+                {t.apply_all_filters}
+            </button>
         </aside>
     );
 };
