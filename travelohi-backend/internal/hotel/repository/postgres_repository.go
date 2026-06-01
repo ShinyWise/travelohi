@@ -2,8 +2,13 @@ package repository
 
 import (
 	"context"
+	"database/sql/driver"
+	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"gorm.io/gorm"
@@ -11,12 +16,85 @@ import (
 	"github.com/travelohi/backend/internal/hotel"
 )
 
+type ByteaArray [][]byte
+
+// Value implements driver.Valuer
+func (a ByteaArray) Value() (driver.Value, error) {
+	if a == nil {
+		return nil, nil
+	}
+	if len(a) == 0 {
+		return "{}", nil
+	}
+	var sb strings.Builder
+	sb.WriteString("{")
+	for i, b := range a {
+		if i > 0 {
+			sb.WriteString(",")
+		}
+		sb.WriteString(`"\\x` + hex.EncodeToString(b) + `"`)
+	}
+	sb.WriteString("}")
+	return sb.String(), nil
+}
+
+// Scan implements sql.Scanner
+func (a *ByteaArray) Scan(src interface{}) error {
+	if src == nil {
+		*a = nil
+		return nil
+	}
+	
+	var s string
+	switch v := src.(type) {
+	case string:
+		s = v
+	case []byte:
+		s = string(v)
+	default:
+		return fmt.Errorf("unsupported type %T for ByteaArray", src)
+	}
+
+	if len(s) < 2 || s[0] != '{' || s[len(s)-1] != '}' {
+		return errors.New("invalid bytea[] array syntax")
+	}
+
+	s = s[1 : len(s)-1]
+	if len(s) == 0 {
+		*a = [][]byte{}
+		return nil
+	}
+
+	var elements [][]byte
+	parts := strings.Split(s, ",")
+	for _, part := range parts {
+		part = strings.Trim(part, ` "`)
+		if strings.HasPrefix(part, `\\x`) {
+			b, err := hex.DecodeString(part[3:])
+			if err != nil {
+				return err
+			}
+			elements = append(elements, b)
+		} else if strings.HasPrefix(part, `\x`) {
+			b, err := hex.DecodeString(part[2:])
+			if err != nil {
+				return err
+			}
+			elements = append(elements, b)
+		} else {
+			elements = append(elements, []byte(part))
+		}
+	}
+	*a = elements
+	return nil
+}
+
 type HotelModel struct {
 	ID                string `gorm:"primaryKey"`
 	Name              string
 	Description       string
 	Address           string
-	PictureURLs       []string `gorm:"column:picture_urls;type:jsonb;serializer:json"`
+	Pictures          ByteaArray `gorm:"column:pictures;type:bytea[]"`
 	Facilities        []string `gorm:"column:facilities;type:jsonb;serializer:json"`
 	RatingCleanliness float32  `gorm:"column:rating_cleanliness"`
 	RatingComfort     float32  `gorm:"column:rating_comfort"`
@@ -67,9 +145,21 @@ func NewPostgresHotelRepository(db *gorm.DB) *PostgresHotelRepository {
 }
 
 type HotelWithCount struct {
-	HotelModel
-	FullCount    int32 `gorm:"column:full_count"`
-	Availability int32 `gorm:"column:availability"`
+	ID                string `gorm:"primaryKey"`
+	Name              string
+	Description       string
+	Address           string
+	Facilities        []string `gorm:"column:facilities;type:jsonb;serializer:json"`
+	RatingCleanliness float32  `gorm:"column:rating_cleanliness"`
+	RatingComfort     float32  `gorm:"column:rating_comfort"`
+	RatingLocation    float32  `gorm:"column:rating_location"`
+	RatingService     float32  `gorm:"column:rating_service"`
+	RatingAverage     float32  `gorm:"column:rating_average"`
+	TotalReviews      int32    `gorm:"column:total_reviews"`
+	StartingPrice     int64    `gorm:"column:starting_price"`
+	Thumbnail         []byte   `gorm:"column:thumbnail"`
+	FullCount         int32    `gorm:"column:full_count"`
+	Availability      int32    `gorm:"column:availability"`
 }
 
 func (r *PostgresHotelRepository) SearchHotels(ctx context.Context, filter hotel.SearchFilter) ([]hotel.Hotel, int32, error) {
@@ -86,7 +176,10 @@ func (r *PostgresHotelRepository) SearchHotels(ctx context.Context, filter hotel
 
 	sqlQuery := `
 		SELECT 
-			h.*, 
+			h.id, h.name, h.description, h.address, h.facilities,
+			h.rating_cleanliness, h.rating_comfort, h.rating_location, h.rating_service, h.rating_average,
+			h.total_reviews, h.starting_price,
+			h.pictures[1] as thumbnail,
 			COUNT(*) OVER() as full_count,
 			COALESCE(avail.total_available, 0) as availability
 		FROM hotels h
@@ -168,12 +261,17 @@ func (r *PostgresHotelRepository) SearchHotels(ctx context.Context, filter hotel
 
 	domainHotels := make([]hotel.Hotel, len(rawResults))
 	for i, raw := range rawResults {
+		var pictureURLs []string
+		if len(raw.Thumbnail) > 0 {
+			pictureURLs = []string{"data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(raw.Thumbnail)}
+		}
+
 		domainHotels[i] = hotel.Hotel{
 			ID:                raw.ID,
 			Name:              raw.Name,
 			Description:       raw.Description,
 			Address:           raw.Address,
-			PictureURLs:       raw.PictureURLs,
+			PictureURLs:       pictureURLs,
 			Facilities:        raw.Facilities,
 			RatingCleanliness: raw.RatingCleanliness,
 			RatingComfort:     raw.RatingComfort,
@@ -194,12 +292,18 @@ func (r *PostgresHotelRepository) GetHotelByID(ctx context.Context, id string) (
 	if err := r.db.WithContext(ctx).Where("id = ?", id).First(&m).Error; err != nil {
 		return hotel.Hotel{}, err
 	}
+
+	pictureURLs := make([]string, len(m.Pictures))
+	for j, picBytes := range m.Pictures {
+		pictureURLs[j] = "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(picBytes)
+	}
+
 	return hotel.Hotel{
 		ID:                m.ID,
 		Name:              m.Name,
 		Description:       m.Description,
 		Address:           m.Address,
-		PictureURLs:       m.PictureURLs,
+		PictureURLs:       pictureURLs,
 		Facilities:        m.Facilities,
 		RatingCleanliness: m.RatingCleanliness,
 		RatingComfort:     m.RatingComfort,

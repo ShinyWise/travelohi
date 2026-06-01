@@ -27,7 +27,7 @@ type Account struct {
 	LastName             string
 	Gender               string
 	DOB                  string
-	ProfilePictureURL    string
+	ProfilePicture       []byte
 	IsActive             bool
 	NewsletterSubscribed bool
 	HiWalletBalance      int64

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"strings"
@@ -25,32 +26,33 @@ func (r *postgresFlightRepo) SearchFlights(ctx context.Context, filter flight.Fl
 	var flights []flight.Flight
 	var total int64
 
-	db := r.db.WithContext(ctx).Table("flights")
+	db := r.db.WithContext(ctx).Table("flights").
+		Joins("JOIN airlines ON flights.airline_id = airlines.id")
 
 	origin := filter.Origin
 	dest := filter.Destination
 	if origin != "" && dest != "" && origin == dest {
-		db = db.Where("origin_airport ILIKE ? OR destination_airport ILIKE ?", "%"+origin+"%", "%"+dest+"%")
+		db = db.Where("flights.origin_airport ILIKE ? OR flights.destination_airport ILIKE ? OR airlines.name ILIKE ?", "%"+origin+"%", "%"+dest+"%", "%"+origin+"%")
 	} else {
 		if origin != "" {
-			db = db.Where("origin_airport ILIKE ?", "%"+origin+"%")
+			db = db.Where("flights.origin_airport ILIKE ? OR airlines.name ILIKE ?", "%"+origin+"%", "%"+origin+"%")
 		}
 		if dest != "" {
-			db = db.Where("destination_airport ILIKE ?", "%"+dest+"%")
+			db = db.Where("flights.destination_airport ILIKE ? OR airlines.name ILIKE ?", "%"+dest+"%", "%"+dest+"%")
 		}
 	}
 
 	if filter.MinPrice > 0 {
-		db = db.Where("starting_price >= ?", filter.MinPrice)
+		db = db.Where("flights.starting_price >= ?", filter.MinPrice)
 	}
 	if filter.MaxPrice > 0 {
-		db = db.Where("starting_price <= ?", filter.MaxPrice)
+		db = db.Where("flights.starting_price <= ?", filter.MaxPrice)
 	}
 
 	if filter.TransitFilter == "direct" {
-		db = db.Where("is_transit = ?", false)
+		db = db.Where("flights.is_transit = ?", false)
 	} else if filter.TransitFilter == "transit" {
-		db = db.Where("is_transit = ?", true)
+		db = db.Where("flights.is_transit = ?", true)
 	}
 
 	if err := db.Count(&total).Error; err != nil {
@@ -58,12 +60,12 @@ func (r *postgresFlightRepo) SearchFlights(ctx context.Context, filter flight.Fl
 	}
 
 	allowedSorts := map[string]string{
-		"duration": "duration_minutes",
-		"price":    "starting_price",
-		"transits": "is_transit",
+		"duration": "flights.duration_minutes",
+		"price":    "flights.starting_price",
+		"transits": "flights.is_transit",
 	}
 
-	sortCol := "starting_price"
+	sortCol := "flights.starting_price"
 	if mappedCol, exists := allowedSorts[filter.SortBy]; exists {
 		sortCol = mappedCol
 	}
@@ -75,7 +77,7 @@ func (r *postgresFlightRepo) SearchFlights(ctx context.Context, filter flight.Fl
 
 	db = db.Order(fmt.Sprintf("%s %s", sortCol, sortOrder))
 
-	if err := db.Limit(int(filter.Limit)).Offset(int(filter.Offset)).Find(&flights).Error; err != nil {
+	if err := db.Select("flights.*").Limit(int(filter.Limit)).Offset(int(filter.Offset)).Find(&flights).Error; err != nil {
 		return nil, 0, err
 	}
 
@@ -88,10 +90,28 @@ func (r *postgresFlightRepo) GetFlightByID(ctx context.Context, id string) (flig
 	return fl, err
 }
 
+type AirlineModel struct {
+	ID   string `gorm:"primaryKey"`
+	Name string
+	Logo []byte `gorm:"column:logo;type:bytea"`
+}
+
+func (AirlineModel) TableName() string { return "airlines" }
+
 func (r *postgresFlightRepo) GetAirlineByID(ctx context.Context, id string) (flight.Airline, error) {
-	var al flight.Airline
-	err := r.db.WithContext(ctx).Table("airlines").Where("id = ?", id).First(&al).Error
-	return al, err
+	var m AirlineModel
+	if err := r.db.WithContext(ctx).Where("id = ?", id).First(&m).Error; err != nil {
+		return flight.Airline{}, err
+	}
+	logoURL := ""
+	if len(m.Logo) > 0 {
+		logoURL = "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(m.Logo)
+	}
+	return flight.Airline{
+		ID:      m.ID,
+		Name:    m.Name,
+		LogoURL: logoURL,
+	}, nil
 }
 
 func (r *postgresFlightRepo) LockAndBookSeat(ctx context.Context, seatID string) (int64, error) {

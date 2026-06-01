@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/url"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/travelohi/backend/internal/telemetry"
@@ -121,7 +122,7 @@ func (r *postgresTelemetryRepo) GetPopularFlightDestinations(ctx context.Context
 	var dests []*telemetry.PopularDestination
 	for _, res := range results {
 		safeName := strings.ToLower(url.PathEscape(res.DestinationAirport))
-		mockImageURL := "https://travelohi.com/assets/destinations/" + safeName + ".jpg"
+		mockImageURL := "https://loremflickr.com/100/100/" + safeName + ",city"
 
 		dests = append(dests, &telemetry.PopularDestination{
 			DestinationAirport: res.DestinationAirport,
@@ -138,12 +139,12 @@ func (r *postgresTelemetryRepo) GetPopularHotels(ctx context.Context) ([]*teleme
 
 	// aggregate popular hotels
 	err := r.db.WithContext(ctx).Table("cart_items").
-		Select("hotels.id as hotel_id, hotels.name, hotels.address as location, hotels.picture_urls->>0 as image_url, COUNT(cart_items.id) as booking_count").
+		Select("hotels.id as hotel_id, hotels.name, hotels.address as location, coalesce('data:image/jpeg;base64,' || encode(hotels.pictures[1], 'base64'), '') as image_url, COUNT(cart_items.id) as booking_count").
 		Joins("JOIN hotel_rooms ON cart_items.reference_id = hotel_rooms.id").
 		Joins("JOIN hotels ON hotel_rooms.hotel_id = hotels.id").
 		Where("cart_items.item_type = ?", "hotel_room").
 		Where("cart_items.status = ?", "paid").
-		Group("hotels.id").
+		Group("hotels.id, hotels.name, hotels.address, hotels.pictures").
 		Order("booking_count DESC").
 		Limit(5).
 		Scan(&results).Error
@@ -154,3 +155,44 @@ func (r *postgresTelemetryRepo) GetPopularHotels(ctx context.Context) ([]*teleme
 
 	return results, nil
 }
+
+func (r *postgresTelemetryRepo) GlobalSearch(ctx context.Context, query string) ([]*telemetry.HotelSearchResult, []*telemetry.AirlineSearchResult, error) {
+	searchTerm := "%" + query + "%"
+
+	var hotels []*telemetry.HotelSearchResult
+	var airlines []*telemetry.AirlineSearchResult
+	var errHotels, errAirlines error
+
+	var wg sync.WaitGroup
+	wg.Add(2)
+
+	go func() {
+		defer wg.Done()
+		errHotels = r.db.WithContext(ctx).Table("hotels").
+			Select("id, name, address as location, coalesce('data:image/jpeg;base64,' || encode(pictures[1], 'base64'), '') as image_url").
+			Where("name ILIKE ? OR address ILIKE ?", searchTerm, searchTerm).
+			Limit(5).
+			Scan(&hotels).Error
+	}()
+
+	go func() {
+		defer wg.Done()
+		errAirlines = r.db.WithContext(ctx).Table("airlines").
+			Select("id, name, coalesce('data:image/jpeg;base64,' || encode(logo, 'base64'), '') as logo_url").
+			Where("name ILIKE ?", searchTerm).
+			Limit(5).
+			Scan(&airlines).Error
+	}()
+
+	wg.Wait()
+
+	if errHotels != nil {
+		return nil, nil, errHotels
+	}
+	if errAirlines != nil {
+		return nil, nil, errAirlines
+	}
+
+	return hotels, airlines, nil
+}
+

@@ -116,7 +116,7 @@ func (r *postgresCommunicationRepo) GetActiveConversations(ctx context.Context, 
 			c.id AS conversation_id,
 			c.user_id,
 			u.first_name || ' ' || u.last_name AS full_name,
-			u.profile_picture_url AS profile_picture_url,
+			coalesce('data:image/jpeg;base64,' || encode(u.profile_picture, 'base64'), '') AS profile_picture_url,
 			(SELECT content FROM support_messages sm WHERE sm.conversation_id = c.id ORDER BY created_at DESC LIMIT 1) AS latest_message_content,
 			(SELECT created_at FROM support_messages sm WHERE sm.conversation_id = c.id ORDER BY created_at DESC LIMIT 1) AS latest_message_timestamp,
 			(SELECT COUNT(*) FROM support_messages sm WHERE sm.conversation_id = c.id AND sm.sender_id = c.user_id AND sm.status = 'sent') AS unread_count

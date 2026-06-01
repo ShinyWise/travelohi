@@ -44,6 +44,8 @@ type CartRepository interface {
 	CreatePromo(ctx context.Context, promo Promo) error
 	GetPromoByCode(ctx context.Context, code string) (*Promo, error)
 	IncrementPromoUsage(ctx context.Context, code string) error
+	HasUserUsedPromo(ctx context.Context, userID, promoCode string) (bool, error)
+	RecordPromoUsage(ctx context.Context, userID, promoCode string) error
 }
 
 type CartUseCase interface {

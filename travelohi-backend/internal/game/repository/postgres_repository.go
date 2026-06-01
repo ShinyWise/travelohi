@@ -38,3 +38,17 @@ func (r *postgresGameRepo) SaveMatchResult(ctx context.Context, result *game.Mat
 	}
 	return r.db.WithContext(ctx).Create(model).Error
 }
+
+func (r *postgresGameRepo) GetUsernameByID(ctx context.Context, userID string) (string, error) {
+	var firstName string
+	err := r.db.WithContext(ctx).
+		Table("account_models").
+		Select("first_name").
+		Where("id = ?", userID).
+		Row().
+		Scan(&firstName)
+	if err != nil {
+		return "", err
+	}
+	return firstName, nil
+}

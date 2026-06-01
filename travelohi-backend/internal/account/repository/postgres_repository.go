@@ -16,7 +16,7 @@ type AccountModel struct {
 	LastName             string  `gorm:"column:last_name"`
 	Gender               string  `gorm:"column:gender"`
 	DOB                  string  `gorm:"column:dob"`
-	ProfilePictureURL    *string `gorm:"column:profile_picture_url"`
+	ProfilePicture       []byte  `gorm:"column:profile_picture;type:bytea"`
 	IsActive             bool    `gorm:"column:is_active"`
 	NewsletterSubscribed bool    `gorm:"column:newsletter_subscribed"`
 
@@ -28,11 +28,6 @@ type AccountModel struct {
 
 // function buat bantu mapping gorm data into pure domain
 func (m *AccountModel) ToDomain() *account.Account {
-	var picURL string
-	if m.ProfilePictureURL != nil {
-		picURL = *m.ProfilePictureURL
-	}
-
 	return &account.Account{
 		ID:                   m.ID,
 		Email:                m.Email,
@@ -41,7 +36,7 @@ func (m *AccountModel) ToDomain() *account.Account {
 		IsActive:             m.IsActive,
 		Gender:               m.Gender,
 		DOB:                  m.DOB,
-		ProfilePictureURL:    picURL,
+		ProfilePicture:       m.ProfilePicture,
 		NewsletterSubscribed: m.NewsletterSubscribed,
 		HiWalletBalance:      m.HiWalletBalance,
 		PhoneNumber:          m.PhoneNumber,
@@ -73,6 +68,7 @@ func (r *PostgresAccountRepository) Create(ctx context.Context, acc *account.Acc
 		LastName:             acc.LastName,
 		Gender:               acc.Gender,
 		DOB:                  acc.DOB,
+		ProfilePicture:       acc.ProfilePicture,
 		IsActive:             acc.IsActive,
 		HiWalletBalance:      acc.HiWalletBalance,
 		NewsletterSubscribed: acc.NewsletterSubscribed,
@@ -103,7 +99,7 @@ func (r *PostgresAccountRepository) Update(ctx context.Context, u *account.Accou
 	model := &AccountModel{
 		FirstName:            u.FirstName,
 		LastName:             u.LastName,
-		ProfilePictureURL:    &u.ProfilePictureURL,
+		ProfilePicture:       u.ProfilePicture,
 		Email:                u.Email,
 		DOB:                  u.DOB,
 		Gender:               u.Gender,

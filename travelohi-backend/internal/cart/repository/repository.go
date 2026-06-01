@@ -93,19 +93,19 @@ func (r *postgresCartRepo) GetActiveCartItems(ctx context.Context, userID string
 
 		if m.ItemType == "hotel_room" {
 			var details struct {
-				RoomName    string `gorm:"column:room_name"`
-				HotelName   string `gorm:"column:hotel_name"`
-				PictureUrls string `gorm:"column:picture_urls"`
+				RoomName   string `gorm:"column:room_name"`
+				HotelName  string `gorm:"column:hotel_name"`
+				PictureUrl string `gorm:"column:picture_url"`
 			}
 			err := r.db.Raw(`
-				SELECT hr.name as room_name, h.name as hotel_name, h.picture_urls
+				SELECT hr.name as room_name, h.name as hotel_name, coalesce('data:image/jpeg;base64,' || encode(h.pictures[1], 'base64'), '') as picture_url
 				FROM hotel_rooms hr
 				JOIN hotels h ON hr.hotel_id = h.id
 				WHERE hr.id = ?
 			`, m.ReferenceID).Scan(&details).Error
 			if err == nil {
 				displayName = details.HotelName + " - " + details.RoomName
-				displayImageUrl = getFirstImageUrl(details.PictureUrls)
+				displayImageUrl = details.PictureUrl
 			}
 		} else if m.ItemType == "flight_seat" {
 			var details struct {
@@ -117,7 +117,7 @@ func (r *postgresCartRepo) GetActiveCartItems(ctx context.Context, userID string
 				ArrivalTime   time.Time `gorm:"column:arrival_time"`
 			}
 			err := r.db.Raw(`
-				SELECT fs.seat_number, f.flight_code, a.name as airline_name, a.logo_url, f.departure_time, f.arrival_time
+				SELECT fs.seat_number, f.flight_code, a.name as airline_name, coalesce('data:image/jpeg;base64,' || encode(a.logo, 'base64'), '') as logo_url, f.departure_time, f.arrival_time
 				FROM flight_seats fs
 				JOIN flights f ON fs.flight_id = f.id
 				LEFT JOIN airlines a ON f.airline_id = a.id
@@ -245,4 +245,29 @@ func (r *postgresCartRepo) GetPromoByCode(ctx context.Context, code string) (*ca
 
 func (r *postgresCartRepo) IncrementPromoUsage(ctx context.Context, code string) error {
 	return r.db.WithContext(ctx).Model(&PromoModel{}).Where("promo_code = ?", code).Update("current_uses", gorm.Expr("current_uses + ?", 1)).Error
+}
+
+type UserPromoUsageModel struct {
+	UserID    string    `gorm:"primaryKey;column:user_id"`
+	PromoCode string    `gorm:"primaryKey;column:promo_code"`
+	CreatedAt time.Time `gorm:"autoCreateTime"`
+}
+
+func (UserPromoUsageModel) TableName() string {
+	return "user_promo_usages"
+}
+
+func (r *postgresCartRepo) HasUserUsedPromo(ctx context.Context, userID, promoCode string) (bool, error) {
+	var count int64
+	err := r.db.WithContext(ctx).Model(&UserPromoUsageModel{}).
+		Where("user_id = ? AND promo_code = ?", userID, promoCode).
+		Count(&count).Error
+	return count > 0, err
+}
+
+func (r *postgresCartRepo) RecordPromoUsage(ctx context.Context, userID, promoCode string) error {
+	return r.db.WithContext(ctx).Create(&UserPromoUsageModel{
+		UserID:    userID,
+		PromoCode: promoCode,
+	}).Error
 }

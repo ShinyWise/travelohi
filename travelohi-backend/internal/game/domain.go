@@ -34,6 +34,7 @@ type MatchmakingUseCase interface {
 
 type Repository interface {
 	SaveMatchResult(ctx context.Context, result *MatchResult) error
+	GetUsernameByID(ctx context.Context, userID string) (string, error)
 }
 
 // buat manage active game instances

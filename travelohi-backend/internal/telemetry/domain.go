@@ -28,6 +28,19 @@ type PopularHotel struct {
 	BookingCount int64
 }
 
+type HotelSearchResult struct {
+	ID       string
+	Name     string
+	Location string
+	ImageURL string
+}
+
+type AirlineSearchResult struct {
+	ID      string
+	Name    string
+	LogoURL string
+}
+
 type CacheRepository interface {
 	Get(ctx context.Context, key string) ([]byte, error)
 	Set(ctx context.Context, key string, value []byte, ttl time.Duration) error
@@ -41,6 +54,7 @@ type Repository interface {
 	GetTopGlobalSearches(ctx context.Context, limit int) ([]string, error)
 	GetPopularFlightDestinations(ctx context.Context) ([]*PopularDestination, error)
 	GetPopularHotels(ctx context.Context) ([]*PopularHotel, error)
+	GlobalSearch(ctx context.Context, query string) ([]*HotelSearchResult, []*AirlineSearchResult, error)
 }
 
 type UseCase interface {
@@ -49,4 +63,5 @@ type UseCase interface {
 	GetGlobalRecommendations(ctx context.Context, req *telemetrypb.GetGlobalRecommendationsRequest) (*telemetrypb.GetGlobalRecommendationsResponse, error)
 	GetPopularFlightDestinations(ctx context.Context, req *telemetrypb.GetPopularFlightsRequest) (*telemetrypb.GetPopularFlightsResponse, error)
 	GetPopularHotels(ctx context.Context, req *telemetrypb.GetPopularHotelsRequest) (*telemetrypb.GetPopularHotelsResponse, error)
+	GlobalSearch(ctx context.Context, query string) ([]*HotelSearchResult, []*AirlineSearchResult, error)
 }

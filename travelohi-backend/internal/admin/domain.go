@@ -11,15 +11,15 @@ type Hotel struct {
 	Name          string
 	Description   string
 	Address       string
-	PictureURLs   []string
+	Pictures      [][]byte
 	Facilities    []string
 	StartingPrice int64
 }
 
 type Airline struct {
-	ID      string
-	Name    string
-	LogoURL string
+	ID   string
+	Name string
+	Logo []byte
 }
 
 type Promo struct {
@@ -48,6 +48,8 @@ type AdminRepository interface {
 	// inventory ingestion
 	InsertHotel(ctx context.Context, hotel *Hotel) error
 	InsertAirline(ctx context.Context, airline *Airline) error
+	AutoGenerateFlights(ctx context.Context, airlineID string) error
+	AutoGenerateRooms(ctx context.Context, hotelID string, basePrice int64) error
 
 	// promo management
 	InsertPromo(ctx context.Context, promo *Promo) error
