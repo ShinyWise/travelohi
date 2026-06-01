@@ -20,9 +20,9 @@ VALUES ('user-002', 'testuser@example.com', 'John', 'Doe', FALSE, FALSE, TRUE, T
 
 
 -- seed airlines & flights
-INSERT INTO airlines (id, name, logo_url) VALUES 
-('air-ga', 'Garuda Indonesia', 'https://travelohi.com/logos/ga.png'),
-('air-sq', 'Singapore Airlines', 'https://travelohi.com/logos/sq.png');
+INSERT INTO airlines (id, name, logo) VALUES 
+('air-ga', 'Garuda Indonesia', decode('47494638396101000100800000000000ffffff21f90401000000002c000000000100010000020144003b', 'hex')),
+('air-sq', 'Singapore Airlines', decode('47494638396101000100800000000000ffffff21f90401000000002c000000000100010000020144003b', 'hex'));
 
 INSERT INTO flights (id, airline_id, flight_code, origin_airport, destination_airport, departure_time, arrival_time, duration_minutes, starting_price) VALUES
 ('fl-001', 'air-ga', 'GA-123', 'Jakarta (CGK)', 'Bali (DPS)', '2026-06-01 08:00:00', '2026-06-01 11:00:00', 180, 1200000),
@@ -46,9 +46,9 @@ INSERT INTO flight_seats (id, flight_id, seat_number, seat_class, is_booked, pri
 
 
 -- seed hotels & rooms
-INSERT INTO hotels (id, name, description, address, picture_urls, facilities, starting_price) VALUES
-('htl-asrilia', 'Grand Asrilia Hotel', 'Luxury Stay', 'Bandung', '["https://travelohi.com/asrilia.jpg"]', '["WiFi", "Pool"]', 750000),
-('htl-hilton', 'Hilton Bandung', 'Premium Business Hotel', 'Bandung', '["https://travelohi.com/hilton.jpg"]', '["Gym", "Pool"]', 1500000);
+INSERT INTO hotels (id, name, description, address, pictures, facilities, starting_price) VALUES
+('htl-asrilia', 'Grand Asrilia Hotel', 'Luxury Stay', 'Bandung', ARRAY[decode('47494638396101000100800000000000ffffff21f90401000000002c000000000100010000020144003b', 'hex')]::BYTEA[], '["WiFi", "Pool"]', 750000),
+('htl-hilton', 'Hilton Bandung', 'Premium Business Hotel', 'Bandung', ARRAY[decode('47494638396101000100800000000000ffffff21f90401000000002c000000000100010000020144003b', 'hex')]::BYTEA[], '["Gym", "Pool"]', 1500000);
 
 INSERT INTO hotel_rooms (id, hotel_id, name, price_per_night, capacity, facilities, total_inventory) VALUES
 ('rm-asrilia-deluxe', 'htl-asrilia', 'Deluxe King', 750000, 2, '["Bathtub"]', 1),

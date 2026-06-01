@@ -1,6 +1,7 @@
 static_resources:
   listeners:
     - name: listener_0
+      per_connection_buffer_limit_bytes: 104857600
       address:
         socket_address: { address: 0.0.0.0, port_value: 8080 }
       filter_chains:
@@ -97,6 +98,7 @@ static_resources:
 
     # hotel services
     - name: hotel_cluster
+      per_connection_buffer_limit_bytes: 104857600
       connect_timeout: 0.25s
       type: logical_dns
       http2_protocol_options: {}
@@ -142,6 +144,7 @@ static_resources:
 
     # admin services
     - name: admin_cluster
+      per_connection_buffer_limit_bytes: 104857600
       connect_timeout: 0.25s
       type: logical_dns
       http2_protocol_options: {}

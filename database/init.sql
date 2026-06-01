@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS account_models (
     last_name VARCHAR(255) NOT NULL,
     gender VARCHAR(50),
     dob VARCHAR(50),
-    profile_picture_url TEXT,
+    profile_picture BYTEA,
     is_active BOOLEAN DEFAULT true NOT NULL,
     newsletter_subscribed BOOLEAN DEFAULT FALSE,
     hi_wallet_balance BIGINT DEFAULT 0,
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS hotels (
     name VARCHAR(255) NOT NULL,
     description TEXT,
     address TEXT,
-    picture_urls JSONB, 
+    pictures BYTEA[], 
     facilities JSONB,
     rating_cleanliness NUMERIC(3,2) DEFAULT 0,
     rating_comfort NUMERIC(3,2) DEFAULT 0,
@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS flight_seats (
 CREATE TABLE IF NOT EXISTS airlines (
     id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    logo_url TEXT
+    logo BYTEA
 );
 
 -- admin table
@@ -137,8 +137,12 @@ CREATE TABLE IF NOT EXISTS promos (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
-
+CREATE TABLE IF NOT EXISTS user_promo_usages (
+    user_id VARCHAR(255) NOT NULL,
+    promo_code VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, promo_code)
+);
 
 -- track user search query
 CREATE TABLE IF NOT EXISTS search_histories (
