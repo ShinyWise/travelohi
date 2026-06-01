@@ -12,6 +12,9 @@ service AuthService {
 
   rpc Register(RegisterRequest) returns (AuthResponse) {}
 
+  rpc ActivateAccount(ActivateAccountRequest) returns (ActivateAccountResponse) {}
+  rpc ResendActivationEmail(ResendActivationEmailRequest) returns (ResendActivationEmailResponse) {}
+
   rpc Logout(LogoutRequest) returns (LogoutResponse) {}
 
   rpc GetSecurityQuestion(GetSecurityQuestionRequest) returns (GetSecurityQuestionResponse) {}
@@ -61,6 +64,24 @@ message AuthResponse {
   string message = 3;
 }
 
+message ActivateAccountRequest {
+  string token = 1;
+}
+
+message ActivateAccountResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message ResendActivationEmailRequest {
+  string email = 1;
+}
+
+message ResendActivationEmailResponse {
+  bool success = 1;
+  string message = 2;
+}
+
 message LogoutRequest {
   string user_id = 1;
 }
@@ -92,4 +113,5 @@ message CheckEmailRequest {
 
 message CheckEmailResponse {
   bool exists = 1;
+  bool is_active = 2;
 }

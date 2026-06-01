@@ -94,8 +94,8 @@ const RegisterPage: React.FC = () => {
         const age = Math.abs(ageDate.getUTCFullYear() - 1970);
         if (!formData.dob || age < 13) newErrors.dob = t.age_validation_error;
         if (!formData.gender) newErrors.gender = t.gender_validation_error;
-        // 8-30 chars, uppercase, lowercase, numbers, symbols
-        const pwdRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,30}$/;
+        // 8-30 chars, allowed: uppercase, lowercase, numbers, symbols (no spaces)
+        const pwdRegex = /^[\x21-\x7E]{8,30}$/;
         if (!pwdRegex.test(formData.password)) {
             newErrors.password = t.password_validation_error;
         }
@@ -104,6 +104,7 @@ const RegisterPage: React.FC = () => {
         }
         if (formData.securityQuestionId === 0) newErrors.securityQuestionId = t.question_validation_error;
         if (formData.securityAnswer.trim() === '') newErrors.securityAnswer = t.answer_validation_error;
+        if (!profilePictureBase64) newErrors.profilePicture = (t as any).profile_pic_validation_error || 'Profile picture is required';
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -155,7 +156,12 @@ const RegisterPage: React.FC = () => {
                         <FormInput label={t.dob} type="date" name="dob" value={formData.dob} onChange={handleChange} error={errors.dob} />
                         <div className={styles.genderGroup}>
                             <label>{t.gender}</label>
-                            <select name="gender" value={formData.gender} onChange={handleChange} className={errors.gender ? styles.errorBorder : ''}>
+                            <select 
+                                name="gender" 
+                                value={formData.gender} 
+                                onChange={handleChange} 
+                                className={`${errors.gender ? styles.errorBorder : ''} ${!formData.gender ? styles.placeholderSelect : ''}`}
+                            >
                                 <option value="" disabled>{t.gender_placeholder}</option>
                                 <option value="Male">{t.gender_male}</option>
                                 <option value="Female">{t.gender_female}</option>

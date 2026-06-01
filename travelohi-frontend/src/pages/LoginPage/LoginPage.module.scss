@@ -57,6 +57,28 @@
     font-size: 0.9rem;
 }
 
+.inactiveState {
+    text-align: center;
+    padding: 20px 0;
+    
+    h3 {
+        color: var(--text-primary);
+        margin: 10px 0;
+    }
+    
+    p {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        margin-bottom: 25px;
+        line-height: 1.5;
+    }
+}
+
+.inactiveIcon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
 .emailLockedBlock {
     display: flex;
     justify-content: space-between;

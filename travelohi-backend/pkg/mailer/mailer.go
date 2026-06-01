@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"net/smtp"
 	"strings"
+	"time"
+
+	"github.com/google/uuid"
 )
 
 type EmailSender interface {
@@ -36,6 +39,10 @@ func (m *smtpMailer) SendEmail(to []string, subject string, htmlBody string) err
 	header["Subject"] = subject
 	header["MIME-version"] = "1.0"
 	header["Content-Type"] = "text/html; charset=\"UTF-8\""
+
+	// Add required anti-spam headers
+	header["Date"] = time.Now().Format(time.RFC1123Z)
+	header["Message-ID"] = fmt.Sprintf("<%s@travelohi.com>", uuid.New().String())
 
 	// Combine headers
 	var message string

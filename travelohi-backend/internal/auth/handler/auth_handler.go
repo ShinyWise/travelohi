@@ -131,7 +131,7 @@ func (h *authHandler) ResetPassword(ctx context.Context, req *authpb.ResetPasswo
 }
 
 func (h *authHandler) CheckEmail(ctx context.Context, req *authpb.CheckEmailRequest) (*authpb.CheckEmailResponse, error) {
-	exists, err := h.usecase.CheckEmail(ctx, req.GetEmail(), req.GetCaptchaToken())
+	exists, isActive, err := h.usecase.CheckEmail(ctx, req.GetEmail(), req.GetCaptchaToken())
 
 	if err != nil {
 		// if recaptcha fails, throw the error
@@ -139,6 +139,31 @@ func (h *authHandler) CheckEmail(ctx context.Context, req *authpb.CheckEmailRequ
 	}
 
 	return &authpb.CheckEmailResponse{
-		Exists: exists,
+		Exists:   exists,
+		IsActive: isActive,
+	}, nil
+}
+
+func (h *authHandler) ActivateAccount(ctx context.Context, req *authpb.ActivateAccountRequest) (*authpb.ActivateAccountResponse, error) {
+	err := h.usecase.ActivateAccount(ctx, req.GetToken())
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	return &authpb.ActivateAccountResponse{
+		Success: true,
+		Message: "Account activated successfully",
+	}, nil
+}
+
+func (h *authHandler) ResendActivationEmail(ctx context.Context, req *authpb.ResendActivationEmailRequest) (*authpb.ResendActivationEmailResponse, error) {
+	err := h.usecase.ResendActivationEmail(ctx, req.GetEmail())
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	return &authpb.ResendActivationEmailResponse{
+		Success: true,
+		Message: "Activation email resent successfully",
 	}, nil
 }

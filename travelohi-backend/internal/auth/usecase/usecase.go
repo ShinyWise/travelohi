@@ -64,6 +64,15 @@ func validateEmailPattern(email string) error {
 	return nil
 }
 
+var passwordRegex = regexp.MustCompile(`^[\x21-\x7E]{8,30}$`)
+
+func validatePasswordPattern(password string) error {
+	if !passwordRegex.MatchString(password) {
+		return errors.New("Password must be 8-30 characters long and only contain letters, numbers, and symbols.")
+	}
+	return nil
+}
+
 func verifyRecaptcha(token string) error {
 	secret := "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
 
@@ -85,6 +94,9 @@ func verifyRecaptcha(token string) error {
 
 func (uc *authUseCase) RegisterUser(ctx context.Context, req *auth.RegisterData) (*auth.AuthResult, error) {
 	if err := validateEmailPattern(req.Email); err != nil {
+		return nil, err
+	}
+	if err := validatePasswordPattern(req.Password); err != nil {
 		return nil, err
 	}
 	if err := verifyRecaptcha(req.CaptchaToken); err != nil {
@@ -155,9 +167,24 @@ func (uc *authUseCase) RegisterUser(ctx context.Context, req *auth.RegisterData)
 		return nil, errors.New("Failed to initialize Profile!")
 	}
 
+	activationToken := uc.idGen.Generate()
+	activationKey := "activate:" + activationToken
+
+	if err := uc.cache.Set(ctx, activationKey, []byte(req.Email), 900); err != nil {
+		log.Printf("[Register] Failed to cache activation token: %v", err)
+		return nil, auth.ErrInternal
+	}
+
+	htmlBody := mailer.GenerateActivationEmail(activationToken)
+	if err := uc.mailer.SendEmail([]string{req.Email}, "Activate your TraveloHI Account", htmlBody); err != nil {
+		log.Printf("[Register] Failed to send activation email to %s: %v\n", req.Email, err)
+	} else {
+		log.Printf("📧 EMAIL SENT TO %s: Activation Token %s\n", req.Email, activationToken)
+	}
+
 	return &auth.AuthResult{
 		UserID:  newUserID,
-		Message: "Registration successful! Please log in.",
+		Message: "Registration successful! Please check your email to activate your account.",
 	}, nil
 }
 
@@ -282,8 +309,8 @@ func (uc *authUseCase) SendOTP(ctx context.Context, email string) error {
 		return err
 	}
 
-	htmlBody := fmt.Sprintf("<h2>Travelohi OTP</h2><p>Your OTP Code is: <b>%s</b></p><p>This code is valid for 5 minutes.</p>", otpcode)
-	if err := uc.mailer.SendEmail([]string{email}, "Your Travelohi Login OTP", htmlBody); err != nil {
+	htmlBody := mailer.GenerateOTPEmail(otpcode)
+	if err := uc.mailer.SendEmail([]string{email}, "Your TraveloHI OTP Code", htmlBody); err != nil {
 		log.Printf("Failed to send OTP to %s: %v\n", email, err)
 		return errors.New("failed to send OTP email")
 	}
@@ -366,23 +393,80 @@ func (uc *authUseCase) ResetPassword(ctx context.Context, email string, question
 	}, nil
 }
 
-func (uc *authUseCase) CheckEmail(ctx context.Context, email string, captchaToken string) (bool, error) {
+func (uc *authUseCase) CheckEmail(ctx context.Context, email string, captchaToken string) (bool, bool, error) {
 	if err := validateEmailPattern(email); err != nil {
-		return false, err
+		return false, false, err
 	}
-	// verify recaptcha
 	if err := verifyRecaptcha(captchaToken); err != nil {
-		return false, err
+		return false, false, err
 	}
 
-	// check if email exists
-	_, err := uc.repo.GetByEmail(ctx, email)
+	user, err := uc.repo.GetByEmail(ctx, email)
 	if err != nil {
 		if errors.Is(err, auth.ErrInvalidCreds) {
-			return false, nil
+			return false, false, nil
 		}
-		return false, auth.ErrInternal
+		return false, false, auth.ErrInternal
 	}
 
-	return true, nil
+	return true, user.IsActive, nil
+}
+
+func (uc *authUseCase) ActivateAccount(ctx context.Context, token string) error {
+	activationKey := "activate:" + token
+	emailBytes, err := uc.cache.Get(ctx, activationKey)
+	if err != nil {
+		return errors.New("activation link is invalid or has expired")
+	}
+
+	email := string(emailBytes)
+	user, err := uc.repo.GetByEmail(ctx, email)
+	if err != nil {
+		return errors.New("user not found")
+	}
+
+	if user.IsActive {
+		return errors.New("account is already activated")
+	}
+
+	user.IsActive = true
+	if err := uc.repo.Update(ctx, user); err != nil {
+		return auth.ErrInternal
+	}
+
+	_ = uc.cache.Delete(ctx, activationKey)
+
+	return nil
+}
+
+func (uc *authUseCase) ResendActivationEmail(ctx context.Context, email string) error {
+	if err := validateEmailPattern(email); err != nil {
+		return err
+	}
+
+	user, err := uc.repo.GetByEmail(ctx, email)
+	if err != nil {
+		return errors.New("user not found")
+	}
+
+	if user.IsActive {
+		return errors.New("account is already activated")
+	}
+
+	activationToken := uc.idGen.Generate()
+	activationKey := "activate:" + activationToken
+
+	if err := uc.cache.Set(ctx, activationKey, []byte(email), 900); err != nil {
+		log.Printf("[ResendActivation] Failed to cache activation token: %v", err)
+		return auth.ErrInternal
+	}
+
+	htmlBody := mailer.GenerateActivationEmail(activationToken)
+	if err := uc.mailer.SendEmail([]string{email}, "Activate your TraveloHI Account", htmlBody); err != nil {
+		log.Printf("[ResendActivation] Failed to send activation email to %s: %v\n", email, err)
+		return errors.New("failed to send activation email")
+	}
+
+	log.Printf("📧 EMAIL SENT TO %s: New Activation Token %s\n", email, activationToken)
+	return nil
 }

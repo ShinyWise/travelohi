@@ -60,6 +60,8 @@ type CacheRepository interface {
 
 type AuthUseCase interface {
 	RegisterUser(ctx context.Context, req *RegisterData) (*AuthResult, error)
+	ActivateAccount(ctx context.Context, token string) error
+	ResendActivationEmail(ctx context.Context, email string) error
 	Login(ctx context.Context, email, password, captchaToken string) (*AuthResult, error)
 	SendOTP(ctx context.Context, email string) error
 	LoginWithOTP(ctx context.Context, email, otp string) (*AuthResult, error)
@@ -67,5 +69,5 @@ type AuthUseCase interface {
 	GetSecurityQuestion(ctx context.Context, email string) (int32, error)
 	ResetPassword(ctx context.Context, email string, questionID int32, answer string, newPassword string) (*AuthResult, error)
 
-	CheckEmail(ctx context.Context, email string, captchaToken string) (bool, error)
+	CheckEmail(ctx context.Context, email string, captchaToken string) (bool, bool, error)
 }

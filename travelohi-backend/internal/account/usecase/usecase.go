@@ -22,7 +22,6 @@ func NewAccountUseCase(repo account.AccountRepository, bookingRepo account.Booki
 	}
 }
 
-// diganti dari create jadi init karena udh dibikin di authService, we use microservice handshake
 func (uc *AccountUseCase) InitProfile(ctx context.Context, account *account.Account) error {
 	if account.ID == "" || account.Email == "" {
 		return errors.New("[ERROR] Cannot initialize profile: ID and Email are required")
@@ -30,7 +29,7 @@ func (uc *AccountUseCase) InitProfile(ctx context.Context, account *account.Acco
 
 	// initial balance
 	account.HiWalletBalance = 5000000
-	account.IsActive = true
+	account.IsActive = false
 
 	return uc.repo.Create(ctx, account)
 }

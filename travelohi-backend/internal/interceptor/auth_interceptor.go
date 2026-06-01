@@ -33,9 +33,11 @@ func NewAuthInterceptor(tokenMaker token.Maker, cache auth.CacheRepository, role
 		"/travelohi.v1.auth.AuthService/Register":            true,
 		"/travelohi.v1.auth.AuthService/SendOTP":             true,
 		"/travelohi.v1.auth.AuthService/LoginWithOTP":        true,
-		"/travelohi.v1.auth.AuthService/CheckEmail":          true,
-		"/travelohi.v1.auth.AuthService/GetSecurityQuestion": true,
-		"/travelohi.v1.auth.AuthService/ResetPassword":       true,
+		"/travelohi.v1.auth.AuthService/CheckEmail":            true,
+		"/travelohi.v1.auth.AuthService/GetSecurityQuestion":   true,
+		"/travelohi.v1.auth.AuthService/ResetPassword":         true,
+		"/travelohi.v1.auth.AuthService/ActivateAccount":       true,
+		"/travelohi.v1.auth.AuthService/ResendActivationEmail": true,
 		// internal microservice call: perlu dipake buat authService pas register
 		"/travelohi.v1.account.AccountService/InitProfile": true,
 

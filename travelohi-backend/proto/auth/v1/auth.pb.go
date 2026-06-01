@@ -414,6 +414,198 @@ func (x *AuthResponse) GetMessage() string {
 	return ""
 }
 
+type ActivateAccountRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ActivateAccountRequest) Reset() {
+	*x = ActivateAccountRequest{}
+	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ActivateAccountRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ActivateAccountRequest) ProtoMessage() {}
+
+func (x *ActivateAccountRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ActivateAccountRequest.ProtoReflect.Descriptor instead.
+func (*ActivateAccountRequest) Descriptor() ([]byte, []int) {
+	return file_proto_travelohi_v1_auth_auth_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *ActivateAccountRequest) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+type ActivateAccountResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ActivateAccountResponse) Reset() {
+	*x = ActivateAccountResponse{}
+	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ActivateAccountResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ActivateAccountResponse) ProtoMessage() {}
+
+func (x *ActivateAccountResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ActivateAccountResponse.ProtoReflect.Descriptor instead.
+func (*ActivateAccountResponse) Descriptor() ([]byte, []int) {
+	return file_proto_travelohi_v1_auth_auth_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *ActivateAccountResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *ActivateAccountResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+type ResendActivationEmailRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ResendActivationEmailRequest) Reset() {
+	*x = ResendActivationEmailRequest{}
+	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ResendActivationEmailRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResendActivationEmailRequest) ProtoMessage() {}
+
+func (x *ResendActivationEmailRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ResendActivationEmailRequest.ProtoReflect.Descriptor instead.
+func (*ResendActivationEmailRequest) Descriptor() ([]byte, []int) {
+	return file_proto_travelohi_v1_auth_auth_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *ResendActivationEmailRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+type ResendActivationEmailResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ResendActivationEmailResponse) Reset() {
+	*x = ResendActivationEmailResponse{}
+	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ResendActivationEmailResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResendActivationEmailResponse) ProtoMessage() {}
+
+func (x *ResendActivationEmailResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ResendActivationEmailResponse.ProtoReflect.Descriptor instead.
+func (*ResendActivationEmailResponse) Descriptor() ([]byte, []int) {
+	return file_proto_travelohi_v1_auth_auth_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *ResendActivationEmailResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *ResendActivationEmailResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 type LogoutRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
@@ -423,7 +615,7 @@ type LogoutRequest struct {
 
 func (x *LogoutRequest) Reset() {
 	*x = LogoutRequest{}
-	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[6]
+	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -435,7 +627,7 @@ func (x *LogoutRequest) String() string {
 func (*LogoutRequest) ProtoMessage() {}
 
 func (x *LogoutRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[6]
+	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -448,7 +640,7 @@ func (x *LogoutRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LogoutRequest.ProtoReflect.Descriptor instead.
 func (*LogoutRequest) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_auth_auth_proto_rawDescGZIP(), []int{6}
+	return file_proto_travelohi_v1_auth_auth_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *LogoutRequest) GetUserId() string {
@@ -468,7 +660,7 @@ type LogoutResponse struct {
 
 func (x *LogoutResponse) Reset() {
 	*x = LogoutResponse{}
-	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[7]
+	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -480,7 +672,7 @@ func (x *LogoutResponse) String() string {
 func (*LogoutResponse) ProtoMessage() {}
 
 func (x *LogoutResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[7]
+	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -493,7 +685,7 @@ func (x *LogoutResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LogoutResponse.ProtoReflect.Descriptor instead.
 func (*LogoutResponse) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_auth_auth_proto_rawDescGZIP(), []int{7}
+	return file_proto_travelohi_v1_auth_auth_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *LogoutResponse) GetSuccess() bool {
@@ -519,7 +711,7 @@ type GetSecurityQuestionRequest struct {
 
 func (x *GetSecurityQuestionRequest) Reset() {
 	*x = GetSecurityQuestionRequest{}
-	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[8]
+	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -531,7 +723,7 @@ func (x *GetSecurityQuestionRequest) String() string {
 func (*GetSecurityQuestionRequest) ProtoMessage() {}
 
 func (x *GetSecurityQuestionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[8]
+	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -544,7 +736,7 @@ func (x *GetSecurityQuestionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetSecurityQuestionRequest.ProtoReflect.Descriptor instead.
 func (*GetSecurityQuestionRequest) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_auth_auth_proto_rawDescGZIP(), []int{8}
+	return file_proto_travelohi_v1_auth_auth_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *GetSecurityQuestionRequest) GetEmail() string {
@@ -563,7 +755,7 @@ type GetSecurityQuestionResponse struct {
 
 func (x *GetSecurityQuestionResponse) Reset() {
 	*x = GetSecurityQuestionResponse{}
-	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[9]
+	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -575,7 +767,7 @@ func (x *GetSecurityQuestionResponse) String() string {
 func (*GetSecurityQuestionResponse) ProtoMessage() {}
 
 func (x *GetSecurityQuestionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[9]
+	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -588,7 +780,7 @@ func (x *GetSecurityQuestionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetSecurityQuestionResponse.ProtoReflect.Descriptor instead.
 func (*GetSecurityQuestionResponse) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_auth_auth_proto_rawDescGZIP(), []int{9}
+	return file_proto_travelohi_v1_auth_auth_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *GetSecurityQuestionResponse) GetSecurityQuestionId() int32 {
@@ -610,7 +802,7 @@ type ResetPasswordRequest struct {
 
 func (x *ResetPasswordRequest) Reset() {
 	*x = ResetPasswordRequest{}
-	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[10]
+	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -622,7 +814,7 @@ func (x *ResetPasswordRequest) String() string {
 func (*ResetPasswordRequest) ProtoMessage() {}
 
 func (x *ResetPasswordRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[10]
+	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -635,7 +827,7 @@ func (x *ResetPasswordRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ResetPasswordRequest.ProtoReflect.Descriptor instead.
 func (*ResetPasswordRequest) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_auth_auth_proto_rawDescGZIP(), []int{10}
+	return file_proto_travelohi_v1_auth_auth_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *ResetPasswordRequest) GetEmail() string {
@@ -676,7 +868,7 @@ type CheckEmailRequest struct {
 
 func (x *CheckEmailRequest) Reset() {
 	*x = CheckEmailRequest{}
-	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[11]
+	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -688,7 +880,7 @@ func (x *CheckEmailRequest) String() string {
 func (*CheckEmailRequest) ProtoMessage() {}
 
 func (x *CheckEmailRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[11]
+	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -701,7 +893,7 @@ func (x *CheckEmailRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckEmailRequest.ProtoReflect.Descriptor instead.
 func (*CheckEmailRequest) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_auth_auth_proto_rawDescGZIP(), []int{11}
+	return file_proto_travelohi_v1_auth_auth_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *CheckEmailRequest) GetEmail() string {
@@ -721,13 +913,14 @@ func (x *CheckEmailRequest) GetCaptchaToken() string {
 type CheckEmailResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Exists        bool                   `protobuf:"varint,1,opt,name=exists,proto3" json:"exists,omitempty"`
+	IsActive      bool                   `protobuf:"varint,2,opt,name=is_active,json=isActive,proto3" json:"is_active,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CheckEmailResponse) Reset() {
 	*x = CheckEmailResponse{}
-	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[12]
+	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -739,7 +932,7 @@ func (x *CheckEmailResponse) String() string {
 func (*CheckEmailResponse) ProtoMessage() {}
 
 func (x *CheckEmailResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[12]
+	mi := &file_proto_travelohi_v1_auth_auth_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -752,12 +945,19 @@ func (x *CheckEmailResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckEmailResponse.ProtoReflect.Descriptor instead.
 func (*CheckEmailResponse) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_auth_auth_proto_rawDescGZIP(), []int{12}
+	return file_proto_travelohi_v1_auth_auth_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *CheckEmailResponse) GetExists() bool {
 	if x != nil {
 		return x.Exists
+	}
+	return false
+}
+
+func (x *CheckEmailResponse) GetIsActive() bool {
+	if x != nil {
+		return x.IsActive
 	}
 	return false
 }
@@ -796,7 +996,17 @@ const file_proto_travelohi_v1_auth_auth_proto_rawDesc = "" +
 	"\fAuthResponse\x12!\n" +
 	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x18\n" +
-	"\amessage\x18\x03 \x01(\tR\amessage\"(\n" +
+	"\amessage\x18\x03 \x01(\tR\amessage\".\n" +
+	"\x16ActivateAccountRequest\x12\x14\n" +
+	"\x05token\x18\x01 \x01(\tR\x05token\"M\n" +
+	"\x17ActivateAccountResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"4\n" +
+	"\x1cResendActivationEmailRequest\x12\x14\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\"S\n" +
+	"\x1dResendActivationEmailResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"(\n" +
 	"\rLogoutRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\"D\n" +
 	"\x0eLogoutResponse\x12\x18\n" +
@@ -813,14 +1023,17 @@ const file_proto_travelohi_v1_auth_auth_proto_rawDesc = "" +
 	"\x14security_question_id\x18\x04 \x01(\x05R\x12securityQuestionId\"N\n" +
 	"\x11CheckEmailRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12#\n" +
-	"\rcaptcha_token\x18\x02 \x01(\tR\fcaptchaToken\",\n" +
+	"\rcaptcha_token\x18\x02 \x01(\tR\fcaptchaToken\"I\n" +
 	"\x12CheckEmailResponse\x12\x16\n" +
-	"\x06exists\x18\x01 \x01(\bR\x06exists2\xdf\x05\n" +
+	"\x06exists\x18\x01 \x01(\bR\x06exists\x12\x1b\n" +
+	"\tis_active\x18\x02 \x01(\bR\bisActive2\xc9\a\n" +
 	"\vAuthService\x12K\n" +
 	"\x05Login\x12\x1f.travelohi.v1.auth.LoginRequest\x1a\x1f.travelohi.v1.auth.AuthResponse\"\x00\x12R\n" +
 	"\aSendOTP\x12!.travelohi.v1.auth.SendOTPRequest\x1a\".travelohi.v1.auth.SendOTPResponse\"\x00\x12Y\n" +
 	"\fLoginWithOTP\x12&.travelohi.v1.auth.LoginWithOTPRequest\x1a\x1f.travelohi.v1.auth.AuthResponse\"\x00\x12Q\n" +
-	"\bRegister\x12\".travelohi.v1.auth.RegisterRequest\x1a\x1f.travelohi.v1.auth.AuthResponse\"\x00\x12O\n" +
+	"\bRegister\x12\".travelohi.v1.auth.RegisterRequest\x1a\x1f.travelohi.v1.auth.AuthResponse\"\x00\x12j\n" +
+	"\x0fActivateAccount\x12).travelohi.v1.auth.ActivateAccountRequest\x1a*.travelohi.v1.auth.ActivateAccountResponse\"\x00\x12|\n" +
+	"\x15ResendActivationEmail\x12/.travelohi.v1.auth.ResendActivationEmailRequest\x1a0.travelohi.v1.auth.ResendActivationEmailResponse\"\x00\x12O\n" +
 	"\x06Logout\x12 .travelohi.v1.auth.LogoutRequest\x1a!.travelohi.v1.auth.LogoutResponse\"\x00\x12v\n" +
 	"\x13GetSecurityQuestion\x12-.travelohi.v1.auth.GetSecurityQuestionRequest\x1a..travelohi.v1.auth.GetSecurityQuestionResponse\"\x00\x12[\n" +
 	"\rResetPassword\x12'.travelohi.v1.auth.ResetPasswordRequest\x1a\x1f.travelohi.v1.auth.AuthResponse\"\x00\x12[\n" +
@@ -839,41 +1052,49 @@ func file_proto_travelohi_v1_auth_auth_proto_rawDescGZIP() []byte {
 	return file_proto_travelohi_v1_auth_auth_proto_rawDescData
 }
 
-var file_proto_travelohi_v1_auth_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_proto_travelohi_v1_auth_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_proto_travelohi_v1_auth_auth_proto_goTypes = []any{
-	(*RegisterRequest)(nil),             // 0: travelohi.v1.auth.RegisterRequest
-	(*LoginRequest)(nil),                // 1: travelohi.v1.auth.LoginRequest
-	(*SendOTPRequest)(nil),              // 2: travelohi.v1.auth.SendOTPRequest
-	(*SendOTPResponse)(nil),             // 3: travelohi.v1.auth.SendOTPResponse
-	(*LoginWithOTPRequest)(nil),         // 4: travelohi.v1.auth.LoginWithOTPRequest
-	(*AuthResponse)(nil),                // 5: travelohi.v1.auth.AuthResponse
-	(*LogoutRequest)(nil),               // 6: travelohi.v1.auth.LogoutRequest
-	(*LogoutResponse)(nil),              // 7: travelohi.v1.auth.LogoutResponse
-	(*GetSecurityQuestionRequest)(nil),  // 8: travelohi.v1.auth.GetSecurityQuestionRequest
-	(*GetSecurityQuestionResponse)(nil), // 9: travelohi.v1.auth.GetSecurityQuestionResponse
-	(*ResetPasswordRequest)(nil),        // 10: travelohi.v1.auth.ResetPasswordRequest
-	(*CheckEmailRequest)(nil),           // 11: travelohi.v1.auth.CheckEmailRequest
-	(*CheckEmailResponse)(nil),          // 12: travelohi.v1.auth.CheckEmailResponse
+	(*RegisterRequest)(nil),               // 0: travelohi.v1.auth.RegisterRequest
+	(*LoginRequest)(nil),                  // 1: travelohi.v1.auth.LoginRequest
+	(*SendOTPRequest)(nil),                // 2: travelohi.v1.auth.SendOTPRequest
+	(*SendOTPResponse)(nil),               // 3: travelohi.v1.auth.SendOTPResponse
+	(*LoginWithOTPRequest)(nil),           // 4: travelohi.v1.auth.LoginWithOTPRequest
+	(*AuthResponse)(nil),                  // 5: travelohi.v1.auth.AuthResponse
+	(*ActivateAccountRequest)(nil),        // 6: travelohi.v1.auth.ActivateAccountRequest
+	(*ActivateAccountResponse)(nil),       // 7: travelohi.v1.auth.ActivateAccountResponse
+	(*ResendActivationEmailRequest)(nil),  // 8: travelohi.v1.auth.ResendActivationEmailRequest
+	(*ResendActivationEmailResponse)(nil), // 9: travelohi.v1.auth.ResendActivationEmailResponse
+	(*LogoutRequest)(nil),                 // 10: travelohi.v1.auth.LogoutRequest
+	(*LogoutResponse)(nil),                // 11: travelohi.v1.auth.LogoutResponse
+	(*GetSecurityQuestionRequest)(nil),    // 12: travelohi.v1.auth.GetSecurityQuestionRequest
+	(*GetSecurityQuestionResponse)(nil),   // 13: travelohi.v1.auth.GetSecurityQuestionResponse
+	(*ResetPasswordRequest)(nil),          // 14: travelohi.v1.auth.ResetPasswordRequest
+	(*CheckEmailRequest)(nil),             // 15: travelohi.v1.auth.CheckEmailRequest
+	(*CheckEmailResponse)(nil),            // 16: travelohi.v1.auth.CheckEmailResponse
 }
 var file_proto_travelohi_v1_auth_auth_proto_depIdxs = []int32{
 	1,  // 0: travelohi.v1.auth.AuthService.Login:input_type -> travelohi.v1.auth.LoginRequest
 	2,  // 1: travelohi.v1.auth.AuthService.SendOTP:input_type -> travelohi.v1.auth.SendOTPRequest
 	4,  // 2: travelohi.v1.auth.AuthService.LoginWithOTP:input_type -> travelohi.v1.auth.LoginWithOTPRequest
 	0,  // 3: travelohi.v1.auth.AuthService.Register:input_type -> travelohi.v1.auth.RegisterRequest
-	6,  // 4: travelohi.v1.auth.AuthService.Logout:input_type -> travelohi.v1.auth.LogoutRequest
-	8,  // 5: travelohi.v1.auth.AuthService.GetSecurityQuestion:input_type -> travelohi.v1.auth.GetSecurityQuestionRequest
-	10, // 6: travelohi.v1.auth.AuthService.ResetPassword:input_type -> travelohi.v1.auth.ResetPasswordRequest
-	11, // 7: travelohi.v1.auth.AuthService.CheckEmail:input_type -> travelohi.v1.auth.CheckEmailRequest
-	5,  // 8: travelohi.v1.auth.AuthService.Login:output_type -> travelohi.v1.auth.AuthResponse
-	3,  // 9: travelohi.v1.auth.AuthService.SendOTP:output_type -> travelohi.v1.auth.SendOTPResponse
-	5,  // 10: travelohi.v1.auth.AuthService.LoginWithOTP:output_type -> travelohi.v1.auth.AuthResponse
-	5,  // 11: travelohi.v1.auth.AuthService.Register:output_type -> travelohi.v1.auth.AuthResponse
-	7,  // 12: travelohi.v1.auth.AuthService.Logout:output_type -> travelohi.v1.auth.LogoutResponse
-	9,  // 13: travelohi.v1.auth.AuthService.GetSecurityQuestion:output_type -> travelohi.v1.auth.GetSecurityQuestionResponse
-	5,  // 14: travelohi.v1.auth.AuthService.ResetPassword:output_type -> travelohi.v1.auth.AuthResponse
-	12, // 15: travelohi.v1.auth.AuthService.CheckEmail:output_type -> travelohi.v1.auth.CheckEmailResponse
-	8,  // [8:16] is the sub-list for method output_type
-	0,  // [0:8] is the sub-list for method input_type
+	6,  // 4: travelohi.v1.auth.AuthService.ActivateAccount:input_type -> travelohi.v1.auth.ActivateAccountRequest
+	8,  // 5: travelohi.v1.auth.AuthService.ResendActivationEmail:input_type -> travelohi.v1.auth.ResendActivationEmailRequest
+	10, // 6: travelohi.v1.auth.AuthService.Logout:input_type -> travelohi.v1.auth.LogoutRequest
+	12, // 7: travelohi.v1.auth.AuthService.GetSecurityQuestion:input_type -> travelohi.v1.auth.GetSecurityQuestionRequest
+	14, // 8: travelohi.v1.auth.AuthService.ResetPassword:input_type -> travelohi.v1.auth.ResetPasswordRequest
+	15, // 9: travelohi.v1.auth.AuthService.CheckEmail:input_type -> travelohi.v1.auth.CheckEmailRequest
+	5,  // 10: travelohi.v1.auth.AuthService.Login:output_type -> travelohi.v1.auth.AuthResponse
+	3,  // 11: travelohi.v1.auth.AuthService.SendOTP:output_type -> travelohi.v1.auth.SendOTPResponse
+	5,  // 12: travelohi.v1.auth.AuthService.LoginWithOTP:output_type -> travelohi.v1.auth.AuthResponse
+	5,  // 13: travelohi.v1.auth.AuthService.Register:output_type -> travelohi.v1.auth.AuthResponse
+	7,  // 14: travelohi.v1.auth.AuthService.ActivateAccount:output_type -> travelohi.v1.auth.ActivateAccountResponse
+	9,  // 15: travelohi.v1.auth.AuthService.ResendActivationEmail:output_type -> travelohi.v1.auth.ResendActivationEmailResponse
+	11, // 16: travelohi.v1.auth.AuthService.Logout:output_type -> travelohi.v1.auth.LogoutResponse
+	13, // 17: travelohi.v1.auth.AuthService.GetSecurityQuestion:output_type -> travelohi.v1.auth.GetSecurityQuestionResponse
+	5,  // 18: travelohi.v1.auth.AuthService.ResetPassword:output_type -> travelohi.v1.auth.AuthResponse
+	16, // 19: travelohi.v1.auth.AuthService.CheckEmail:output_type -> travelohi.v1.auth.CheckEmailResponse
+	10, // [10:20] is the sub-list for method output_type
+	0,  // [0:10] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name
@@ -890,7 +1111,7 @@ func file_proto_travelohi_v1_auth_auth_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_travelohi_v1_auth_auth_proto_rawDesc), len(file_proto_travelohi_v1_auth_auth_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   17,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -101,8 +101,12 @@ func (r *PostgresAuthRepository) Update(ctx context.Context, a *auth.Auth) error
 		SecurityAnswerHash: a.SecurityAnswerHash,
 		IsBanned:           a.IsBanned,
 	}
+	err := r.db.WithContext(ctx).Save(model).Error
+	if err != nil {
+		return err
+	}
 
-	return r.db.WithContext(ctx).Save(model).Error
+	return r.db.WithContext(ctx).Table("account_models").Where("id = ?", a.ID).Update("is_active", a.IsActive).Error
 }
 
 type PostgresRoleRepository struct {

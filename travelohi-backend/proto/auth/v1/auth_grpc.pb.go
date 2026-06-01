@@ -19,14 +19,16 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AuthService_Login_FullMethodName               = "/travelohi.v1.auth.AuthService/Login"
-	AuthService_SendOTP_FullMethodName             = "/travelohi.v1.auth.AuthService/SendOTP"
-	AuthService_LoginWithOTP_FullMethodName        = "/travelohi.v1.auth.AuthService/LoginWithOTP"
-	AuthService_Register_FullMethodName            = "/travelohi.v1.auth.AuthService/Register"
-	AuthService_Logout_FullMethodName              = "/travelohi.v1.auth.AuthService/Logout"
-	AuthService_GetSecurityQuestion_FullMethodName = "/travelohi.v1.auth.AuthService/GetSecurityQuestion"
-	AuthService_ResetPassword_FullMethodName       = "/travelohi.v1.auth.AuthService/ResetPassword"
-	AuthService_CheckEmail_FullMethodName          = "/travelohi.v1.auth.AuthService/CheckEmail"
+	AuthService_Login_FullMethodName                 = "/travelohi.v1.auth.AuthService/Login"
+	AuthService_SendOTP_FullMethodName               = "/travelohi.v1.auth.AuthService/SendOTP"
+	AuthService_LoginWithOTP_FullMethodName          = "/travelohi.v1.auth.AuthService/LoginWithOTP"
+	AuthService_Register_FullMethodName              = "/travelohi.v1.auth.AuthService/Register"
+	AuthService_ActivateAccount_FullMethodName       = "/travelohi.v1.auth.AuthService/ActivateAccount"
+	AuthService_ResendActivationEmail_FullMethodName = "/travelohi.v1.auth.AuthService/ResendActivationEmail"
+	AuthService_Logout_FullMethodName                = "/travelohi.v1.auth.AuthService/Logout"
+	AuthService_GetSecurityQuestion_FullMethodName   = "/travelohi.v1.auth.AuthService/GetSecurityQuestion"
+	AuthService_ResetPassword_FullMethodName         = "/travelohi.v1.auth.AuthService/ResetPassword"
+	AuthService_CheckEmail_FullMethodName            = "/travelohi.v1.auth.AuthService/CheckEmail"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -37,6 +39,8 @@ type AuthServiceClient interface {
 	SendOTP(ctx context.Context, in *SendOTPRequest, opts ...grpc.CallOption) (*SendOTPResponse, error)
 	LoginWithOTP(ctx context.Context, in *LoginWithOTPRequest, opts ...grpc.CallOption) (*AuthResponse, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*AuthResponse, error)
+	ActivateAccount(ctx context.Context, in *ActivateAccountRequest, opts ...grpc.CallOption) (*ActivateAccountResponse, error)
+	ResendActivationEmail(ctx context.Context, in *ResendActivationEmailRequest, opts ...grpc.CallOption) (*ResendActivationEmailResponse, error)
 	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutResponse, error)
 	GetSecurityQuestion(ctx context.Context, in *GetSecurityQuestionRequest, opts ...grpc.CallOption) (*GetSecurityQuestionResponse, error)
 	ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*AuthResponse, error)
@@ -91,6 +95,26 @@ func (c *authServiceClient) Register(ctx context.Context, in *RegisterRequest, o
 	return out, nil
 }
 
+func (c *authServiceClient) ActivateAccount(ctx context.Context, in *ActivateAccountRequest, opts ...grpc.CallOption) (*ActivateAccountResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ActivateAccountResponse)
+	err := c.cc.Invoke(ctx, AuthService_ActivateAccount_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) ResendActivationEmail(ctx context.Context, in *ResendActivationEmailRequest, opts ...grpc.CallOption) (*ResendActivationEmailResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ResendActivationEmailResponse)
+	err := c.cc.Invoke(ctx, AuthService_ResendActivationEmail_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *authServiceClient) Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(LogoutResponse)
@@ -139,6 +163,8 @@ type AuthServiceServer interface {
 	SendOTP(context.Context, *SendOTPRequest) (*SendOTPResponse, error)
 	LoginWithOTP(context.Context, *LoginWithOTPRequest) (*AuthResponse, error)
 	Register(context.Context, *RegisterRequest) (*AuthResponse, error)
+	ActivateAccount(context.Context, *ActivateAccountRequest) (*ActivateAccountResponse, error)
+	ResendActivationEmail(context.Context, *ResendActivationEmailRequest) (*ResendActivationEmailResponse, error)
 	Logout(context.Context, *LogoutRequest) (*LogoutResponse, error)
 	GetSecurityQuestion(context.Context, *GetSecurityQuestionRequest) (*GetSecurityQuestionResponse, error)
 	ResetPassword(context.Context, *ResetPasswordRequest) (*AuthResponse, error)
@@ -164,6 +190,12 @@ func (UnimplementedAuthServiceServer) LoginWithOTP(context.Context, *LoginWithOT
 }
 func (UnimplementedAuthServiceServer) Register(context.Context, *RegisterRequest) (*AuthResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Register not implemented")
+}
+func (UnimplementedAuthServiceServer) ActivateAccount(context.Context, *ActivateAccountRequest) (*ActivateAccountResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ActivateAccount not implemented")
+}
+func (UnimplementedAuthServiceServer) ResendActivationEmail(context.Context, *ResendActivationEmailRequest) (*ResendActivationEmailResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ResendActivationEmail not implemented")
 }
 func (UnimplementedAuthServiceServer) Logout(context.Context, *LogoutRequest) (*LogoutResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Logout not implemented")
@@ -270,6 +302,42 @@ func _AuthService_Register_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_ActivateAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ActivateAccountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).ActivateAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_ActivateAccount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).ActivateAccount(ctx, req.(*ActivateAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_ResendActivationEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ResendActivationEmailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).ResendActivationEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_ResendActivationEmail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).ResendActivationEmail(ctx, req.(*ResendActivationEmailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _AuthService_Logout_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(LogoutRequest)
 	if err := dec(in); err != nil {
@@ -364,6 +432,14 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Register",
 			Handler:    _AuthService_Register_Handler,
+		},
+		{
+			MethodName: "ActivateAccount",
+			Handler:    _AuthService_ActivateAccount_Handler,
+		},
+		{
+			MethodName: "ResendActivationEmail",
+			Handler:    _AuthService_ResendActivationEmail_Handler,
 		},
 		{
 			MethodName: "Logout",

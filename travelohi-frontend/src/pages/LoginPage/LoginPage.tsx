@@ -8,6 +8,7 @@ import { useAppContext } from '../../context/ThemeContext';
 import { translations } from '../../utils/translations';
 import { AuthServiceClient } from '../../proto/travelohi/v1/auth/auth.client';
 import { transport } from '../../utils/grpcClient';
+import { AlertTriangle } from 'lucide-react';
 import { useToast } from '../../components/Toast';
 import styles from './LoginPage.module.scss';
 const client = new AuthServiceClient(transport);
@@ -28,6 +29,8 @@ const LoginPage: React.FC = () => {
     const [grpcError, setGrpcError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
+    const [isInactive, setIsInactive] = useState(false);
+    const [isResending, setIsResending] = useState(false);
     // show redirect message (e.g. after registration) as a toast
     const queryParams = new URLSearchParams(window.location.search);
     const isSessionExpired = queryParams.get('expired') === 'true';
@@ -43,8 +46,11 @@ const LoginPage: React.FC = () => {
                 url.searchParams.delete('expired');
                 window.history.replaceState({}, '', url.pathname + url.search);
             }
+            if (message) {
+                navigate(location.pathname, { replace: true, state: {} });
+            }
         }
-    }, [displayMessage, isSessionExpired, showToast]);
+    }, [displayMessage, isSessionExpired, showToast, message, navigate, location.pathname]);
     const validateEmail = (val: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.com$/;
         if (!emailRegex.test(val)) {
@@ -67,8 +73,13 @@ const LoginPage: React.FC = () => {
         try {
             const { response } = await client.checkEmail({ email, captchaToken });
             if (response.exists) {
-                setStep(2);
-                recaptchaRef.current?.reset();
+                if (!response.isActive) {
+                    setIsInactive(true);
+                    recaptchaRef.current?.reset();
+                } else {
+                    setStep(2);
+                    recaptchaRef.current?.reset();
+                }
             } else {
                 navigate('/register', { state: { prefilledEmail: email } });
             }
@@ -119,13 +130,51 @@ const LoginPage: React.FC = () => {
         const from = location.state?.from?.pathname || "/";
         navigate(from, { replace: true });
     };
+    const handleResendActivation = async () => {
+        setIsResending(true);
+        setGrpcError(null);
+        try {
+            await client.resendActivationEmail({ email });
+            showToast("Activation email sent! Please check your inbox.", "success");
+            setIsInactive(false); // reset back to normal state
+            setEmail('');
+        } catch (err: any) {
+            setGrpcError(err.message || "Failed to resend activation email.");
+        } finally {
+            setIsResending(false);
+        }
+    };
+
     return (
         <div className={styles.loginContainer}>
             <div className={styles.formCard}>
                 <h2>{t.login_title}</h2>
                 {grpcError && <div className={styles.serverError}>{grpcError}</div>}
                 {/* conditional forms for step 1 and step 2 */}
-                {step === 1 ? (
+
+                {isInactive ? (
+                    <div className={styles.inactiveState}>
+                        <div className={styles.inactiveIcon}>
+                            <AlertTriangle size={48} color="#f1c40f" />
+                        </div>
+                        <h3>Account Not Activated</h3>
+                        <p>Your account ({email}) has not been activated yet. You must activate it before logging in.</p>
+                        <button
+                            className={styles.loginBtn}
+                            onClick={handleResendActivation}
+                            disabled={isResending}
+                        >
+                            {isResending ? 'Sending...' : 'Resend Activation Email'}
+                        </button>
+                        <button
+                            className={styles.otpBtn}
+                            onClick={() => setIsInactive(false)}
+                            style={{ width: '100%', marginTop: '10px' }}
+                        >
+                            Back to Login
+                        </button>
+                    </div>
+                ) : step === 1 ? (
                     <form onSubmit={handleStepOneSubmit}>
                         <FormInput
                             label={t.email_label}
@@ -164,7 +213,7 @@ const LoginPage: React.FC = () => {
                                     recaptchaRef.current?.reset();
                                 }}
                             >
-                                 {t.otp_change}
+                                {t.otp_change}
                             </button>
                         </div>
                         <div className={styles.emailExistsMessage}>

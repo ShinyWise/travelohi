@@ -131,6 +131,50 @@ export interface AuthResponse {
     message: string;
 }
 /**
+ * @generated from protobuf message travelohi.v1.auth.ActivateAccountRequest
+ */
+export interface ActivateAccountRequest {
+    /**
+     * @generated from protobuf field: string token = 1
+     */
+    token: string;
+}
+/**
+ * @generated from protobuf message travelohi.v1.auth.ActivateAccountResponse
+ */
+export interface ActivateAccountResponse {
+    /**
+     * @generated from protobuf field: bool success = 1
+     */
+    success: boolean;
+    /**
+     * @generated from protobuf field: string message = 2
+     */
+    message: string;
+}
+/**
+ * @generated from protobuf message travelohi.v1.auth.ResendActivationEmailRequest
+ */
+export interface ResendActivationEmailRequest {
+    /**
+     * @generated from protobuf field: string email = 1
+     */
+    email: string;
+}
+/**
+ * @generated from protobuf message travelohi.v1.auth.ResendActivationEmailResponse
+ */
+export interface ResendActivationEmailResponse {
+    /**
+     * @generated from protobuf field: bool success = 1
+     */
+    success: boolean;
+    /**
+     * @generated from protobuf field: string message = 2
+     */
+    message: string;
+}
+/**
  * @generated from protobuf message travelohi.v1.auth.LogoutRequest
  */
 export interface LogoutRequest {
@@ -212,6 +256,10 @@ export interface CheckEmailResponse {
      * @generated from protobuf field: bool exists = 1
      */
     exists: boolean;
+    /**
+     * @generated from protobuf field: bool is_active = 2
+     */
+    isActive: boolean;
 }
 // @generated message type with reflection information, may provide speed optimized methods
 class RegisterRequest$Type extends MessageType<RegisterRequest> {
@@ -624,6 +672,210 @@ class AuthResponse$Type extends MessageType<AuthResponse> {
  */
 export const AuthResponse = new AuthResponse$Type();
 // @generated message type with reflection information, may provide speed optimized methods
+class ActivateAccountRequest$Type extends MessageType<ActivateAccountRequest> {
+    constructor() {
+        super("travelohi.v1.auth.ActivateAccountRequest", [
+            { no: 1, name: "token", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<ActivateAccountRequest>): ActivateAccountRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.token = "";
+        if (value !== undefined)
+            reflectionMergePartial<ActivateAccountRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ActivateAccountRequest): ActivateAccountRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string token */ 1:
+                    message.token = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ActivateAccountRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string token = 1; */
+        if (message.token !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.token);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.auth.ActivateAccountRequest
+ */
+export const ActivateAccountRequest = new ActivateAccountRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ActivateAccountResponse$Type extends MessageType<ActivateAccountResponse> {
+    constructor() {
+        super("travelohi.v1.auth.ActivateAccountResponse", [
+            { no: 1, name: "success", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 2, name: "message", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<ActivateAccountResponse>): ActivateAccountResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.success = false;
+        message.message = "";
+        if (value !== undefined)
+            reflectionMergePartial<ActivateAccountResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ActivateAccountResponse): ActivateAccountResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bool success */ 1:
+                    message.success = reader.bool();
+                    break;
+                case /* string message */ 2:
+                    message.message = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ActivateAccountResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* bool success = 1; */
+        if (message.success !== false)
+            writer.tag(1, WireType.Varint).bool(message.success);
+        /* string message = 2; */
+        if (message.message !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.message);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.auth.ActivateAccountResponse
+ */
+export const ActivateAccountResponse = new ActivateAccountResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ResendActivationEmailRequest$Type extends MessageType<ResendActivationEmailRequest> {
+    constructor() {
+        super("travelohi.v1.auth.ResendActivationEmailRequest", [
+            { no: 1, name: "email", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<ResendActivationEmailRequest>): ResendActivationEmailRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.email = "";
+        if (value !== undefined)
+            reflectionMergePartial<ResendActivationEmailRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ResendActivationEmailRequest): ResendActivationEmailRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string email */ 1:
+                    message.email = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ResendActivationEmailRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string email = 1; */
+        if (message.email !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.email);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.auth.ResendActivationEmailRequest
+ */
+export const ResendActivationEmailRequest = new ResendActivationEmailRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ResendActivationEmailResponse$Type extends MessageType<ResendActivationEmailResponse> {
+    constructor() {
+        super("travelohi.v1.auth.ResendActivationEmailResponse", [
+            { no: 1, name: "success", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 2, name: "message", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<ResendActivationEmailResponse>): ResendActivationEmailResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.success = false;
+        message.message = "";
+        if (value !== undefined)
+            reflectionMergePartial<ResendActivationEmailResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ResendActivationEmailResponse): ResendActivationEmailResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bool success */ 1:
+                    message.success = reader.bool();
+                    break;
+                case /* string message */ 2:
+                    message.message = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ResendActivationEmailResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* bool success = 1; */
+        if (message.success !== false)
+            writer.tag(1, WireType.Varint).bool(message.success);
+        /* string message = 2; */
+        if (message.message !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.message);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.auth.ResendActivationEmailResponse
+ */
+export const ResendActivationEmailResponse = new ResendActivationEmailResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
 class LogoutRequest$Type extends MessageType<LogoutRequest> {
     constructor() {
         super("travelohi.v1.auth.LogoutRequest", [
@@ -949,12 +1201,14 @@ export const CheckEmailRequest = new CheckEmailRequest$Type();
 class CheckEmailResponse$Type extends MessageType<CheckEmailResponse> {
     constructor() {
         super("travelohi.v1.auth.CheckEmailResponse", [
-            { no: 1, name: "exists", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+            { no: 1, name: "exists", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 2, name: "is_active", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
         ]);
     }
     create(value?: PartialMessage<CheckEmailResponse>): CheckEmailResponse {
         const message = globalThis.Object.create((this.messagePrototype!));
         message.exists = false;
+        message.isActive = false;
         if (value !== undefined)
             reflectionMergePartial<CheckEmailResponse>(this, message, value);
         return message;
@@ -966,6 +1220,9 @@ class CheckEmailResponse$Type extends MessageType<CheckEmailResponse> {
             switch (fieldNo) {
                 case /* bool exists */ 1:
                     message.exists = reader.bool();
+                    break;
+                case /* bool is_active */ 2:
+                    message.isActive = reader.bool();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -982,6 +1239,9 @@ class CheckEmailResponse$Type extends MessageType<CheckEmailResponse> {
         /* bool exists = 1; */
         if (message.exists !== false)
             writer.tag(1, WireType.Varint).bool(message.exists);
+        /* bool is_active = 2; */
+        if (message.isActive !== false)
+            writer.tag(2, WireType.Varint).bool(message.isActive);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -1000,6 +1260,8 @@ export const AuthService = new ServiceType("travelohi.v1.auth.AuthService", [
     { name: "SendOTP", options: {}, I: SendOTPRequest, O: SendOTPResponse },
     { name: "LoginWithOTP", options: {}, I: LoginWithOTPRequest, O: AuthResponse },
     { name: "Register", options: {}, I: RegisterRequest, O: AuthResponse },
+    { name: "ActivateAccount", options: {}, I: ActivateAccountRequest, O: ActivateAccountResponse },
+    { name: "ResendActivationEmail", options: {}, I: ResendActivationEmailRequest, O: ResendActivationEmailResponse },
     { name: "Logout", options: {}, I: LogoutRequest, O: LogoutResponse },
     { name: "GetSecurityQuestion", options: {}, I: GetSecurityQuestionRequest, O: GetSecurityQuestionResponse },
     { name: "ResetPassword", options: {}, I: ResetPasswordRequest, O: AuthResponse },

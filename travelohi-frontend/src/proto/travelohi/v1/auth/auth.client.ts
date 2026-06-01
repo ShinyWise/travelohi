@@ -11,6 +11,10 @@ import type { GetSecurityQuestionResponse } from "./auth";
 import type { GetSecurityQuestionRequest } from "./auth";
 import type { LogoutResponse } from "./auth";
 import type { LogoutRequest } from "./auth";
+import type { ResendActivationEmailResponse } from "./auth";
+import type { ResendActivationEmailRequest } from "./auth";
+import type { ActivateAccountResponse } from "./auth";
+import type { ActivateAccountRequest } from "./auth";
 import type { RegisterRequest } from "./auth";
 import type { LoginWithOTPRequest } from "./auth";
 import type { SendOTPResponse } from "./auth";
@@ -40,6 +44,14 @@ export interface IAuthServiceClient {
      * @generated from protobuf rpc: Register
      */
     register(input: RegisterRequest, options?: RpcOptions): UnaryCall<RegisterRequest, AuthResponse>;
+    /**
+     * @generated from protobuf rpc: ActivateAccount
+     */
+    activateAccount(input: ActivateAccountRequest, options?: RpcOptions): UnaryCall<ActivateAccountRequest, ActivateAccountResponse>;
+    /**
+     * @generated from protobuf rpc: ResendActivationEmail
+     */
+    resendActivationEmail(input: ResendActivationEmailRequest, options?: RpcOptions): UnaryCall<ResendActivationEmailRequest, ResendActivationEmailResponse>;
     /**
      * @generated from protobuf rpc: Logout
      */
@@ -95,31 +107,45 @@ export class AuthServiceClient implements IAuthServiceClient, ServiceInfo {
         return stackIntercept<RegisterRequest, AuthResponse>("unary", this._transport, method, opt, input);
     }
     /**
+     * @generated from protobuf rpc: ActivateAccount
+     */
+    activateAccount(input: ActivateAccountRequest, options?: RpcOptions): UnaryCall<ActivateAccountRequest, ActivateAccountResponse> {
+        const method = this.methods[4], opt = this._transport.mergeOptions(options);
+        return stackIntercept<ActivateAccountRequest, ActivateAccountResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: ResendActivationEmail
+     */
+    resendActivationEmail(input: ResendActivationEmailRequest, options?: RpcOptions): UnaryCall<ResendActivationEmailRequest, ResendActivationEmailResponse> {
+        const method = this.methods[5], opt = this._transport.mergeOptions(options);
+        return stackIntercept<ResendActivationEmailRequest, ResendActivationEmailResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
      * @generated from protobuf rpc: Logout
      */
     logout(input: LogoutRequest, options?: RpcOptions): UnaryCall<LogoutRequest, LogoutResponse> {
-        const method = this.methods[4], opt = this._transport.mergeOptions(options);
+        const method = this.methods[6], opt = this._transport.mergeOptions(options);
         return stackIntercept<LogoutRequest, LogoutResponse>("unary", this._transport, method, opt, input);
     }
     /**
      * @generated from protobuf rpc: GetSecurityQuestion
      */
     getSecurityQuestion(input: GetSecurityQuestionRequest, options?: RpcOptions): UnaryCall<GetSecurityQuestionRequest, GetSecurityQuestionResponse> {
-        const method = this.methods[5], opt = this._transport.mergeOptions(options);
+        const method = this.methods[7], opt = this._transport.mergeOptions(options);
         return stackIntercept<GetSecurityQuestionRequest, GetSecurityQuestionResponse>("unary", this._transport, method, opt, input);
     }
     /**
      * @generated from protobuf rpc: ResetPassword
      */
     resetPassword(input: ResetPasswordRequest, options?: RpcOptions): UnaryCall<ResetPasswordRequest, AuthResponse> {
-        const method = this.methods[6], opt = this._transport.mergeOptions(options);
+        const method = this.methods[8], opt = this._transport.mergeOptions(options);
         return stackIntercept<ResetPasswordRequest, AuthResponse>("unary", this._transport, method, opt, input);
     }
     /**
      * @generated from protobuf rpc: CheckEmail
      */
     checkEmail(input: CheckEmailRequest, options?: RpcOptions): UnaryCall<CheckEmailRequest, CheckEmailResponse> {
-        const method = this.methods[7], opt = this._transport.mergeOptions(options);
+        const method = this.methods[9], opt = this._transport.mergeOptions(options);
         return stackIntercept<CheckEmailRequest, CheckEmailResponse>("unary", this._transport, method, opt, input);
     }
 }
