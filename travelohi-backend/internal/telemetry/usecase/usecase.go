@@ -192,3 +192,41 @@ func (u *telemetryUseCase) GetPopularHotels(ctx context.Context, req *telemetryp
 		Hotels: pbHotels,
 	}, nil
 }
+
+type CachedSearchResult struct {
+	Hotels   []*telemetry.HotelSearchResult   `json:"hotels"`
+	Airlines []*telemetry.AirlineSearchResult `json:"airlines"`
+}
+
+func (u *telemetryUseCase) GlobalSearch(ctx context.Context, query string) ([]*telemetry.HotelSearchResult, []*telemetry.AirlineSearchResult, error) {
+	cacheKey := "telemetry:search:" + query
+
+	cachedBytes, err := u.cache.Get(ctx, cacheKey)
+	if err == nil && cachedBytes != nil {
+		var cached CachedSearchResult
+		if unmarshalErr := json.Unmarshal(cachedBytes, &cached); unmarshalErr == nil {
+			return cached.Hotels, cached.Airlines, nil
+		}
+	}
+
+	hotels, airlines, err := u.repo.GlobalSearch(ctx, query)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	go func(h []*telemetry.HotelSearchResult, a []*telemetry.AirlineSearchResult) {
+		bgCtx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+		defer cancel()
+
+		cached := CachedSearchResult{
+			Hotels:   h,
+			Airlines: a,
+		}
+		if jsonBytes, err := json.Marshal(cached); err == nil {
+			_ = u.cache.Set(bgCtx, cacheKey, jsonBytes, 5*time.Minute)
+		}
+	}(hotels, airlines)
+
+	return hotels, airlines, nil
+}
+

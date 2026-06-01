@@ -25,6 +25,13 @@ func (h *AdminHandler) InsertHotel(ctx context.Context, req *adminpb.InsertHotel
 		return nil, status.Errorf(codes.InvalidArgument, "hotel name and starting price are required")
 	}
 
+	const maxFileSize = 2 * 1024 * 1024
+	for _, picBytes := range req.GetPictures() {
+		if len(picBytes) > maxFileSize {
+			return nil, status.Errorf(codes.InvalidArgument, "security violation: one or more images exceed the 2MB limit")
+		}
+	}
+
 	err := h.usecase.InsertHotel(ctx, req)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to insert hotel: %v", err)
@@ -39,6 +46,11 @@ func (h *AdminHandler) InsertHotel(ctx context.Context, req *adminpb.InsertHotel
 func (h *AdminHandler) InsertAirline(ctx context.Context, req *adminpb.InsertAirlineRequest) (*adminpb.AdminResponse, error) {
 	if req.GetName() == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "airline name is required")
+	}
+
+	const maxFileSize = 2 * 1024 * 1024
+	if len(req.GetLogo()) > maxFileSize {
+		return nil, status.Errorf(codes.InvalidArgument, "security violation: airline logo exceeds the 2MB limit")
 	}
 
 	err := h.usecase.InsertAirline(ctx, req)

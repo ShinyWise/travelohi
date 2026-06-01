@@ -19,20 +19,21 @@ import (
 type matchmakingUseCase struct {
 	cache        game.CacheRepository
 	roomUseCase  game.RoomUseCase
+	repo         game.Repository
 	mu           sync.Mutex
 	waitingQueue []*game.Player
 }
 
-func NewMatchmakingUseCase(cache game.CacheRepository, roomUseCase game.RoomUseCase) game.MatchmakingUseCase {
+func NewMatchmakingUseCase(cache game.CacheRepository, roomUseCase game.RoomUseCase, repo game.Repository) game.MatchmakingUseCase {
 	return &matchmakingUseCase{
 		cache:        cache,
 		roomUseCase:  roomUseCase,
+		repo:         repo,
 		waitingQueue: make([]*game.Player, 0),
 	}
 }
 
 func (u *matchmakingUseCase) HandleJoinQueue(ctx context.Context, player *game.Player) error {
-	// cek memcached rate limit
 	rateLimitKey := "game_rate_limit:" + player.UserID
 	var playCount int
 	var expiry int64
@@ -97,11 +98,21 @@ func (u *matchmakingUseCase) startMatch(p1, p2 *game.Player) {
 	roomID := uuid.New().String()
 	log.Printf("[Matchmaking] Match found! Room %s created for %s vs %s", roomID, p1.UserID, p2.UserID)
 
+	p1Username, err := u.repo.GetUsernameByID(context.Background(), p1.UserID)
+	if err != nil || p1Username == "" {
+		p1Username = "Opponent (" + p1.UserID + ")"
+	}
+
+	p2Username, err := u.repo.GetUsernameByID(context.Background(), p2.UserID)
+	if err != nil || p2Username == "" {
+		p2Username = "Opponent (" + p2.UserID + ")"
+	}
+
 	p1Event := &gamepb.GameServerEvent{
 		Payload: &gamepb.GameServerEvent_MatchFound{
 			MatchFound: &gamepb.MatchFoundEvent{
 				RoomId:         roomID,
-				OpponentName:   "Opponent (" + p2.UserID + ")",
+				OpponentName:   p2Username,
 				StartCountdown: 3,
 				IsPlayerOne:    true,
 			},
@@ -113,7 +124,7 @@ func (u *matchmakingUseCase) startMatch(p1, p2 *game.Player) {
 		Payload: &gamepb.GameServerEvent_MatchFound{
 			MatchFound: &gamepb.MatchFoundEvent{
 				RoomId:         roomID,
-				OpponentName:   "Opponent (" + p1.UserID + ")",
+				OpponentName:   p1Username,
 				StartCountdown: 3,
 				IsPlayerOne:    false,
 			},

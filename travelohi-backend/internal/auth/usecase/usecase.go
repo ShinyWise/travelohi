@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"crypto/rand"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -17,6 +18,7 @@ import (
 	"github.com/travelohi/backend/internal/auth"
 	"github.com/travelohi/backend/pkg/hash"
 	"github.com/travelohi/backend/pkg/id"
+	"github.com/travelohi/backend/pkg/mailer"
 	"github.com/travelohi/backend/pkg/token"
 	accountpb "github.com/travelohi/backend/proto/account/v1"
 )
@@ -28,6 +30,7 @@ type authUseCase struct {
 	hasher         hash.PasswordHasher
 	idGen          id.Generator
 	tokenMaker     token.Maker
+	mailer         mailer.EmailSender
 }
 
 func NewAuthUseCase(
@@ -37,6 +40,7 @@ func NewAuthUseCase(
 	hasher hash.PasswordHasher,
 	idGen id.Generator,
 	tokenMaker token.Maker,
+	m mailer.EmailSender,
 ) auth.AuthUseCase {
 	return &authUseCase{
 		repo:           repo,
@@ -45,6 +49,7 @@ func NewAuthUseCase(
 		hasher:         hasher,
 		idGen:          idGen,
 		tokenMaker:     tokenMaker,
+		mailer:         m,
 	}
 }
 
@@ -120,6 +125,20 @@ func (uc *authUseCase) RegisterUser(ctx context.Context, req *auth.RegisterData)
 		return nil, auth.ErrInternal
 	}
 
+	var profilePicBytes []byte
+	if req.ProfilePictureURL != "" {
+		b64Data := req.ProfilePictureURL
+		if idx := strings.Index(b64Data, ";base64,"); idx != -1 {
+			b64Data = b64Data[idx+8:]
+		}
+		decoded, err := base64.StdEncoding.DecodeString(b64Data)
+		if err == nil {
+			profilePicBytes = decoded
+		} else {
+			log.Printf("[Register] Failed to decode profile picture base64: %v", err)
+		}
+	}
+
 	// create account, panggil accountServices
 	_, err = uc.accountService.InitProfile(ctx, &accountpb.InitProfileRequest{
 		Id:                   newUserID,
@@ -129,6 +148,7 @@ func (uc *authUseCase) RegisterUser(ctx context.Context, req *auth.RegisterData)
 		Gender:               req.Gender,
 		Dob:                  req.DOB,
 		NewsletterSubscribed: req.SubscribeNewsletter,
+		ProfilePicture:       profilePicBytes,
 	})
 
 	if err != nil {
@@ -259,8 +279,15 @@ func (uc *authUseCase) SendOTP(ctx context.Context, email string) error {
 	otpKey := "otp:" + email
 
 	if err := uc.cache.Set(ctx, otpKey, []byte(otpcode), 300); err != nil {
-		return auth.ErrInternal
+		return err
 	}
+
+	htmlBody := fmt.Sprintf("<h2>Travelohi OTP</h2><p>Your OTP Code is: <b>%s</b></p><p>This code is valid for 5 minutes.</p>", otpcode)
+	if err := uc.mailer.SendEmail([]string{email}, "Your Travelohi Login OTP", htmlBody); err != nil {
+		log.Printf("Failed to send OTP to %s: %v\n", email, err)
+		return errors.New("failed to send OTP email")
+	}
+
 	log.Printf("📧 EMAIL SENT TO %s: Your OTP Code is %s (Valid for 5 mins)\n", email, otpcode)
 
 	return nil

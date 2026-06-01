@@ -170,6 +170,11 @@ func (uc *cartUseCase) ApplyPromo(ctx context.Context, userID, promoCode string)
 		return 0, errors.New("promo code usage limit reached")
 	}
 
+	used, err := uc.repo.HasUserUsedPromo(ctx, userID, promoCode)
+	if err == nil && used {
+		return 0, errors.New("promo code has already been used by your account")
+	}
+
 	return promo.DiscountAmount, nil
 }
 
@@ -202,6 +207,10 @@ func (uc *cartUseCase) Checkout(ctx context.Context, userID, paymentMethod, cred
 	if appliedPromoCode != "" {
 		promo, err := uc.repo.GetPromoByCode(ctx, appliedPromoCode)
 		if err == nil && promo.CurrentUses < promo.MaxUses {
+			used, err := uc.repo.HasUserUsedPromo(ctx, userID, appliedPromoCode)
+			if err == nil && used {
+				return "", errors.New("promo code has already been used by your account")
+			}
 			discountAmount = promo.DiscountAmount
 			totalPrice -= discountAmount
 			if totalPrice < 0 {
@@ -246,6 +255,7 @@ func (uc *cartUseCase) Checkout(ctx context.Context, userID, paymentMethod, cred
 	// increment promo usage
 	if appliedPromoCode != "" {
 		_ = uc.repo.IncrementPromoUsage(ctx, appliedPromoCode)
+		_ = uc.repo.RecordPromoUsage(ctx, userID, appliedPromoCode)
 	}
 
 	// create booking via account service

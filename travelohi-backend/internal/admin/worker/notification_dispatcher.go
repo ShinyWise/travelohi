@@ -6,15 +6,18 @@ import (
 	"time"
 
 	"github.com/travelohi/backend/internal/admin"
+	"github.com/travelohi/backend/pkg/mailer"
 )
 
 type NotificationDispatcher struct {
-	repo admin.AdminRepository
+	repo   admin.AdminRepository
+	mailer mailer.EmailSender
 }
 
-func NewNotificationDispatcher(repo admin.AdminRepository) *NotificationDispatcher {
+func NewNotificationDispatcher(repo admin.AdminRepository, m mailer.EmailSender) *NotificationDispatcher {
 	return &NotificationDispatcher{
-		repo: repo,
+		repo:   repo,
+		mailer: m,
 	}
 }
 
@@ -34,17 +37,20 @@ func (w *NotificationDispatcher) DispatchBroadcast(subject, body string) {
 			return
 		}
 
-		log.Printf("[Worker: Notification] Found %d active subscribers. Commencing mock dispatch...\n", len(subscribers))
+		log.Printf("[Worker: Notification] Found %d active subscribers. Commencing real dispatch...\n", len(subscribers))
 
 		// process queue
 		successCount := 0
 		for _, sub := range subscribers {
-			// mock email sender
-			log.Printf("[Email Mock] -> Sending to: %s (%s) | Subject: %s\n", sub.Email, sub.Name, subject)
+			err := w.mailer.SendEmail([]string{sub.Email}, subject, body)
+			if err != nil {
+				log.Printf("[Email Error] -> Failed to send to: %s (%s) | Error: %v\n", sub.Email, sub.Name, err)
+			} else {
+				log.Printf("[Email Success] -> Sent to: %s (%s) | Subject: %s\n", sub.Email, sub.Name, subject)
+				successCount++
+			}
 
-			// simulate network latency
 			time.Sleep(50 * time.Millisecond)
-			successCount++
 		}
 
 		log.Printf("[Worker: Notification] Broadcast complete. Successfully dispatched %d/%d emails.\n", successCount, len(subscribers))

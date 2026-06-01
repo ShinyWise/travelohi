@@ -32,6 +32,7 @@ func (h *AccountGrpcHandler) InitProfile(ctx context.Context, req *accountpb.Ini
 		Gender:               req.GetGender(),
 		DOB:                  req.GetDob(),
 		NewsletterSubscribed: req.GetNewsletterSubscribed(),
+		ProfilePicture:       req.GetProfilePicture(),
 	}
 
 	err := h.userUsecase.InitProfile(ctx, newAccount)
@@ -71,7 +72,7 @@ func (h *AccountGrpcHandler) GetProfile(ctx context.Context, req *accountpb.GetP
 			LastName:             acc.LastName,
 			Gender:               acc.Gender,
 			Dob:                  acc.DOB,
-			ProfilePictureUrl:    acc.ProfilePictureURL,
+			ProfilePicture:       acc.ProfilePicture,
 			NewsletterSubscribed: acc.NewsletterSubscribed,
 			HiWalletBalance:      acc.HiWalletBalance,
 			PhoneNumber:          acc.PhoneNumber,
@@ -92,7 +93,7 @@ func (h *AccountGrpcHandler) UpdateProfile(ctx context.Context, req *accountpb.U
 		ID:                   userID,
 		FirstName:            req.GetFirstName(),
 		LastName:             req.GetLastName(),
-		ProfilePictureURL:    req.GetProfilePictureUrl(),
+		ProfilePicture:       req.GetProfilePicture(),
 		NewsletterSubscribed: req.GetNewsletterSubscribed(),
 		PhoneNumber:          req.GetPhoneNumber(),
 		Address:              req.GetAddress(),
@@ -112,7 +113,7 @@ func (h *AccountGrpcHandler) UpdateProfile(ctx context.Context, req *accountpb.U
 			LastName:             updatedAccount.LastName,
 			Gender:               updatedAccount.Gender,
 			Dob:                  updatedAccount.DOB,
-			ProfilePictureUrl:    updatedAccount.ProfilePictureURL,
+			ProfilePicture:       updatedAccount.ProfilePicture,
 			NewsletterSubscribed: updatedAccount.NewsletterSubscribed,
 			HiWalletBalance:      updatedAccount.HiWalletBalance,
 			PhoneNumber:          updatedAccount.PhoneNumber,

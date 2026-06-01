@@ -1,11 +1,14 @@
 package main
 
 import (
+	"database/sql/driver"
+	"encoding/hex"
+	"errors"
 	"fmt"
 	"log"
 	"math/rand"
-	"os"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 
@@ -17,6 +20,87 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
+
+var dummyImageBytes = []byte{
+	0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x01, 0x00, 0x01, 0x00,
+	0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0x21,
+	0xf9, 0x04, 0x01, 0x00, 0x00, 0x00, 0x00, 0x2c, 0x00, 0x00,
+	0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x02, 0x01, 0x44,
+	0x00, 0x3b,
+}
+
+type ByteaArray [][]byte
+
+// Value implements driver.Valuer
+func (a ByteaArray) Value() (driver.Value, error) {
+	if a == nil {
+		return nil, nil
+	}
+	if len(a) == 0 {
+		return "{}", nil
+	}
+	var sb strings.Builder
+	sb.WriteString("{")
+	for i, b := range a {
+		if i > 0 {
+			sb.WriteString(",")
+		}
+		sb.WriteString(`"\\x` + hex.EncodeToString(b) + `"`)
+	}
+	sb.WriteString("}")
+	return sb.String(), nil
+}
+
+// Scan implements sql.Scanner
+func (a *ByteaArray) Scan(src interface{}) error {
+	if src == nil {
+		*a = nil
+		return nil
+	}
+
+	var s string
+	switch v := src.(type) {
+	case string:
+		s = v
+	case []byte:
+		s = string(v)
+	default:
+		return fmt.Errorf("unsupported type %T for ByteaArray", src)
+	}
+
+	if len(s) < 2 || s[0] != '{' || s[len(s)-1] != '}' {
+		return errors.New("invalid bytea[] array syntax")
+	}
+
+	s = s[1 : len(s)-1]
+	if len(s) == 0 {
+		*a = [][]byte{}
+		return nil
+	}
+
+	var elements [][]byte
+	parts := strings.Split(s, ",")
+	for _, part := range parts {
+		part = strings.Trim(part, ` "`)
+		if strings.HasPrefix(part, `\\x`) {
+			b, err := hex.DecodeString(part[3:])
+			if err != nil {
+				return err
+			}
+			elements = append(elements, b)
+		} else if strings.HasPrefix(part, `\x`) {
+			b, err := hex.DecodeString(part[2:])
+			if err != nil {
+				return err
+			}
+			elements = append(elements, b)
+		} else {
+			elements = append(elements, []byte(part))
+		}
+	}
+	*a = elements
+	return nil
+}
 
 // database models matching the gorm schemas
 
@@ -39,7 +123,7 @@ type AccountModel struct {
 	LastName             string    `gorm:"not null;column:last_name;type:varchar(255)"`
 	Gender               string    `gorm:"column:gender;type:varchar(50)"`
 	Dob                  string    `gorm:"column:dob;type:varchar(50)"`
-	ProfilePictureUrl    string    `gorm:"column:profile_picture_url;type:text"`
+	ProfilePicture       []byte    `gorm:"column:profile_picture;type:bytea"`
 	IsActive             bool      `gorm:"column:is_active;not null"`
 	NewsletterSubscribed bool      `gorm:"column:newsletter_subscribed;default:false"`
 	HiWalletBalance      int64     `gorm:"column:hi_wallet_balance;default:0"`
@@ -54,19 +138,19 @@ func (AccountModel) TableName() string { return "account_models" }
 
 // hotel model with json serialized list fields
 type HotelModel struct {
-	ID                string   `gorm:"primaryKey;column:id"`
-	Name              string   `gorm:"column:name"`
-	Description       string   `gorm:"column:description"`
-	Address           string   `gorm:"column:address"`
-	PictureURLs       []string `gorm:"column:picture_urls;type:jsonb;serializer:json"`
-	Facilities        []string `gorm:"column:facilities;type:jsonb;serializer:json"`
-	RatingCleanliness float32  `gorm:"column:rating_cleanliness"`
-	RatingComfort     float32  `gorm:"column:rating_comfort"`
-	RatingLocation    float32  `gorm:"column:rating_location"`
-	RatingService     float32  `gorm:"column:rating_service"`
-	RatingAverage     float32  `gorm:"column:rating_average"`
-	TotalReviews      int32    `gorm:"column:total_reviews"`
-	StartingPrice     int64    `gorm:"column:starting_price"`
+	ID                string     `gorm:"primaryKey;column:id"`
+	Name              string     `gorm:"column:name"`
+	Description       string     `gorm:"column:description"`
+	Address           string     `gorm:"column:address"`
+	Pictures          ByteaArray `gorm:"column:pictures;type:bytea[]"`
+	Facilities        []string   `gorm:"column:facilities;type:jsonb;serializer:json"`
+	RatingCleanliness float32    `gorm:"column:rating_cleanliness"`
+	RatingComfort     float32    `gorm:"column:rating_comfort"`
+	RatingLocation    float32    `gorm:"column:rating_location"`
+	RatingService     float32    `gorm:"column:rating_service"`
+	RatingAverage     float32    `gorm:"column:rating_average"`
+	TotalReviews      int32      `gorm:"column:total_reviews"`
+	StartingPrice     int64      `gorm:"column:starting_price"`
 }
 
 func (HotelModel) TableName() string { return "hotels" }
@@ -103,9 +187,9 @@ type HotelReviewModel struct {
 func (HotelReviewModel) TableName() string { return "hotel_reviews" }
 
 type AirlineModel struct {
-	ID      string `gorm:"primaryKey;column:id;type:varchar(255)"`
-	Name    string `gorm:"not null;column:name;type:varchar(255)"`
-	LogoUrl string `gorm:"column:logo_url;type:text"`
+	ID   string `gorm:"primaryKey;column:id;type:varchar(255)"`
+	Name string `gorm:"not null;column:name;type:varchar(255)"`
+	Logo []byte `gorm:"column:logo;type:bytea"`
 }
 
 func (AirlineModel) TableName() string { return "airlines" }
@@ -189,13 +273,27 @@ func main() {
 		dsn = "host=localhost user=root password=secretpassword dbname=travelohi_db port=5432 sslmode=disable TimeZone=Asia/Jakarta"
 	}
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Warn),
-	})
-	if err != nil {
-		log.Fatalf("❌ Failed to connect to database: %v", err)
+	var db *gorm.DB
+	var err error
+
+	// Retry connection if PostgreSQL is not ready yet
+	for i := 1; i <= 10; i++ {
+		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
+			Logger: logger.Default.LogMode(logger.Warn),
+		})
+		if err == nil {
+			log.Println("✅ Connected to PostgreSQL.")
+			break
+		}
+
+		log.Printf("⏳ Database not ready yet (Attempt %d/10). Retrying in 3 seconds...", i)
+		time.Sleep(3 * time.Second)
 	}
-	log.Println("✅ Connected to PostgreSQL.")
+
+	if err != nil {
+		log.Fatalf("❌ Fatal: Could not connect to database after 10 attempts: %v", err)
+	}
+	// ---------------------------------------------------------
 
 	gofakeit.Seed(42) // Fixed seed → reproducible fake data
 	rand.Seed(42)     //nolint:staticcheck
@@ -249,7 +347,7 @@ func main() {
 		} else {
 			firstName = gofakeit.FirstName()
 			lastName = gofakeit.LastName()
-			email = strings.ToLower(firstName + "." + lastName) + "@gmail.com"
+			email = strings.ToLower(firstName+"."+lastName) + "@gmail.com"
 		}
 
 		userID := uuid.New().String()
@@ -277,9 +375,9 @@ func main() {
 			LastName:             lastName,
 			Gender:               gofakeit.Gender(),
 			Dob:                  gofakeit.Date().Format("2006-01-02"),
-			ProfilePictureUrl:    avatarURL(firstName, lastName),
+			ProfilePicture:       nil,
 			IsActive:             isActive,
-			NewsletterSubscribed: gofakeit.Bool(),
+			NewsletterSubscribed: (i == 1 || i == 2), // Limit subscribers for Mailtrap quota limits
 			HiWalletBalance:      int64(gofakeit.Number(0, 10_000_000)),
 			PhoneNumber:          gofakeit.Phone(),
 			Address:              gofakeit.Address().Address,
@@ -326,9 +424,9 @@ func main() {
 		city := indonesianCities[rand.Intn(len(indonesianCities))]
 
 		// generate randomized pictures
-		var pics []string
+		var pics [][]byte
 		for j := 0; j < 4; j++ {
-			pics = append(pics, fmt.Sprintf("https://picsum.photos/seed/%s/800/600", uuid.New().String()))
+			pics = append(pics, dummyImageBytes)
 		}
 
 		// shuffle and select facilities
@@ -348,7 +446,7 @@ func main() {
 			Name:              fmt.Sprintf("%s %s Hotel", gofakeit.Company(), city),
 			Description:       gofakeit.Paragraph(1, 3, 10, " "),
 			Address:           fmt.Sprintf("%s, %s, Indonesia", gofakeit.Street(), city),
-			PictureURLs:       pics,
+			Pictures:          ByteaArray(pics),
 			Facilities:        selectedFac,
 			RatingCleanliness: cl,
 			RatingComfort:     co,
@@ -411,8 +509,7 @@ func main() {
 		airline := AirlineModel{
 			ID:   uuid.New().String(),
 			Name: a.name,
-			// use seeded picsum logo url
-			LogoUrl: fmt.Sprintf("https://picsum.photos/seed/%s/200/200", a.code),
+			Logo: dummyImageBytes,
 		}
 		if err := db.Create(&airline).Error; err != nil {
 			log.Printf("  WARN: airline insert failed for %s: %v", a.name, err)
@@ -611,48 +708,52 @@ func seedCartItems(db *gorm.DB, users []seededUser, rooms []HotelRoomModel, seat
 	totalPaid := 0
 
 	// seed hotel bookings
-	for i := 0; i < 150; i++ {
-		u := users[rand.Intn(len(users))]
-		r := rooms[rand.Intn(len(rooms))]
-		daysAgo := rand.Intn(30)
-		checkIn := time.Now().AddDate(0, 0, -daysAgo)
-		checkOut := checkIn.AddDate(0, 0, rand.Intn(5)+1)
+	if len(rooms) > 0 {
+		for i := 0; i < 150; i++ {
+			u := users[rand.Intn(len(users))]
+			r := rooms[rand.Intn(len(rooms))]
+			daysAgo := rand.Intn(30)
+			checkIn := time.Now().AddDate(0, 0, -daysAgo)
+			checkOut := checkIn.AddDate(0, 0, rand.Intn(5)+1)
 
-		item := CartItemModel{
-			ID:           uuid.New().String(),
-			UserID:       u.id,
-			ItemType:     "hotel_room",
-			ReferenceID:  r.ID,
-			Price:        r.PricePerNight,
-			Status:       "paid",
-			Quantity:     1,
-			CheckInDate:  checkIn.Format("2006-01-02"),
-			CheckOutDate: checkOut.Format("2006-01-02"),
-			CreatedAt:    checkIn.Add(-24 * time.Hour), // booked a day before checkin
-		}
-		if err := db.Create(&item).Error; err == nil {
-			totalPaid++
+			item := CartItemModel{
+				ID:           uuid.New().String(),
+				UserID:       u.id,
+				ItemType:     "hotel_room",
+				ReferenceID:  r.ID,
+				Price:        r.PricePerNight,
+				Status:       "paid",
+				Quantity:     1,
+				CheckInDate:  checkIn.Format("2006-01-02"),
+				CheckOutDate: checkOut.Format("2006-01-02"),
+				CreatedAt:    checkIn.Add(-24 * time.Hour),
+			}
+			if err := db.Create(&item).Error; err == nil {
+				totalPaid++
+			}
 		}
 	}
 
 	// seed flight bookings
-	for i := 0; i < 150; i++ {
-		u := users[rand.Intn(len(users))]
-		s := seats[rand.Intn(len(seats))]
-		daysAgo := rand.Intn(30)
+	if len(seats) > 0 {
+		for i := 0; i < 150; i++ {
+			u := users[rand.Intn(len(users))]
+			s := seats[rand.Intn(len(seats))]
+			daysAgo := rand.Intn(30)
 
-		item := CartItemModel{
-			ID:          uuid.New().String(),
-			UserID:      u.id,
-			ItemType:    "flight_seat",
-			ReferenceID: s.ID,
-			Price:       s.Price,
-			Status:      "paid",
-			Quantity:    1,
-			CreatedAt:   time.Now().AddDate(0, 0, -daysAgo),
-		}
-		if err := db.Create(&item).Error; err == nil {
-			totalPaid++
+			item := CartItemModel{
+				ID:          uuid.New().String(),
+				UserID:      u.id,
+				ItemType:    "flight_seat",
+				ReferenceID: s.ID,
+				Price:       s.Price,
+				Status:      "paid",
+				Quantity:    1,
+				CreatedAt:   time.Now().AddDate(0, 0, -daysAgo),
+			}
+			if err := db.Create(&item).Error; err == nil {
+				totalPaid++
+			}
 		}
 	}
 

@@ -35,6 +35,7 @@ func (h *authHandler) Register(ctx context.Context, req *authpb.RegisterRequest)
 		SecurityAnswer:      req.GetSecurityAnswer(),
 		SubscribeNewsletter: req.GetSubscribeNewsletter(),
 		CaptchaToken:        req.GetCaptchaToken(),
+		ProfilePictureURL:   req.GetProfilePicture(),
 	}
 
 	// 2. kasih ke auth usecase

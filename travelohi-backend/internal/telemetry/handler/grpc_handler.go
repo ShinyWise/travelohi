@@ -76,3 +76,36 @@ func (h *TelemetryHandler) GetPopularHotels(ctx context.Context, req *telemetryp
 
 	return res, nil
 }
+
+func (h *TelemetryHandler) GlobalSearch(ctx context.Context, req *telemetrypb.GlobalSearchRequest) (*telemetrypb.GlobalSearchResponse, error) {
+	query := req.GetQuery()
+	hotels, airlines, err := h.usecase.GlobalSearch(ctx, query)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to execute global search: %v", err)
+	}
+
+	pbHotels := make([]*telemetrypb.HotelSearchResult, len(hotels))
+	for i, hotel := range hotels {
+		pbHotels[i] = &telemetrypb.HotelSearchResult{
+			Id:       hotel.ID,
+			Name:     hotel.Name,
+			Location: hotel.Location,
+			ImageUrl: hotel.ImageURL,
+		}
+	}
+
+	pbAirlines := make([]*telemetrypb.AirlineSearchResult, len(airlines))
+	for i, airline := range airlines {
+		pbAirlines[i] = &telemetrypb.AirlineSearchResult{
+			Id:      airline.ID,
+			Name:    airline.Name,
+			LogoUrl: airline.LogoURL,
+		}
+	}
+
+	return &telemetrypb.GlobalSearchResponse{
+		Hotels:   pbHotels,
+		Airlines: pbAirlines,
+	}, nil
+}
+

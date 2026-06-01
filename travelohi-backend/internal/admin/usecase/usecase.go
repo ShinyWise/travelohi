@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"log"
 
 	"github.com/google/uuid"
 	"github.com/travelohi/backend/internal/admin"
@@ -30,22 +31,39 @@ func (u *adminUseCase) InsertHotel(ctx context.Context, req *adminpb.InsertHotel
 		Name:          req.GetName(),
 		Description:   req.GetDescription(),
 		Address:       req.GetAddress(),
-		PictureURLs:   req.GetPictureUrls(),
+		Pictures:      req.GetPictures(),
 		Facilities:    req.GetFacilities(),
 		StartingPrice: req.GetStartingPrice(),
 	}
 
-	return u.repo.InsertHotel(ctx, hotel)
+	if err := u.repo.InsertHotel(ctx, hotel); err != nil {
+		return err
+	}
+
+	if err := u.repo.AutoGenerateRooms(ctx, hotel.ID, hotel.StartingPrice); err != nil {
+		log.Printf("WARN: failed to auto-generate rooms for hotel %s: %v", hotel.ID, err)
+	}
+
+	return nil
 }
+
 
 func (u *adminUseCase) InsertAirline(ctx context.Context, req *adminpb.InsertAirlineRequest) error {
 	airline := &admin.Airline{
-		ID:      uuid.New().String(),
-		Name:    req.GetName(),
-		LogoURL: req.GetLogoUrl(),
+		ID:   uuid.New().String(),
+		Name: req.GetName(),
+		Logo: req.GetLogo(),
 	}
 
-	return u.repo.InsertAirline(ctx, airline)
+	if err := u.repo.InsertAirline(ctx, airline); err != nil {
+		return err
+	}
+
+	if err := u.repo.AutoGenerateFlights(ctx, airline.ID); err != nil {
+		log.Printf("WARN: failed to auto-generate flights for airline %s: %v", airline.ID, err)
+	}
+
+	return nil
 }
 
 func (u *adminUseCase) CreatePromo(ctx context.Context, req *adminpb.CreatePromoRequest) error {
