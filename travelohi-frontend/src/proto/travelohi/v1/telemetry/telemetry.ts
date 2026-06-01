@@ -12,6 +12,66 @@ import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 /**
+ * @generated from protobuf message travelohi.v1.telemetry.GlobalSearchRequest
+ */
+export interface GlobalSearchRequest {
+    /**
+     * @generated from protobuf field: string query = 1
+     */
+    query: string;
+}
+/**
+ * @generated from protobuf message travelohi.v1.telemetry.HotelSearchResult
+ */
+export interface HotelSearchResult {
+    /**
+     * @generated from protobuf field: string id = 1
+     */
+    id: string;
+    /**
+     * @generated from protobuf field: string name = 2
+     */
+    name: string;
+    /**
+     * @generated from protobuf field: string location = 3
+     */
+    location: string;
+    /**
+     * @generated from protobuf field: string image_url = 4
+     */
+    imageUrl: string;
+}
+/**
+ * @generated from protobuf message travelohi.v1.telemetry.AirlineSearchResult
+ */
+export interface AirlineSearchResult {
+    /**
+     * @generated from protobuf field: string id = 1
+     */
+    id: string;
+    /**
+     * @generated from protobuf field: string name = 2
+     */
+    name: string;
+    /**
+     * @generated from protobuf field: string logo_url = 3
+     */
+    logoUrl: string;
+}
+/**
+ * @generated from protobuf message travelohi.v1.telemetry.GlobalSearchResponse
+ */
+export interface GlobalSearchResponse {
+    /**
+     * @generated from protobuf field: repeated travelohi.v1.telemetry.HotelSearchResult hotels = 1
+     */
+    hotels: HotelSearchResult[];
+    /**
+     * @generated from protobuf field: repeated travelohi.v1.telemetry.AirlineSearchResult airlines = 2
+     */
+    airlines: AirlineSearchResult[];
+}
+/**
  * @generated from protobuf message travelohi.v1.telemetry.LogSearchQueryRequest
  */
 export interface LogSearchQueryRequest {
@@ -131,6 +191,242 @@ export interface TelemetryResponse {
      */
     success: boolean;
 }
+// @generated message type with reflection information, may provide speed optimized methods
+class GlobalSearchRequest$Type extends MessageType<GlobalSearchRequest> {
+    constructor() {
+        super("travelohi.v1.telemetry.GlobalSearchRequest", [
+            { no: 1, name: "query", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<GlobalSearchRequest>): GlobalSearchRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.query = "";
+        if (value !== undefined)
+            reflectionMergePartial<GlobalSearchRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GlobalSearchRequest): GlobalSearchRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string query */ 1:
+                    message.query = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GlobalSearchRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string query = 1; */
+        if (message.query !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.query);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.telemetry.GlobalSearchRequest
+ */
+export const GlobalSearchRequest = new GlobalSearchRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class HotelSearchResult$Type extends MessageType<HotelSearchResult> {
+    constructor() {
+        super("travelohi.v1.telemetry.HotelSearchResult", [
+            { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "location", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "image_url", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<HotelSearchResult>): HotelSearchResult {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.id = "";
+        message.name = "";
+        message.location = "";
+        message.imageUrl = "";
+        if (value !== undefined)
+            reflectionMergePartial<HotelSearchResult>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: HotelSearchResult): HotelSearchResult {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string id */ 1:
+                    message.id = reader.string();
+                    break;
+                case /* string name */ 2:
+                    message.name = reader.string();
+                    break;
+                case /* string location */ 3:
+                    message.location = reader.string();
+                    break;
+                case /* string image_url */ 4:
+                    message.imageUrl = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: HotelSearchResult, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string id = 1; */
+        if (message.id !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.id);
+        /* string name = 2; */
+        if (message.name !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.name);
+        /* string location = 3; */
+        if (message.location !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.location);
+        /* string image_url = 4; */
+        if (message.imageUrl !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.imageUrl);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.telemetry.HotelSearchResult
+ */
+export const HotelSearchResult = new HotelSearchResult$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class AirlineSearchResult$Type extends MessageType<AirlineSearchResult> {
+    constructor() {
+        super("travelohi.v1.telemetry.AirlineSearchResult", [
+            { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "logo_url", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<AirlineSearchResult>): AirlineSearchResult {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.id = "";
+        message.name = "";
+        message.logoUrl = "";
+        if (value !== undefined)
+            reflectionMergePartial<AirlineSearchResult>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: AirlineSearchResult): AirlineSearchResult {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string id */ 1:
+                    message.id = reader.string();
+                    break;
+                case /* string name */ 2:
+                    message.name = reader.string();
+                    break;
+                case /* string logo_url */ 3:
+                    message.logoUrl = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: AirlineSearchResult, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string id = 1; */
+        if (message.id !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.id);
+        /* string name = 2; */
+        if (message.name !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.name);
+        /* string logo_url = 3; */
+        if (message.logoUrl !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.logoUrl);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.telemetry.AirlineSearchResult
+ */
+export const AirlineSearchResult = new AirlineSearchResult$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GlobalSearchResponse$Type extends MessageType<GlobalSearchResponse> {
+    constructor() {
+        super("travelohi.v1.telemetry.GlobalSearchResponse", [
+            { no: 1, name: "hotels", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => HotelSearchResult },
+            { no: 2, name: "airlines", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => AirlineSearchResult }
+        ]);
+    }
+    create(value?: PartialMessage<GlobalSearchResponse>): GlobalSearchResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.hotels = [];
+        message.airlines = [];
+        if (value !== undefined)
+            reflectionMergePartial<GlobalSearchResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GlobalSearchResponse): GlobalSearchResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated travelohi.v1.telemetry.HotelSearchResult hotels */ 1:
+                    message.hotels.push(HotelSearchResult.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                case /* repeated travelohi.v1.telemetry.AirlineSearchResult airlines */ 2:
+                    message.airlines.push(AirlineSearchResult.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GlobalSearchResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated travelohi.v1.telemetry.HotelSearchResult hotels = 1; */
+        for (let i = 0; i < message.hotels.length; i++)
+            HotelSearchResult.internalBinaryWrite(message.hotels[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* repeated travelohi.v1.telemetry.AirlineSearchResult airlines = 2; */
+        for (let i = 0; i < message.airlines.length; i++)
+            AirlineSearchResult.internalBinaryWrite(message.airlines[i], writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.telemetry.GlobalSearchResponse
+ */
+export const GlobalSearchResponse = new GlobalSearchResponse$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class LogSearchQueryRequest$Type extends MessageType<LogSearchQueryRequest> {
     constructor() {
@@ -732,5 +1028,6 @@ export const TelemetryService = new ServiceType("travelohi.v1.telemetry.Telemetr
     { name: "GetRecentSearches", options: {}, I: GetRecentSearchesRequest, O: GetRecentSearchesResponse },
     { name: "GetGlobalRecommendations", options: {}, I: GetGlobalRecommendationsRequest, O: GetGlobalRecommendationsResponse },
     { name: "GetPopularFlightDestinations", options: {}, I: GetPopularFlightsRequest, O: GetPopularFlightsResponse },
-    { name: "GetPopularHotels", options: {}, I: GetPopularHotelsRequest, O: GetPopularHotelsResponse }
+    { name: "GetPopularHotels", options: {}, I: GetPopularHotelsRequest, O: GetPopularHotelsResponse },
+    { name: "GlobalSearch", options: {}, I: GlobalSearchRequest, O: GlobalSearchResponse }
 ]);

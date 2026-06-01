@@ -129,7 +129,32 @@ export interface GameStateUpdate {
     /**
      * @generated from protobuf field: int32 time_remaining = 3
      */
-    timeRemaining: number; // add additional positioning data if needed}
+    timeRemaining: number;
+    /**
+     * @generated from protobuf field: int32 player_one_x = 4
+     */
+    playerOneX: number;
+    /**
+     * @generated from protobuf field: int32 player_two_x = 5
+     */
+    playerTwoX: number;
+    /**
+     * @generated from protobuf field: string player_one_action = 6
+     */
+    playerOneAction: string;
+    /**
+     * @generated from protobuf field: string player_two_action = 7
+     */
+    playerTwoAction: string;
+    /**
+     * @generated from protobuf field: int32 player_one_y = 8
+     */
+    playerOneY: number;
+    /**
+     * @generated from protobuf field: int32 player_two_y = 9
+     */
+    playerTwoY: number;
+}
 /**
  * @generated from protobuf message travelohi.v1.game.MatchEndEvent
  */
@@ -471,7 +496,13 @@ class GameStateUpdate$Type extends MessageType<GameStateUpdate> {
         super("travelohi.v1.game.GameStateUpdate", [
             { no: 1, name: "player_one_hp", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 2, name: "player_two_hp", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
-            { no: 3, name: "time_remaining", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+            { no: 3, name: "time_remaining", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 4, name: "player_one_x", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 5, name: "player_two_x", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 6, name: "player_one_action", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 7, name: "player_two_action", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 8, name: "player_one_y", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 9, name: "player_two_y", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
         ]);
     }
     create(value?: PartialMessage<GameStateUpdate>): GameStateUpdate {
@@ -479,6 +510,12 @@ class GameStateUpdate$Type extends MessageType<GameStateUpdate> {
         message.playerOneHp = 0;
         message.playerTwoHp = 0;
         message.timeRemaining = 0;
+        message.playerOneX = 0;
+        message.playerTwoX = 0;
+        message.playerOneAction = "";
+        message.playerTwoAction = "";
+        message.playerOneY = 0;
+        message.playerTwoY = 0;
         if (value !== undefined)
             reflectionMergePartial<GameStateUpdate>(this, message, value);
         return message;
@@ -496,6 +533,24 @@ class GameStateUpdate$Type extends MessageType<GameStateUpdate> {
                     break;
                 case /* int32 time_remaining */ 3:
                     message.timeRemaining = reader.int32();
+                    break;
+                case /* int32 player_one_x */ 4:
+                    message.playerOneX = reader.int32();
+                    break;
+                case /* int32 player_two_x */ 5:
+                    message.playerTwoX = reader.int32();
+                    break;
+                case /* string player_one_action */ 6:
+                    message.playerOneAction = reader.string();
+                    break;
+                case /* string player_two_action */ 7:
+                    message.playerTwoAction = reader.string();
+                    break;
+                case /* int32 player_one_y */ 8:
+                    message.playerOneY = reader.int32();
+                    break;
+                case /* int32 player_two_y */ 9:
+                    message.playerTwoY = reader.int32();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -518,6 +573,24 @@ class GameStateUpdate$Type extends MessageType<GameStateUpdate> {
         /* int32 time_remaining = 3; */
         if (message.timeRemaining !== 0)
             writer.tag(3, WireType.Varint).int32(message.timeRemaining);
+        /* int32 player_one_x = 4; */
+        if (message.playerOneX !== 0)
+            writer.tag(4, WireType.Varint).int32(message.playerOneX);
+        /* int32 player_two_x = 5; */
+        if (message.playerTwoX !== 0)
+            writer.tag(5, WireType.Varint).int32(message.playerTwoX);
+        /* string player_one_action = 6; */
+        if (message.playerOneAction !== "")
+            writer.tag(6, WireType.LengthDelimited).string(message.playerOneAction);
+        /* string player_two_action = 7; */
+        if (message.playerTwoAction !== "")
+            writer.tag(7, WireType.LengthDelimited).string(message.playerTwoAction);
+        /* int32 player_one_y = 8; */
+        if (message.playerOneY !== 0)
+            writer.tag(8, WireType.Varint).int32(message.playerOneY);
+        /* int32 player_two_y = 9; */
+        if (message.playerTwoY !== 0)
+            writer.tag(9, WireType.Varint).int32(message.playerTwoY);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

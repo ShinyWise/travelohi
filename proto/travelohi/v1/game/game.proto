@@ -46,7 +46,12 @@ message GameStateUpdate {
   int32 player_one_hp = 1;
   int32 player_two_hp = 2;
   int32 time_remaining = 3;
-  // add additional positioning data if needed
+  int32 player_one_x = 4;
+  int32 player_two_x = 5;
+  string player_one_action = 6;
+  string player_two_action = 7;
+  int32 player_one_y = 8;
+  int32 player_two_y = 9;
 }
 
 message MatchEndEvent {

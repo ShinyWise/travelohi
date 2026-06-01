@@ -384,12 +384,18 @@ func (x *MatchFoundEvent) GetIsPlayerOne() bool {
 }
 
 type GameStateUpdate struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	PlayerOneHp   int32                  `protobuf:"varint,1,opt,name=player_one_hp,json=playerOneHp,proto3" json:"player_one_hp,omitempty"`
-	PlayerTwoHp   int32                  `protobuf:"varint,2,opt,name=player_two_hp,json=playerTwoHp,proto3" json:"player_two_hp,omitempty"`
-	TimeRemaining int32                  `protobuf:"varint,3,opt,name=time_remaining,json=timeRemaining,proto3" json:"time_remaining,omitempty"` // add additional positioning data if needed
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	PlayerOneHp     int32                  `protobuf:"varint,1,opt,name=player_one_hp,json=playerOneHp,proto3" json:"player_one_hp,omitempty"`
+	PlayerTwoHp     int32                  `protobuf:"varint,2,opt,name=player_two_hp,json=playerTwoHp,proto3" json:"player_two_hp,omitempty"`
+	TimeRemaining   int32                  `protobuf:"varint,3,opt,name=time_remaining,json=timeRemaining,proto3" json:"time_remaining,omitempty"`
+	PlayerOneX      int32                  `protobuf:"varint,4,opt,name=player_one_x,json=playerOneX,proto3" json:"player_one_x,omitempty"`
+	PlayerTwoX      int32                  `protobuf:"varint,5,opt,name=player_two_x,json=playerTwoX,proto3" json:"player_two_x,omitempty"`
+	PlayerOneAction string                 `protobuf:"bytes,6,opt,name=player_one_action,json=playerOneAction,proto3" json:"player_one_action,omitempty"`
+	PlayerTwoAction string                 `protobuf:"bytes,7,opt,name=player_two_action,json=playerTwoAction,proto3" json:"player_two_action,omitempty"`
+	PlayerOneY      int32                  `protobuf:"varint,8,opt,name=player_one_y,json=playerOneY,proto3" json:"player_one_y,omitempty"`
+	PlayerTwoY      int32                  `protobuf:"varint,9,opt,name=player_two_y,json=playerTwoY,proto3" json:"player_two_y,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *GameStateUpdate) Reset() {
@@ -439,6 +445,48 @@ func (x *GameStateUpdate) GetPlayerTwoHp() int32 {
 func (x *GameStateUpdate) GetTimeRemaining() int32 {
 	if x != nil {
 		return x.TimeRemaining
+	}
+	return 0
+}
+
+func (x *GameStateUpdate) GetPlayerOneX() int32 {
+	if x != nil {
+		return x.PlayerOneX
+	}
+	return 0
+}
+
+func (x *GameStateUpdate) GetPlayerTwoX() int32 {
+	if x != nil {
+		return x.PlayerTwoX
+	}
+	return 0
+}
+
+func (x *GameStateUpdate) GetPlayerOneAction() string {
+	if x != nil {
+		return x.PlayerOneAction
+	}
+	return ""
+}
+
+func (x *GameStateUpdate) GetPlayerTwoAction() string {
+	if x != nil {
+		return x.PlayerTwoAction
+	}
+	return ""
+}
+
+func (x *GameStateUpdate) GetPlayerOneY() int32 {
+	if x != nil {
+		return x.PlayerOneY
+	}
+	return 0
+}
+
+func (x *GameStateUpdate) GetPlayerTwoY() int32 {
+	if x != nil {
+		return x.PlayerTwoY
 	}
 	return 0
 }
@@ -566,11 +614,21 @@ const file_proto_travelohi_v1_game_game_proto_rawDesc = "" +
 	"\aroom_id\x18\x01 \x01(\tR\x06roomId\x12#\n" +
 	"\ropponent_name\x18\x02 \x01(\tR\fopponentName\x12'\n" +
 	"\x0fstart_countdown\x18\x03 \x01(\x05R\x0estartCountdown\x12\"\n" +
-	"\ris_player_one\x18\x04 \x01(\bR\visPlayerOne\"\x80\x01\n" +
+	"\ris_player_one\x18\x04 \x01(\bR\visPlayerOne\"\xe0\x02\n" +
 	"\x0fGameStateUpdate\x12\"\n" +
 	"\rplayer_one_hp\x18\x01 \x01(\x05R\vplayerOneHp\x12\"\n" +
 	"\rplayer_two_hp\x18\x02 \x01(\x05R\vplayerTwoHp\x12%\n" +
-	"\x0etime_remaining\x18\x03 \x01(\x05R\rtimeRemaining\"D\n" +
+	"\x0etime_remaining\x18\x03 \x01(\x05R\rtimeRemaining\x12 \n" +
+	"\fplayer_one_x\x18\x04 \x01(\x05R\n" +
+	"playerOneX\x12 \n" +
+	"\fplayer_two_x\x18\x05 \x01(\x05R\n" +
+	"playerTwoX\x12*\n" +
+	"\x11player_one_action\x18\x06 \x01(\tR\x0fplayerOneAction\x12*\n" +
+	"\x11player_two_action\x18\a \x01(\tR\x0fplayerTwoAction\x12 \n" +
+	"\fplayer_one_y\x18\b \x01(\x05R\n" +
+	"playerOneY\x12 \n" +
+	"\fplayer_two_y\x18\t \x01(\x05R\n" +
+	"playerTwoY\"D\n" +
 	"\rMatchEndEvent\x12\x1b\n" +
 	"\twinner_id\x18\x01 \x01(\tR\bwinnerId\x12\x16\n" +
 	"\x06reason\x18\x02 \x01(\tR\x06reason\"&\n" +

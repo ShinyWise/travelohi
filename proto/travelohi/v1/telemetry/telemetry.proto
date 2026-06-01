@@ -13,6 +13,31 @@ service TelemetryService {
   rpc GetGlobalRecommendations(GetGlobalRecommendationsRequest) returns (GetGlobalRecommendationsResponse) {}
   rpc GetPopularFlightDestinations(GetPopularFlightsRequest) returns (GetPopularFlightsResponse) {}
   rpc GetPopularHotels(GetPopularHotelsRequest) returns (GetPopularHotelsResponse) {}
+
+  // Unified Global Search
+  rpc GlobalSearch(GlobalSearchRequest) returns (GlobalSearchResponse) {}
+}
+
+message GlobalSearchRequest {
+  string query = 1;
+}
+
+message HotelSearchResult {
+  string id = 1;
+  string name = 2;
+  string location = 3;
+  string image_url = 4;
+}
+
+message AirlineSearchResult {
+  string id = 1;
+  string name = 2;
+  string logo_url = 3;
+}
+
+message GlobalSearchResponse {
+  repeated HotelSearchResult hotels = 1;
+  repeated AirlineSearchResult airlines = 2;
 }
 
 

@@ -21,6 +21,230 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type GlobalSearchRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Query         string                 `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GlobalSearchRequest) Reset() {
+	*x = GlobalSearchRequest{}
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GlobalSearchRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GlobalSearchRequest) ProtoMessage() {}
+
+func (x *GlobalSearchRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GlobalSearchRequest.ProtoReflect.Descriptor instead.
+func (*GlobalSearchRequest) Descriptor() ([]byte, []int) {
+	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *GlobalSearchRequest) GetQuery() string {
+	if x != nil {
+		return x.Query
+	}
+	return ""
+}
+
+type HotelSearchResult struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Location      string                 `protobuf:"bytes,3,opt,name=location,proto3" json:"location,omitempty"`
+	ImageUrl      string                 `protobuf:"bytes,4,opt,name=image_url,json=imageUrl,proto3" json:"image_url,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *HotelSearchResult) Reset() {
+	*x = HotelSearchResult{}
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *HotelSearchResult) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HotelSearchResult) ProtoMessage() {}
+
+func (x *HotelSearchResult) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HotelSearchResult.ProtoReflect.Descriptor instead.
+func (*HotelSearchResult) Descriptor() ([]byte, []int) {
+	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *HotelSearchResult) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *HotelSearchResult) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *HotelSearchResult) GetLocation() string {
+	if x != nil {
+		return x.Location
+	}
+	return ""
+}
+
+func (x *HotelSearchResult) GetImageUrl() string {
+	if x != nil {
+		return x.ImageUrl
+	}
+	return ""
+}
+
+type AirlineSearchResult struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	LogoUrl       string                 `protobuf:"bytes,3,opt,name=logo_url,json=logoUrl,proto3" json:"logo_url,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AirlineSearchResult) Reset() {
+	*x = AirlineSearchResult{}
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AirlineSearchResult) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AirlineSearchResult) ProtoMessage() {}
+
+func (x *AirlineSearchResult) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AirlineSearchResult.ProtoReflect.Descriptor instead.
+func (*AirlineSearchResult) Descriptor() ([]byte, []int) {
+	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *AirlineSearchResult) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *AirlineSearchResult) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *AirlineSearchResult) GetLogoUrl() string {
+	if x != nil {
+		return x.LogoUrl
+	}
+	return ""
+}
+
+type GlobalSearchResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Hotels        []*HotelSearchResult   `protobuf:"bytes,1,rep,name=hotels,proto3" json:"hotels,omitempty"`
+	Airlines      []*AirlineSearchResult `protobuf:"bytes,2,rep,name=airlines,proto3" json:"airlines,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GlobalSearchResponse) Reset() {
+	*x = GlobalSearchResponse{}
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GlobalSearchResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GlobalSearchResponse) ProtoMessage() {}
+
+func (x *GlobalSearchResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GlobalSearchResponse.ProtoReflect.Descriptor instead.
+func (*GlobalSearchResponse) Descriptor() ([]byte, []int) {
+	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *GlobalSearchResponse) GetHotels() []*HotelSearchResult {
+	if x != nil {
+		return x.Hotels
+	}
+	return nil
+}
+
+func (x *GlobalSearchResponse) GetAirlines() []*AirlineSearchResult {
+	if x != nil {
+		return x.Airlines
+	}
+	return nil
+}
+
 type LogSearchQueryRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
@@ -31,7 +255,7 @@ type LogSearchQueryRequest struct {
 
 func (x *LogSearchQueryRequest) Reset() {
 	*x = LogSearchQueryRequest{}
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[0]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -43,7 +267,7 @@ func (x *LogSearchQueryRequest) String() string {
 func (*LogSearchQueryRequest) ProtoMessage() {}
 
 func (x *LogSearchQueryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[0]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -56,7 +280,7 @@ func (x *LogSearchQueryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LogSearchQueryRequest.ProtoReflect.Descriptor instead.
 func (*LogSearchQueryRequest) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{0}
+	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *LogSearchQueryRequest) GetUserId() string {
@@ -82,7 +306,7 @@ type GetRecentSearchesRequest struct {
 
 func (x *GetRecentSearchesRequest) Reset() {
 	*x = GetRecentSearchesRequest{}
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[1]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -94,7 +318,7 @@ func (x *GetRecentSearchesRequest) String() string {
 func (*GetRecentSearchesRequest) ProtoMessage() {}
 
 func (x *GetRecentSearchesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[1]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -107,7 +331,7 @@ func (x *GetRecentSearchesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRecentSearchesRequest.ProtoReflect.Descriptor instead.
 func (*GetRecentSearchesRequest) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{1}
+	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *GetRecentSearchesRequest) GetUserId() string {
@@ -126,7 +350,7 @@ type GetRecentSearchesResponse struct {
 
 func (x *GetRecentSearchesResponse) Reset() {
 	*x = GetRecentSearchesResponse{}
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[2]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -138,7 +362,7 @@ func (x *GetRecentSearchesResponse) String() string {
 func (*GetRecentSearchesResponse) ProtoMessage() {}
 
 func (x *GetRecentSearchesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[2]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -151,7 +375,7 @@ func (x *GetRecentSearchesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRecentSearchesResponse.ProtoReflect.Descriptor instead.
 func (*GetRecentSearchesResponse) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{2}
+	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *GetRecentSearchesResponse) GetQueries() []string {
@@ -169,7 +393,7 @@ type GetGlobalRecommendationsRequest struct {
 
 func (x *GetGlobalRecommendationsRequest) Reset() {
 	*x = GetGlobalRecommendationsRequest{}
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[3]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -181,7 +405,7 @@ func (x *GetGlobalRecommendationsRequest) String() string {
 func (*GetGlobalRecommendationsRequest) ProtoMessage() {}
 
 func (x *GetGlobalRecommendationsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[3]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -194,7 +418,7 @@ func (x *GetGlobalRecommendationsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGlobalRecommendationsRequest.ProtoReflect.Descriptor instead.
 func (*GetGlobalRecommendationsRequest) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{3}
+	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{7}
 }
 
 type GetGlobalRecommendationsResponse struct {
@@ -206,7 +430,7 @@ type GetGlobalRecommendationsResponse struct {
 
 func (x *GetGlobalRecommendationsResponse) Reset() {
 	*x = GetGlobalRecommendationsResponse{}
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[4]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -218,7 +442,7 @@ func (x *GetGlobalRecommendationsResponse) String() string {
 func (*GetGlobalRecommendationsResponse) ProtoMessage() {}
 
 func (x *GetGlobalRecommendationsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[4]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -231,7 +455,7 @@ func (x *GetGlobalRecommendationsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGlobalRecommendationsResponse.ProtoReflect.Descriptor instead.
 func (*GetGlobalRecommendationsResponse) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{4}
+	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GetGlobalRecommendationsResponse) GetRecommendedQueries() []string {
@@ -249,7 +473,7 @@ type GetPopularFlightsRequest struct {
 
 func (x *GetPopularFlightsRequest) Reset() {
 	*x = GetPopularFlightsRequest{}
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[5]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -261,7 +485,7 @@ func (x *GetPopularFlightsRequest) String() string {
 func (*GetPopularFlightsRequest) ProtoMessage() {}
 
 func (x *GetPopularFlightsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[5]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -274,7 +498,7 @@ func (x *GetPopularFlightsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetPopularFlightsRequest.ProtoReflect.Descriptor instead.
 func (*GetPopularFlightsRequest) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{5}
+	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{9}
 }
 
 type GetPopularFlightsResponse struct {
@@ -286,7 +510,7 @@ type GetPopularFlightsResponse struct {
 
 func (x *GetPopularFlightsResponse) Reset() {
 	*x = GetPopularFlightsResponse{}
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[6]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -298,7 +522,7 @@ func (x *GetPopularFlightsResponse) String() string {
 func (*GetPopularFlightsResponse) ProtoMessage() {}
 
 func (x *GetPopularFlightsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[6]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -311,7 +535,7 @@ func (x *GetPopularFlightsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetPopularFlightsResponse.ProtoReflect.Descriptor instead.
 func (*GetPopularFlightsResponse) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{6}
+	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *GetPopularFlightsResponse) GetDestinations() []*GetPopularFlightsResponse_PopularDestination {
@@ -329,7 +553,7 @@ type GetPopularHotelsRequest struct {
 
 func (x *GetPopularHotelsRequest) Reset() {
 	*x = GetPopularHotelsRequest{}
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[7]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -341,7 +565,7 @@ func (x *GetPopularHotelsRequest) String() string {
 func (*GetPopularHotelsRequest) ProtoMessage() {}
 
 func (x *GetPopularHotelsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[7]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -354,7 +578,7 @@ func (x *GetPopularHotelsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetPopularHotelsRequest.ProtoReflect.Descriptor instead.
 func (*GetPopularHotelsRequest) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{7}
+	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{11}
 }
 
 type GetPopularHotelsResponse struct {
@@ -366,7 +590,7 @@ type GetPopularHotelsResponse struct {
 
 func (x *GetPopularHotelsResponse) Reset() {
 	*x = GetPopularHotelsResponse{}
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[8]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -378,7 +602,7 @@ func (x *GetPopularHotelsResponse) String() string {
 func (*GetPopularHotelsResponse) ProtoMessage() {}
 
 func (x *GetPopularHotelsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[8]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -391,7 +615,7 @@ func (x *GetPopularHotelsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetPopularHotelsResponse.ProtoReflect.Descriptor instead.
 func (*GetPopularHotelsResponse) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{8}
+	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *GetPopularHotelsResponse) GetHotels() []*GetPopularHotelsResponse_PopularHotel {
@@ -410,7 +634,7 @@ type TelemetryResponse struct {
 
 func (x *TelemetryResponse) Reset() {
 	*x = TelemetryResponse{}
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[9]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -422,7 +646,7 @@ func (x *TelemetryResponse) String() string {
 func (*TelemetryResponse) ProtoMessage() {}
 
 func (x *TelemetryResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[9]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -435,7 +659,7 @@ func (x *TelemetryResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TelemetryResponse.ProtoReflect.Descriptor instead.
 func (*TelemetryResponse) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{9}
+	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *TelemetryResponse) GetSuccess() bool {
@@ -456,7 +680,7 @@ type GetPopularFlightsResponse_PopularDestination struct {
 
 func (x *GetPopularFlightsResponse_PopularDestination) Reset() {
 	*x = GetPopularFlightsResponse_PopularDestination{}
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[10]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -468,7 +692,7 @@ func (x *GetPopularFlightsResponse_PopularDestination) String() string {
 func (*GetPopularFlightsResponse_PopularDestination) ProtoMessage() {}
 
 func (x *GetPopularFlightsResponse_PopularDestination) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[10]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -481,7 +705,7 @@ func (x *GetPopularFlightsResponse_PopularDestination) ProtoReflect() protorefle
 
 // Deprecated: Use GetPopularFlightsResponse_PopularDestination.ProtoReflect.Descriptor instead.
 func (*GetPopularFlightsResponse_PopularDestination) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{6, 0}
+	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{10, 0}
 }
 
 func (x *GetPopularFlightsResponse_PopularDestination) GetDestinationAirport() string {
@@ -518,7 +742,7 @@ type GetPopularHotelsResponse_PopularHotel struct {
 
 func (x *GetPopularHotelsResponse_PopularHotel) Reset() {
 	*x = GetPopularHotelsResponse_PopularHotel{}
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[11]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -530,7 +754,7 @@ func (x *GetPopularHotelsResponse_PopularHotel) String() string {
 func (*GetPopularHotelsResponse_PopularHotel) ProtoMessage() {}
 
 func (x *GetPopularHotelsResponse_PopularHotel) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[11]
+	mi := &file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -543,7 +767,7 @@ func (x *GetPopularHotelsResponse_PopularHotel) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use GetPopularHotelsResponse_PopularHotel.ProtoReflect.Descriptor instead.
 func (*GetPopularHotelsResponse_PopularHotel) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{8, 0}
+	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP(), []int{12, 0}
 }
 
 func (x *GetPopularHotelsResponse_PopularHotel) GetHotelId() string {
@@ -585,7 +809,21 @@ var File_proto_travelohi_v1_telemetry_telemetry_proto protoreflect.FileDescripto
 
 const file_proto_travelohi_v1_telemetry_telemetry_proto_rawDesc = "" +
 	"\n" +
-	",proto/travelohi/v1/telemetry/telemetry.proto\x12\x16travelohi.v1.telemetry\"F\n" +
+	",proto/travelohi/v1/telemetry/telemetry.proto\x12\x16travelohi.v1.telemetry\"+\n" +
+	"\x13GlobalSearchRequest\x12\x14\n" +
+	"\x05query\x18\x01 \x01(\tR\x05query\"p\n" +
+	"\x11HotelSearchResult\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1a\n" +
+	"\blocation\x18\x03 \x01(\tR\blocation\x12\x1b\n" +
+	"\timage_url\x18\x04 \x01(\tR\bimageUrl\"T\n" +
+	"\x13AirlineSearchResult\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x19\n" +
+	"\blogo_url\x18\x03 \x01(\tR\alogoUrl\"\xa2\x01\n" +
+	"\x14GlobalSearchResponse\x12A\n" +
+	"\x06hotels\x18\x01 \x03(\v2).travelohi.v1.telemetry.HotelSearchResultR\x06hotels\x12G\n" +
+	"\bairlines\x18\x02 \x03(\v2+.travelohi.v1.telemetry.AirlineSearchResultR\bairlines\"F\n" +
 	"\x15LogSearchQueryRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x14\n" +
 	"\x05query\x18\x02 \x01(\tR\x05query\"3\n" +
@@ -613,13 +851,14 @@ const file_proto_travelohi_v1_telemetry_telemetry_proto_rawDesc = "" +
 	"\timage_url\x18\x04 \x01(\tR\bimageUrl\x12#\n" +
 	"\rbooking_count\x18\x05 \x01(\x03R\fbookingCount\"-\n" +
 	"\x11TelemetryResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess2\x8f\x05\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess2\xfc\x05\n" +
 	"\x10TelemetryService\x12l\n" +
 	"\x0eLogSearchQuery\x12-.travelohi.v1.telemetry.LogSearchQueryRequest\x1a).travelohi.v1.telemetry.TelemetryResponse\"\x00\x12z\n" +
 	"\x11GetRecentSearches\x120.travelohi.v1.telemetry.GetRecentSearchesRequest\x1a1.travelohi.v1.telemetry.GetRecentSearchesResponse\"\x00\x12\x8f\x01\n" +
 	"\x18GetGlobalRecommendations\x127.travelohi.v1.telemetry.GetGlobalRecommendationsRequest\x1a8.travelohi.v1.telemetry.GetGlobalRecommendationsResponse\"\x00\x12\x85\x01\n" +
 	"\x1cGetPopularFlightDestinations\x120.travelohi.v1.telemetry.GetPopularFlightsRequest\x1a1.travelohi.v1.telemetry.GetPopularFlightsResponse\"\x00\x12w\n" +
-	"\x10GetPopularHotels\x12/.travelohi.v1.telemetry.GetPopularHotelsRequest\x1a0.travelohi.v1.telemetry.GetPopularHotelsResponse\"\x00B=Z;github.com/travelohi/backend/proto/telemetry/v1;telemetrypbb\x06proto3"
+	"\x10GetPopularHotels\x12/.travelohi.v1.telemetry.GetPopularHotelsRequest\x1a0.travelohi.v1.telemetry.GetPopularHotelsResponse\"\x00\x12k\n" +
+	"\fGlobalSearch\x12+.travelohi.v1.telemetry.GlobalSearchRequest\x1a,.travelohi.v1.telemetry.GlobalSearchResponse\"\x00B=Z;github.com/travelohi/backend/proto/telemetry/v1;telemetrypbb\x06proto3"
 
 var (
 	file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescOnce sync.Once
@@ -633,39 +872,47 @@ func file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescGZIP() []byte {
 	return file_proto_travelohi_v1_telemetry_telemetry_proto_rawDescData
 }
 
-var file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_proto_travelohi_v1_telemetry_telemetry_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
 var file_proto_travelohi_v1_telemetry_telemetry_proto_goTypes = []any{
-	(*LogSearchQueryRequest)(nil),                        // 0: travelohi.v1.telemetry.LogSearchQueryRequest
-	(*GetRecentSearchesRequest)(nil),                     // 1: travelohi.v1.telemetry.GetRecentSearchesRequest
-	(*GetRecentSearchesResponse)(nil),                    // 2: travelohi.v1.telemetry.GetRecentSearchesResponse
-	(*GetGlobalRecommendationsRequest)(nil),              // 3: travelohi.v1.telemetry.GetGlobalRecommendationsRequest
-	(*GetGlobalRecommendationsResponse)(nil),             // 4: travelohi.v1.telemetry.GetGlobalRecommendationsResponse
-	(*GetPopularFlightsRequest)(nil),                     // 5: travelohi.v1.telemetry.GetPopularFlightsRequest
-	(*GetPopularFlightsResponse)(nil),                    // 6: travelohi.v1.telemetry.GetPopularFlightsResponse
-	(*GetPopularHotelsRequest)(nil),                      // 7: travelohi.v1.telemetry.GetPopularHotelsRequest
-	(*GetPopularHotelsResponse)(nil),                     // 8: travelohi.v1.telemetry.GetPopularHotelsResponse
-	(*TelemetryResponse)(nil),                            // 9: travelohi.v1.telemetry.TelemetryResponse
-	(*GetPopularFlightsResponse_PopularDestination)(nil), // 10: travelohi.v1.telemetry.GetPopularFlightsResponse.PopularDestination
-	(*GetPopularHotelsResponse_PopularHotel)(nil),        // 11: travelohi.v1.telemetry.GetPopularHotelsResponse.PopularHotel
+	(*GlobalSearchRequest)(nil),                          // 0: travelohi.v1.telemetry.GlobalSearchRequest
+	(*HotelSearchResult)(nil),                            // 1: travelohi.v1.telemetry.HotelSearchResult
+	(*AirlineSearchResult)(nil),                          // 2: travelohi.v1.telemetry.AirlineSearchResult
+	(*GlobalSearchResponse)(nil),                         // 3: travelohi.v1.telemetry.GlobalSearchResponse
+	(*LogSearchQueryRequest)(nil),                        // 4: travelohi.v1.telemetry.LogSearchQueryRequest
+	(*GetRecentSearchesRequest)(nil),                     // 5: travelohi.v1.telemetry.GetRecentSearchesRequest
+	(*GetRecentSearchesResponse)(nil),                    // 6: travelohi.v1.telemetry.GetRecentSearchesResponse
+	(*GetGlobalRecommendationsRequest)(nil),              // 7: travelohi.v1.telemetry.GetGlobalRecommendationsRequest
+	(*GetGlobalRecommendationsResponse)(nil),             // 8: travelohi.v1.telemetry.GetGlobalRecommendationsResponse
+	(*GetPopularFlightsRequest)(nil),                     // 9: travelohi.v1.telemetry.GetPopularFlightsRequest
+	(*GetPopularFlightsResponse)(nil),                    // 10: travelohi.v1.telemetry.GetPopularFlightsResponse
+	(*GetPopularHotelsRequest)(nil),                      // 11: travelohi.v1.telemetry.GetPopularHotelsRequest
+	(*GetPopularHotelsResponse)(nil),                     // 12: travelohi.v1.telemetry.GetPopularHotelsResponse
+	(*TelemetryResponse)(nil),                            // 13: travelohi.v1.telemetry.TelemetryResponse
+	(*GetPopularFlightsResponse_PopularDestination)(nil), // 14: travelohi.v1.telemetry.GetPopularFlightsResponse.PopularDestination
+	(*GetPopularHotelsResponse_PopularHotel)(nil),        // 15: travelohi.v1.telemetry.GetPopularHotelsResponse.PopularHotel
 }
 var file_proto_travelohi_v1_telemetry_telemetry_proto_depIdxs = []int32{
-	10, // 0: travelohi.v1.telemetry.GetPopularFlightsResponse.destinations:type_name -> travelohi.v1.telemetry.GetPopularFlightsResponse.PopularDestination
-	11, // 1: travelohi.v1.telemetry.GetPopularHotelsResponse.hotels:type_name -> travelohi.v1.telemetry.GetPopularHotelsResponse.PopularHotel
-	0,  // 2: travelohi.v1.telemetry.TelemetryService.LogSearchQuery:input_type -> travelohi.v1.telemetry.LogSearchQueryRequest
-	1,  // 3: travelohi.v1.telemetry.TelemetryService.GetRecentSearches:input_type -> travelohi.v1.telemetry.GetRecentSearchesRequest
-	3,  // 4: travelohi.v1.telemetry.TelemetryService.GetGlobalRecommendations:input_type -> travelohi.v1.telemetry.GetGlobalRecommendationsRequest
-	5,  // 5: travelohi.v1.telemetry.TelemetryService.GetPopularFlightDestinations:input_type -> travelohi.v1.telemetry.GetPopularFlightsRequest
-	7,  // 6: travelohi.v1.telemetry.TelemetryService.GetPopularHotels:input_type -> travelohi.v1.telemetry.GetPopularHotelsRequest
-	9,  // 7: travelohi.v1.telemetry.TelemetryService.LogSearchQuery:output_type -> travelohi.v1.telemetry.TelemetryResponse
-	2,  // 8: travelohi.v1.telemetry.TelemetryService.GetRecentSearches:output_type -> travelohi.v1.telemetry.GetRecentSearchesResponse
-	4,  // 9: travelohi.v1.telemetry.TelemetryService.GetGlobalRecommendations:output_type -> travelohi.v1.telemetry.GetGlobalRecommendationsResponse
-	6,  // 10: travelohi.v1.telemetry.TelemetryService.GetPopularFlightDestinations:output_type -> travelohi.v1.telemetry.GetPopularFlightsResponse
-	8,  // 11: travelohi.v1.telemetry.TelemetryService.GetPopularHotels:output_type -> travelohi.v1.telemetry.GetPopularHotelsResponse
-	7,  // [7:12] is the sub-list for method output_type
-	2,  // [2:7] is the sub-list for method input_type
-	2,  // [2:2] is the sub-list for extension type_name
-	2,  // [2:2] is the sub-list for extension extendee
-	0,  // [0:2] is the sub-list for field type_name
+	1,  // 0: travelohi.v1.telemetry.GlobalSearchResponse.hotels:type_name -> travelohi.v1.telemetry.HotelSearchResult
+	2,  // 1: travelohi.v1.telemetry.GlobalSearchResponse.airlines:type_name -> travelohi.v1.telemetry.AirlineSearchResult
+	14, // 2: travelohi.v1.telemetry.GetPopularFlightsResponse.destinations:type_name -> travelohi.v1.telemetry.GetPopularFlightsResponse.PopularDestination
+	15, // 3: travelohi.v1.telemetry.GetPopularHotelsResponse.hotels:type_name -> travelohi.v1.telemetry.GetPopularHotelsResponse.PopularHotel
+	4,  // 4: travelohi.v1.telemetry.TelemetryService.LogSearchQuery:input_type -> travelohi.v1.telemetry.LogSearchQueryRequest
+	5,  // 5: travelohi.v1.telemetry.TelemetryService.GetRecentSearches:input_type -> travelohi.v1.telemetry.GetRecentSearchesRequest
+	7,  // 6: travelohi.v1.telemetry.TelemetryService.GetGlobalRecommendations:input_type -> travelohi.v1.telemetry.GetGlobalRecommendationsRequest
+	9,  // 7: travelohi.v1.telemetry.TelemetryService.GetPopularFlightDestinations:input_type -> travelohi.v1.telemetry.GetPopularFlightsRequest
+	11, // 8: travelohi.v1.telemetry.TelemetryService.GetPopularHotels:input_type -> travelohi.v1.telemetry.GetPopularHotelsRequest
+	0,  // 9: travelohi.v1.telemetry.TelemetryService.GlobalSearch:input_type -> travelohi.v1.telemetry.GlobalSearchRequest
+	13, // 10: travelohi.v1.telemetry.TelemetryService.LogSearchQuery:output_type -> travelohi.v1.telemetry.TelemetryResponse
+	6,  // 11: travelohi.v1.telemetry.TelemetryService.GetRecentSearches:output_type -> travelohi.v1.telemetry.GetRecentSearchesResponse
+	8,  // 12: travelohi.v1.telemetry.TelemetryService.GetGlobalRecommendations:output_type -> travelohi.v1.telemetry.GetGlobalRecommendationsResponse
+	10, // 13: travelohi.v1.telemetry.TelemetryService.GetPopularFlightDestinations:output_type -> travelohi.v1.telemetry.GetPopularFlightsResponse
+	12, // 14: travelohi.v1.telemetry.TelemetryService.GetPopularHotels:output_type -> travelohi.v1.telemetry.GetPopularHotelsResponse
+	3,  // 15: travelohi.v1.telemetry.TelemetryService.GlobalSearch:output_type -> travelohi.v1.telemetry.GlobalSearchResponse
+	10, // [10:16] is the sub-list for method output_type
+	4,  // [4:10] is the sub-list for method input_type
+	4,  // [4:4] is the sub-list for extension type_name
+	4,  // [4:4] is the sub-list for extension extendee
+	0,  // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_proto_travelohi_v1_telemetry_telemetry_proto_init() }
@@ -679,7 +926,7 @@ func file_proto_travelohi_v1_telemetry_telemetry_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_travelohi_v1_telemetry_telemetry_proto_rawDesc), len(file_proto_travelohi_v1_telemetry_telemetry_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   16,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

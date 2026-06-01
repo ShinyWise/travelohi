@@ -338,6 +338,7 @@ type InitProfileRequest struct {
 	Gender               string                 `protobuf:"bytes,5,opt,name=gender,proto3" json:"gender,omitempty"`
 	Dob                  string                 `protobuf:"bytes,6,opt,name=dob,proto3" json:"dob,omitempty"`
 	NewsletterSubscribed bool                   `protobuf:"varint,7,opt,name=newsletter_subscribed,json=newsletterSubscribed,proto3" json:"newsletter_subscribed,omitempty"`
+	ProfilePicture       []byte                 `protobuf:"bytes,8,opt,name=profile_picture,json=profilePicture,proto3" json:"profile_picture,omitempty"`
 	unknownFields        protoimpl.UnknownFields
 	sizeCache            protoimpl.SizeCache
 }
@@ -421,6 +422,13 @@ func (x *InitProfileRequest) GetNewsletterSubscribed() bool {
 	return false
 }
 
+func (x *InitProfileRequest) GetProfilePicture() []byte {
+	if x != nil {
+		return x.ProfilePicture
+	}
+	return nil
+}
+
 type InitProfileResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
@@ -481,7 +489,7 @@ type UserProfile struct {
 	LastName             string                 `protobuf:"bytes,4,opt,name=last_name,json=lastName,proto3" json:"last_name,omitempty"`
 	Gender               string                 `protobuf:"bytes,5,opt,name=gender,proto3" json:"gender,omitempty"`
 	Dob                  string                 `protobuf:"bytes,6,opt,name=dob,proto3" json:"dob,omitempty"`
-	ProfilePictureUrl    string                 `protobuf:"bytes,7,opt,name=profile_picture_url,json=profilePictureUrl,proto3" json:"profile_picture_url,omitempty"`
+	ProfilePicture       []byte                 `protobuf:"bytes,7,opt,name=profile_picture,json=profilePicture,proto3" json:"profile_picture,omitempty"`
 	NewsletterSubscribed bool                   `protobuf:"varint,8,opt,name=newsletter_subscribed,json=newsletterSubscribed,proto3" json:"newsletter_subscribed,omitempty"`
 	HiWalletBalance      int64                  `protobuf:"varint,9,opt,name=hi_wallet_balance,json=hiWalletBalance,proto3" json:"hi_wallet_balance,omitempty"`
 	PhoneNumber          string                 `protobuf:"bytes,10,opt,name=phone_number,json=phoneNumber,proto3" json:"phone_number,omitempty"`
@@ -563,11 +571,11 @@ func (x *UserProfile) GetDob() string {
 	return ""
 }
 
-func (x *UserProfile) GetProfilePictureUrl() string {
+func (x *UserProfile) GetProfilePicture() []byte {
 	if x != nil {
-		return x.ProfilePictureUrl
+		return x.ProfilePicture
 	}
-	return ""
+	return nil
 }
 
 func (x *UserProfile) GetNewsletterSubscribed() bool {
@@ -807,7 +815,7 @@ type UpdateProfileRequest struct {
 	UserId               string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	FirstName            string                 `protobuf:"bytes,2,opt,name=first_name,json=firstName,proto3" json:"first_name,omitempty"`
 	LastName             string                 `protobuf:"bytes,3,opt,name=last_name,json=lastName,proto3" json:"last_name,omitempty"`
-	ProfilePictureUrl    string                 `protobuf:"bytes,4,opt,name=profile_picture_url,json=profilePictureUrl,proto3" json:"profile_picture_url,omitempty"`
+	ProfilePicture       []byte                 `protobuf:"bytes,4,opt,name=profile_picture,json=profilePicture,proto3" json:"profile_picture,omitempty"`
 	NewsletterSubscribed bool                   `protobuf:"varint,5,opt,name=newsletter_subscribed,json=newsletterSubscribed,proto3" json:"newsletter_subscribed,omitempty"`
 	PhoneNumber          string                 `protobuf:"bytes,6,opt,name=phone_number,json=phoneNumber,proto3" json:"phone_number,omitempty"`
 	Address              string                 `protobuf:"bytes,7,opt,name=address,proto3" json:"address,omitempty"`
@@ -866,11 +874,11 @@ func (x *UpdateProfileRequest) GetLastName() string {
 	return ""
 }
 
-func (x *UpdateProfileRequest) GetProfilePictureUrl() string {
+func (x *UpdateProfileRequest) GetProfilePicture() []byte {
 	if x != nil {
-		return x.ProfilePictureUrl
+		return x.ProfilePicture
 	}
-	return ""
+	return nil
 }
 
 func (x *UpdateProfileRequest) GetNewsletterSubscribed() bool {
@@ -1344,7 +1352,7 @@ const file_proto_travelohi_v1_account_account_proto_rawDesc = "" +
 	"\amessage\x18\x02 \x01(\tR\amessage\x12\x1d\n" +
 	"\n" +
 	"booking_id\x18\x03 \x01(\tR\tbookingId\x124\n" +
-	"\x16booking_reference_code\x18\x04 \x01(\tR\x14bookingReferenceCode\"\xd5\x01\n" +
+	"\x16booking_reference_code\x18\x04 \x01(\tR\x14bookingReferenceCode\"\xfe\x01\n" +
 	"\x12InitProfileRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1d\n" +
@@ -1353,10 +1361,11 @@ const file_proto_travelohi_v1_account_account_proto_rawDesc = "" +
 	"\tlast_name\x18\x04 \x01(\tR\blastName\x12\x16\n" +
 	"\x06gender\x18\x05 \x01(\tR\x06gender\x12\x10\n" +
 	"\x03dob\x18\x06 \x01(\tR\x03dob\x123\n" +
-	"\x15newsletter_subscribed\x18\a \x01(\bR\x14newsletterSubscribed\"I\n" +
+	"\x15newsletter_subscribed\x18\a \x01(\bR\x14newsletterSubscribed\x12'\n" +
+	"\x0fprofile_picture\x18\b \x01(\fR\x0eprofilePicture\"I\n" +
 	"\x13InitProfileResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage\"\x82\x03\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"\xfb\x02\n" +
 	"\vUserProfile\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1d\n" +
@@ -1364,8 +1373,8 @@ const file_proto_travelohi_v1_account_account_proto_rawDesc = "" +
 	"first_name\x18\x03 \x01(\tR\tfirstName\x12\x1b\n" +
 	"\tlast_name\x18\x04 \x01(\tR\blastName\x12\x16\n" +
 	"\x06gender\x18\x05 \x01(\tR\x06gender\x12\x10\n" +
-	"\x03dob\x18\x06 \x01(\tR\x03dob\x12.\n" +
-	"\x13profile_picture_url\x18\a \x01(\tR\x11profilePictureUrl\x123\n" +
+	"\x03dob\x18\x06 \x01(\tR\x03dob\x12'\n" +
+	"\x0fprofile_picture\x18\a \x01(\fR\x0eprofilePicture\x123\n" +
 	"\x15newsletter_subscribed\x18\b \x01(\bR\x14newsletterSubscribed\x12*\n" +
 	"\x11hi_wallet_balance\x18\t \x01(\x03R\x0fhiWalletBalance\x12!\n" +
 	"\fphone_number\x18\n" +
@@ -1386,13 +1395,13 @@ const file_proto_travelohi_v1_account_account_proto_rawDesc = "" +
 	"\x11GetProfileRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\"Q\n" +
 	"\x12GetProfileResponse\x12;\n" +
-	"\aprofile\x18\x01 \x01(\v2!.travelohi.v1.account.UserProfileR\aprofile\"\x8d\x02\n" +
+	"\aprofile\x18\x01 \x01(\v2!.travelohi.v1.account.UserProfileR\aprofile\"\x86\x02\n" +
 	"\x14UpdateProfileRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1d\n" +
 	"\n" +
 	"first_name\x18\x02 \x01(\tR\tfirstName\x12\x1b\n" +
-	"\tlast_name\x18\x03 \x01(\tR\blastName\x12.\n" +
-	"\x13profile_picture_url\x18\x04 \x01(\tR\x11profilePictureUrl\x123\n" +
+	"\tlast_name\x18\x03 \x01(\tR\blastName\x12'\n" +
+	"\x0fprofile_picture\x18\x04 \x01(\fR\x0eprofilePicture\x123\n" +
 	"\x15newsletter_subscribed\x18\x05 \x01(\bR\x14newsletterSubscribed\x12!\n" +
 	"\fphone_number\x18\x06 \x01(\tR\vphoneNumber\x12\x18\n" +
 	"\aaddress\x18\a \x01(\tR\aaddress\"}\n" +

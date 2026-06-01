@@ -21,7 +21,7 @@ service AuthService {
 }
 
 message RegisterRequest {
-string email = 1;
+  string email = 1;
   string password = 2;
   string first_name = 3;
   string last_name = 4;
@@ -31,6 +31,7 @@ string email = 1;
   string captcha_token = 8; 
   int32 security_question_id = 9;
   string security_answer = 10;
+  string profile_picture = 11;
 }
 
 message LoginRequest {

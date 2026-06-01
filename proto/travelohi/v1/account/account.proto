@@ -65,6 +65,7 @@ message InitProfileRequest {
   string gender = 5;
   string dob = 6;
   bool newsletter_subscribed = 7;
+  bytes profile_picture = 8;
 }
 
 message InitProfileResponse {
@@ -80,7 +81,7 @@ message UserProfile {
   string last_name = 4;
   string gender = 5;
   string dob = 6;
-  string profile_picture_url = 7;
+  bytes profile_picture = 7;
   bool newsletter_subscribed = 8;
   int64 hi_wallet_balance = 9;
 
@@ -114,7 +115,7 @@ message UpdateProfileRequest {
   string user_id = 1;
   string first_name = 2;
   string last_name = 3;
-  string profile_picture_url = 4;
+  bytes profile_picture = 4;
   bool newsletter_subscribed = 5;
   
   string phone_number = 6;

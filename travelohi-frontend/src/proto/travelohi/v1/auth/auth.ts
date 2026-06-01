@@ -55,6 +55,10 @@ export interface RegisterRequest {
      * @generated from protobuf field: string security_answer = 10
      */
     securityAnswer: string;
+    /**
+     * @generated from protobuf field: string profile_picture = 11
+     */
+    profilePicture: string;
 }
 /**
  * @generated from protobuf message travelohi.v1.auth.LoginRequest
@@ -222,7 +226,8 @@ class RegisterRequest$Type extends MessageType<RegisterRequest> {
             { no: 7, name: "subscribe_newsletter", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
             { no: 8, name: "captcha_token", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 9, name: "security_question_id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
-            { no: 10, name: "security_answer", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 10, name: "security_answer", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 11, name: "profile_picture", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<RegisterRequest>): RegisterRequest {
@@ -237,6 +242,7 @@ class RegisterRequest$Type extends MessageType<RegisterRequest> {
         message.captchaToken = "";
         message.securityQuestionId = 0;
         message.securityAnswer = "";
+        message.profilePicture = "";
         if (value !== undefined)
             reflectionMergePartial<RegisterRequest>(this, message, value);
         return message;
@@ -275,6 +281,9 @@ class RegisterRequest$Type extends MessageType<RegisterRequest> {
                     break;
                 case /* string security_answer */ 10:
                     message.securityAnswer = reader.string();
+                    break;
+                case /* string profile_picture */ 11:
+                    message.profilePicture = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -318,6 +327,9 @@ class RegisterRequest$Type extends MessageType<RegisterRequest> {
         /* string security_answer = 10; */
         if (message.securityAnswer !== "")
             writer.tag(10, WireType.LengthDelimited).string(message.securityAnswer);
+        /* string profile_picture = 11; */
+        if (message.profilePicture !== "")
+            writer.tag(11, WireType.LengthDelimited).string(message.profilePicture);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

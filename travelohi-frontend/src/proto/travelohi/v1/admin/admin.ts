@@ -41,9 +41,9 @@ export interface InsertHotelRequest {
      */
     address: string;
     /**
-     * @generated from protobuf field: repeated string picture_urls = 4
+     * @generated from protobuf field: repeated bytes pictures = 4
      */
-    pictureUrls: string[];
+    pictures: Uint8Array[];
     /**
      * @generated from protobuf field: repeated string facilities = 5
      */
@@ -62,9 +62,9 @@ export interface InsertAirlineRequest {
      */
     name: string;
     /**
-     * @generated from protobuf field: string logo_url = 2
+     * @generated from protobuf field: bytes logo = 2
      */
-    logoUrl: string;
+    logo: Uint8Array;
 }
 /**
  * @generated from protobuf message travelohi.v1.admin.CreatePromoRequest
@@ -266,7 +266,7 @@ class InsertHotelRequest$Type extends MessageType<InsertHotelRequest> {
             { no: 1, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "description", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "address", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 4, name: "picture_urls", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "pictures", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 12 /*ScalarType.BYTES*/ },
             { no: 5, name: "facilities", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
             { no: 6, name: "starting_price", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ }
         ]);
@@ -276,7 +276,7 @@ class InsertHotelRequest$Type extends MessageType<InsertHotelRequest> {
         message.name = "";
         message.description = "";
         message.address = "";
-        message.pictureUrls = [];
+        message.pictures = [];
         message.facilities = [];
         message.startingPrice = 0n;
         if (value !== undefined)
@@ -297,8 +297,8 @@ class InsertHotelRequest$Type extends MessageType<InsertHotelRequest> {
                 case /* string address */ 3:
                     message.address = reader.string();
                     break;
-                case /* repeated string picture_urls */ 4:
-                    message.pictureUrls.push(reader.string());
+                case /* repeated bytes pictures */ 4:
+                    message.pictures.push(reader.bytes());
                     break;
                 case /* repeated string facilities */ 5:
                     message.facilities.push(reader.string());
@@ -327,9 +327,9 @@ class InsertHotelRequest$Type extends MessageType<InsertHotelRequest> {
         /* string address = 3; */
         if (message.address !== "")
             writer.tag(3, WireType.LengthDelimited).string(message.address);
-        /* repeated string picture_urls = 4; */
-        for (let i = 0; i < message.pictureUrls.length; i++)
-            writer.tag(4, WireType.LengthDelimited).string(message.pictureUrls[i]);
+        /* repeated bytes pictures = 4; */
+        for (let i = 0; i < message.pictures.length; i++)
+            writer.tag(4, WireType.LengthDelimited).bytes(message.pictures[i]);
         /* repeated string facilities = 5; */
         for (let i = 0; i < message.facilities.length; i++)
             writer.tag(5, WireType.LengthDelimited).string(message.facilities[i]);
@@ -351,13 +351,13 @@ class InsertAirlineRequest$Type extends MessageType<InsertAirlineRequest> {
     constructor() {
         super("travelohi.v1.admin.InsertAirlineRequest", [
             { no: 1, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "logo_url", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 2, name: "logo", kind: "scalar", T: 12 /*ScalarType.BYTES*/ }
         ]);
     }
     create(value?: PartialMessage<InsertAirlineRequest>): InsertAirlineRequest {
         const message = globalThis.Object.create((this.messagePrototype!));
         message.name = "";
-        message.logoUrl = "";
+        message.logo = new Uint8Array(0);
         if (value !== undefined)
             reflectionMergePartial<InsertAirlineRequest>(this, message, value);
         return message;
@@ -370,8 +370,8 @@ class InsertAirlineRequest$Type extends MessageType<InsertAirlineRequest> {
                 case /* string name */ 1:
                     message.name = reader.string();
                     break;
-                case /* string logo_url */ 2:
-                    message.logoUrl = reader.string();
+                case /* bytes logo */ 2:
+                    message.logo = reader.bytes();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -388,9 +388,9 @@ class InsertAirlineRequest$Type extends MessageType<InsertAirlineRequest> {
         /* string name = 1; */
         if (message.name !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.name);
-        /* string logo_url = 2; */
-        if (message.logoUrl !== "")
-            writer.tag(2, WireType.LengthDelimited).string(message.logoUrl);
+        /* bytes logo = 2; */
+        if (message.logo.length)
+            writer.tag(2, WireType.LengthDelimited).bytes(message.logo);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

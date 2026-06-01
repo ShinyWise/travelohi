@@ -4,6 +4,8 @@
 import type { RpcTransport } from "@protobuf-ts/runtime-rpc";
 import type { ServiceInfo } from "@protobuf-ts/runtime-rpc";
 import { TelemetryService } from "./telemetry";
+import type { GlobalSearchResponse } from "./telemetry";
+import type { GlobalSearchRequest } from "./telemetry";
 import type { GetPopularHotelsResponse } from "./telemetry";
 import type { GetPopularHotelsRequest } from "./telemetry";
 import type { GetPopularFlightsResponse } from "./telemetry";
@@ -45,6 +47,12 @@ export interface ITelemetryServiceClient {
      * @generated from protobuf rpc: GetPopularHotels
      */
     getPopularHotels(input: GetPopularHotelsRequest, options?: RpcOptions): UnaryCall<GetPopularHotelsRequest, GetPopularHotelsResponse>;
+    /**
+     * Unified Global Search
+     *
+     * @generated from protobuf rpc: GlobalSearch
+     */
+    globalSearch(input: GlobalSearchRequest, options?: RpcOptions): UnaryCall<GlobalSearchRequest, GlobalSearchResponse>;
 }
 /**
  * @generated from protobuf service travelohi.v1.telemetry.TelemetryService
@@ -93,5 +101,14 @@ export class TelemetryServiceClient implements ITelemetryServiceClient, ServiceI
     getPopularHotels(input: GetPopularHotelsRequest, options?: RpcOptions): UnaryCall<GetPopularHotelsRequest, GetPopularHotelsResponse> {
         const method = this.methods[4], opt = this._transport.mergeOptions(options);
         return stackIntercept<GetPopularHotelsRequest, GetPopularHotelsResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * Unified Global Search
+     *
+     * @generated from protobuf rpc: GlobalSearch
+     */
+    globalSearch(input: GlobalSearchRequest, options?: RpcOptions): UnaryCall<GlobalSearchRequest, GlobalSearchResponse> {
+        const method = this.methods[5], opt = this._transport.mergeOptions(options);
+        return stackIntercept<GlobalSearchRequest, GlobalSearchResponse>("unary", this._transport, method, opt, input);
     }
 }

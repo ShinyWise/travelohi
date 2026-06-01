@@ -31,14 +31,14 @@ message InsertHotelRequest {
   string name = 1;
   string description = 2;
   string address = 3;
-  repeated string picture_urls = 4;
+  repeated bytes pictures = 4; 
   repeated string facilities = 5;
   int64 starting_price = 6;
 }
 
 message InsertAirlineRequest {
   string name = 1;
-  string logo_url = 2;
+  bytes logo = 2;
 }
 
 message CreatePromoRequest {

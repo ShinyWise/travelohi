@@ -33,6 +33,7 @@ type RegisterRequest struct {
 	CaptchaToken        string                 `protobuf:"bytes,8,opt,name=captcha_token,json=captchaToken,proto3" json:"captcha_token,omitempty"`
 	SecurityQuestionId  int32                  `protobuf:"varint,9,opt,name=security_question_id,json=securityQuestionId,proto3" json:"security_question_id,omitempty"`
 	SecurityAnswer      string                 `protobuf:"bytes,10,opt,name=security_answer,json=securityAnswer,proto3" json:"security_answer,omitempty"`
+	ProfilePicture      string                 `protobuf:"bytes,11,opt,name=profile_picture,json=profilePicture,proto3" json:"profile_picture,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
@@ -133,6 +134,13 @@ func (x *RegisterRequest) GetSecurityQuestionId() int32 {
 func (x *RegisterRequest) GetSecurityAnswer() string {
 	if x != nil {
 		return x.SecurityAnswer
+	}
+	return ""
+}
+
+func (x *RegisterRequest) GetProfilePicture() string {
+	if x != nil {
+		return x.ProfilePicture
 	}
 	return ""
 }
@@ -758,7 +766,7 @@ var File_proto_travelohi_v1_auth_auth_proto protoreflect.FileDescriptor
 
 const file_proto_travelohi_v1_auth_auth_proto_rawDesc = "" +
 	"\n" +
-	"\"proto/travelohi/v1/auth/auth.proto\x12\x11travelohi.v1.auth\"\xdc\x02\n" +
+	"\"proto/travelohi/v1/auth/auth.proto\x12\x11travelohi.v1.auth\"\x85\x03\n" +
 	"\x0fRegisterRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\x12\x1d\n" +
@@ -771,7 +779,8 @@ const file_proto_travelohi_v1_auth_auth_proto_rawDesc = "" +
 	"\rcaptcha_token\x18\b \x01(\tR\fcaptchaToken\x120\n" +
 	"\x14security_question_id\x18\t \x01(\x05R\x12securityQuestionId\x12'\n" +
 	"\x0fsecurity_answer\x18\n" +
-	" \x01(\tR\x0esecurityAnswer\"e\n" +
+	" \x01(\tR\x0esecurityAnswer\x12'\n" +
+	"\x0fprofile_picture\x18\v \x01(\tR\x0eprofilePicture\"e\n" +
 	"\fLoginRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\x12#\n" +

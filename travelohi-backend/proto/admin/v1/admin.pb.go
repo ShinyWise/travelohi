@@ -78,7 +78,7 @@ type InsertHotelRequest struct {
 	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	Description   string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	Address       string                 `protobuf:"bytes,3,opt,name=address,proto3" json:"address,omitempty"`
-	PictureUrls   []string               `protobuf:"bytes,4,rep,name=picture_urls,json=pictureUrls,proto3" json:"picture_urls,omitempty"`
+	Pictures      [][]byte               `protobuf:"bytes,4,rep,name=pictures,proto3" json:"pictures,omitempty"`
 	Facilities    []string               `protobuf:"bytes,5,rep,name=facilities,proto3" json:"facilities,omitempty"`
 	StartingPrice int64                  `protobuf:"varint,6,opt,name=starting_price,json=startingPrice,proto3" json:"starting_price,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -136,9 +136,9 @@ func (x *InsertHotelRequest) GetAddress() string {
 	return ""
 }
 
-func (x *InsertHotelRequest) GetPictureUrls() []string {
+func (x *InsertHotelRequest) GetPictures() [][]byte {
 	if x != nil {
-		return x.PictureUrls
+		return x.Pictures
 	}
 	return nil
 }
@@ -160,7 +160,7 @@ func (x *InsertHotelRequest) GetStartingPrice() int64 {
 type InsertAirlineRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	LogoUrl       string                 `protobuf:"bytes,2,opt,name=logo_url,json=logoUrl,proto3" json:"logo_url,omitempty"`
+	Logo          []byte                 `protobuf:"bytes,2,opt,name=logo,proto3" json:"logo,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -202,11 +202,11 @@ func (x *InsertAirlineRequest) GetName() string {
 	return ""
 }
 
-func (x *InsertAirlineRequest) GetLogoUrl() string {
+func (x *InsertAirlineRequest) GetLogo() []byte {
 	if x != nil {
-		return x.LogoUrl
+		return x.Logo
 	}
-	return ""
+	return nil
 }
 
 type CreatePromoRequest struct {
@@ -752,19 +752,19 @@ const file_proto_travelohi_v1_admin_admin_proto_rawDesc = "" +
 	"$proto/travelohi/v1/admin/admin.proto\x12\x12travelohi.v1.admin\"D\n" +
 	"\x14SendBroadcastRequest\x12\x18\n" +
 	"\asubject\x18\x01 \x01(\tR\asubject\x12\x12\n" +
-	"\x04body\x18\x02 \x01(\tR\x04body\"\xce\x01\n" +
+	"\x04body\x18\x02 \x01(\tR\x04body\"\xc7\x01\n" +
 	"\x12InsertHotelRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12 \n" +
 	"\vdescription\x18\x02 \x01(\tR\vdescription\x12\x18\n" +
-	"\aaddress\x18\x03 \x01(\tR\aaddress\x12!\n" +
-	"\fpicture_urls\x18\x04 \x03(\tR\vpictureUrls\x12\x1e\n" +
+	"\aaddress\x18\x03 \x01(\tR\aaddress\x12\x1a\n" +
+	"\bpictures\x18\x04 \x03(\fR\bpictures\x12\x1e\n" +
 	"\n" +
 	"facilities\x18\x05 \x03(\tR\n" +
 	"facilities\x12%\n" +
-	"\x0estarting_price\x18\x06 \x01(\x03R\rstartingPrice\"E\n" +
+	"\x0estarting_price\x18\x06 \x01(\x03R\rstartingPrice\">\n" +
 	"\x14InsertAirlineRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x19\n" +
-	"\blogo_url\x18\x02 \x01(\tR\alogoUrl\"\\\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
+	"\x04logo\x18\x02 \x01(\fR\x04logo\"\\\n" +
 	"\x12CreatePromoRequest\x12\x1d\n" +
 	"\n" +
 	"promo_code\x18\x01 \x01(\tR\tpromoCode\x12'\n" +

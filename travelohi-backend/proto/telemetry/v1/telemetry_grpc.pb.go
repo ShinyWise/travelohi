@@ -24,6 +24,7 @@ const (
 	TelemetryService_GetGlobalRecommendations_FullMethodName     = "/travelohi.v1.telemetry.TelemetryService/GetGlobalRecommendations"
 	TelemetryService_GetPopularFlightDestinations_FullMethodName = "/travelohi.v1.telemetry.TelemetryService/GetPopularFlightDestinations"
 	TelemetryService_GetPopularHotels_FullMethodName             = "/travelohi.v1.telemetry.TelemetryService/GetPopularHotels"
+	TelemetryService_GlobalSearch_FullMethodName                 = "/travelohi.v1.telemetry.TelemetryService/GlobalSearch"
 )
 
 // TelemetryServiceClient is the client API for TelemetryService service.
@@ -37,6 +38,8 @@ type TelemetryServiceClient interface {
 	GetGlobalRecommendations(ctx context.Context, in *GetGlobalRecommendationsRequest, opts ...grpc.CallOption) (*GetGlobalRecommendationsResponse, error)
 	GetPopularFlightDestinations(ctx context.Context, in *GetPopularFlightsRequest, opts ...grpc.CallOption) (*GetPopularFlightsResponse, error)
 	GetPopularHotels(ctx context.Context, in *GetPopularHotelsRequest, opts ...grpc.CallOption) (*GetPopularHotelsResponse, error)
+	// Unified Global Search
+	GlobalSearch(ctx context.Context, in *GlobalSearchRequest, opts ...grpc.CallOption) (*GlobalSearchResponse, error)
 }
 
 type telemetryServiceClient struct {
@@ -97,6 +100,16 @@ func (c *telemetryServiceClient) GetPopularHotels(ctx context.Context, in *GetPo
 	return out, nil
 }
 
+func (c *telemetryServiceClient) GlobalSearch(ctx context.Context, in *GlobalSearchRequest, opts ...grpc.CallOption) (*GlobalSearchResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GlobalSearchResponse)
+	err := c.cc.Invoke(ctx, TelemetryService_GlobalSearch_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TelemetryServiceServer is the server API for TelemetryService service.
 // All implementations must embed UnimplementedTelemetryServiceServer
 // for forward compatibility.
@@ -108,6 +121,8 @@ type TelemetryServiceServer interface {
 	GetGlobalRecommendations(context.Context, *GetGlobalRecommendationsRequest) (*GetGlobalRecommendationsResponse, error)
 	GetPopularFlightDestinations(context.Context, *GetPopularFlightsRequest) (*GetPopularFlightsResponse, error)
 	GetPopularHotels(context.Context, *GetPopularHotelsRequest) (*GetPopularHotelsResponse, error)
+	// Unified Global Search
+	GlobalSearch(context.Context, *GlobalSearchRequest) (*GlobalSearchResponse, error)
 	mustEmbedUnimplementedTelemetryServiceServer()
 }
 
@@ -132,6 +147,9 @@ func (UnimplementedTelemetryServiceServer) GetPopularFlightDestinations(context.
 }
 func (UnimplementedTelemetryServiceServer) GetPopularHotels(context.Context, *GetPopularHotelsRequest) (*GetPopularHotelsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetPopularHotels not implemented")
+}
+func (UnimplementedTelemetryServiceServer) GlobalSearch(context.Context, *GlobalSearchRequest) (*GlobalSearchResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GlobalSearch not implemented")
 }
 func (UnimplementedTelemetryServiceServer) mustEmbedUnimplementedTelemetryServiceServer() {}
 func (UnimplementedTelemetryServiceServer) testEmbeddedByValue()                          {}
@@ -244,6 +262,24 @@ func _TelemetryService_GetPopularHotels_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TelemetryService_GlobalSearch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GlobalSearchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TelemetryServiceServer).GlobalSearch(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TelemetryService_GlobalSearch_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TelemetryServiceServer).GlobalSearch(ctx, req.(*GlobalSearchRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TelemetryService_ServiceDesc is the grpc.ServiceDesc for TelemetryService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -270,6 +306,10 @@ var TelemetryService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetPopularHotels",
 			Handler:    _TelemetryService_GetPopularHotels_Handler,
+		},
+		{
+			MethodName: "GlobalSearch",
+			Handler:    _TelemetryService_GlobalSearch_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

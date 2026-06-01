@@ -130,6 +130,10 @@ export interface InitProfileRequest {
      * @generated from protobuf field: bool newsletter_subscribed = 7
      */
     newsletterSubscribed: boolean;
+    /**
+     * @generated from protobuf field: bytes profile_picture = 8
+     */
+    profilePicture: Uint8Array;
 }
 /**
  * @generated from protobuf message travelohi.v1.account.InitProfileResponse
@@ -173,9 +177,9 @@ export interface UserProfile {
      */
     dob: string;
     /**
-     * @generated from protobuf field: string profile_picture_url = 7
+     * @generated from protobuf field: bytes profile_picture = 7
      */
-    profilePictureUrl: string;
+    profilePicture: Uint8Array;
     /**
      * @generated from protobuf field: bool newsletter_subscribed = 8
      */
@@ -269,9 +273,9 @@ export interface UpdateProfileRequest {
      */
     lastName: string;
     /**
-     * @generated from protobuf field: string profile_picture_url = 4
+     * @generated from protobuf field: bytes profile_picture = 4
      */
-    profilePictureUrl: string;
+    profilePicture: Uint8Array;
     /**
      * @generated from protobuf field: bool newsletter_subscribed = 5
      */
@@ -725,7 +729,8 @@ class InitProfileRequest$Type extends MessageType<InitProfileRequest> {
             { no: 4, name: "last_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 5, name: "gender", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 6, name: "dob", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 7, name: "newsletter_subscribed", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+            { no: 7, name: "newsletter_subscribed", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 8, name: "profile_picture", kind: "scalar", T: 12 /*ScalarType.BYTES*/ }
         ]);
     }
     create(value?: PartialMessage<InitProfileRequest>): InitProfileRequest {
@@ -737,6 +742,7 @@ class InitProfileRequest$Type extends MessageType<InitProfileRequest> {
         message.gender = "";
         message.dob = "";
         message.newsletterSubscribed = false;
+        message.profilePicture = new Uint8Array(0);
         if (value !== undefined)
             reflectionMergePartial<InitProfileRequest>(this, message, value);
         return message;
@@ -766,6 +772,9 @@ class InitProfileRequest$Type extends MessageType<InitProfileRequest> {
                     break;
                 case /* bool newsletter_subscribed */ 7:
                     message.newsletterSubscribed = reader.bool();
+                    break;
+                case /* bytes profile_picture */ 8:
+                    message.profilePicture = reader.bytes();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -800,6 +809,9 @@ class InitProfileRequest$Type extends MessageType<InitProfileRequest> {
         /* bool newsletter_subscribed = 7; */
         if (message.newsletterSubscribed !== false)
             writer.tag(7, WireType.Varint).bool(message.newsletterSubscribed);
+        /* bytes profile_picture = 8; */
+        if (message.profilePicture.length)
+            writer.tag(8, WireType.LengthDelimited).bytes(message.profilePicture);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -875,7 +887,7 @@ class UserProfile$Type extends MessageType<UserProfile> {
             { no: 4, name: "last_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 5, name: "gender", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 6, name: "dob", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 7, name: "profile_picture_url", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 7, name: "profile_picture", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
             { no: 8, name: "newsletter_subscribed", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
             { no: 9, name: "hi_wallet_balance", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
             { no: 10, name: "phone_number", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
@@ -891,7 +903,7 @@ class UserProfile$Type extends MessageType<UserProfile> {
         message.lastName = "";
         message.gender = "";
         message.dob = "";
-        message.profilePictureUrl = "";
+        message.profilePicture = new Uint8Array(0);
         message.newsletterSubscribed = false;
         message.hiWalletBalance = 0n;
         message.phoneNumber = "";
@@ -924,8 +936,8 @@ class UserProfile$Type extends MessageType<UserProfile> {
                 case /* string dob */ 6:
                     message.dob = reader.string();
                     break;
-                case /* string profile_picture_url */ 7:
-                    message.profilePictureUrl = reader.string();
+                case /* bytes profile_picture */ 7:
+                    message.profilePicture = reader.bytes();
                     break;
                 case /* bool newsletter_subscribed */ 8:
                     message.newsletterSubscribed = reader.bool();
@@ -972,9 +984,9 @@ class UserProfile$Type extends MessageType<UserProfile> {
         /* string dob = 6; */
         if (message.dob !== "")
             writer.tag(6, WireType.LengthDelimited).string(message.dob);
-        /* string profile_picture_url = 7; */
-        if (message.profilePictureUrl !== "")
-            writer.tag(7, WireType.LengthDelimited).string(message.profilePictureUrl);
+        /* bytes profile_picture = 7; */
+        if (message.profilePicture.length)
+            writer.tag(7, WireType.LengthDelimited).bytes(message.profilePicture);
         /* bool newsletter_subscribed = 8; */
         if (message.newsletterSubscribed !== false)
             writer.tag(8, WireType.Varint).bool(message.newsletterSubscribed);
@@ -1211,7 +1223,7 @@ class UpdateProfileRequest$Type extends MessageType<UpdateProfileRequest> {
             { no: 1, name: "user_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "first_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "last_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 4, name: "profile_picture_url", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "profile_picture", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
             { no: 5, name: "newsletter_subscribed", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
             { no: 6, name: "phone_number", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 7, name: "address", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
@@ -1222,7 +1234,7 @@ class UpdateProfileRequest$Type extends MessageType<UpdateProfileRequest> {
         message.userId = "";
         message.firstName = "";
         message.lastName = "";
-        message.profilePictureUrl = "";
+        message.profilePicture = new Uint8Array(0);
         message.newsletterSubscribed = false;
         message.phoneNumber = "";
         message.address = "";
@@ -1244,8 +1256,8 @@ class UpdateProfileRequest$Type extends MessageType<UpdateProfileRequest> {
                 case /* string last_name */ 3:
                     message.lastName = reader.string();
                     break;
-                case /* string profile_picture_url */ 4:
-                    message.profilePictureUrl = reader.string();
+                case /* bytes profile_picture */ 4:
+                    message.profilePicture = reader.bytes();
                     break;
                 case /* bool newsletter_subscribed */ 5:
                     message.newsletterSubscribed = reader.bool();
@@ -1277,9 +1289,9 @@ class UpdateProfileRequest$Type extends MessageType<UpdateProfileRequest> {
         /* string last_name = 3; */
         if (message.lastName !== "")
             writer.tag(3, WireType.LengthDelimited).string(message.lastName);
-        /* string profile_picture_url = 4; */
-        if (message.profilePictureUrl !== "")
-            writer.tag(4, WireType.LengthDelimited).string(message.profilePictureUrl);
+        /* bytes profile_picture = 4; */
+        if (message.profilePicture.length)
+            writer.tag(4, WireType.LengthDelimited).bytes(message.profilePicture);
         /* bool newsletter_subscribed = 5; */
         if (message.newsletterSubscribed !== false)
             writer.tag(5, WireType.Varint).bool(message.newsletterSubscribed);
