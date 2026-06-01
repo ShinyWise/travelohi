@@ -114,6 +114,10 @@ services:
       - JWT_SECRET=your-super-secret-key
       - FLIGHT_SERVICE_URL=flight-service:50054
       - ACCOUNT_SERVICE_URL=account-service:50052
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
     depends_on:
       postgres:
         condition: service_healthy
