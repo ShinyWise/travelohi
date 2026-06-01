@@ -41,7 +41,7 @@ func main() {
 
 	// usecases
 	roomUseCase := usecase.NewRoomUseCase(gameRepo)
-	matchmakingUseCase := usecase.NewMatchmakingUseCase(cacheRepo, roomUseCase)
+	matchmakingUseCase := usecase.NewMatchmakingUseCase(cacheRepo, roomUseCase, gameRepo)
 
 	// handlers
 	gameHandler := handler.NewGameWebSocketHandler(matchmakingUseCase, roomUseCase, tokenVerifier)

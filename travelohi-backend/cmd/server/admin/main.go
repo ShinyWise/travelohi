@@ -16,6 +16,7 @@ import (
 	"github.com/travelohi/backend/internal/admin/worker"
 	authrepo "github.com/travelohi/backend/internal/auth/repository"
 	"github.com/travelohi/backend/internal/interceptor"
+	"github.com/travelohi/backend/pkg/mailer"
 	"github.com/travelohi/backend/pkg/token"
 	adminpb "github.com/travelohi/backend/proto/admin/v1"
 )
@@ -24,6 +25,11 @@ func main() {
 	dbURL := os.Getenv("DB_URL")
 	memcachedURL := os.Getenv("MEMCACHED_URL")
 	jwtSecret := os.Getenv("JWT_SECRET")
+
+	smtpHost := os.Getenv("SMTP_HOST")
+	smtpPort := os.Getenv("SMTP_PORT")
+	smtpUser := os.Getenv("SMTP_USER")
+	smtpPass := os.Getenv("SMTP_PASS")
 
 	// infrastructure connections
 	dbConn, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
@@ -41,8 +47,11 @@ func main() {
 	adminRepo := repository.NewPostgresInventoryRepository(dbConn)
 	cacheRepo := authrepo.NewMemcachedRepository(memcachedClient)
 
+	// mailer
+	smtpMailer := mailer.NewSMTPMailer(smtpHost, smtpPort, smtpUser, smtpPass)
+
 	// worker
-	dispatcher := worker.NewNotificationDispatcher(adminRepo)
+	dispatcher := worker.NewNotificationDispatcher(adminRepo, smtpMailer)
 
 	// usecase
 	adminUC := usecase.NewAdminUseCase(adminRepo, cacheRepo, dispatcher)
@@ -57,6 +66,8 @@ func main() {
 	// grpc server
 	gRPCServer := grpc.NewServer(
 		grpc.UnaryInterceptor(authInterceptor.Unary()),
+		grpc.MaxRecvMsgSize(104857600),
+		grpc.MaxSendMsgSize(104857600),
 	)
 	adminpb.RegisterAdminServiceServer(gRPCServer, adminHandler)
 

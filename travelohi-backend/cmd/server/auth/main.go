@@ -18,6 +18,7 @@ import (
 	"github.com/travelohi/backend/internal/interceptor"
 	"github.com/travelohi/backend/pkg/hash"
 	"github.com/travelohi/backend/pkg/id"
+	"github.com/travelohi/backend/pkg/mailer"
 	"github.com/travelohi/backend/pkg/token"
 	accountpb "github.com/travelohi/backend/proto/account/v1"
 	authpb "github.com/travelohi/backend/proto/auth/v1"
@@ -28,6 +29,11 @@ func main() {
 	dbURL := os.Getenv("DB_URL")
 	memcachedURL := os.Getenv("MEMCACHED_URL")
 	jwtSecret := os.Getenv("JWT_SECRET")
+
+	smtpHost := os.Getenv("SMTP_HOST")
+	smtpPort := os.Getenv("SMTP_PORT")
+	smtpUser := os.Getenv("SMTP_USER")
+	smtpPass := os.Getenv("SMTP_PASS")
 
 	// infrastructure connections
 	dbConn, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
@@ -55,8 +61,11 @@ func main() {
 	authRepo := repository.NewPostgresAuthRepository(dbConn)
 	cacheRepo := repository.NewMemcachedRepository(memcachedClient)
 
+	// mailer
+	smtpMailer := mailer.NewSMTPMailer(smtpHost, smtpPort, smtpUser, smtpPass)
+
 	// usecase
-	authUseCase := usecase.NewAuthUseCase(authRepo, cacheRepo, accountClient, hasher, idGen, tokenMaker)
+	authUseCase := usecase.NewAuthUseCase(authRepo, cacheRepo, accountClient, hasher, idGen, tokenMaker, smtpMailer)
 
 	// handler
 	authHandler := handler.NewAuthHandler(authUseCase)

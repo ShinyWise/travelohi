@@ -52,6 +52,8 @@ func main() {
 	// grpc server
 	gRPCServer := grpc.NewServer(
 		grpc.UnaryInterceptor(authInterceptor.Unary()),
+		grpc.MaxRecvMsgSize(104857600),
+		grpc.MaxSendMsgSize(104857600),
 	)
 	hotelpb.RegisterHotelServiceServer(gRPCServer, hotelHandler)
 
