@@ -85,13 +85,7 @@ INSERT INTO search_histories (id, user_id, search_query, created_at) VALUES
 ('sh-2', 'user-002', 'Jakarta', NOW() - INTERVAL '2 minutes'),
 ('sh-3', 'user-002', 'Bali (DPS)', NOW() - INTERVAL '3 minutes');
 
--- seed global search metrics
-INSERT INTO global_search_metrics (search_query, search_count, last_searched_at) VALUES
-('Bandung', 100, NOW()),
-('Jakarta', 80, NOW()),
-('Bali (DPS)', 70, NOW()),
-('Tokyo (HND)', 50, NOW()),
-('Singapore (SIN)', 30, NOW());
+
 
 -- seed promos
 INSERT INTO promos (id, promo_code, discount_amount, is_active) VALUES
