@@ -52,3 +52,9 @@ func (r *postgresGameRepo) GetUsernameByID(ctx context.Context, userID string) (
 	}
 	return firstName, nil
 }
+
+func (r *postgresGameRepo) AwardPrize(ctx context.Context, userID string, amount int64) error {
+	return r.db.WithContext(ctx).Table("account_models").
+		Where("id = ?", userID).
+		UpdateColumn("hi_wallet_balance", gorm.Expr("hi_wallet_balance + ?", amount)).Error
+}

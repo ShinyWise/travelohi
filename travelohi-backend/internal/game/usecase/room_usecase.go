@@ -377,6 +377,16 @@ func (u *roomUseCase) endMatch(ctx context.Context, room *gameRoom, reason strin
 		log.Printf("[Game Loop] Failed to save match result for room %s: %v", room.ID, err)
 	}
 
+	// award prize if there's a winner
+	if winnerID != "" {
+		const prizeAmount = 50000
+		if err := u.repo.AwardPrize(context.Background(), winnerID, prizeAmount); err != nil {
+			log.Printf("[Game Loop] Failed to award prize to user %s: %v", winnerID, err)
+		} else {
+			log.Printf("[Game Loop] Awarded %d prize to winner %s", prizeAmount, winnerID)
+		}
+	}
+
 	// broadcast end event
 	endEvent := &gamepb.GameServerEvent{
 		Payload: &gamepb.GameServerEvent_MatchEnd{
