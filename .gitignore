@@ -5,6 +5,10 @@ main
 /travelohi-backend/auth-binary
 /travelohi-backend/account-binary
 
+# images
+*.png
+*.jpg
+
 # IDE - VS Code
 .vscode/
 *.code-workspace
