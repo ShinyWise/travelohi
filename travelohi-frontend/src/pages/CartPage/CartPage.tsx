@@ -34,7 +34,6 @@ const CartPage: React.FC = () => {
     const fetchCart = async () => {
         if (!userId) return;
         try {
-            const promoCode = localStorage.getItem('travelohi_applied_promo') || '';
             const { response } = await cartClient.viewCart({});
             const mappedItems: CartItem[] = (response.items || []).map((item: any) => ({
                 id: item.id,

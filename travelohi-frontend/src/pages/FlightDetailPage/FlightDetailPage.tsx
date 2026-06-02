@@ -9,6 +9,7 @@ import { transport } from '../../utils/grpcClient';
 import { useAuth } from '../../context/AuthContext';
 import { useAppContext } from '../../context/ThemeContext';
 import { translations } from '../../utils/translations';
+import { formatCurrency } from '../../utils/currencyFormatter';
 import { useToast } from '../../components/Toast';
 import styles from './FlightDetailPage.module.scss';
 const flightClient = new FlightServiceClient(transport);
@@ -18,7 +19,7 @@ const FlightDetailsPage: React.FC = () => {
     const flightId = searchParams.get('id');
     const navigate = useNavigate();
     const { isAuthenticated } = useAuth();
-    const { language } = useAppContext();
+    const { language, currency } = useAppContext();
     const t = translations[language];
     const { showToast } = useToast();
     const [flightData, setFlightData] = useState<any>(null);
@@ -153,20 +154,20 @@ const FlightDetailsPage: React.FC = () => {
                         <h3>{t.flight_detail_summary}</h3>
                         <div className={styles.summaryItem}>
                             <span>{t.flight_base_fare}</span>
-                            <span>Rp {Number(flightData?.startingPrice || 0).toLocaleString('id-ID')}</span>
+                            <span>{formatCurrency(Number(flightData?.startingPrice || 0), currency)}</span>
                         </div>
                         <div className={styles.summaryItem}>
                             <span>{t.flight_seat_choice} ({selectedSeat ? selectedSeat.seatNumber : '-'})</span>
-                            <span>Rp {selectedSeat ? Number(selectedSeat.price - flightData.startingPrice).toLocaleString('id-ID') : 0}</span>
+                            <span>{selectedSeat ? formatCurrency(Number(selectedSeat.price - flightData.startingPrice), currency) : formatCurrency(0, currency)}</span>
                         </div>
                         <div className={styles.summaryItem}>
                             <span>{t.flight_extra_baggage} ({selectedLuggage ? `${selectedLuggage.weightKg}kg` : '-'})</span>
-                            <span>Rp {selectedLuggage ? Number(selectedLuggage.price).toLocaleString('id-ID') : 0}</span>
+                            <span>{selectedLuggage ? formatCurrency(Number(selectedLuggage.price), currency) : formatCurrency(0, currency)}</span>
                         </div>
                         <hr />
                         <div className={`${styles.summaryItem} ${styles.total}`}>
                             <span>{t.flight_total}</span>
-                            <span>Rp {totalPrice.toLocaleString('id-ID')}</span>
+                            <span>{formatCurrency(totalPrice, currency)}</span>
                         </div>
                     </div>
                 </aside>

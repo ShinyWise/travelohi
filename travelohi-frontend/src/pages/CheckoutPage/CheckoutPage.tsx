@@ -20,7 +20,6 @@ const CheckoutPage: React.FC = () => {
     const [cartTotal, setCartTotal] = useState<number>(0);
     const [walletBalance, setWalletBalance] = useState<number>(0);
     const [creditCards, setCreditCards] = useState<any[]>([]);
-    const [appliedPromoCode, setAppliedPromoCode] = useState<string>('');
     // interaction states
     const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>(null);
     const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
@@ -36,7 +35,6 @@ const CheckoutPage: React.FC = () => {
         }
         const fetchCheckoutData = async () => {
             try {
-                const promoCode = localStorage.getItem('travelohi_applied_promo') || '';
                 // parallel fetching buat cart and profile data
                 const [cartRes, profileRes] = await Promise.all([
                     cartClient.viewCart({}),
@@ -49,7 +47,6 @@ const CheckoutPage: React.FC = () => {
                 }
                 // read correct fields from viewcartresponse mapping
                 setCartTotal(Number(cartRes.response.totalPrice));
-                setAppliedPromoCode(cartRes.response.appliedPromoCode || '');
                 setWalletBalance(Number(profileRes.response.profile?.hiWalletBalance || 0));
 
                 const storageKey = `travelohi_credit_cards_${userId}`;
