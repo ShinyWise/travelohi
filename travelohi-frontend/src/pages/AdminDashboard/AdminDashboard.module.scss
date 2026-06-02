@@ -1,3 +1,5 @@
+@use '../../styles/breakpoints' as *;
+
 .adminContainer {
     display: flex;
     max-width: 1400px;
@@ -6,7 +8,7 @@
     padding: 0 20px;
     min-height: 70vh;
 
-    @media (max-width: 900px) {
+    @include tablet-and-below {
         flex-direction: column;
         margin: 20px auto;
         gap: 20px;
@@ -32,7 +34,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     align-self: flex-start;
 
-    @media (max-width: 900px) {
+    @include tablet-and-below {
         width: 100%;
     }
 
@@ -61,7 +63,7 @@
         display: flex;
         flex-direction: column;
 
-        @media (max-width: 900px) {
+        @include tablet-and-below {
             flex-direction: row;
             overflow-x: auto;
             border-bottom: 1px solid var(--border-color);
@@ -94,7 +96,7 @@
                 border-left: 4px solid var(--accent-color);
             }
 
-            @media (max-width: 900px) {
+            @include tablet-and-below {
                 border-bottom: none;
                 border-right: 1px solid var(--border-color);
                 white-space: nowrap;
@@ -128,7 +130,7 @@
             font-size: 1.4rem;
         }
 
-        @media (max-width: 900px) {
+        @include tablet-and-below {
             padding: 15px 20px;
         }
     }
@@ -136,7 +138,7 @@
     .formWrapper {
         padding: 30px;
 
-        @media (max-width: 900px) {
+        @include tablet-and-below {
             padding: 15px;
         }
     }

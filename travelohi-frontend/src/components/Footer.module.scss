@@ -1,3 +1,5 @@
+@use '../styles/breakpoints' as *;
+
 .footer {
     background-color: var(--bg-secondary);
     border-top: 1px solid var(--border-color);
@@ -53,7 +55,7 @@
     width: 100%;
 }
 
-@media (max-width: 768px) {
+@include mobile {
     .footerContainer {
         flex-direction: column;
     }

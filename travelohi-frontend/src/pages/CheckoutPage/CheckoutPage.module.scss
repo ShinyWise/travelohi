@@ -1,3 +1,5 @@
+@use '../../styles/breakpoints' as *;
+
 .pageContainer {
     max-width: 1200px;
     margin: 40px auto;
@@ -37,7 +39,7 @@
     gap: 30px;
     align-items: flex-start;
 
-    @media (max-width: 900px) {
+    @include tablet-and-below {
         grid-template-columns: 1fr;
     }
 }

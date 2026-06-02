@@ -1,3 +1,5 @@
+@use '../../../styles/breakpoints' as *;
+
 .bannerContainer {
     position: sticky;
     bottom: 0;
@@ -18,7 +20,7 @@
     justify-content: space-between;
     align-items: center;
 
-    @media (max-width: 768px) {
+    @include mobile {
         flex-direction: column;
         gap: 15px;
         align-items: stretch;

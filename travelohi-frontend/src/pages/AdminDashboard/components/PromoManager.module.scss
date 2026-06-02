@@ -1,3 +1,5 @@
+@use '../../../styles/breakpoints' as *;
+
 .managerContainer {
     display: flex;
     flex-direction: column;
@@ -45,7 +47,7 @@
     gap: 15px;
     align-items: flex-end;
 
-    @media (max-width: 900px) {
+    @include tablet-and-below {
         grid-template-columns: 1fr;
     }
 
@@ -91,7 +93,7 @@
             opacity: 0.7;
         }
 
-        @media (max-width: 900px) {
+        @include tablet-and-below {
             width: 100%;
             margin-top: 10px;
         }

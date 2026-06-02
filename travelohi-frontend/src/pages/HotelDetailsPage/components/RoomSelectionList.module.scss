@@ -1,3 +1,5 @@
+@use '../../../styles/breakpoints' as *;
+
 .roomListContainer {
     margin-top: 40px;
 
@@ -31,7 +33,7 @@
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 
-    @media (max-width: 768px) {
+    @include mobile {
         flex-direction: column;
     }
 }
@@ -41,7 +43,7 @@
     max-width: 250px;
     flex-shrink: 0;
 
-    @media (max-width: 768px) {
+    @include mobile {
         max-width: none;
         height: 200px;
     }
@@ -58,7 +60,7 @@
     padding: 20px;
     border-right: 1px dashed var(--border-color);
 
-    @media (max-width: 768px) {
+    @include mobile {
         border-right: none;
         border-bottom: 1px dashed var(--border-color);
     }
@@ -103,7 +105,7 @@
     justify-content: center;
     text-align: right;
 
-    @media (max-width: 768px) {
+    @include mobile {
         max-width: none;
         text-align: left;
     }

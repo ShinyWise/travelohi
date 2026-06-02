@@ -1,10 +1,12 @@
+@use '../../../styles/breakpoints' as *;
+
 .galleryContainer {
     display: flex;
     gap: 15px;
     height: 400px;
     margin-bottom: 30px;
 
-    @media (max-width: 768px) {
+    @include mobile {
         flex-direction: column;
         height: auto;
     }
@@ -15,7 +17,7 @@
     border-radius: 8px 0 0 8px;
     overflow: hidden;
 
-    @media (max-width: 768px) {
+    @include mobile {
         border-radius: 8px;
         height: 250px;
     }
@@ -40,7 +42,7 @@
     gap: 10px;
     position: relative;
 
-    @media (max-width: 768px) {
+    @include mobile {
         display: flex;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
@@ -57,7 +59,7 @@
     cursor: pointer;
     position: relative;
 
-    @media (max-width: 768px) {
+    @include mobile {
         min-width: 120px;
         height: 80px;
         scroll-snap-align: start;
@@ -110,7 +112,7 @@
     font-weight: 600;
     font-size: 1.1rem;
 
-    @media (max-width: 768px) {
+    @include mobile {
         position: relative;
         width: 120px;
         height: 80px;

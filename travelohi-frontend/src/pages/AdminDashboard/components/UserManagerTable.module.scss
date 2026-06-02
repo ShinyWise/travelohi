@@ -1,3 +1,5 @@
+@use '../../../styles/breakpoints' as *;
+
 .tableContainer {
     width: 100%;
     overflow-x: auto;
@@ -123,7 +125,7 @@
     gap: 15px;
     margin-top: 20px;
 
-    @media (max-width: 600px) {
+    @include mobile {
         flex-direction: column;
         align-items: stretch;
         gap: 10px;

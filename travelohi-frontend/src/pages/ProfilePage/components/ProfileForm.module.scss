@@ -1,3 +1,5 @@
+@use '../../../styles/breakpoints' as *;
+
 .formContainer {
     margin-bottom: 40px;
 }
@@ -17,7 +19,7 @@
         flex: 1;
     }
 
-    @media (max-width: 768px) {
+    @include mobile {
         flex-direction: column;
         gap: 0;
     }

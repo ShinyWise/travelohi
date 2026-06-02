@@ -1,3 +1,5 @@
+@use '../../styles/breakpoints' as *;
+
 .homeContainer {
     max-width: 1200px;
     margin: 0 auto;
@@ -23,7 +25,7 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 30px;
 
-    @media (max-width: 768px) {
+    @include mobile {
         grid-template-columns: 1fr;
     }
 }
