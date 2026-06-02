@@ -9,6 +9,9 @@ main
 *.png
 *.jpg
 
+# text
+*.txt
+*.md
 # IDE - VS Code
 .vscode/
 *.code-workspace

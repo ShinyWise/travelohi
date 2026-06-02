@@ -203,7 +203,7 @@ const RegisterPage: React.FC = () => {
                     <div className={styles.captchaContainer}>
                         <ReCAPTCHA
                             ref={recaptchaRef}
-                            sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY || "dummy-key-for-local-dev"}
+                            sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY || "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"}
                         />
                     </div>
                     <button type="submit" className={styles.submitBtn} disabled={isLoading}>
