@@ -231,7 +231,6 @@ func (x *AddToCartRequest) GetLuggageWeight() int32 {
 
 type ViewCartRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	PromoCode     string                 `protobuf:"bytes,1,opt,name=promo_code,json=promoCode,proto3" json:"promo_code,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -264,13 +263,6 @@ func (x *ViewCartRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use ViewCartRequest.ProtoReflect.Descriptor instead.
 func (*ViewCartRequest) Descriptor() ([]byte, []int) {
 	return file_proto_travelohi_v1_cart_cart_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *ViewCartRequest) GetPromoCode() string {
-	if x != nil {
-		return x.PromoCode
-	}
-	return ""
 }
 
 type ViewCartResponse struct {
@@ -498,12 +490,11 @@ func (x *ApplyPromoRequest) GetPromoCode() string {
 }
 
 type CheckoutRequest struct {
-	state            protoimpl.MessageState `protogen:"open.v1"`
-	PaymentMethod    string                 `protobuf:"bytes,1,opt,name=payment_method,json=paymentMethod,proto3" json:"payment_method,omitempty"` // hi_wallet or credit_card
-	CreditCardId     string                 `protobuf:"bytes,2,opt,name=credit_card_id,json=creditCardId,proto3" json:"credit_card_id,omitempty"`
-	AppliedPromoCode string                 `protobuf:"bytes,3,opt,name=applied_promo_code,json=appliedPromoCode,proto3" json:"applied_promo_code,omitempty"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PaymentMethod string                 `protobuf:"bytes,1,opt,name=payment_method,json=paymentMethod,proto3" json:"payment_method,omitempty"` // hi_wallet or credit_card
+	CreditCardId  string                 `protobuf:"bytes,2,opt,name=credit_card_id,json=creditCardId,proto3" json:"credit_card_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CheckoutRequest) Reset() {
@@ -546,13 +537,6 @@ func (x *CheckoutRequest) GetPaymentMethod() string {
 func (x *CheckoutRequest) GetCreditCardId() string {
 	if x != nil {
 		return x.CreditCardId
-	}
-	return ""
-}
-
-func (x *CheckoutRequest) GetAppliedPromoCode() string {
-	if x != nil {
-		return x.AppliedPromoCode
 	}
 	return ""
 }
@@ -814,10 +798,8 @@ const file_proto_travelohi_v1_cart_cart_proto_rawDesc = "" +
 	"\rcheck_in_date\x18\x03 \x01(\tR\vcheckInDate\x12$\n" +
 	"\x0echeck_out_date\x18\x04 \x01(\tR\fcheckOutDate\x12\x1a\n" +
 	"\bquantity\x18\x05 \x01(\x05R\bquantity\x12%\n" +
-	"\x0eluggage_weight\x18\x06 \x01(\x05R\rluggageWeight\"0\n" +
-	"\x0fViewCartRequest\x12\x1d\n" +
-	"\n" +
-	"promo_code\x18\x01 \x01(\tR\tpromoCode\"\xd9\x01\n" +
+	"\x0eluggage_weight\x18\x06 \x01(\x05R\rluggageWeight\"\x11\n" +
+	"\x0fViewCartRequest\"\xd9\x01\n" +
 	"\x10ViewCartResponse\x121\n" +
 	"\x05items\x18\x01 \x03(\v2\x1b.travelohi.v1.cart.CartItemR\x05items\x12\x1a\n" +
 	"\bsubtotal\x18\x02 \x01(\x03R\bsubtotal\x12'\n" +
@@ -835,11 +817,10 @@ const file_proto_travelohi_v1_cart_cart_proto_rawDesc = "" +
 	"cartItemId\"2\n" +
 	"\x11ApplyPromoRequest\x12\x1d\n" +
 	"\n" +
-	"promo_code\x18\x01 \x01(\tR\tpromoCode\"\x8c\x01\n" +
+	"promo_code\x18\x01 \x01(\tR\tpromoCode\"^\n" +
 	"\x0fCheckoutRequest\x12%\n" +
 	"\x0epayment_method\x18\x01 \x01(\tR\rpaymentMethod\x12$\n" +
-	"\x0ecredit_card_id\x18\x02 \x01(\tR\fcreditCardId\x12,\n" +
-	"\x12applied_promo_code\x18\x03 \x01(\tR\x10appliedPromoCode\"m\n" +
+	"\x0ecredit_card_id\x18\x02 \x01(\tR\fcreditCardId\"m\n" +
 	"\x10CheckoutResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\x12%\n" +

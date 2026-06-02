@@ -46,7 +46,6 @@ message AddToCartRequest {
 }
 
 message ViewCartRequest {
-  string promo_code = 1;
 }
 
 message ViewCartResponse {
@@ -74,7 +73,6 @@ message ApplyPromoRequest {
 message CheckoutRequest {
   string payment_method = 1; // hi_wallet or credit_card
   string credit_card_id = 2;
-  string applied_promo_code = 3;
 }
 
 message CheckoutResponse {

@@ -35,7 +35,7 @@ const CartPage: React.FC = () => {
         if (!userId) return;
         try {
             const promoCode = localStorage.getItem('travelohi_applied_promo') || '';
-            const { response } = await cartClient.viewCart({ promoCode });
+            const { response } = await cartClient.viewCart({});
             const mappedItems: CartItem[] = (response.items || []).map((item: any) => ({
                 id: item.id,
                 itemType: item.itemType as 'flight_seat' | 'hotel_room',

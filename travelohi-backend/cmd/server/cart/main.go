@@ -68,12 +68,13 @@ func main() {
 	// repositories
 	cartRepo := repository.NewPostgresCartRepository(dbConn)
 	cacheRepo := authrepo.NewMemcachedRepository(memcachedClient)
+	promoCacheRepo := repository.NewPromoMemcachedRepository(memcachedClient)
 
 	// mailer
 	smtpMailer := mailer.NewSMTPMailer(smtpHost, smtpPort, smtpUser, smtpPass)
 
 	// usecases
-	cartUC := usecase.NewCartUseCase(cartRepo, flightClient, accountClient, smtpMailer)
+	cartUC := usecase.NewCartUseCase(cartRepo, flightClient, accountClient, smtpMailer, promoCacheRepo)
 
 	// handlers
 	cartHandler := carthandler.NewCartHandler(cartUC)

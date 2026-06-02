@@ -48,14 +48,20 @@ type CartRepository interface {
 	RecordPromoUsage(ctx context.Context, userID, promoCode string) error
 }
 
+type PromoCacheRepository interface {
+	SetUserPromo(ctx context.Context, userID, promoCode string, expiration time.Duration) error
+	GetUserPromo(ctx context.Context, userID string) (string, error)
+	DeleteUserPromo(ctx context.Context, userID string) error
+}
+
 type CartUseCase interface {
 	AddToCart(ctx context.Context, userID, itemType, referenceID, checkIn, checkOut string, quantity int32, luggageWeight int32) error
-	ViewCart(ctx context.Context, userID string, promoCode string) ([]CartItem, int64, int64, int64, string, error) // items, subtotal, discount, total, applied_promo
+	ViewCart(ctx context.Context, userID string) ([]CartItem, int64, int64, int64, string, error) // items, subtotal, discount, total, applied_promo
 	UpdateCartItem(ctx context.Context, userID, itemID, newCheckIn, newCheckOut string) error
 	RemoveFromCart(ctx context.Context, userID, itemID string) error
 	ApplyPromo(ctx context.Context, userID, promoCode string) (int64, error)
 
-	Checkout(ctx context.Context, userID, paymentMethod, creditCardID, appliedPromoCode string) (string, error)
+	Checkout(ctx context.Context, userID, paymentMethod, creditCardID string) (string, error)
 
 	InternalCreatePromo(ctx context.Context, promoCode string, discountAmount int64, maxUses int32, expiryDate string) error
 }

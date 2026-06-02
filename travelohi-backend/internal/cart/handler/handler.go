@@ -21,18 +21,15 @@ func NewCartHandler(usecase cart.CartUseCase) *CartHandler {
 }
 
 func (h *CartHandler) AddToCart(ctx context.Context, req *cartpb.AddToCartRequest) (*cartpb.CartResponse, error) {
-	// extract user id
 	userID, err := utils.ExtractUserID(ctx)
 	if err != nil {
 		return nil, status.Error(codes.Unauthenticated, err.Error())
 	}
 
-	// validate input
 	if req.ItemType == "" || req.ReferenceId == "" {
 		return nil, status.Error(codes.InvalidArgument, "item_type and reference_id are required")
 	}
 
-	// add to cart
 	err = h.usecase.AddToCart(ctx, userID, req.ItemType, req.ReferenceId, req.CheckInDate, req.CheckOutDate, req.Quantity, req.LuggageWeight)
 	if err != nil {
 		return nil, err
@@ -45,13 +42,11 @@ func (h *CartHandler) AddToCart(ctx context.Context, req *cartpb.AddToCartReques
 }
 
 func (h *CartHandler) Checkout(ctx context.Context, req *cartpb.CheckoutRequest) (*cartpb.CheckoutResponse, error) {
-	// extract user id
 	userID, err := utils.ExtractUserID(ctx)
 	if err != nil {
 		return nil, status.Error(codes.Unauthenticated, err.Error())
 	}
 
-	// validate input
 	if req.PaymentMethod != "hi_wallet" && req.PaymentMethod != "credit_card" {
 		return nil, status.Error(codes.InvalidArgument, "invalid payment method")
 	}
@@ -59,8 +54,7 @@ func (h *CartHandler) Checkout(ctx context.Context, req *cartpb.CheckoutRequest)
 		return nil, status.Error(codes.InvalidArgument, "credit card ID is required")
 	}
 
-	// checkout
-	transactionID, err := h.usecase.Checkout(ctx, userID, req.PaymentMethod, req.CreditCardId, req.AppliedPromoCode)
+	transactionID, err := h.usecase.Checkout(ctx, userID, req.PaymentMethod, req.CreditCardId)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +72,7 @@ func (h *CartHandler) ViewCart(ctx context.Context, req *cartpb.ViewCartRequest)
 		return nil, status.Error(codes.Unauthenticated, err.Error())
 	}
 
-	items, subtotal, discount, total, appliedPromo, err := h.usecase.ViewCart(ctx, userID, req.GetPromoCode())
+	items, subtotal, discount, total, appliedPromo, err := h.usecase.ViewCart(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -148,7 +142,7 @@ func (h *CartHandler) ApplyPromo(ctx context.Context, req *cartpb.ApplyPromoRequ
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	cartView, err := h.ViewCart(ctx, &cartpb.ViewCartRequest{PromoCode: req.PromoCode})
+	cartView, err := h.ViewCart(ctx, &cartpb.ViewCartRequest{})
 	if err != nil {
 		return nil, err
 	}

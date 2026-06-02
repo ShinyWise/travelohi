@@ -89,10 +89,6 @@ export interface AddToCartRequest {
  * @generated from protobuf message travelohi.v1.cart.ViewCartRequest
  */
 export interface ViewCartRequest {
-    /**
-     * @generated from protobuf field: string promo_code = 1
-     */
-    promoCode: string;
 }
 /**
  * @generated from protobuf message travelohi.v1.cart.ViewCartResponse
@@ -165,10 +161,6 @@ export interface CheckoutRequest {
      * @generated from protobuf field: string credit_card_id = 2
      */
     creditCardId: string;
-    /**
-     * @generated from protobuf field: string applied_promo_code = 3
-     */
-    appliedPromoCode: string;
 }
 /**
  * @generated from protobuf message travelohi.v1.cart.CheckoutResponse
@@ -451,13 +443,10 @@ export const AddToCartRequest = new AddToCartRequest$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class ViewCartRequest$Type extends MessageType<ViewCartRequest> {
     constructor() {
-        super("travelohi.v1.cart.ViewCartRequest", [
-            { no: 1, name: "promo_code", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
-        ]);
+        super("travelohi.v1.cart.ViewCartRequest", []);
     }
     create(value?: PartialMessage<ViewCartRequest>): ViewCartRequest {
         const message = globalThis.Object.create((this.messagePrototype!));
-        message.promoCode = "";
         if (value !== undefined)
             reflectionMergePartial<ViewCartRequest>(this, message, value);
         return message;
@@ -467,9 +456,6 @@ class ViewCartRequest$Type extends MessageType<ViewCartRequest> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* string promo_code */ 1:
-                    message.promoCode = reader.string();
-                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -482,9 +468,6 @@ class ViewCartRequest$Type extends MessageType<ViewCartRequest> {
         return message;
     }
     internalBinaryWrite(message: ViewCartRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string promo_code = 1; */
-        if (message.promoCode !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.promoCode);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -736,15 +719,13 @@ class CheckoutRequest$Type extends MessageType<CheckoutRequest> {
     constructor() {
         super("travelohi.v1.cart.CheckoutRequest", [
             { no: 1, name: "payment_method", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "credit_card_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "applied_promo_code", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 2, name: "credit_card_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<CheckoutRequest>): CheckoutRequest {
         const message = globalThis.Object.create((this.messagePrototype!));
         message.paymentMethod = "";
         message.creditCardId = "";
-        message.appliedPromoCode = "";
         if (value !== undefined)
             reflectionMergePartial<CheckoutRequest>(this, message, value);
         return message;
@@ -759,9 +740,6 @@ class CheckoutRequest$Type extends MessageType<CheckoutRequest> {
                     break;
                 case /* string credit_card_id */ 2:
                     message.creditCardId = reader.string();
-                    break;
-                case /* string applied_promo_code */ 3:
-                    message.appliedPromoCode = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -781,9 +759,6 @@ class CheckoutRequest$Type extends MessageType<CheckoutRequest> {
         /* string credit_card_id = 2; */
         if (message.creditCardId !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.creditCardId);
-        /* string applied_promo_code = 3; */
-        if (message.appliedPromoCode !== "")
-            writer.tag(3, WireType.LengthDelimited).string(message.appliedPromoCode);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

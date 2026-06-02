@@ -21,14 +21,16 @@ type cartUseCase struct {
 	flightClient  flightpb.FlightServiceClient
 	accountClient accountpb.AccountServiceClient
 	mailer        mailer.EmailSender
+	promoCache    cart.PromoCacheRepository
 }
 
-func NewCartUseCase(repo cart.CartRepository, flightClient flightpb.FlightServiceClient, accountClient accountpb.AccountServiceClient, m mailer.EmailSender) cart.CartUseCase {
+func NewCartUseCase(repo cart.CartRepository, flightClient flightpb.FlightServiceClient, accountClient accountpb.AccountServiceClient, m mailer.EmailSender, promoCache cart.PromoCacheRepository) cart.CartUseCase {
 	return &cartUseCase{
 		repo:          repo,
 		flightClient:  flightClient,
 		accountClient: accountClient,
 		mailer:        m,
+		promoCache:    promoCache,
 	}
 }
 
@@ -112,7 +114,7 @@ func (uc *cartUseCase) AddToCart(ctx context.Context, userID, itemType, referenc
 	return nil
 }
 
-func (uc *cartUseCase) ViewCart(ctx context.Context, userID string, promoCode string) ([]cart.CartItem, int64, int64, int64, string, error) {
+func (uc *cartUseCase) ViewCart(ctx context.Context, userID string) ([]cart.CartItem, int64, int64, int64, string, error) {
 	items, err := uc.repo.GetActiveCartItems(ctx, userID)
 	if err != nil {
 		return nil, 0, 0, 0, "", err
@@ -127,7 +129,8 @@ func (uc *cartUseCase) ViewCart(ctx context.Context, userID string, promoCode st
 	var totalPrice int64 = subtotal
 	var appliedPromo string = ""
 
-	if promoCode != "" {
+	promoCode, err := uc.promoCache.GetUserPromo(ctx, userID)
+	if err == nil && promoCode != "" {
 		promo, err := uc.repo.GetPromoByCode(ctx, promoCode)
 		if err == nil && promo.CurrentUses < promo.MaxUses {
 			discountAmount = promo.DiscountAmount
@@ -179,6 +182,8 @@ func (uc *cartUseCase) ApplyPromo(ctx context.Context, userID, promoCode string)
 		return 0, errors.New("promo code has already been used by your account")
 	}
 
+	_ = uc.promoCache.SetUserPromo(ctx, userID, promoCode, 15*time.Minute)
+
 	return promo.DiscountAmount, nil
 }
 
@@ -192,23 +197,22 @@ func (uc *cartUseCase) InternalCreatePromo(ctx context.Context, promoCode string
 	return uc.repo.CreatePromo(ctx, promo)
 }
 
-func (uc *cartUseCase) Checkout(ctx context.Context, userID, paymentMethod, creditCardID, appliedPromoCode string) (string, error) {
+func (uc *cartUseCase) Checkout(ctx context.Context, userID, paymentMethod, creditCardID string) (string, error) {
 
-	// fetch active cart items
 	items, err := uc.repo.GetActiveCartItems(ctx, userID)
 	if err != nil || len(items) == 0 {
 		return "", errors.New("cart is empty or could not be fetched")
 	}
 
-	// calculate total price
 	var totalPrice int64 = 0
 	for _, item := range items {
 		totalPrice += item.Price * int64(item.Quantity)
 	}
 
-	// apply promo if valid
 	var discountAmount int64 = 0
-	if appliedPromoCode != "" {
+	
+	appliedPromoCode, err := uc.promoCache.GetUserPromo(ctx, userID)
+	if err == nil && appliedPromoCode != "" {
 		promo, err := uc.repo.GetPromoByCode(ctx, appliedPromoCode)
 		if err == nil && promo.CurrentUses < promo.MaxUses {
 			used, err := uc.repo.HasUserUsedPromo(ctx, userID, appliedPromoCode)
@@ -223,13 +227,11 @@ func (uc *cartUseCase) Checkout(ctx context.Context, userID, paymentMethod, cred
 		}
 	}
 
-	// token relay
 	md, ok := metadata.FromIncomingContext(ctx)
 	if ok {
 		ctx = metadata.NewOutgoingContext(ctx, md)
 	}
 
-	// financial deduction
 	if paymentMethod == "hi_wallet" && totalPrice > 0 {
 		_, err := uc.accountClient.DeductWallet(ctx, &accountpb.DeductWalletRequest{
 			UserId: userID,
@@ -240,10 +242,8 @@ func (uc *cartUseCase) Checkout(ctx context.Context, userID, paymentMethod, cred
 		}
 	}
 
-	// finalize database state
 	err = uc.repo.MarkCartAsPaid(ctx, userID)
 	if err != nil {
-		// compensating transaction
 		if paymentMethod == "hi_wallet" {
 			_, _ = uc.accountClient.RefundWallet(ctx, &accountpb.RefundWalletRequest{
 				UserId: userID,
@@ -253,16 +253,14 @@ func (uc *cartUseCase) Checkout(ctx context.Context, userID, paymentMethod, cred
 		return "", errors.New("checkout failed, your wallet has been refunded")
 	}
 
-	// generate transaction id
 	transactionID := "TXN-" + items[0].ID[:8]
 
-	// increment promo usage
 	if appliedPromoCode != "" {
 		_ = uc.repo.IncrementPromoUsage(ctx, appliedPromoCode)
 		_ = uc.repo.RecordPromoUsage(ctx, userID, appliedPromoCode)
+		_ = uc.promoCache.DeleteUserPromo(ctx, userID)
 	}
 
-	// create booking via account service
 	for _, item := range items {
 		_, err = uc.accountClient.InternalCreateBooking(ctx, &accountpb.InternalCreateBookingRequest{
 			UserId:        userID,
@@ -273,7 +271,6 @@ func (uc *cartUseCase) Checkout(ctx context.Context, userID, paymentMethod, cred
 			CheckOutDate:  item.CheckOutDate,
 		})
 		if err != nil {
-			// refund wallet on failure
 			if paymentMethod == "hi_wallet" {
 				_, _ = uc.accountClient.RefundWallet(ctx, &accountpb.RefundWalletRequest{
 					UserId: userID,
@@ -284,7 +281,6 @@ func (uc *cartUseCase) Checkout(ctx context.Context, userID, paymentMethod, cred
 		}
 	}
 
-	// send payment receipt email
 	profileResp, profileErr := uc.accountClient.GetProfile(ctx, &accountpb.GetProfileRequest{UserId: userID})
 	if profileErr == nil && profileResp.Profile != nil {
 		emailItems := make([]mailer.PaymentEmailItem, 0, len(items))
