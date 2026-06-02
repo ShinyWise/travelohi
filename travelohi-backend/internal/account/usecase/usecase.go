@@ -172,3 +172,49 @@ func (uc *AccountUseCase) GetExchangeRate(ctx context.Context) float64 {
 	// static exchange rate
 	return 16000.00 // 1 USD = 17,000 IDR
 }
+
+func (uc *AccountUseCase) AddBankAccount(ctx context.Context, userID, bankName, cardNumber string) (*account.BankAccount, error) {
+	if userID == "" || bankName == "" || cardNumber == "" {
+		return nil, errors.New("missing required fields")
+	}
+
+	bankAcc := &account.BankAccount{
+		ID:         "BANK-" + time.Now().Format("20060102150405") + "-" + strings.ToUpper(bankName[:2]), // simple ID generator
+		UserID:     userID,
+		BankName:   bankName,
+		CardNumber: cardNumber,
+	}
+
+	err := uc.repo.AddBankAccount(ctx, bankAcc)
+	if err != nil {
+		return nil, err
+	}
+
+	return bankAcc, nil
+}
+
+func (uc *AccountUseCase) GetBankAccounts(ctx context.Context, userID string) ([]account.BankAccount, error) {
+	return uc.repo.GetBankAccounts(ctx, userID)
+}
+
+func (uc *AccountUseCase) DeleteBankAccount(ctx context.Context, userID, id string) error {
+	// check ownership dlu
+	accounts, err := uc.repo.GetBankAccounts(ctx, userID)
+	if err != nil {
+		return err
+	}
+
+	owned := false
+	for _, acc := range accounts {
+		if acc.ID == id {
+			owned = true
+			break
+		}
+	}
+
+	if !owned {
+		return errors.New("unauthorized: bank account does not belong to user")
+	}
+
+	return uc.repo.DeleteBankAccount(ctx, id)
+}

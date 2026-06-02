@@ -26,6 +26,14 @@ CREATE TABLE IF NOT EXISTS account_models (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS bank_accounts (
+    id VARCHAR(255) PRIMARY KEY,
+    user_id VARCHAR(255) REFERENCES account_models(id),
+    bank_name VARCHAR(255) NOT NULL,
+    card_number VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS hotels (
     id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,

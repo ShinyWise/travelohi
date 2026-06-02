@@ -290,3 +290,79 @@ func (h *AccountGrpcHandler) GetExchangeRate(ctx context.Context, req *accountpb
 		UsdToIdrRate: rate,
 	}, nil
 }
+
+func (h *AccountGrpcHandler) AddBankAccount(ctx context.Context, req *accountpb.AddBankAccountRequest) (*accountpb.AddBankAccountResponse, error) {
+	userID := req.GetUserId()
+	if userID == "" {
+		userID, _ = utils.ExtractUserID(ctx)
+	}
+
+	if userID == "" {
+		return nil, status.Error(codes.Unauthenticated, "unauthorized")
+	}
+
+	bankAcc, err := h.userUsecase.AddBankAccount(ctx, userID, req.GetBankName(), req.GetCardNumber())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to add bank account: %v", err)
+	}
+
+	return &accountpb.AddBankAccountResponse{
+		Success: true,
+		Message: "Bank account added successfully",
+		Account: &accountpb.BankAccount{
+			Id:         bankAcc.ID,
+			BankName:   bankAcc.BankName,
+			CardNumber: bankAcc.CardNumber,
+		},
+	}, nil
+}
+
+func (h *AccountGrpcHandler) GetBankAccounts(ctx context.Context, req *accountpb.GetBankAccountsRequest) (*accountpb.GetBankAccountsResponse, error) {
+	userID := req.GetUserId()
+	if userID == "" {
+		userID, _ = utils.ExtractUserID(ctx)
+	}
+
+	if userID == "" {
+		return nil, status.Error(codes.Unauthenticated, "unauthorized")
+	}
+
+	accounts, err := h.userUsecase.GetBankAccounts(ctx, userID)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get bank accounts: %v", err)
+	}
+
+	var pbAccounts []*accountpb.BankAccount
+	for _, acc := range accounts {
+		pbAccounts = append(pbAccounts, &accountpb.BankAccount{
+			Id:         acc.ID,
+			BankName:   acc.BankName,
+			CardNumber: acc.CardNumber,
+		})
+	}
+
+	return &accountpb.GetBankAccountsResponse{
+		Accounts: pbAccounts,
+	}, nil
+}
+
+func (h *AccountGrpcHandler) DeleteBankAccount(ctx context.Context, req *accountpb.DeleteBankAccountRequest) (*accountpb.DeleteBankAccountResponse, error) {
+	userID := req.GetUserId()
+	if userID == "" {
+		userID, _ = utils.ExtractUserID(ctx)
+	}
+
+	if userID == "" {
+		return nil, status.Error(codes.Unauthenticated, "unauthorized")
+	}
+
+	err := h.userUsecase.DeleteBankAccount(ctx, userID, req.GetBankAccountId())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to delete bank account: %v", err)
+	}
+
+	return &accountpb.DeleteBankAccountResponse{
+		Success: true,
+		Message: "Bank account deleted successfully",
+	}, nil
+}

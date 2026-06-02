@@ -23,7 +23,47 @@ service AccountService {
   rpc RedeemWalletCoupon(RedeemWalletCouponRequest) returns (WalletResponse) {}
   rpc GetExchangeRate(GetExchangeRateRequest) returns (GetExchangeRateResponse) {}
   
+  // bank account management
+  rpc AddBankAccount(AddBankAccountRequest) returns (AddBankAccountResponse) {}
+  rpc GetBankAccounts(GetBankAccountsRequest) returns (GetBankAccountsResponse) {}
+  rpc DeleteBankAccount(DeleteBankAccountRequest) returns (DeleteBankAccountResponse) {}
 
+}
+
+message AddBankAccountRequest {
+  string user_id = 1;
+  string bank_name = 2;
+  string card_number = 3;
+}
+
+message AddBankAccountResponse {
+  bool success = 1;
+  string message = 2;
+  BankAccount account = 3;
+}
+
+message GetBankAccountsRequest {
+  string user_id = 1;
+}
+
+message GetBankAccountsResponse {
+  repeated BankAccount accounts = 1;
+}
+
+message DeleteBankAccountRequest {
+  string user_id = 1;
+  string bank_account_id = 2;
+}
+
+message DeleteBankAccountResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message BankAccount {
+  string id = 1;
+  string bank_name = 2;
+  string card_number = 3; // formatted/masked in response usually
 }
 
 message DeductWalletRequest {

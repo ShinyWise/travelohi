@@ -36,6 +36,13 @@ type Account struct {
 	IsAdmin              bool
 }
 
+type BankAccount struct {
+	ID         string
+	UserID     string
+	BankName   string
+	CardNumber string
+}
+
 type AccountRepository interface {
 	Create(ctx context.Context, account *Account) error
 	GetByID(ctx context.Context, id string) (*Account, error)
@@ -46,6 +53,11 @@ type AccountRepository interface {
 	DeductBalance(ctx context.Context, userID string, amount int64) error
 	AddBalance(ctx context.Context, userID string, amount int64) error
 	GetPromoDiscount(ctx context.Context, promoCode string) (int64, error)
+
+	// bank accounts
+	AddBankAccount(ctx context.Context, bankAcc *BankAccount) error
+	GetBankAccounts(ctx context.Context, userID string) ([]BankAccount, error)
+	DeleteBankAccount(ctx context.Context, id string) error
 }
 
 type BookingRepository interface {
@@ -71,4 +83,8 @@ type AccountUseCase interface {
 
 	RedeemWalletCoupon(ctx context.Context, userID string, couponCode string) error
 	GetExchangeRate(ctx context.Context) float64
+
+	AddBankAccount(ctx context.Context, userID, bankName, cardNumber string) (*BankAccount, error)
+	GetBankAccounts(ctx context.Context, userID string) ([]BankAccount, error)
+	DeleteBankAccount(ctx context.Context, userID, id string) error
 }

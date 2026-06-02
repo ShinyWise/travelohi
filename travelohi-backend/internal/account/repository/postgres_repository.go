@@ -10,20 +10,36 @@ import (
 
 // gorm model
 type AccountModel struct {
-	ID                   string  `gorm:"primarykey;column:id"`
-	Email                string  `gorm:"column:email"`
-	FirstName            string  `gorm:"column:first_name"`
-	LastName             string  `gorm:"column:last_name"`
-	Gender               string  `gorm:"column:gender"`
-	DOB                  string  `gorm:"column:dob"`
-	ProfilePicture       []byte  `gorm:"column:profile_picture;type:bytea"`
-	IsActive             bool    `gorm:"column:is_active"`
-	NewsletterSubscribed bool    `gorm:"column:newsletter_subscribed"`
+	ID                   string `gorm:"primarykey;column:id"`
+	Email                string `gorm:"column:email"`
+	FirstName            string `gorm:"column:first_name"`
+	LastName             string `gorm:"column:last_name"`
+	Gender               string `gorm:"column:gender"`
+	DOB                  string `gorm:"column:dob"`
+	ProfilePicture       []byte `gorm:"column:profile_picture;type:bytea"`
+	IsActive             bool   `gorm:"column:is_active"`
+	NewsletterSubscribed bool   `gorm:"column:newsletter_subscribed"`
 
 	HiWalletBalance int64  `gorm:"column:hi_wallet_balance"`
 	PhoneNumber     string `gorm:"column:phone_number"`
 	Address         string `gorm:"column:address"`
 	IsAdmin         bool   `gorm:"column:is_admin"`
+}
+
+type BankAccountModel struct {
+	ID         string `gorm:"primarykey;column:id"`
+	UserID     string `gorm:"column:user_id"`
+	BankName   string `gorm:"column:bank_name"`
+	CardNumber string `gorm:"column:card_number"`
+}
+
+func (m *BankAccountModel) ToDomain() account.BankAccount {
+	return account.BankAccount{
+		ID:         m.ID,
+		UserID:     m.UserID,
+		BankName:   m.BankName,
+		CardNumber: m.CardNumber,
+	}
 }
 
 // function buat bantu mapping gorm data into pure domain
@@ -168,4 +184,32 @@ func (r *PostgresAccountRepository) GetPromoDiscount(ctx context.Context, promoC
 	}
 
 	return discount, nil
+}
+
+func (r *PostgresAccountRepository) AddBankAccount(ctx context.Context, bankAcc *account.BankAccount) error {
+	model := &BankAccountModel{
+		ID:         bankAcc.ID,
+		UserID:     bankAcc.UserID,
+		BankName:   bankAcc.BankName,
+		CardNumber: bankAcc.CardNumber,
+	}
+	return r.db.WithContext(ctx).Table("bank_accounts").Create(model).Error
+}
+
+func (r *PostgresAccountRepository) GetBankAccounts(ctx context.Context, userID string) ([]account.BankAccount, error) {
+	var models []BankAccountModel
+	err := r.db.WithContext(ctx).Table("bank_accounts").Where("user_id = ?", userID).Find(&models).Error
+	if err != nil {
+		return nil, err
+	}
+
+	var accounts []account.BankAccount
+	for _, m := range models {
+		accounts = append(accounts, m.ToDomain())
+	}
+	return accounts, nil
+}
+
+func (r *PostgresAccountRepository) DeleteBankAccount(ctx context.Context, id string) error {
+	return r.db.WithContext(ctx).Table("bank_accounts").Where("id = ?", id).Delete(&BankAccountModel{}).Error
 }
