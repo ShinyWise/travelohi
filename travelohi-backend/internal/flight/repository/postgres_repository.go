@@ -91,9 +91,10 @@ func (r *postgresFlightRepo) GetFlightByID(ctx context.Context, id string) (flig
 }
 
 type AirlineModel struct {
-	ID   string `gorm:"primaryKey"`
-	Name string
-	Logo []byte `gorm:"column:logo;type:bytea"`
+	ID       string `gorm:"primaryKey"`
+	Name     string
+	IATACode string `gorm:"column:iata_code"`
+	Logo     []byte `gorm:"column:logo;type:bytea"`
 }
 
 func (AirlineModel) TableName() string { return "airlines" }
@@ -108,9 +109,10 @@ func (r *postgresFlightRepo) GetAirlineByID(ctx context.Context, id string) (fli
 		logoURL = "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(m.Logo)
 	}
 	return flight.Airline{
-		ID:      m.ID,
-		Name:    m.Name,
-		LogoURL: logoURL,
+		ID:       m.ID,
+		Name:     m.Name,
+		LogoURL:  logoURL,
+		IATACode: m.IATACode,
 	}, nil
 }
 

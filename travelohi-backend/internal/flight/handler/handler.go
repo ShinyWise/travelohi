@@ -53,9 +53,10 @@ func (h *FlightHandler) SearchFlights(ctx context.Context, req *flightpb.SearchF
 		al, err := h.usecase.GetAirlineByID(ctx, f.AirlineID)
 		if err == nil {
 			pbAirline = &flightpb.Airline{
-				Id:      al.ID,
-				Name:    al.Name,
-				LogoUrl: al.LogoURL,
+				Id:       al.ID,
+				Name:     al.Name,
+				LogoUrl:  al.LogoURL,
+				IataCode: al.IATACode,
 			}
 		}
 

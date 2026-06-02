@@ -38,7 +38,8 @@ message InsertHotelRequest {
 
 message InsertAirlineRequest {
   string name = 1;
-  bytes logo = 2;
+  string iata_code = 2;
+  bytes logo = 3;
 }
 
 message CreatePromoRequest {

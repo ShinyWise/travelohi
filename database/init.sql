@@ -126,6 +126,7 @@ CREATE TABLE IF NOT EXISTS flight_seats (
 CREATE TABLE IF NOT EXISTS airlines (
     id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
+    iata_code VARCHAR(10),
     logo BYTEA
 );
 

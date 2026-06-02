@@ -38,7 +38,8 @@ export interface Hotel {
     /**
      * @generated from protobuf field: repeated string facilities = 6
      */
-    facilities: string[]; // e.g., "Swimming Pool", "WiFi"    /**
+    facilities: string[]; // e.g., "Swimming Pool", "WiFi"
+    /**
      * @generated from protobuf field: float rating_cleanliness = 7
      */
     ratingCleanliness: number;
@@ -86,7 +87,8 @@ export interface HotelRoom {
     /**
      * @generated from protobuf field: string name = 3
      */
-    name: string; // e.g., "Deluxe King"    /**
+    name: string; // e.g., "Deluxe King"
+    /**
      * @generated from protobuf field: int64 price_per_night = 4
      */
     pricePerNight: bigint;
@@ -97,7 +99,8 @@ export interface HotelRoom {
     /**
      * @generated from protobuf field: repeated string facilities = 6
      */
-    facilities: string[]; // e.g., "Bathtub", "Non-smoking"    /**
+    facilities: string[]; // e.g., "Bathtub", "Non-smoking"
+    /**
      * @generated from protobuf field: int32 available_count = 7
      */
     availableCount: number;
@@ -162,7 +165,8 @@ export interface SearchHotelsRequest {
     /**
      * @generated from protobuf field: string query = 1
      */
-    query: string; // name/city    /**
+    query: string; // name/city
+    /**
      * @generated from protobuf field: string check_in_date = 2
      */
     checkInDate: string;
@@ -193,13 +197,16 @@ export interface SearchHotelsRequest {
      *
      * @generated from protobuf field: string sort_by = 8
      */
-    sortBy: string; // "rating", "price", "reviews", "availability"    /**
+    sortBy: string; // "rating", "price", "reviews", "availability"
+    /**
      * @generated from protobuf field: string sort_order = 9
      */
-    sortOrder: string; // "asc", "desc"    /**
+    sortOrder: string; // "asc", "desc"
+    /**
      * @generated from protobuf field: int32 limit = 10
      */
-    limit: number; // Must be 20, 25, or 30    /**
+    limit: number; // Must be 20, 25, or 30
+    /**
      * @generated from protobuf field: int32 offset = 11
      */
     offset: number;

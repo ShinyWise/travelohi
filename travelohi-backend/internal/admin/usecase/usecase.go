@@ -50,9 +50,10 @@ func (u *adminUseCase) InsertHotel(ctx context.Context, req *adminpb.InsertHotel
 
 func (u *adminUseCase) InsertAirline(ctx context.Context, req *adminpb.InsertAirlineRequest) error {
 	airline := &admin.Airline{
-		ID:   uuid.New().String(),
-		Name: req.GetName(),
-		Logo: req.GetLogo(),
+		ID:       uuid.New().String(),
+		Name:     req.GetName(),
+		IATACode: req.GetIataCode(),
+		Logo:     req.GetLogo(),
 	}
 
 	if err := u.repo.InsertAirline(ctx, airline); err != nil {

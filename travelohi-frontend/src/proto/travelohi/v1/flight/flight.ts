@@ -75,6 +75,10 @@ export interface Airline {
      * @generated from protobuf field: string logo_url = 3
      */
     logoUrl: string;
+    /**
+     * @generated from protobuf field: string iata_code = 4
+     */
+    iataCode: string;
 }
 /**
  * @generated from protobuf message travelohi.v1.flight.Flight
@@ -186,7 +190,8 @@ export interface SearchFlightsRequest {
     /**
      * @generated from protobuf field: string departure_date = 3
      */
-    departureDate: string; // YYYY-MM-DD    /**
+    departureDate: string; // YYYY-MM-DD
+    /**
      * @generated from protobuf field: string transit_filter = 4
      */
     transitFilter: string;
@@ -490,7 +495,8 @@ class Airline$Type extends MessageType<Airline> {
         super("travelohi.v1.flight.Airline", [
             { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "logo_url", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 3, name: "logo_url", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "iata_code", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Airline>): Airline {
@@ -498,6 +504,7 @@ class Airline$Type extends MessageType<Airline> {
         message.id = "";
         message.name = "";
         message.logoUrl = "";
+        message.iataCode = "";
         if (value !== undefined)
             reflectionMergePartial<Airline>(this, message, value);
         return message;
@@ -515,6 +522,9 @@ class Airline$Type extends MessageType<Airline> {
                     break;
                 case /* string logo_url */ 3:
                     message.logoUrl = reader.string();
+                    break;
+                case /* string iata_code */ 4:
+                    message.iataCode = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -537,6 +547,9 @@ class Airline$Type extends MessageType<Airline> {
         /* string logo_url = 3; */
         if (message.logoUrl !== "")
             writer.tag(3, WireType.LengthDelimited).string(message.logoUrl);
+        /* string iata_code = 4; */
+        if (message.iataCode !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.iataCode);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

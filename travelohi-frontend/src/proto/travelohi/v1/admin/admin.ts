@@ -62,7 +62,11 @@ export interface InsertAirlineRequest {
      */
     name: string;
     /**
-     * @generated from protobuf field: bytes logo = 2
+     * @generated from protobuf field: string iata_code = 2
+     */
+    iataCode: string;
+    /**
+     * @generated from protobuf field: bytes logo = 3
      */
     logo: Uint8Array;
 }
@@ -351,12 +355,14 @@ class InsertAirlineRequest$Type extends MessageType<InsertAirlineRequest> {
     constructor() {
         super("travelohi.v1.admin.InsertAirlineRequest", [
             { no: 1, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "logo", kind: "scalar", T: 12 /*ScalarType.BYTES*/ }
+            { no: 2, name: "iata_code", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "logo", kind: "scalar", T: 12 /*ScalarType.BYTES*/ }
         ]);
     }
     create(value?: PartialMessage<InsertAirlineRequest>): InsertAirlineRequest {
         const message = globalThis.Object.create((this.messagePrototype!));
         message.name = "";
+        message.iataCode = "";
         message.logo = new Uint8Array(0);
         if (value !== undefined)
             reflectionMergePartial<InsertAirlineRequest>(this, message, value);
@@ -370,7 +376,10 @@ class InsertAirlineRequest$Type extends MessageType<InsertAirlineRequest> {
                 case /* string name */ 1:
                     message.name = reader.string();
                     break;
-                case /* bytes logo */ 2:
+                case /* string iata_code */ 2:
+                    message.iataCode = reader.string();
+                    break;
+                case /* bytes logo */ 3:
                     message.logo = reader.bytes();
                     break;
                 default:
@@ -388,9 +397,12 @@ class InsertAirlineRequest$Type extends MessageType<InsertAirlineRequest> {
         /* string name = 1; */
         if (message.name !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.name);
-        /* bytes logo = 2; */
+        /* string iata_code = 2; */
+        if (message.iataCode !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.iataCode);
+        /* bytes logo = 3; */
         if (message.logo.length)
-            writer.tag(2, WireType.LengthDelimited).bytes(message.logo);
+            writer.tag(3, WireType.LengthDelimited).bytes(message.logo);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

@@ -63,7 +63,7 @@ message DeleteBankAccountResponse {
 message BankAccount {
   string id = 1;
   string bank_name = 2;
-  string card_number = 3; // formatted/masked in response usually
+  string card_number = 3; 
 }
 
 message DeductWalletRequest {

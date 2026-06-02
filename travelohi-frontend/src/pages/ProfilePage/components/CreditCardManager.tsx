@@ -52,6 +52,7 @@ const CreditCardManager: React.FC = () => {
                 });
                 if (response.success) {
                     await fetchAccounts();
+                    window.dispatchEvent(new Event('bank_updated'));
                     setIsAdding(false);
                     setBankName('');
                     setCardNumber('');
@@ -73,6 +74,7 @@ const CreditCardManager: React.FC = () => {
             });
             if (response.success) {
                 await fetchAccounts();
+                window.dispatchEvent(new Event('bank_updated'));
             }
         } catch (err) {
             console.error("Failed to delete bank account:", err);

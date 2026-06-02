@@ -7,6 +7,7 @@ body,
   min-height: 100vh;
   box-sizing: border-box;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
 }
 
 *,
@@ -29,18 +30,18 @@ body,
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--bg-primary);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(128, 128, 128, 0.35);
+  background: rgba(128, 128, 128, 0.3);
   border-radius: 10px;
-  border: 2px solid transparent;
+  border: 2px solid var(--bg-primary);
   background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(128, 128, 128, 0.6);
+  background-color: rgba(128, 128, 128, 0.5);
 }
 
 ::-webkit-scrollbar-button {

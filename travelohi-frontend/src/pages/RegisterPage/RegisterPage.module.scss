@@ -5,16 +5,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    flex: 1;
+    min-height: calc(100vh - 70px);
     background-color: var(--bg-auth-container);
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-    margin-top: -20px;
-    margin-bottom: -20px;
+    width: 100%;
     padding: 40px 20px;
     box-sizing: border-box;
 }

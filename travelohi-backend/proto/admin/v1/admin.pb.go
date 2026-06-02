@@ -160,7 +160,8 @@ func (x *InsertHotelRequest) GetStartingPrice() int64 {
 type InsertAirlineRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Logo          []byte                 `protobuf:"bytes,2,opt,name=logo,proto3" json:"logo,omitempty"`
+	IataCode      string                 `protobuf:"bytes,2,opt,name=iata_code,json=iataCode,proto3" json:"iata_code,omitempty"`
+	Logo          []byte                 `protobuf:"bytes,3,opt,name=logo,proto3" json:"logo,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -198,6 +199,13 @@ func (*InsertAirlineRequest) Descriptor() ([]byte, []int) {
 func (x *InsertAirlineRequest) GetName() string {
 	if x != nil {
 		return x.Name
+	}
+	return ""
+}
+
+func (x *InsertAirlineRequest) GetIataCode() string {
+	if x != nil {
+		return x.IataCode
 	}
 	return ""
 }
@@ -761,10 +769,11 @@ const file_proto_travelohi_v1_admin_admin_proto_rawDesc = "" +
 	"\n" +
 	"facilities\x18\x05 \x03(\tR\n" +
 	"facilities\x12%\n" +
-	"\x0estarting_price\x18\x06 \x01(\x03R\rstartingPrice\">\n" +
+	"\x0estarting_price\x18\x06 \x01(\x03R\rstartingPrice\"[\n" +
 	"\x14InsertAirlineRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
-	"\x04logo\x18\x02 \x01(\fR\x04logo\"\\\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1b\n" +
+	"\tiata_code\x18\x02 \x01(\tR\biataCode\x12\x12\n" +
+	"\x04logo\x18\x03 \x01(\fR\x04logo\"\\\n" +
 	"\x12CreatePromoRequest\x12\x1d\n" +
 	"\n" +
 	"promo_code\x18\x01 \x01(\tR\tpromoCode\x12'\n" +

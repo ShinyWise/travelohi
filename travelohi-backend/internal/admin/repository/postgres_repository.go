@@ -121,9 +121,10 @@ type HotelModel struct {
 func (HotelModel) TableName() string { return "hotels" }
 
 type AirlineModel struct {
-	ID   string `gorm:"primaryKey;type:varchar(255)"`
-	Name string `gorm:"type:varchar(255);not null"`
-	Logo []byte `gorm:"column:logo;type:bytea"`
+	ID       string `gorm:"primaryKey;type:varchar(255)"`
+	Name     string `gorm:"type:varchar(255);not null"`
+	IATACode string `gorm:"column:iata_code;type:varchar(10)"`
+	Logo     []byte `gorm:"column:logo;type:bytea"`
 }
 
 func (AirlineModel) TableName() string { return "airlines" }
@@ -151,9 +152,10 @@ func (r *postgresAdminRepo) InsertHotel(ctx context.Context, h *admin.Hotel) err
 
 func (r *postgresAdminRepo) InsertAirline(ctx context.Context, a *admin.Airline) error {
 	model := &AirlineModel{
-		ID:   a.ID,
-		Name: a.Name,
-		Logo: a.Logo,
+		ID:       a.ID,
+		Name:     a.Name,
+		IATACode: a.IATACode,
+		Logo:     a.Logo,
 	}
 	return r.db.WithContext(ctx).Create(model).Error
 }

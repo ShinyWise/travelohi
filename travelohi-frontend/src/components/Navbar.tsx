@@ -30,7 +30,7 @@ const Navbar: React.FC = () => {
     const [isPaymentDropdownOpen, setIsPaymentDropdownOpen] = useState(false);
     const [ongoingCount, setOngoingCount] = useState<number>(0);
     const [profileInfo, setProfileInfo] = useState<{ firstName: string; hiWalletBalance?: bigint } | null>(null);
-    const [creditCards, setCreditCards] = useState<{ id: number; lastFour: string; type: string }[]>([]);
+    const [bankAccounts, setBankAccounts] = useState<any[]>([]);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -64,7 +64,7 @@ const Navbar: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        const fetchProfileAndOngoingBookings = async () => {
+        const fetchProfileAndData = async () => {
             if (!userId) return;
             try {
                 const client = new AccountServiceClient(transport);
@@ -80,6 +80,9 @@ const Navbar: React.FC = () => {
                     }
                 }
 
+                const { response: bankRes } = await client.getBankAccounts({ userId });
+                setBankAccounts(bankRes.accounts);
+
                 const { response: bookingRes } = await client.getBookingHistory({
                     userId,
                     filterStatus: 'ongoing',
@@ -90,43 +93,29 @@ const Navbar: React.FC = () => {
                     setOngoingCount(bookingRes.bookings.length);
                 }
             } catch (err) {
-                console.warn("Failed to fetch profile or bookings in Navbar", err);
+                console.warn("Failed to fetch profile or data in Navbar", err);
             }
         };
 
         if (isAuthenticated) {
-            fetchProfileAndOngoingBookings();
+            fetchProfileAndData();
         } else {
             setProfileInfo(null);
             setOngoingCount(0);
+            setBankAccounts([]);
         }
 
-        const handleBookingUpdate = () => {
-            if (isAuthenticated) fetchProfileAndOngoingBookings();
+        const handleUpdate = () => {
+            if (isAuthenticated) fetchProfileAndData();
         };
 
-        window.addEventListener('booking_updated', handleBookingUpdate);
+        window.addEventListener('booking_updated', handleUpdate);
+        window.addEventListener('bank_updated', handleUpdate);
         return () => {
-            window.removeEventListener('booking_updated', handleBookingUpdate);
+            window.removeEventListener('booking_updated', handleUpdate);
+            window.removeEventListener('bank_updated', handleUpdate);
         };
     }, [isAuthenticated, userId]);
-
-    useEffect(() => {
-        if (isAuthenticated && userId) {
-            const saved = localStorage.getItem(`travelohi_credit_cards_${userId}`);
-            if (saved) {
-                try {
-                    setCreditCards(JSON.parse(saved));
-                } catch (e) {
-                    console.error("Failed to parse credit cards from localStorage", e);
-                }
-            } else {
-                setCreditCards([]);
-            }
-        } else {
-            setCreditCards([]);
-        }
-    }, [isAuthenticated, userId, isPaymentDropdownOpen]);
 
     const handleLanguageSelect = (lang: 'ID' | 'EN') => {
         setLanguage(lang);
@@ -252,11 +241,11 @@ const Navbar: React.FC = () => {
                                                     <CreditCard size={16} />
                                                 </span>
                                                 <div className={styles.paymentDetails}>
-                                                    <span className={styles.optionName}>{t.cc_default_type}</span>
-                                                    {isAuthenticated && creditCards.length > 0 ? (
-                                                        creditCards.map(card => (
-                                                            <span key={card.id} className={styles.optionInfo} style={{ display: 'block' }}>
-                                                                ******{card.lastFour}
+                                                    <span className={styles.optionName}>{t.payment_methods_card || 'Credit Card'}</span>
+                                                    {isAuthenticated && bankAccounts.length > 0 ? (
+                                                        bankAccounts.map(acc => (
+                                                            <span key={acc.id} className={styles.optionInfo} style={{ display: 'block' }}>
+                                                                {acc.bankName} | ****{acc.cardNumber.slice(-4)}
                                                             </span>
                                                         ))
                                                     ) : (

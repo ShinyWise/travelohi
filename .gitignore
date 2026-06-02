@@ -12,6 +12,8 @@ main
 # text
 *.txt
 *.md
+*.pdf
+
 # IDE - VS Code
 .vscode/
 *.code-workspace

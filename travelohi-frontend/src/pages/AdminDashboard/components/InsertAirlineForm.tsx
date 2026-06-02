@@ -7,6 +7,7 @@ const adminClient = new AdminServiceClient(transport);
 
 const InsertAirlineForm: React.FC = () => {
     const [name, setName] = useState('');
+    const [iataCode, setIataCode] = useState('');
     const [selectedFile, setSelectedFile] = useState<{ file: File; previewUrl: string; bytes: Uint8Array } | null>(null);
 
     const previewUrlRef = useRef<string | null>(null);
@@ -79,12 +80,14 @@ const InsertAirlineForm: React.FC = () => {
 
             const { response } = await adminClient.insertAirline({
                 name,
+                iataCode,
                 logo: selectedFile.bytes
             });
 
             if (response.success) {
-                setToast({ type: 'success', msg: `Maskapai "${name}" berhasil ditambahkan!` });
+                setToast({ type: 'success', msg: `Maskapai "${name}" (${iataCode}) berhasil ditambahkan!` });
                 setName('');
+                setIataCode('');
                 removeFile();
             } else {
                 setToast({ type: 'error', msg: response.message || 'Gagal menambahkan maskapai.' });
@@ -107,6 +110,11 @@ const InsertAirlineForm: React.FC = () => {
             <div className={styles.inputGroup}>
                 <label>Nama Maskapai</label>
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder="e.g. Garuda Indonesia" />
+            </div>
+
+            <div className={styles.inputGroup}>
+                <label>Kode IATA</label>
+                <input type="text" value={iataCode} onChange={(e) => setIataCode(e.target.value.toUpperCase())} required placeholder="e.g. GA" maxLength={3} />
             </div>
 
             <div className={styles.dynamicGroup}>

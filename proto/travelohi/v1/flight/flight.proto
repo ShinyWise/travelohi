@@ -38,6 +38,7 @@ message Airline {
   string id = 1;
   string name = 2;
   string logo_url = 3;
+  string iata_code = 4;
 }
 
 message Flight {

@@ -17,9 +17,10 @@ type Hotel struct {
 }
 
 type Airline struct {
-	ID   string
-	Name string
-	Logo []byte
+	ID       string
+	Name     string
+	IATACode string
+	Logo     []byte
 }
 
 type Promo struct {

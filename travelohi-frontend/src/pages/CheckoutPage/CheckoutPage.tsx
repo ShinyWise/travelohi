@@ -35,33 +35,25 @@ const CheckoutPage: React.FC = () => {
         }
         const fetchCheckoutData = async () => {
             try {
-                // parallel fetching buat cart and profile data
-                const [cartRes, profileRes] = await Promise.all([
+                const [cartRes, profileRes, bankRes] = await Promise.all([
                     cartClient.viewCart({}),
-                    accountClient.getProfile({ userId })
+                    accountClient.getProfile({ userId }),
+                    accountClient.getBankAccounts({ userId })
                 ]);
                 const items = cartRes.response.items || [];
                 if (items.length === 0) {
-                    navigate('/cart'); // back to cart
+                    navigate('/cart');
                     return;
                 }
-                // read correct fields from viewcartresponse mapping
                 setCartTotal(Number(cartRes.response.totalPrice));
                 setWalletBalance(Number(profileRes.response.profile?.hiWalletBalance || 0));
 
-                const storageKey = `travelohi_credit_cards_${userId}`;
-                const savedCards = localStorage.getItem(storageKey);
-                if (savedCards) { // credit card
-                    const parsed = JSON.parse(savedCards);
-                    const mapped = parsed.map((card: any) => ({
-                        id: card.id.toString(),
-                        lastFour: card.lastFour,
-                        type: card.type || t.cc_default_type
-                    }));
-                    setCreditCards(mapped);
-                } else {
-                    setCreditCards([]);
-                }
+                const mapped = bankRes.response.accounts.map((acc: any) => ({
+                    id: acc.id,
+                    lastFour: acc.cardNumber.slice(-4),
+                    type: acc.bankName
+                }));
+                setCreditCards(mapped);
             } catch (err: any) {
                 setError(err.message || t.checkout_load_error);
             } finally {

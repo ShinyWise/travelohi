@@ -43,7 +43,8 @@ export interface JoinQueueRequest {
     /**
      * @generated from protobuf field: string user_id = 1
      */
-    userId: string; // Resolved via JWT}
+    userId: string; // Resolved via JWT
+}
 /**
  * @generated from protobuf message travelohi.v1.game.PlayerActionRequest
  */
@@ -55,7 +56,8 @@ export interface PlayerActionRequest {
     /**
      * @generated from protobuf field: string action_type = 2
      */
-    actionType: string; // "move_left", "move_right", "low_kick", "front_kick"}
+    actionType: string; // "move_left", "move_right", "low_kick", "front_kick"
+}
 /**
  * server to client event
  *

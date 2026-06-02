@@ -14,6 +14,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const { theme } = useAppContext();
     const location = useLocation();
     const isSupportPage = location.pathname === '/support';
+    const isAuthPage = ['/login', '/register', '/forgot-password', '/activate'].some(path => location.pathname.startsWith(path));
     
     const hideFooterPaths = [
         '/login', '/register', '/forgot-password', '/activate',
@@ -32,7 +33,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <NotificationProvider>
                 <div className={`${styles.layoutContainer} ${styles[theme]} ${isSupportPage ? styles.supportLayout : ''}`}>
                     <Navbar />
-                    <main className={`${styles.mainContent} ${isSupportPage ? styles.supportMain : ''}`}>
+                    <main className={`${styles.mainContent} ${isSupportPage ? styles.supportMain : ''} ${isAuthPage ? styles.authMain : ''}`}>
                         {children}
                     </main>
                     {!hideFooter && <Footer />}

@@ -25,9 +25,10 @@ type FlightSeat struct {
 }
 
 type Airline struct {
-	ID      string
-	Name    string
-	LogoURL string
+	ID       string
+	Name     string
+	LogoURL  string
+	IATACode string
 }
 
 type FlightSearchFilter struct {

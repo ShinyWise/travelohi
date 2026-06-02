@@ -59,7 +59,7 @@ const FlightCard: React.FC<Props> = ({ flight }) => {
                         wrapperStyle={{ height: '30px', display: 'flex' }}
                         skeletonStyle={{ borderRadius: '4px' }}
                     />
-                    <span>{flight.airline?.name}</span>
+                    <span>{flight.airline?.name} {flight.airline?.iataCode && `(${flight.airline.iataCode})`}</span>
                     <small>{flight.flightCode}</small>
                 </div>
                 <div className={styles.priceInfo}>
