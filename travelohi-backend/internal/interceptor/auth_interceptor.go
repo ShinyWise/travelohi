@@ -55,6 +55,7 @@ func NewAuthInterceptor(tokenMaker token.Maker, cache auth.CacheRepository, role
 		"/travelohi.v1.telemetry.TelemetryService/GetGlobalRecommendations":     true,
 		"/travelohi.v1.telemetry.TelemetryService/GetPopularFlightDestinations": true,
 		"/travelohi.v1.telemetry.TelemetryService/GetPopularHotels":             true,
+		"/travelohi.v1.telemetry.TelemetryService/GlobalSearch":                 true,
 	}
 
 	return &AuthInterceptor{

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAppContext } from '../context/ThemeContext';
 import { translations } from '../utils/translations';
-import { Clock, Building, Plane } from 'lucide-react';
+import { Clock, Building, Plane, TrendingUp } from 'lucide-react';
 import { HotelSearchResult, AirlineSearchResult } from '../proto/travelohi/v1/telemetry/telemetry';
 import styles from './SearchDropdown.module.scss';
 
@@ -10,6 +10,7 @@ export type DropdownAirline = AirlineSearchResult & { displayTitle?: string };
 interface SearchDropdownProps {
     isOpen: boolean;
     recentSearches: string[];
+    recommendations?: string[];
     hotels?: HotelSearchResult[];
     airlines?: DropdownAirline[];
     onSelect: (query: string) => void;
@@ -18,6 +19,7 @@ interface SearchDropdownProps {
 const SearchDropdown: React.FC<SearchDropdownProps> = ({
     isOpen,
     recentSearches,
+    recommendations = [],
     hotels = [],
     airlines = [],
     onSelect,
@@ -62,9 +64,31 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
                             </ul>
                         </div>
                     )}
+                    {recommendations.length > 0 && (
+                        <div className={styles.section}>
+                            <h4>Trending Searches</h4>
+                            <ul className={styles.list}>
+                                {recommendations.map((query, idx) => (
+                                    <li 
+                                        key={`rec-${idx}`} 
+                                        onClick={() => onSelect(query)} 
+                                        onKeyDown={(e) => handleKeyDown(e, query)}
+                                        role="option"
+                                        tabIndex={0}
+                                        style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+                                    >
+                                        <span className={styles.icon} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-color)' }}>
+                                            <TrendingUp size={16} />
+                                        </span>
+                                        <span>{query}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
                     {airlines.length > 0 && (
                         <div className={styles.section}>
-                            <h4>Airlines</h4>
+                            <h4>Flights & Airlines</h4>
                             <ul className={styles.list}>
                                 {airlines.map((airline, idx) => (
                                     <li 

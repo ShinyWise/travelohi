@@ -177,11 +177,34 @@ func (r *postgresTelemetryRepo) GlobalSearch(ctx context.Context, query string) 
 
 	go func() {
 		defer wg.Done()
-		errAirlines = r.db.WithContext(ctx).Table("airlines").
+		
+		var airlineMatches []*telemetry.AirlineSearchResult
+		var destMatches []*telemetry.AirlineSearchResult
+
+		err1 := r.db.WithContext(ctx).Table("airlines").
 			Select("id, name, coalesce('data:image/jpeg;base64,' || encode(logo, 'base64'), '') as logo_url").
 			Where("name ILIKE ?", searchTerm).
-			Limit(5).
-			Scan(&airlines).Error
+			Limit(3).
+			Scan(&airlineMatches).Error
+
+		err2 := r.db.WithContext(ctx).Table("flights").
+			Select("MAX(id) as id, destination_airport as name, '' as logo_url").
+			Where("destination_airport ILIKE ?", searchTerm).
+			Group("destination_airport").
+			Limit(3).
+			Scan(&destMatches).Error
+
+		if err1 != nil {
+			errAirlines = err1
+			return
+		}
+		if err2 != nil {
+			errAirlines = err2
+			return
+		}
+
+		airlines = append(airlines, airlineMatches...)
+		airlines = append(airlines, destMatches...)
 	}()
 
 	wg.Wait()

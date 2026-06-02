@@ -9,7 +9,6 @@ import { useAppContext } from '../context/ThemeContext';
 import { translations } from '../utils/translations';
 import { Search } from 'lucide-react';
 import SearchDropdown, { type DropdownAirline } from './SearchDropdown';
-import { getDisplayAirportName } from '../utils/airportMapper';
 import styles from './SearchInput.module.scss';
 interface SearchInputProps {
     onFocus?: () => void;
@@ -22,10 +21,9 @@ const SearchInput: React.FC<SearchInputProps> = ({ onFocus }) => {
     const [query, setQuery] = useState('');
     const [isFocused, setIsFocused] = useState(false);
     const [recentSearches, setRecentSearches] = useState<string[]>([]);
+    const [recommendations, setRecommendations] = useState<string[]>([]);
     const [hotelResults, setHotelResults] = useState<HotelSearchResult[]>([]);
     const [airlineResults, setAirlineResults] = useState<DropdownAirline[]>([]);
-    const [popHotels, setPopHotels] = useState<HotelSearchResult[]>([]);
-    const [popFlights, setPopFlights] = useState<DropdownAirline[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -34,13 +32,12 @@ const SearchInput: React.FC<SearchInputProps> = ({ onFocus }) => {
     const { userId } = useAuth();
     const debouncedQuery = useDebounce(query, 500);
 
-    // clear search when returning to home
     useEffect(() => {
         if (location.pathname === '/') {
             setQuery('');
         }
     }, [location.pathname]);
-    // close dropdown when clicking outside of the search container
+
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
@@ -50,44 +47,20 @@ const SearchInput: React.FC<SearchInputProps> = ({ onFocus }) => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
-    // fetch telemetry data upon focus
+
     useEffect(() => {
         if (!isFocused) return;
         const fetchTelemetryData = async () => {
             setIsLoading(true);
             try {
-                // parallel fetching for performance
-                const [recentRes, popHotelsRes, popFlightsRes] = await Promise.all([
+                const [recentRes, globalRecsRes] = await Promise.all([
                     userId
                         ? telemetryClient.getRecentSearches({ userId })
                         : Promise.resolve({ response: { queries: [] } }),
-                    telemetryClient.getPopularHotels({}),
-                    telemetryClient.getPopularFlightDestinations({})
+                    telemetryClient.getGlobalRecommendations({})
                 ]);
                 setRecentSearches(recentRes.response?.queries?.slice(0, 3) || []);
-
-
-                const mappedPopHotels = (popHotelsRes.response?.hotels || []).slice(0, 5).map(h => ({
-                    id: h.hotelId,
-                    name: h.name,
-                    location: h.location,
-                    imageUrl: h.imageUrl
-                }));
-
-                const mappedPopFlights = (popFlightsRes.response?.destinations || []).slice(0, 5).map(d => ({
-                    id: d.destinationAirport,
-                    name: getDisplayAirportName(d.destinationAirport),
-                    displayTitle: `Flights to ${getDisplayAirportName(d.destinationAirport)}`,
-                    logoUrl: d.imageUrl
-                }));
-
-                setPopHotels(mappedPopHotels);
-                setPopFlights(mappedPopFlights);
-
-                if (!debouncedQuery) {
-                    setHotelResults(mappedPopHotels);
-                    setAirlineResults(mappedPopFlights);
-                }
+                setRecommendations(globalRecsRes.response?.recommendedQueries?.slice(0, 5) || []);
             } catch (error) {
                 console.error("Failed to load search telemetry via gRPC", error);
             } finally {
@@ -95,7 +68,8 @@ const SearchInput: React.FC<SearchInputProps> = ({ onFocus }) => {
             }
         };
         fetchTelemetryData();
-    }, [isFocused, userId, debouncedQuery]);
+    }, [isFocused, userId]);
+
     useEffect(() => {
         if (debouncedQuery) {
             console.debug("Ready to trigger lightweight autocomplete for:", debouncedQuery);
@@ -108,15 +82,16 @@ const SearchInput: React.FC<SearchInputProps> = ({ onFocus }) => {
                 .catch(err => console.error("Global search error:", err))
                 .finally(() => setIsLoading(false));
         } else {
-            setHotelResults(popHotels);
-            setAirlineResults(popFlights);
+            setHotelResults([]);
+            setAirlineResults([]);
         }
-    }, [debouncedQuery, popHotels, popFlights]);
+    }, [debouncedQuery]);
+
     const executeSearch = async (searchQuery: string) => {
         const trimmedQuery = searchQuery.trim();
         setIsFocused(false);
         setQuery(trimmedQuery);
-        // non-blocking telemetry log
+
         if (userId && trimmedQuery) {
             telemetryClient.logSearchQuery({ userId, query: trimmedQuery }).response.catch((err) => {
                 console.warn("Failed to log search query:", err);
@@ -161,8 +136,9 @@ const SearchInput: React.FC<SearchInputProps> = ({ onFocus }) => {
                 />
             </div>
             <SearchDropdown
-                isOpen={isFocused && (recentSearches.length > 0 || hotelResults.length > 0 || airlineResults.length > 0 || isLoading)}
-                recentSearches={recentSearches}
+                isOpen={isFocused && (recentSearches.length > 0 || recommendations.length > 0 || hotelResults.length > 0 || airlineResults.length > 0 || isLoading)}
+                recentSearches={query.trim() ? [] : recentSearches}
+                recommendations={query.trim() ? [] : recommendations}
                 hotels={hotelResults}
                 airlines={airlineResults}
                 onSelect={executeSearch}
