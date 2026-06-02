@@ -120,6 +120,7 @@ message UpdateProfileRequest {
   
   string phone_number = 6;
   string address = 7;
+  string email = 8;
 }
 
 message UpdateProfileResponse {

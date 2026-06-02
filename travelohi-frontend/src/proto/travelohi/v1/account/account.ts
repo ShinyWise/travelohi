@@ -288,6 +288,10 @@ export interface UpdateProfileRequest {
      * @generated from protobuf field: string address = 7
      */
     address: string;
+    /**
+     * @generated from protobuf field: string email = 8
+     */
+    email: string;
 }
 /**
  * @generated from protobuf message travelohi.v1.account.UpdateProfileResponse
@@ -1226,7 +1230,8 @@ class UpdateProfileRequest$Type extends MessageType<UpdateProfileRequest> {
             { no: 4, name: "profile_picture", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
             { no: 5, name: "newsletter_subscribed", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
             { no: 6, name: "phone_number", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 7, name: "address", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 7, name: "address", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 8, name: "email", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<UpdateProfileRequest>): UpdateProfileRequest {
@@ -1238,6 +1243,7 @@ class UpdateProfileRequest$Type extends MessageType<UpdateProfileRequest> {
         message.newsletterSubscribed = false;
         message.phoneNumber = "";
         message.address = "";
+        message.email = "";
         if (value !== undefined)
             reflectionMergePartial<UpdateProfileRequest>(this, message, value);
         return message;
@@ -1267,6 +1273,9 @@ class UpdateProfileRequest$Type extends MessageType<UpdateProfileRequest> {
                     break;
                 case /* string address */ 7:
                     message.address = reader.string();
+                    break;
+                case /* string email */ 8:
+                    message.email = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1301,6 +1310,9 @@ class UpdateProfileRequest$Type extends MessageType<UpdateProfileRequest> {
         /* string address = 7; */
         if (message.address !== "")
             writer.tag(7, WireType.LengthDelimited).string(message.address);
+        /* string email = 8; */
+        if (message.email !== "")
+            writer.tag(8, WireType.LengthDelimited).string(message.email);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

@@ -24,6 +24,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ initialData, onProfileUpdated
     const [formData, setFormData] = useState({
         firstName: initialData.firstName || '',
         lastName: initialData.lastName || '',
+        email: initialData.email || '',
         phoneNumber: initialData.phoneNumber || '',
         address: initialData.address || '',
         newsletterSubscribed: initialData.newsletterSubscribed || false,
@@ -88,6 +89,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ initialData, onProfileUpdated
                 userId,
                 firstName: formData.firstName,
                 lastName: formData.lastName,
+                email: formData.email,
                 profilePicture: profilePictureBytes ?? new Uint8Array(),
                 newsletterSubscribed: formData.newsletterSubscribed,
                 phoneNumber: formData.phoneNumber,
@@ -124,9 +126,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ initialData, onProfileUpdated
                 </div>
             )}
             <div className={styles.readOnlyGroup}>
-                <p><strong>Email:</strong> {initialData.email}</p>
                 <p><strong>{t.profile_dob}</strong> {initialData.dob}</p>
                 <p><strong>{t.profile_gender}</strong> {initialData.gender}</p>
+            </div>
+            <div className={styles.formRow}>
+                <FormInput label="Email" type="email" name="email" value={formData.email} onChange={handleChange} required />
             </div>
             <div className={styles.formRow}>
                 <FormInput label={t.first_name} name="firstName" value={formData.firstName} onChange={handleChange} required />

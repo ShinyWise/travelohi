@@ -439,6 +439,14 @@ func (uc *authUseCase) ActivateAccount(ctx context.Context, token string) error 
 
 	_ = uc.cache.Delete(ctx, activationKey)
 
+	// Send Welcome Email (Registration Success)
+	htmlBody := mailer.GenerateWelcomeEmail()
+	if err := uc.mailer.SendEmail([]string{email}, "Welcome to TraveloHI!", htmlBody); err != nil {
+		log.Printf("[ActivateAccount] Failed to send welcome email to %s: %v\n", email, err)
+	} else {
+		log.Printf("📧 WELCOME EMAIL SENT TO %s\n", email)
+	}
+
 	return nil
 }
 

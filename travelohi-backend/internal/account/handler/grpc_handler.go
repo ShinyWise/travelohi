@@ -97,6 +97,7 @@ func (h *AccountGrpcHandler) UpdateProfile(ctx context.Context, req *accountpb.U
 		NewsletterSubscribed: req.GetNewsletterSubscribed(),
 		PhoneNumber:          req.GetPhoneNumber(),
 		Address:              req.GetAddress(),
+		Email:                req.GetEmail(),
 	}
 
 	updatedAccount, err := h.userUsecase.UpdateProfile(ctx, updateData)

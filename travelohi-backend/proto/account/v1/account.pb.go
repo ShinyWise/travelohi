@@ -819,6 +819,7 @@ type UpdateProfileRequest struct {
 	NewsletterSubscribed bool                   `protobuf:"varint,5,opt,name=newsletter_subscribed,json=newsletterSubscribed,proto3" json:"newsletter_subscribed,omitempty"`
 	PhoneNumber          string                 `protobuf:"bytes,6,opt,name=phone_number,json=phoneNumber,proto3" json:"phone_number,omitempty"`
 	Address              string                 `protobuf:"bytes,7,opt,name=address,proto3" json:"address,omitempty"`
+	Email                string                 `protobuf:"bytes,8,opt,name=email,proto3" json:"email,omitempty"`
 	unknownFields        protoimpl.UnknownFields
 	sizeCache            protoimpl.SizeCache
 }
@@ -898,6 +899,13 @@ func (x *UpdateProfileRequest) GetPhoneNumber() string {
 func (x *UpdateProfileRequest) GetAddress() string {
 	if x != nil {
 		return x.Address
+	}
+	return ""
+}
+
+func (x *UpdateProfileRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
 	}
 	return ""
 }
@@ -1395,7 +1403,7 @@ const file_proto_travelohi_v1_account_account_proto_rawDesc = "" +
 	"\x11GetProfileRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\"Q\n" +
 	"\x12GetProfileResponse\x12;\n" +
-	"\aprofile\x18\x01 \x01(\v2!.travelohi.v1.account.UserProfileR\aprofile\"\x86\x02\n" +
+	"\aprofile\x18\x01 \x01(\v2!.travelohi.v1.account.UserProfileR\aprofile\"\x9c\x02\n" +
 	"\x14UpdateProfileRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1d\n" +
 	"\n" +
@@ -1404,7 +1412,8 @@ const file_proto_travelohi_v1_account_account_proto_rawDesc = "" +
 	"\x0fprofile_picture\x18\x04 \x01(\fR\x0eprofilePicture\x123\n" +
 	"\x15newsletter_subscribed\x18\x05 \x01(\bR\x14newsletterSubscribed\x12!\n" +
 	"\fphone_number\x18\x06 \x01(\tR\vphoneNumber\x12\x18\n" +
-	"\aaddress\x18\a \x01(\tR\aaddress\"}\n" +
+	"\aaddress\x18\a \x01(\tR\aaddress\x12\x14\n" +
+	"\x05email\x18\b \x01(\tR\x05email\"}\n" +
 	"\x15UpdateProfileResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12J\n" +
 	"\x0fupdated_profile\x18\x02 \x01(\v2!.travelohi.v1.account.UserProfileR\x0eupdatedProfile\"\x86\x01\n" +

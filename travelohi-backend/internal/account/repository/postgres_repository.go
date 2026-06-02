@@ -108,7 +108,17 @@ func (r *PostgresAccountRepository) Update(ctx context.Context, u *account.Accou
 		Address:              u.Address,
 	}
 
-	return r.db.WithContext(ctx).Where("id = ?", u.ID).Updates(model).Error
+	err := r.db.WithContext(ctx).Where("id = ?", u.ID).Updates(model).Error
+	if err != nil {
+		return err
+	}
+
+	// sync email ke tabel auths biar bisa login pake email baru
+	if u.Email != "" {
+		return r.db.WithContext(ctx).Table("auths").Where("id = ?", u.ID).Update("email", u.Email).Error
+	}
+
+	return nil
 }
 
 func (r *PostgresAccountRepository) Delete(ctx context.Context, u *account.Account) error {
