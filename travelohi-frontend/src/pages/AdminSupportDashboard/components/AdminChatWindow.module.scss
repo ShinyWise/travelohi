@@ -144,10 +144,33 @@
 }
 
 .loader,
-.emptyState {
+.emptyState,
+.loadMoreSpinner,
+.historyEnd {
     text-align: center;
     color: var(--text-secondary);
+}
+
+.loader,
+.emptyState {
     margin-top: 50px;
+}
+
+.loadMoreSpinner {
+    padding: 10px;
+    font-size: 0.85rem;
+    font-style: italic;
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.historyEnd {
+    padding: 10px;
+    font-size: 0.8rem;
+    opacity: 0.7;
+    border-top: 1px dashed var(--border-color);
+    margin-bottom: 10px;
 }
 
 .messageWrapper {
