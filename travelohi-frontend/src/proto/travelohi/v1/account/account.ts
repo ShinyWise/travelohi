@@ -12,6 +12,100 @@ import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 /**
+ * @generated from protobuf message travelohi.v1.account.AddBankAccountRequest
+ */
+export interface AddBankAccountRequest {
+    /**
+     * @generated from protobuf field: string user_id = 1
+     */
+    userId: string;
+    /**
+     * @generated from protobuf field: string bank_name = 2
+     */
+    bankName: string;
+    /**
+     * @generated from protobuf field: string card_number = 3
+     */
+    cardNumber: string;
+}
+/**
+ * @generated from protobuf message travelohi.v1.account.AddBankAccountResponse
+ */
+export interface AddBankAccountResponse {
+    /**
+     * @generated from protobuf field: bool success = 1
+     */
+    success: boolean;
+    /**
+     * @generated from protobuf field: string message = 2
+     */
+    message: string;
+    /**
+     * @generated from protobuf field: travelohi.v1.account.BankAccount account = 3
+     */
+    account?: BankAccount;
+}
+/**
+ * @generated from protobuf message travelohi.v1.account.GetBankAccountsRequest
+ */
+export interface GetBankAccountsRequest {
+    /**
+     * @generated from protobuf field: string user_id = 1
+     */
+    userId: string;
+}
+/**
+ * @generated from protobuf message travelohi.v1.account.GetBankAccountsResponse
+ */
+export interface GetBankAccountsResponse {
+    /**
+     * @generated from protobuf field: repeated travelohi.v1.account.BankAccount accounts = 1
+     */
+    accounts: BankAccount[];
+}
+/**
+ * @generated from protobuf message travelohi.v1.account.DeleteBankAccountRequest
+ */
+export interface DeleteBankAccountRequest {
+    /**
+     * @generated from protobuf field: string user_id = 1
+     */
+    userId: string;
+    /**
+     * @generated from protobuf field: string bank_account_id = 2
+     */
+    bankAccountId: string;
+}
+/**
+ * @generated from protobuf message travelohi.v1.account.DeleteBankAccountResponse
+ */
+export interface DeleteBankAccountResponse {
+    /**
+     * @generated from protobuf field: bool success = 1
+     */
+    success: boolean;
+    /**
+     * @generated from protobuf field: string message = 2
+     */
+    message: string;
+}
+/**
+ * @generated from protobuf message travelohi.v1.account.BankAccount
+ */
+export interface BankAccount {
+    /**
+     * @generated from protobuf field: string id = 1
+     */
+    id: string;
+    /**
+     * @generated from protobuf field: string bank_name = 2
+     */
+    bankName: string;
+    /**
+     * @generated from protobuf field: string card_number = 3
+     */
+    cardNumber: string; // formatted/masked in response usually}
+/**
  * @generated from protobuf message travelohi.v1.account.DeductWalletRequest
  */
 export interface DeductWalletRequest {
@@ -400,6 +494,398 @@ export interface GetExchangeRateResponse {
      */
     usdToIdrRate: number;
 }
+// @generated message type with reflection information, may provide speed optimized methods
+class AddBankAccountRequest$Type extends MessageType<AddBankAccountRequest> {
+    constructor() {
+        super("travelohi.v1.account.AddBankAccountRequest", [
+            { no: 1, name: "user_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "bank_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "card_number", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<AddBankAccountRequest>): AddBankAccountRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.userId = "";
+        message.bankName = "";
+        message.cardNumber = "";
+        if (value !== undefined)
+            reflectionMergePartial<AddBankAccountRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: AddBankAccountRequest): AddBankAccountRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string user_id */ 1:
+                    message.userId = reader.string();
+                    break;
+                case /* string bank_name */ 2:
+                    message.bankName = reader.string();
+                    break;
+                case /* string card_number */ 3:
+                    message.cardNumber = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: AddBankAccountRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string user_id = 1; */
+        if (message.userId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.userId);
+        /* string bank_name = 2; */
+        if (message.bankName !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.bankName);
+        /* string card_number = 3; */
+        if (message.cardNumber !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.cardNumber);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.account.AddBankAccountRequest
+ */
+export const AddBankAccountRequest = new AddBankAccountRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class AddBankAccountResponse$Type extends MessageType<AddBankAccountResponse> {
+    constructor() {
+        super("travelohi.v1.account.AddBankAccountResponse", [
+            { no: 1, name: "success", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 2, name: "message", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "account", kind: "message", T: () => BankAccount }
+        ]);
+    }
+    create(value?: PartialMessage<AddBankAccountResponse>): AddBankAccountResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.success = false;
+        message.message = "";
+        if (value !== undefined)
+            reflectionMergePartial<AddBankAccountResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: AddBankAccountResponse): AddBankAccountResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bool success */ 1:
+                    message.success = reader.bool();
+                    break;
+                case /* string message */ 2:
+                    message.message = reader.string();
+                    break;
+                case /* travelohi.v1.account.BankAccount account */ 3:
+                    message.account = BankAccount.internalBinaryRead(reader, reader.uint32(), options, message.account);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: AddBankAccountResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* bool success = 1; */
+        if (message.success !== false)
+            writer.tag(1, WireType.Varint).bool(message.success);
+        /* string message = 2; */
+        if (message.message !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.message);
+        /* travelohi.v1.account.BankAccount account = 3; */
+        if (message.account)
+            BankAccount.internalBinaryWrite(message.account, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.account.AddBankAccountResponse
+ */
+export const AddBankAccountResponse = new AddBankAccountResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetBankAccountsRequest$Type extends MessageType<GetBankAccountsRequest> {
+    constructor() {
+        super("travelohi.v1.account.GetBankAccountsRequest", [
+            { no: 1, name: "user_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<GetBankAccountsRequest>): GetBankAccountsRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.userId = "";
+        if (value !== undefined)
+            reflectionMergePartial<GetBankAccountsRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetBankAccountsRequest): GetBankAccountsRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string user_id */ 1:
+                    message.userId = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetBankAccountsRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string user_id = 1; */
+        if (message.userId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.userId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.account.GetBankAccountsRequest
+ */
+export const GetBankAccountsRequest = new GetBankAccountsRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetBankAccountsResponse$Type extends MessageType<GetBankAccountsResponse> {
+    constructor() {
+        super("travelohi.v1.account.GetBankAccountsResponse", [
+            { no: 1, name: "accounts", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => BankAccount }
+        ]);
+    }
+    create(value?: PartialMessage<GetBankAccountsResponse>): GetBankAccountsResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.accounts = [];
+        if (value !== undefined)
+            reflectionMergePartial<GetBankAccountsResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetBankAccountsResponse): GetBankAccountsResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated travelohi.v1.account.BankAccount accounts */ 1:
+                    message.accounts.push(BankAccount.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetBankAccountsResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated travelohi.v1.account.BankAccount accounts = 1; */
+        for (let i = 0; i < message.accounts.length; i++)
+            BankAccount.internalBinaryWrite(message.accounts[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.account.GetBankAccountsResponse
+ */
+export const GetBankAccountsResponse = new GetBankAccountsResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class DeleteBankAccountRequest$Type extends MessageType<DeleteBankAccountRequest> {
+    constructor() {
+        super("travelohi.v1.account.DeleteBankAccountRequest", [
+            { no: 1, name: "user_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "bank_account_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<DeleteBankAccountRequest>): DeleteBankAccountRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.userId = "";
+        message.bankAccountId = "";
+        if (value !== undefined)
+            reflectionMergePartial<DeleteBankAccountRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: DeleteBankAccountRequest): DeleteBankAccountRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string user_id */ 1:
+                    message.userId = reader.string();
+                    break;
+                case /* string bank_account_id */ 2:
+                    message.bankAccountId = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: DeleteBankAccountRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string user_id = 1; */
+        if (message.userId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.userId);
+        /* string bank_account_id = 2; */
+        if (message.bankAccountId !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.bankAccountId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.account.DeleteBankAccountRequest
+ */
+export const DeleteBankAccountRequest = new DeleteBankAccountRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class DeleteBankAccountResponse$Type extends MessageType<DeleteBankAccountResponse> {
+    constructor() {
+        super("travelohi.v1.account.DeleteBankAccountResponse", [
+            { no: 1, name: "success", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 2, name: "message", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<DeleteBankAccountResponse>): DeleteBankAccountResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.success = false;
+        message.message = "";
+        if (value !== undefined)
+            reflectionMergePartial<DeleteBankAccountResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: DeleteBankAccountResponse): DeleteBankAccountResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bool success */ 1:
+                    message.success = reader.bool();
+                    break;
+                case /* string message */ 2:
+                    message.message = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: DeleteBankAccountResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* bool success = 1; */
+        if (message.success !== false)
+            writer.tag(1, WireType.Varint).bool(message.success);
+        /* string message = 2; */
+        if (message.message !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.message);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.account.DeleteBankAccountResponse
+ */
+export const DeleteBankAccountResponse = new DeleteBankAccountResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class BankAccount$Type extends MessageType<BankAccount> {
+    constructor() {
+        super("travelohi.v1.account.BankAccount", [
+            { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "bank_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "card_number", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<BankAccount>): BankAccount {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.id = "";
+        message.bankName = "";
+        message.cardNumber = "";
+        if (value !== undefined)
+            reflectionMergePartial<BankAccount>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: BankAccount): BankAccount {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string id */ 1:
+                    message.id = reader.string();
+                    break;
+                case /* string bank_name */ 2:
+                    message.bankName = reader.string();
+                    break;
+                case /* string card_number */ 3:
+                    message.cardNumber = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: BankAccount, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string id = 1; */
+        if (message.id !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.id);
+        /* string bank_name = 2; */
+        if (message.bankName !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.bankName);
+        /* string card_number = 3; */
+        if (message.cardNumber !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.cardNumber);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.account.BankAccount
+ */
+export const BankAccount = new BankAccount$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class DeductWalletRequest$Type extends MessageType<DeductWalletRequest> {
     constructor() {
@@ -1781,5 +2267,8 @@ export const AccountService = new ServiceType("travelohi.v1.account.AccountServi
     { name: "DeductWallet", options: {}, I: DeductWalletRequest, O: WalletResponse },
     { name: "RefundWallet", options: {}, I: RefundWalletRequest, O: WalletResponse },
     { name: "RedeemWalletCoupon", options: {}, I: RedeemWalletCouponRequest, O: WalletResponse },
-    { name: "GetExchangeRate", options: {}, I: GetExchangeRateRequest, O: GetExchangeRateResponse }
+    { name: "GetExchangeRate", options: {}, I: GetExchangeRateRequest, O: GetExchangeRateResponse },
+    { name: "AddBankAccount", options: {}, I: AddBankAccountRequest, O: AddBankAccountResponse },
+    { name: "GetBankAccounts", options: {}, I: GetBankAccountsRequest, O: GetBankAccountsResponse },
+    { name: "DeleteBankAccount", options: {}, I: DeleteBankAccountRequest, O: DeleteBankAccountResponse }
 ]);

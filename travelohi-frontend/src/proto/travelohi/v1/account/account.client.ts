@@ -4,6 +4,12 @@
 import type { RpcTransport } from "@protobuf-ts/runtime-rpc";
 import type { ServiceInfo } from "@protobuf-ts/runtime-rpc";
 import { AccountService } from "./account";
+import type { DeleteBankAccountResponse } from "./account";
+import type { DeleteBankAccountRequest } from "./account";
+import type { GetBankAccountsResponse } from "./account";
+import type { GetBankAccountsRequest } from "./account";
+import type { AddBankAccountResponse } from "./account";
+import type { AddBankAccountRequest } from "./account";
 import type { GetExchangeRateResponse } from "./account";
 import type { GetExchangeRateRequest } from "./account";
 import type { RedeemWalletCouponRequest } from "./account";
@@ -77,6 +83,20 @@ export interface IAccountServiceClient {
      * @generated from protobuf rpc: GetExchangeRate
      */
     getExchangeRate(input: GetExchangeRateRequest, options?: RpcOptions): UnaryCall<GetExchangeRateRequest, GetExchangeRateResponse>;
+    /**
+     * bank account management
+     *
+     * @generated from protobuf rpc: AddBankAccount
+     */
+    addBankAccount(input: AddBankAccountRequest, options?: RpcOptions): UnaryCall<AddBankAccountRequest, AddBankAccountResponse>;
+    /**
+     * @generated from protobuf rpc: GetBankAccounts
+     */
+    getBankAccounts(input: GetBankAccountsRequest, options?: RpcOptions): UnaryCall<GetBankAccountsRequest, GetBankAccountsResponse>;
+    /**
+     * @generated from protobuf rpc: DeleteBankAccount
+     */
+    deleteBankAccount(input: DeleteBankAccountRequest, options?: RpcOptions): UnaryCall<DeleteBankAccountRequest, DeleteBankAccountResponse>;
 }
 /**
  * @generated from protobuf service travelohi.v1.account.AccountService
@@ -164,5 +184,28 @@ export class AccountServiceClient implements IAccountServiceClient, ServiceInfo 
     getExchangeRate(input: GetExchangeRateRequest, options?: RpcOptions): UnaryCall<GetExchangeRateRequest, GetExchangeRateResponse> {
         const method = this.methods[9], opt = this._transport.mergeOptions(options);
         return stackIntercept<GetExchangeRateRequest, GetExchangeRateResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * bank account management
+     *
+     * @generated from protobuf rpc: AddBankAccount
+     */
+    addBankAccount(input: AddBankAccountRequest, options?: RpcOptions): UnaryCall<AddBankAccountRequest, AddBankAccountResponse> {
+        const method = this.methods[10], opt = this._transport.mergeOptions(options);
+        return stackIntercept<AddBankAccountRequest, AddBankAccountResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: GetBankAccounts
+     */
+    getBankAccounts(input: GetBankAccountsRequest, options?: RpcOptions): UnaryCall<GetBankAccountsRequest, GetBankAccountsResponse> {
+        const method = this.methods[11], opt = this._transport.mergeOptions(options);
+        return stackIntercept<GetBankAccountsRequest, GetBankAccountsResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: DeleteBankAccount
+     */
+    deleteBankAccount(input: DeleteBankAccountRequest, options?: RpcOptions): UnaryCall<DeleteBankAccountRequest, DeleteBankAccountResponse> {
+        const method = this.methods[12], opt = this._transport.mergeOptions(options);
+        return stackIntercept<DeleteBankAccountRequest, DeleteBankAccountResponse>("unary", this._transport, method, opt, input);
     }
 }
