@@ -1,3 +1,4 @@
+@use '../styles/mixins' as *;
 @use '../styles/breakpoints' as *;
 
 .navbar {
@@ -210,14 +211,13 @@
         gap: 12px;
 
         .loginBtn {
+            @include clickable;
             background-color: transparent;
             color: var(--accent-color);
             border: 1px solid var(--accent-color);
             padding: 8px 20px;
             border-radius: 6px;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
 
             &:hover {
                 background-color: var(--bg-secondary);
@@ -225,14 +225,13 @@
         }
 
         .registerBtn {
+            @include clickable;
             background-color: var(--accent-color);
             color: #ffffff;
             border: 1px solid var(--accent-color);
             padding: 8px 20px;
             border-radius: 6px;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
 
             &:hover {
                 opacity: 0.9;
@@ -417,6 +416,7 @@
 
             .loginBtn,
             .registerBtn {
+                @include clickable;
                 width: 100%;
                 text-align: center;
             }

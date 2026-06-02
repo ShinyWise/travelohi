@@ -1,4 +1,5 @@
 @use '../../styles/breakpoints' as *;
+@use '../../styles/mixins' as *;
 
 .pageContainer {
     max-width: 1200px;
@@ -35,14 +36,13 @@
         gap: 15px;
 
         button {
+            @include clickable;
             background: var(--bg-secondary);
             border: 1px solid var(--border-color);
             padding: 8px 20px;
             border-radius: 20px;
             font-weight: 600;
             color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.2s;
 
             &:hover {
                 background-color: var(--border-color);

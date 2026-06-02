@@ -1,3 +1,5 @@
+@use '../../../styles/mixins' as *;
+
 .summaryCard {
     background-color: var(--bg-primary);
     border: 1px solid var(--border-color);
@@ -72,6 +74,7 @@ hr {
 }
 
 .checkoutBtn {
+    @include clickable;
     width: 100%;
     padding: 14px;
     background-color: #0b5b9c;
@@ -80,8 +83,6 @@ hr {
     border-radius: 6px;
     font-size: 1.1rem;
     font-weight: bold;
-    cursor: pointer;
-    transition: opacity 0.2s;
 
     &:hover:not(:disabled) {
         opacity: 0.9;

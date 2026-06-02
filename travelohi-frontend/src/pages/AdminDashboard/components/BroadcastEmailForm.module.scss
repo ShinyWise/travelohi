@@ -1,3 +1,5 @@
+@use '../../../styles/mixins' as *;
+
 .broadcastContainer {
     max-width: 800px;
 }
@@ -81,6 +83,7 @@
     padding-top: 15px;
 
     .submitBtn {
+        @include clickable;
         background-color: #0b5b9c;
         color: #fff;
         border: none;
@@ -88,8 +91,6 @@
         border-radius: 6px;
         font-size: 1rem;
         font-weight: bold;
-        cursor: pointer;
-        transition: opacity 0.2s;
 
         &:hover:not(:disabled) {
             opacity: 0.9;

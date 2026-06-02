@@ -1,3 +1,5 @@
+@use '../../../styles/mixins' as *;
+
 .managerContainer {
     margin-top: 40px;
     padding-top: 30px;
@@ -47,12 +49,12 @@
     }
 
     .removeBtn {
+        @include clickable;
         background: transparent;
         color: #e74c3c;
         border: none;
         font-size: 0.9rem;
         font-weight: 600;
-        cursor: pointer;
 
         &:hover {
             text-decoration: underline;
@@ -61,6 +63,7 @@
 }
 
 .addBtn {
+    @include clickable;
     padding: 10px 20px;
     background-color: transparent;
     color: var(--accent-color);
@@ -68,9 +71,7 @@
     border-radius: 6px;
     font-size: 0.95rem;
     font-weight: 600;
-    cursor: pointer;
     width: 100%;
-    transition: background-color 0.2s;
 
     &:hover {
         background-color: rgba(0, 165, 212, 0.05);
@@ -89,23 +90,23 @@
         margin-top: 15px;
 
         .saveBtn {
+            @include clickable;
             padding: 10px 20px;
             background-color: var(--accent-color);
             color: #fff;
             border: none;
             border-radius: 6px;
             font-weight: 600;
-            cursor: pointer;
         }
 
         .cancelBtn {
+            @include clickable;
             padding: 10px 20px;
             background-color: transparent;
             color: var(--text-secondary);
             border: 1px solid var(--border-color);
             border-radius: 6px;
             font-weight: 600;
-            cursor: pointer;
 
             &:hover {
                 background-color: var(--border-color);

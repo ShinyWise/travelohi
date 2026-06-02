@@ -1,3 +1,5 @@
+@use '../../../styles/mixins' as *;
+
 .promoContainer {
     margin-bottom: 25px;
 
@@ -38,14 +40,13 @@
     }
 
     button {
+        @include clickable;
         padding: 0 20px;
         background-color: var(--bg-secondary);
         color: var(--text-primary);
         border: 1px solid var(--border-color);
         border-radius: 6px;
         font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
 
         &:hover:not(:disabled) {
             background-color: var(--border-color);
@@ -107,12 +108,12 @@
     }
 
     .removeBtn {
+        @include clickable;
         background: transparent;
         border: none;
         color: #e74c3c;
         font-size: 0.85rem;
         font-weight: 600;
-        cursor: pointer;
 
         &:hover {
             text-decoration: underline;

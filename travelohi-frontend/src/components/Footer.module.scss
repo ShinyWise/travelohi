@@ -1,3 +1,4 @@
+@use '../styles/mixins' as *;
 @use '../styles/breakpoints' as *;
 
 .footer {
@@ -34,9 +35,9 @@
             margin-bottom: 10px;
 
             a {
+                @include clickable;
                 color: var(--text-secondary);
                 text-decoration: none;
-                transition: color 0.2s ease;
                 font-size: 0.95rem;
 
                 &:hover {

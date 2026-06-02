@@ -1,3 +1,5 @@
+@use '../../../styles/mixins' as *;
+
 .overlay {
     position: fixed;
     top: 0;
@@ -75,16 +77,16 @@
     gap: 12px;
 
     button {
+        @include clickable;
         width: 100%;
         padding: 14px;
         border-radius: 8px;
         font-size: 1rem;
         font-weight: bold;
-        cursor: pointer;
-        transition: all 0.2s;
     }
 
     .primaryBtn {
+        @include clickable;
         background-color: var(--accent-color);
         color: #fff;
         border: none;
@@ -95,6 +97,7 @@
     }
 
     .secondaryBtn {
+        @include clickable;
         background-color: transparent;
         border: 1px solid var(--border-color);
         color: var(--text-primary);

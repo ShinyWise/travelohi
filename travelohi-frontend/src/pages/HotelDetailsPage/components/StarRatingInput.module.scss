@@ -1,3 +1,5 @@
+@use '../../../styles/mixins' as *;
+
 .ratingContainer {
     display: flex;
     align-items: center;
@@ -17,11 +19,11 @@
 }
 
 .starBtn {
+    @include clickable;
     background: none;
     border: none;
     font-size: 1.5rem;
     color: #e2e8f0;
-    cursor: pointer;
     padding: 2px;
     line-height: 1;
     transition: color 0.15s, transform 0.1s;

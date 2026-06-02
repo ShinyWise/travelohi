@@ -1,3 +1,5 @@
+@use '../../styles/mixins' as *;
+
 .chatPageContainer {
     max-width: 800px;
     margin: 0 auto;
@@ -87,6 +89,7 @@
     }
 
     .newChatBtn {
+        @include clickable;
         margin-top: 8px;
         padding: 10px 24px;
         background-color: var(--accent-color);
@@ -95,8 +98,6 @@
         border-radius: 8px;
         font-size: 0.95rem;
         font-weight: 600;
-        cursor: pointer;
-        transition: opacity 0.2s ease;
 
         &:hover { opacity: 0.85; }
     }

@@ -1,3 +1,5 @@
+@use '../../../styles/mixins' as *;
+
 .reviewContainer {
     margin-top: 40px;
 
@@ -88,13 +90,12 @@
     margin-top: 30px;
 
     button {
+        @include clickable;
         padding: 8px 16px;
         background-color: var(--bg-secondary);
         border: 1px solid var(--border-color);
         border-radius: 4px;
         color: var(--text-primary);
-        cursor: pointer;
-        transition: all 0.2s;
 
         &:hover:not(:disabled) {
             background-color: var(--accent-color);

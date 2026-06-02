@@ -1,3 +1,5 @@
+@use '../../../styles/mixins' as *;
+
 .modalOverlay {
     position: fixed;
     top: 0;
@@ -30,6 +32,7 @@
 }
 
 .closeBtn {
+    @include clickable;
     position: absolute;
     top: 15px;
     right: 15px;
@@ -37,7 +40,6 @@
     border: none;
     font-size: 1.2rem;
     color: var(--text-secondary);
-    cursor: pointer;
 
     &:hover {
         color: var(--text-primary);
@@ -71,11 +73,11 @@
 }
 
 .changeEmailBtn {
+    @include clickable;
     background: none;
     border: none;
     color: var(--accent-color);
     font-weight: 600;
-    cursor: pointer;
     font-size: 0.85rem;
     padding: 0 0 0 10px;
 
@@ -105,6 +107,7 @@
 }
 
 .actionBtn {
+    @include clickable;
     width: 100%;
     padding: 12px;
     background-color: var(--accent-color);
@@ -113,8 +116,6 @@
     border-radius: 6px;
     font-size: 1rem;
     font-weight: bold;
-    cursor: pointer;
-    transition: opacity 0.2s;
 
     &:hover:not(:disabled) {
         opacity: 0.9;
@@ -165,6 +166,7 @@
 }
 
 .resendBtn {
+    @include clickable;
     background-color: var(--bg-secondary);
     color: var(--text-secondary);
     margin-top: 10px;

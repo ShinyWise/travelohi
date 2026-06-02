@@ -1,4 +1,5 @@
 @use '../../../styles/breakpoints' as *;
+@use '../../../styles/mixins' as *;
 
 .sidebar {
     width: 100%;
@@ -33,11 +34,11 @@
     }
 
     .resetBtn {
+        @include clickable;
         background: none;
         border: none;
         color: var(--accent-color);
         font-weight: 600;
-        cursor: pointer;
 
         &:hover {
             text-decoration: underline;
@@ -102,10 +103,10 @@
 }
 
 .starBtn {
+    @include clickable;
     background: none;
     border: none;
     padding: 0;
-    cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -123,6 +124,7 @@
 }
 
 .applyAllBtn {
+    @include clickable;
     width: 100%;
     padding: 12px;
     margin-top: 10px;
@@ -131,9 +133,7 @@
     border: none;
     border-radius: 6px;
     font-weight: 600;
-    cursor: pointer;
     font-size: 1rem;
-    transition: opacity 0.2s ease;
 
     &:hover {
         opacity: 0.9;

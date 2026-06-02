@@ -1,3 +1,5 @@
+@use '../../../styles/mixins' as *;
+
 .modalOverlay {
     position: fixed;
     top: 0;
@@ -62,11 +64,10 @@
     margin-top: 25px;
 
     button {
+        @include clickable;
         padding: 10px 16px;
         border-radius: 6px;
         font-weight: bold;
-        cursor: pointer;
-        transition: opacity 0.2s;
 
         &:disabled {
             opacity: 0.6;
@@ -75,12 +76,14 @@
     }
 
     .cancelBtn {
+        @include clickable;
         background: transparent;
         border: 1px solid var(--border-color);
         color: var(--text-secondary);
     }
 
     .saveBtn {
+        @include clickable;
         background-color: var(--accent-color);
         border: none;
         color: #fff;

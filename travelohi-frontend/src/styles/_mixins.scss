@@ -1,0 +1,24 @@
+@mixin transition-standard {
+  transition: all 0.2s ease-in-out;
+}
+
+@mixin focus-standard {
+  &:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+}
+
+@mixin active-squish {
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+}
+
+@mixin clickable {
+  @include transition-standard;
+  @include focus-standard;
+  @include active-squish;
+  
+  cursor: pointer;
+}

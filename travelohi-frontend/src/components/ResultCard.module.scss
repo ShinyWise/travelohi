@@ -1,3 +1,4 @@
+@use '../styles/mixins' as *;
 @use '../styles/breakpoints' as *;
 
 .card {
@@ -15,14 +16,13 @@
 }
 
 .selectBtn {
+    @include clickable;
     background-color: var(--accent-color);
     color: #fff;
     border: none;
     padding: 10px 20px;
     border-radius: 6px;
     font-weight: bold;
-    cursor: pointer;
-    transition: opacity 0.2s;
     width: 100%;
 
     &:hover {

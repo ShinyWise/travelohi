@@ -1,3 +1,5 @@
+@use '../../styles/mixins' as *;
+
 .loginContainer {
     display: flex;
     justify-content: center;
@@ -96,11 +98,11 @@
     }
 
     .changeEmailBtn {
+        @include clickable;
         background: transparent;
         border: none;
         color: var(--accent-color);
         font-weight: 600;
-        cursor: pointer;
         font-size: 0.85rem;
 
         &:hover {
@@ -125,6 +127,7 @@
 }
 
 .loginBtn {
+    @include clickable;
     width: 100%;
     padding: 12px;
     background-color: var(--accent-color);
@@ -133,9 +136,7 @@
     border-radius: 6px;
     font-size: 1rem;
     font-weight: 600;
-    cursor: pointer;
     margin-bottom: 20px;
-    transition: all 0.2s ease;
 
     &:hover:not(:disabled) {
         opacity: 0.9;
@@ -177,6 +178,7 @@
 }
 
 .otpBtn {
+    @include clickable;
     width: 100%;
     padding: 12px;
     background-color: transparent;
@@ -185,9 +187,7 @@
     border-radius: 6px;
     font-size: 1rem;
     font-weight: 600;
-    cursor: pointer;
     margin-bottom: 15px;
-    transition: all 0.2s ease;
 
     &:hover {
         background-color: var(--bg-secondary);
@@ -195,6 +195,7 @@
 }
 
 .registerBtn {
+    @include clickable;
     width: 100%;
     padding: 12px;
     background-color: #1384e1;
@@ -203,9 +204,7 @@
     border-radius: 6px;
     font-size: 1rem;
     font-weight: 600;
-    cursor: pointer;
     margin-bottom: 20px;
-    transition: opacity 0.2s ease;
 
     &:hover {
         opacity: 0.9;
@@ -216,6 +215,7 @@
     text-align: center;
 
     a {
+        @include clickable;
         color: var(--text-secondary);
         text-decoration: none;
         font-size: 0.9rem;

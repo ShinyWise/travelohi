@@ -1,3 +1,5 @@
+@use '../../../styles/mixins' as *;
+
 .queueOverlay {
     position: absolute;
     top: 0;
@@ -71,14 +73,13 @@
 }
 
 .actionBtn {
+    @include clickable;
     background-color: var(--accent-color);
     color: #fff;
     border: none;
     padding: 10px 24px;
     border-radius: 6px;
     font-weight: bold;
-    cursor: pointer;
-    transition: opacity 0.2s;
 
     &:hover {
         opacity: 0.9;

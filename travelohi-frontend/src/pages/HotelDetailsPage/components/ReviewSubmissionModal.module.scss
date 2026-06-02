@@ -1,3 +1,5 @@
+@use '../../../styles/mixins' as *;
+
 .modalOverlay {
     position: fixed;
     top: 0;
@@ -40,6 +42,7 @@
     }
 
     .closeBtn {
+        @include clickable;
         background: rgba(255, 255, 255, 0.15);
         border: none;
         color: #ffffff;
@@ -49,7 +52,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        cursor: pointer;
         transition: background 0.2s, transform 0.2s;
         font-size: 0.9rem;
 
@@ -162,15 +164,16 @@
     margin-top: 10px;
 
     button {
+        @include clickable;
         padding: 10px 20px;
         font-size: 0.9rem;
         font-weight: 600;
         border-radius: 8px;
-        cursor: pointer;
         transition: background 0.2s, transform 0.1s, opacity 0.2s;
     }
 
     .cancelBtn {
+        @include clickable;
         background: #f1f5f9;
         color: #475569;
         border: 1px solid #e2e8f0;
@@ -186,6 +189,7 @@
     }
 
     .submitBtn {
+        @include clickable;
         background: #27ae60;
         color: #ffffff;
         border: none;
