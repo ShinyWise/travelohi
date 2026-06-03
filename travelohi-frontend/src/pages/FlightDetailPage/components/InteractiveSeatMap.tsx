@@ -48,18 +48,19 @@ const InteractiveSeatMap: React.FC<Props> = ({ seats, selectedSeatId, onSelectSe
                 {rows.map((row) => (
                     <div key={row.rowNum} className={styles.row}>
                         <div className={styles.rowNumber}>{row.rowNum}</div>
-                        <div className={styles.seatsGrid}>
+                        <div className={`${styles.seatsGrid} ${row.seats.length === 2 ? styles.businessRow : ''}`}>
                             {row.seats.map((seat) => {
                                 const isSelected = selectedSeatId === seat.id;
                                 const isBusiness = seat.seatClass.toLowerCase() === 'business';
-                                const seatClassList = `${styles.seat} ${seat.isBooked
-                                        ? styles.seatBooked
-                                        : isSelected
-                                            ? styles.seatSelected
-                                            : isBusiness
-                                                ? styles.seatBusiness
-                                                : styles.seatAvailable
-                                    }`;
+                                const stateClass = seat.isBooked
+                                    ? styles.seatBooked
+                                    : isSelected
+                                        ? styles.seatSelected
+                                        : isBusiness
+                                            ? styles.seatBusiness
+                                            : styles.seatAvailable;
+                                
+                                const seatClassList = `${styles.seat} ${isBusiness ? styles.businessSeatWidth : ''} ${stateClass}`;
                                 return (
                                     <button
                                         key={seat.id}

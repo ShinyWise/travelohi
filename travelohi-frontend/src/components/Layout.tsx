@@ -19,7 +19,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const hideFooterPaths = [
         '/login', '/register', '/forgot-password', '/activate',
         '/checkout', '/cart', '/profile', '/bookings', '/game',
-        '/admin', '/support'
+        '/admin', '/support', '/flight'
     ];
     
     const hideFooter = hideFooterPaths.some(path => location.pathname.startsWith(path));

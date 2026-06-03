@@ -18,16 +18,17 @@ interface Props {
 
 const getFlightImage = (airportName: string): string => {
     const name = airportName.toLowerCase();
-    if (name.includes('bali') || name.includes('dps')) {
-        return 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=600&q=80';
-    }
-    if (name.includes('singapore') || name.includes('sin')) {
-        return 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=600&q=80';
-    }
-    if (name.includes('tokyo') || name.includes('hnd') || name.includes('nrt')) {
-        return 'https://images.unsplash.com/photo-1540959733332-eab4deceeaf7?auto=format&fit=crop&w=600&q=80';
-    }
-    return 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=600&q=80';
+    if (name.includes('bali') || name.includes('dps')) return '/assets/destinations/bali.jpg';
+    if (name.includes('medan') || name.includes('kno')) return '/assets/destinations/medan.jpg';
+    if (name.includes('palembang') || name.includes('plm')) return '/assets/destinations/palembang.jpg';
+    if (name.includes('makassar') || name.includes('upg')) return '/assets/destinations/makassar.jpg';
+    if (name.includes('lombok') || name.includes('lop')) return '/assets/destinations/lombok.jpg';
+    if (name.includes('jakarta') || name.includes('cgk')) return '/assets/destinations/jakarta.jpg';
+    if (name.includes('bandung') || name.includes('bdo')) return '/assets/destinations/bandung.jpg';
+    if (name.includes('surabaya') || name.includes('sub')) return '/assets/destinations/surabaya.jpg';
+    if (name.includes('yogyakarta') || name.includes('yia')) return '/assets/destinations/yogyakarta.jpg';
+
+    return '/assets/destinations/generic.jpg';
 };
 
 const FlightRecommendationList: React.FC<Props> = ({ destinations }) => {
@@ -54,9 +55,9 @@ const FlightRecommendationList: React.FC<Props> = ({ destinations }) => {
                         style={{ cursor: 'pointer' }}
                     >
                         <div className={styles.imageWrapper}>
-                            <ProgressiveImage 
-                                src={getFlightImage(dest.destinationAirport)} 
-                                alt={dest.destinationAirport} 
+                            <ProgressiveImage
+                                src={dest.imageUrl || getFlightImage(dest.destinationAirport)}
+                                alt={dest.destinationAirport}
                                 wrapperStyle={{ width: '100%', height: '100%', display: 'block' }}
                             />
                         </div>

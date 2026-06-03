@@ -71,10 +71,18 @@ const FlightDetailsPage: React.FC = () => {
                 if (redirect) navigate('/cart');
                 else showToast(t.flight_add_cart_success, 'success');
             } else {
-                setError(response.message || t.flight_add_cart_fail);
+                if (redirect) {
+                    navigate('/cart');
+                } else {
+                    showToast(response.message || t.flight_add_cart_fail, 'error');
+                }
             }
         } catch (err: any) {
-            setError(err.message || t.flight_cart_system_error);
+            if (redirect) {
+                navigate('/cart');
+            } else {
+                showToast(err.message || t.flight_cart_system_error, 'error');
+            }
         } finally {
             setIsProcessing(false);
         }

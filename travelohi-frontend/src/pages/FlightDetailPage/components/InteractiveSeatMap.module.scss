@@ -76,7 +76,7 @@
 .row {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 6px;
     position: relative;
 
     .rowNumber {
@@ -98,14 +98,18 @@
         &>button:nth-child(3) {
             margin-right: 20px;
         }
+
+        &.businessRow {
+            gap: 74px;
+        }
     }
 }
 
 .seat {
-    width: 35px;
-    height: 35px;
+    width: 24px;
+    height: 24px;
     border-radius: 6px 6px 2px 2px;
-    font-size: 0.8rem;
+    font-size: 0.65rem;
     font-weight: bold;
     cursor: pointer;
     display: flex;
@@ -131,6 +135,10 @@
         &:hover {
             background-color: #f9e79f;
         }
+    }
+
+    &.businessSeatWidth {
+        width: 48px;
     }
 
     &.seatBooked {

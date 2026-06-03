@@ -9,6 +9,7 @@ import { useAppContext } from '../context/ThemeContext';
 import { translations } from '../utils/translations';
 import { Search } from 'lucide-react';
 import SearchDropdown, { type DropdownAirline } from './SearchDropdown';
+import { AIRPORT_CITY_MAP, getCityNameFromAirportCode } from '../utils/airportMapper';
 import styles from './SearchInput.module.scss';
 interface SearchInputProps {
     onFocus?: () => void;
@@ -74,10 +75,33 @@ const SearchInput: React.FC<SearchInputProps> = ({ onFocus }) => {
         if (debouncedQuery) {
             console.debug("Ready to trigger lightweight autocomplete for:", debouncedQuery);
             setIsLoading(true);
+
+            const lowerQuery = debouncedQuery.toLowerCase();
+            const localAirports: DropdownAirline[] = [];
+            Object.entries(AIRPORT_CITY_MAP).forEach(([code, city]) => {
+                if (city.toLowerCase().includes(lowerQuery) || code.toLowerCase().includes(lowerQuery)) {
+                    localAirports.push({
+                        id: code,
+                        name: code,
+                        logoUrl: '',
+                        displayTitle: `${city} (${code})`
+                    });
+                }
+            });
+
             telemetryClient.globalSearch({ query: debouncedQuery })
                 .then(({ response }) => {
                     setHotelResults(response.hotels || []);
-                    setAirlineResults(response.airlines || []);
+
+                    const backendAirlines = (response.airlines || []).map(a => {
+                        const cityName = getCityNameFromAirportCode(a.name);
+                        return {
+                            ...a,
+                            displayTitle: cityName !== a.name ? `${cityName} (${a.name})` : a.name
+                        };
+                    }).filter(a => !localAirports.find(la => la.id === a.name)); // Avoid duplicates
+
+                    setAirlineResults([...localAirports, ...backendAirlines]);
                 })
                 .catch(err => console.error("Global search error:", err))
                 .finally(() => setIsLoading(false));

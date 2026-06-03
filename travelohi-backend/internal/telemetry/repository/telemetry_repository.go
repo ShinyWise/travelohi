@@ -2,8 +2,6 @@ package repository
 
 import (
 	"context"
-	"net/url"
-	"strings"
 	"sync"
 	"time"
 
@@ -121,13 +119,10 @@ func (r *postgresTelemetryRepo) GetPopularFlightDestinations(ctx context.Context
 
 	var dests []*telemetry.PopularDestination
 	for _, res := range results {
-		safeName := strings.ToLower(url.PathEscape(res.DestinationAirport))
-		mockImageURL := "https://loremflickr.com/100/100/" + safeName + ",city"
-
 		dests = append(dests, &telemetry.PopularDestination{
 			DestinationAirport: res.DestinationAirport,
 			BookingCount:       res.BookingCount,
-			ImageURL:           mockImageURL,
+			ImageURL:           "",
 		})
 	}
 
@@ -177,7 +172,7 @@ func (r *postgresTelemetryRepo) GlobalSearch(ctx context.Context, query string) 
 
 	go func() {
 		defer wg.Done()
-		
+
 		var airlineMatches []*telemetry.AirlineSearchResult
 		var destMatches []*telemetry.AirlineSearchResult
 
@@ -218,4 +213,3 @@ func (r *postgresTelemetryRepo) GlobalSearch(ctx context.Context, query string) 
 
 	return hotels, airlines, nil
 }
-

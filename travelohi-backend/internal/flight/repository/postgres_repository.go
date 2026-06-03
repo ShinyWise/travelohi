@@ -32,13 +32,13 @@ func (r *postgresFlightRepo) SearchFlights(ctx context.Context, filter flight.Fl
 	origin := filter.Origin
 	dest := filter.Destination
 	if origin != "" && dest != "" && origin == dest {
-		db = db.Where("flights.origin_airport ILIKE ? OR flights.destination_airport ILIKE ? OR airlines.name ILIKE ?", "%"+origin+"%", "%"+dest+"%", "%"+origin+"%")
+		db = db.Where("flights.origin_airport ILIKE ? OR flights.destination_airport ILIKE ? OR airlines.name ILIKE ? OR flights.flight_code ILIKE ?", "%"+origin+"%", "%"+dest+"%", "%"+origin+"%", "%"+origin+"%")
 	} else {
 		if origin != "" {
-			db = db.Where("flights.origin_airport ILIKE ? OR airlines.name ILIKE ?", "%"+origin+"%", "%"+origin+"%")
+			db = db.Where("flights.origin_airport ILIKE ? OR airlines.name ILIKE ? OR flights.flight_code ILIKE ?", "%"+origin+"%", "%"+origin+"%", "%"+origin+"%")
 		}
 		if dest != "" {
-			db = db.Where("flights.destination_airport ILIKE ? OR airlines.name ILIKE ?", "%"+dest+"%", "%"+dest+"%")
+			db = db.Where("flights.destination_airport ILIKE ? OR airlines.name ILIKE ? OR flights.flight_code ILIKE ?", "%"+dest+"%", "%"+dest+"%", "%"+dest+"%")
 		}
 	}
 

@@ -16,5 +16,6 @@ FROM alpine:latest
 WORKDIR /app
 
 COPY --from=builder /app/seeder-binary .
+COPY --from=builder /app/cmd/seeder/assets ./cmd/seeder/assets
 
 CMD ["./seeder-binary"]

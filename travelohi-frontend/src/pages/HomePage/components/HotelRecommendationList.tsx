@@ -52,7 +52,7 @@ const HotelRecommendationList: React.FC<Props> = ({ hotels }) => {
                     >
                         <div className={styles.imageWrapper}>
                             <ProgressiveImage 
-                                src={getHotelImage(hotel.name)} 
+                                src={(hotel.imageUrl && hotel.imageUrl.length > 100) ? hotel.imageUrl : getHotelImage(hotel.name)} 
                                 alt={hotel.name} 
                                 wrapperStyle={{ width: '100%', height: '100%', display: 'block' }}
                             />

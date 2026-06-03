@@ -39,6 +39,17 @@
         height: 100%;
         object-fit: cover;
     }
+
+    .flightIconWrapper {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--bg-secondary);
+        border: 1px dashed var(--border-color);
+        border-radius: 6px;
+    }
 }
 
 .infoCol {

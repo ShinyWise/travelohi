@@ -25,6 +25,7 @@ const CartItemCard: React.FC<Props> = ({ item, onRemove, onEditDates }) => {
     const { language } = useAppContext();
     const isHotel = item.itemType === 'hotel_room';
     const isExpired = item.status === 'expired';
+    const isValidFlightLogo = !isHotel && item.imageUrl && item.imageUrl !== 'data:image/jpeg;base64,';
 
     const renderDateInfo = () => {
         if (isHotel) {
@@ -55,11 +56,23 @@ const CartItemCard: React.FC<Props> = ({ item, onRemove, onEditDates }) => {
     return (
         <div className={`${styles.card} ${isExpired ? styles.expiredCard : ''}`}>
             <div className={styles.imageCol}>
-                <ProgressiveImage 
-                    src={item.imageUrl || (isHotel ? '/assets/default-hotel.jpg' : '/assets/default-flight.jpg')} 
-                    alt={item.title} 
-                    wrapperStyle={{ width: '100%', height: '100%', display: 'block' }}
-                />
+                {isHotel || isValidFlightLogo ? (
+                    <ProgressiveImage
+                        src={isHotel ? (item.imageUrl || '/assets/default-hotel.jpg') : item.imageUrl}
+                        alt={item.title}
+                        wrapperStyle={{
+                            width: '100%',
+                            height: '100%',
+                            display: 'block',
+                            backgroundColor: isHotel ? 'transparent' : '#ffffff'
+                        }}
+                        style={{ objectFit: isHotel ? 'cover' : 'contain', padding: isHotel ? '0' : '10px' }}
+                    />
+                ) : (
+                    <div className={styles.flightIconWrapper}>
+                        <Plane size={40} color="var(--accent-color)" />
+                    </div>
+                )}
             </div>
             <div className={styles.infoCol}>
                 <div className={styles.headerRow}>
