@@ -84,8 +84,17 @@ const HotelDetailsPage: React.FC = () => {
         const timer = setTimeout(() => fetchHotelDetails(), 300);
         return () => clearTimeout(timer);
     }, [hotelId, checkIn, checkOut, language]);
-    const handleAddToCart = async (room: any) => {
+    const handleAddToCart = async (room: any, redirect: boolean = false) => {
         if (!isAuthenticated) {
+            sessionStorage.setItem('pendingHotelBooking', JSON.stringify({
+                itemType: 'hotel_room',
+                referenceId: room.id,
+                checkInDate: checkIn,
+                checkOutDate: checkOut,
+                quantity: 1, // default
+                luggageWeight: 0,
+                redirect: redirect
+            }));
             navigate('/login', {
                 state: {
                     message: t.hotel_login_required
@@ -106,6 +115,9 @@ const HotelDetailsPage: React.FC = () => {
             if (response.success) {
                 showToast(t.hotel_add_cart_success, 'success');
                 fetchCartItems();
+                if (redirect) {
+                    navigate('/cart');
+                }
             } else {
                 setError(response.message || t.hotel_add_cart_fail);
             }
@@ -135,6 +147,9 @@ const HotelDetailsPage: React.FC = () => {
                     <h2>{hotelData?.name}</h2>
                     <div className={styles.stars}>
                         <StarRating rating={(hotelData?.ratingAverage || 0) / 2} />
+                        <span className={styles.reviewCount} style={{ marginLeft: '8px', color: '#666', fontSize: '14px' }}>
+                            ({hotelData?.totalReviews || 0} reviews)
+                        </span>
                     </div>
                 </div>
                 <p className={styles.address}>📍 {hotelData?.address}</p>

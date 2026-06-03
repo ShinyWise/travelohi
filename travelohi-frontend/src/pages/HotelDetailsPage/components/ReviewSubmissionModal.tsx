@@ -77,10 +77,10 @@ const ReviewSubmissionModal: React.FC<Props> = ({
             const { response } = await hotelClient.addHotelReview({
                 hotelId,
                 bookingId,
-                ratingCleanliness: cleanliness,
-                ratingComfort: comfort,
-                ratingLocation: location,
-                ratingService: service,
+                ratingCleanliness: cleanliness * 2,
+                ratingComfort: comfort * 2,
+                ratingLocation: location * 2,
+                ratingService: service * 2,
                 comment: comment.trim(),
                 isAnonymous,
                 userName: fullName

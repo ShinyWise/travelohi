@@ -365,7 +365,6 @@ func (r *PostgresHotelRepository) GetRecentReviews(ctx context.Context, hotelID 
 	err := r.db.WithContext(ctx).
 		Where("hotel_id = ?", hotelID).
 		Order("created_at DESC").
-		Limit(50).
 		Find(&models).Error
 	if err != nil {
 		return nil, err

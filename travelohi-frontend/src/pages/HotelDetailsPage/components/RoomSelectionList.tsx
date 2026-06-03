@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
 import ProgressiveImage from '../../../components/ProgressiveImage';
@@ -15,11 +16,12 @@ interface RoomType {
 }
 interface Props {
     rooms: RoomType[];
-    onAddToCart: (room: RoomType) => void;
+    onAddToCart: (room: RoomType, redirect?: boolean) => void;
     isProcessingId: string | null;
     cartRoomIds?: string[];
 }
 const RoomSelectionList: React.FC<Props> = ({ rooms, onAddToCart, isProcessingId, cartRoomIds = [] }) => {
+    const navigate = useNavigate();
     const { language } = useAppContext();
     const t = translations[language];
     if (!rooms || rooms.length === 0) {
@@ -66,17 +68,26 @@ const RoomSelectionList: React.FC<Props> = ({ rooms, onAddToCart, isProcessingId
                                     <span className={styles.price}>Rp {Number(room.pricePerNight).toLocaleString('id-ID')}</span>
                                     <span className={styles.suffix}>{t.rooms_per_night}</span>
                                 </div>
-                                <button
-                                    className={`${styles.bookBtn} ${isInCart ? styles.inCart : ''}`}
-                                    onClick={() => onAddToCart(room)}
-                                    disabled={isInCart || isProcessingId === room.id}
-                                >
-                                    {isProcessingId === room.id 
-                                        ? t.rooms_processing 
-                                        : isInCart 
-                                            ? t.rooms_in_cart 
-                                            : t.rooms_book_btn}
-                                </button>
+                                <div className={styles.buttonGroup}>
+                                    <button
+                                        className={`${styles.cartBtn} ${isInCart ? styles.inCart : ''}`}
+                                        onClick={() => onAddToCart(room, false)}
+                                        disabled={isInCart || isProcessingId === room.id}
+                                    >
+                                        {isProcessingId === room.id 
+                                            ? t.rooms_processing 
+                                            : isInCart 
+                                                ? t.rooms_in_cart 
+                                                : t.add_to_cart_btn || 'Add to Cart'}
+                                    </button>
+                                    <button
+                                        className={styles.buyBtn}
+                                        onClick={() => isInCart ? navigate('/cart') : onAddToCart(room, true)}
+                                        disabled={!isInCart && isProcessingId === room.id}
+                                    >
+                                        {isInCart ? (language === 'ID' ? 'Ke Keranjang' : 'Go to Cart') : (t.checkout_pay_now || 'Buy Now')}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     );

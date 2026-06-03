@@ -299,7 +299,7 @@ func main() {
 	rand.Seed(42)
 	log.Println("🗑️  Truncating tables (idempotent run)...")
 	tables := []string{
-		"cart_items", "booking_models",
+		"cart_items", "booking_models", "bookings",
 		"flight_seats", "flights", "airlines",
 		"hotel_reviews", "hotel_rooms", "hotels",
 		"account_models", "auths",
