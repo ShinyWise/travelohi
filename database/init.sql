@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS hotel_rooms (
     price_per_night BIGINT NOT NULL,
     capacity INT NOT NULL,
     facilities JSONB,
-    picture_url VARCHAR(255),
+    picture BYTEA,
     total_inventory INT DEFAULT 5
 );
 

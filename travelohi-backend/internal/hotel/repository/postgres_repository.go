@@ -114,7 +114,7 @@ type HotelRoomModel struct {
 	PricePerNight  int64 `gorm:"column:price_per_night"`
 	Capacity       int32
 	Facilities     []string `gorm:"column:facilities;type:jsonb;serializer:json"`
-	PictureUrl     string   `gorm:"column:picture_url"`
+	Picture        []byte   `gorm:"column:picture;type:bytea"`
 	TotalInventory int32    `gorm:"column:total_inventory;default:5"`
 }
 
@@ -326,7 +326,7 @@ func (r *PostgresHotelRepository) GetAvailableRooms(ctx context.Context, hotelID
 			AND b.check_out_date > ?
 			AND b.status != 'cancelled'
 		WHERE r.hotel_id = ?
-		GROUP BY r.id, r.hotel_id, r.name, r.price_per_night, r.capacity, r.facilities, r.picture_url, r.total_inventory
+		GROUP BY r.id, r.hotel_id, r.name, r.price_per_night, r.capacity, r.facilities, r.picture, r.total_inventory
 		HAVING (r.total_inventory - COUNT(b.id)) > 0
 	`, checkOut, checkIn, hotelID).Scan(&models).Error
 
@@ -341,6 +341,11 @@ func (r *PostgresHotelRepository) GetAvailableRooms(ctx context.Context, hotelID
 			Where("room_id = ? AND check_in_date < ? AND check_out_date > ? AND status != 'cancelled'", m.ID, checkOut, checkIn).
 			Count(&bookedCount)
 
+		var pictureURI string
+		if len(m.Picture) > 0 {
+			pictureURI = "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(m.Picture)
+		}
+
 		rooms[i] = hotel.HotelRoom{
 			ID:             m.ID,
 			HotelID:        m.HotelID,
@@ -349,7 +354,7 @@ func (r *PostgresHotelRepository) GetAvailableRooms(ctx context.Context, hotelID
 			Capacity:       m.Capacity,
 			Facilities:     m.Facilities,
 			AvailableCount: m.TotalInventory - int32(bookedCount),
-			ImageURL:       m.PictureUrl,
+			ImageURL:       pictureURI,
 		}
 	}
 	return rooms, nil

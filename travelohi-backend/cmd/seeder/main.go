@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
-	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -163,7 +162,7 @@ type HotelRoomModel struct {
 	PricePerNight  int64    `gorm:"column:price_per_night"`
 	Capacity       int32    `gorm:"column:capacity"`
 	Facilities     []string `gorm:"column:facilities;type:jsonb;serializer:json"`
-	PictureUrl     string   `gorm:"column:picture_url"`
+	Picture        []byte   `gorm:"column:picture;type:bytea"`
 	TotalInventory int32    `gorm:"column:total_inventory;default:5"`
 }
 
@@ -264,11 +263,6 @@ func hashPassword(plain string) string {
 	return string(hash)
 }
 
-func avatarURL(firstName, lastName string) string {
-	encoded := url.QueryEscape(fmt.Sprintf("%s %s", firstName, lastName))
-	return fmt.Sprintf("https://ui-avatars.com/api/?name=%s&background=random", encoded)
-}
-
 func randFloat32(min, max float64) float32 {
 	val := min + rand.Float64()*(max-min)
 	if val >= 9.99 {
@@ -279,7 +273,6 @@ func randFloat32(min, max float64) float32 {
 }
 
 // main entry point
-
 func main() {
 	log.Println("🌱 Starting TraveloHI V2 Database Seeder...")
 
@@ -428,24 +421,61 @@ func main() {
 		name      string
 		basePrice int
 		capacity  int32
+		assetName string
 	}{
-		{"Standard Room", 350_000, 2},
-		{"Deluxe Room", 600_000, 2},
-		{"Superior Room", 850_000, 3},
-		{"Junior Suite", 1_200_000, 2},
-		{"Executive Suite", 2_000_000, 4},
+		{"Standard Room", 350_000, 2, "standard.jpg"},
+		{"Deluxe Room", 600_000, 2, "deluxe.jpg"},
+		{"Executive Suite", 1_500_000, 4, "executive.jpg"},
+	}
+
+	log.Println("Reading real image assets from cmd/seeder/assets...")
+	loadAsset := func(name string) []byte {
+		b, err := os.ReadFile("cmd/seeder/assets/" + name)
+		if err != nil {
+			log.Printf("  WARN: could not read %s, using dummy pixel", name)
+			return dummyImageBytes
+		}
+		return b
+	}
+
+	var allHotelImages [][]byte
+	if files, err := os.ReadDir("cmd/seeder/assets"); err == nil {
+		for _, f := range files {
+			if strings.HasPrefix(f.Name(), "hotel_") && (strings.HasSuffix(f.Name(), ".jpg") || strings.HasSuffix(f.Name(), ".jpeg")) {
+				if b, readErr := os.ReadFile("cmd/seeder/assets/" + f.Name()); readErr == nil {
+					allHotelImages = append(allHotelImages, b)
+				}
+			}
+		}
+	}
+	if len(allHotelImages) == 0 {
+		allHotelImages = append(allHotelImages, dummyImageBytes)
+	}
+
+	assetMap := map[string][]byte{
+		"standard.jpg":  loadAsset("standard.jpg"),
+		"deluxe.jpg":    loadAsset("deluxe.jpg"),
+		"executive.jpg": loadAsset("executive.jpg"),
+		"ga.png":        loadAsset("ga.png"),
+		"qg.png":        loadAsset("qg.png"),
+		"id.png":        loadAsset("id.png"),
+		"jt.png":        loadAsset("jt.png"),
+		"qz.png":        loadAsset("qz.png"),
 	}
 
 	for i := 0; i < 20; i++ {
 		city := indonesianCities[rand.Intn(len(indonesianCities))]
-
-		// generate randomized pictures
+		hotelName := fmt.Sprintf("%s %s Hotel", gofakeit.Company(), city)
 		var pics [][]byte
-		for j := 0; j < 4; j++ {
-			pics = append(pics, dummyImageBytes)
+		if len(allHotelImages) >= 4 {
+			randIndexes := rand.Perm(len(allHotelImages))[:4]
+			pics = append(pics, allHotelImages[randIndexes[0]], allHotelImages[randIndexes[1]], allHotelImages[randIndexes[2]], allHotelImages[randIndexes[3]])
+		} else {
+			for j := 0; j < 4; j++ {
+				pics = append(pics, allHotelImages[j%len(allHotelImages)])
+			}
 		}
 
-		// shuffle and select facilities
 		rand.Shuffle(len(allFacilities), func(a, b int) { allFacilities[a], allFacilities[b] = allFacilities[b], allFacilities[a] })
 		selectedFac := make([]string, rand.Intn(4)+3)
 		copy(selectedFac, allFacilities)
@@ -459,7 +489,7 @@ func main() {
 		hotelID := uuid.New().String()
 		hotel := HotelModel{
 			ID:                hotelID,
-			Name:              fmt.Sprintf("%s %s Hotel", gofakeit.Company(), city),
+			Name:              hotelName,
 			Description:       gofakeit.Paragraph(1, 3, 10, " "),
 			Address:           fmt.Sprintf("%s, %s, Indonesia", gofakeit.Street(), city),
 			Pictures:          ByteaArray(pics),
@@ -478,10 +508,7 @@ func main() {
 			continue
 		}
 
-		// seed room types per hotel
-		numRooms := rand.Intn(3) + 3
-		for r := 0; r < numRooms; r++ {
-			rt := roomTypes[r%len(roomTypes)]
+		for _, rt := range roomTypes {
 			priceVariance := int64(gofakeit.Number(-50_000, 200_000))
 
 			rand.Shuffle(len(allFacilities), func(a, b int) { allFacilities[a], allFacilities[b] = allFacilities[b], allFacilities[a] })
@@ -496,7 +523,7 @@ func main() {
 				PricePerNight:  int64(rt.basePrice) + priceVariance,
 				Capacity:       rt.capacity,
 				Facilities:     roomFac,
-				PictureUrl:     fmt.Sprintf("https://picsum.photos/seed/%s/800/600", roomId),
+				Picture:        assetMap[rt.assetName],
 				TotalInventory: int32(gofakeit.Number(3, 10)),
 			}
 			if err := db.Create(&room).Error; err != nil {
@@ -506,18 +533,18 @@ func main() {
 		}
 
 		seededHotels = append(seededHotels, hotelID)
-		log.Printf("  [Hotel] %s in %s — %d room types seeded", hotel.Name, city, numRooms)
+		log.Printf("  [Hotel] %s in %s — %d room types seeded", hotel.Name, city, len(roomTypes))
 	}
 
 	// seed airlines
 	log.Println("--- Seeding Airlines ---")
 
-	airlineDefs := []struct{ name, code string }{
-		{"Garuda Indonesia", "GA"},
-		{"Citilink", "QG"},
-		{"Batik Air", "ID"},
-		{"Lion Air", "JT"},
-		{"AirAsia Indonesia", "QZ"},
+	airlineDefs := []struct{ name, code, asset string }{
+		{"Garuda Indonesia", "GA", "ga.png"},
+		{"Citilink", "QG", "qg.png"},
+		{"Batik Air", "ID", "id.png"},
+		{"Lion Air", "JT", "jt.png"},
+		{"AirAsia Indonesia", "QZ", "qz.png"},
 	}
 
 	seededAirlines := make([]AirlineModel, 0, len(airlineDefs))
@@ -525,7 +552,7 @@ func main() {
 		airline := AirlineModel{
 			ID:   uuid.New().String(),
 			Name: a.name,
-			Logo: dummyImageBytes,
+			Logo: assetMap[a.asset],
 		}
 		if err := db.Create(&airline).Error; err != nil {
 			log.Printf("  WARN: airline insert failed for %s: %v", a.name, err)
@@ -549,8 +576,8 @@ func main() {
 		class      string
 		priceExtra int64
 	}{
-		{"Economy", 0},
 		{"Business", 1_500_000},
+		{"Economy", 0},
 	}
 
 	for i := 1; i <= 50; i++ {
@@ -566,7 +593,6 @@ func main() {
 		durationMin := gofakeit.Number(60, 300)
 		arrTime := depTime.Add(time.Duration(durationMin) * time.Minute)
 
-		// resolve the two letter iata code
 		iataCode := "XX"
 		for _, a := range airlineDefs {
 			if a.name == airline.Name {
@@ -603,14 +629,16 @@ func main() {
 			rows    int
 			letters []string
 		}{
+			"Business": {4, []string{"A", "F"}},
 			"Economy":  {20, []string{"A", "B", "C", "D", "E", "F"}},
-			"Business": {4, []string{"A", "B", "C", "D"}},
 		}
 
 		seatCount := 0
+		currentRow := 1
 		for _, sc := range seatClasses {
 			cfg := seatRows[sc.class]
-			for row := 1; row <= cfg.rows; row++ {
+			for rowOffset := 0; rowOffset < cfg.rows; rowOffset++ {
+				actualRow := currentRow + rowOffset
 				for _, letter := range cfg.letters {
 					seatPrice := basePrice + sc.priceExtra
 					// add minor price variance
@@ -619,7 +647,7 @@ func main() {
 					seat := FlightSeatModel{
 						ID:         uuid.New().String(),
 						FlightID:   flightID,
-						SeatNumber: fmt.Sprintf("%d%s", row, letter),
+						SeatNumber: fmt.Sprintf("%d%s", actualRow, letter),
 						SeatClass:  sc.class,
 						Price:      seatPrice,
 						IsBooked:   false,
@@ -631,24 +659,22 @@ func main() {
 					seatCount++
 				}
 			}
+			currentRow += cfg.rows
 		}
 
 		log.Printf("  [Flight] %s | %s → %s | %d min | %d seats", flightCode, origin, dest, durationMin, seatCount)
 	}
 
-	// seed hotel reviews and cart bookings
 	seedReviews(db, seededUsers, seededHotels)
 	seedCartItems(db, seededUsers, seededRooms, seededSeats)
 
-	// ensure admin has a reviewable hotel booking
 	var adminUser seededUser
 	for _, u := range seededUsers {
-		if strings.Contains(u.id, "admin") || u.name == "System Admin" { // admin ID is random UUID, find it
+		if strings.Contains(u.id, "admin") || u.name == "System Admin" {
 			adminUser = u
 			break
 		}
 	}
-	// fallback if search fails (find admin by checking ID in account_models)
 	if adminUser.id == "" {
 		var a AccountModel
 		db.Where("email = ?", "admin@travelohi.com").First(&a)
@@ -657,12 +683,14 @@ func main() {
 
 	if adminUser.id != "" && len(seededRooms) > 0 {
 		r := seededRooms[rand.Intn(len(seededRooms))]
+		var h HotelModel
+		db.Where("id = ?", r.HotelID).First(&h)
 		b := BookingModel{
 			ID:                   "TEST-REVIEW-ADMIN",
 			UserID:               adminUser.id,
 			TransactionID:        "TX-ADMIN-INITIAL",
 			ItemType:             "hotel_room",
-			DisplayName:          "Capital Cube Bali Hotel | Standard Room",
+			DisplayName:          fmt.Sprintf("%s | %s", h.Name, r.Name),
 			CheckInDate:          "2026-05-01",
 			CheckOutDate:         "2026-05-05",
 			Status:               "completed",
@@ -680,7 +708,6 @@ func main() {
 	log.Printf("   Random users : password = '%s'", plainPassword)
 }
 
-// seedReviews creates random reviews and aggregates rating statistics
 type seededUser struct{ id, name string }
 
 func seedReviews(db *gorm.DB, users []seededUser, hotelIDs []string) {
@@ -730,8 +757,7 @@ func seedReviews(db *gorm.DB, users []seededUser, hotelIDs []string) {
 				log.Printf("  WARN: review insert failed: %v", err)
 			}
 		}
-
-		// aggregate and update ratings
+		// update ratings telemetry
 		n := float32(numReviews)
 		db.Table("hotels").Where("id = ?", hotelID).Updates(map[string]interface{}{
 			"rating_cleanliness": sumCl / n,
@@ -748,7 +774,6 @@ func seedReviews(db *gorm.DB, users []seededUser, hotelIDs []string) {
 	log.Printf("  Total: %d reviews across %d hotels.", totalReviews, len(hotelIDs))
 }
 
-// seedCartItems populates historical bookings for telemetry
 func seedCartItems(db *gorm.DB, users []seededUser, rooms []HotelRoomModel, seats []FlightSeatModel) {
 	if len(users) == 0 {
 		return
