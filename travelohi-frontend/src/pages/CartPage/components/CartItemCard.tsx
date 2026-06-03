@@ -2,7 +2,9 @@ import React from 'react';
 import { Calendar, Plane } from 'lucide-react';
 import ProgressiveImage from '../../../components/ProgressiveImage';
 import { useAppContext } from '../../../context/ThemeContext';
-import { formatFlightTimeline } from '../../../utils/dateUtils';
+import { formatFlightTimeline, formatLongDate } from '../../../utils/dateUtils';
+import { translations } from '../../../utils/translations';
+import { formatCurrency } from '../../../utils/currencyFormatter';
 import styles from './CartItemCard.module.scss';
 export interface CartItem {
     id: string;
@@ -22,7 +24,8 @@ interface Props {
     onEditDates: (item: CartItem) => void;
 }
 const CartItemCard: React.FC<Props> = ({ item, onRemove, onEditDates }) => {
-    const { language } = useAppContext();
+    const { language, currency } = useAppContext();
+    const t = translations[language];
     const isHotel = item.itemType === 'hotel_room';
     const isExpired = item.status === 'expired';
     const isValidFlightLogo = !isHotel && item.imageUrl && item.imageUrl !== 'data:image/jpeg;base64,';
@@ -33,7 +36,7 @@ const CartItemCard: React.FC<Props> = ({ item, onRemove, onEditDates }) => {
                 <div className={styles.dateInfo}>
                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                         <Calendar size={14} />
-                        <span>{item.checkInDate} s/d {item.checkOutDate}</span>
+                        <span>{formatLongDate(item.checkInDate, language)} - {formatLongDate(item.checkOutDate, language)}</span>
                     </span>
                 </div>
             );
@@ -78,23 +81,23 @@ const CartItemCard: React.FC<Props> = ({ item, onRemove, onEditDates }) => {
                 <div className={styles.headerRow}>
                     <h4>{item.title}</h4>
                     <span className={`${styles.badge} ${isExpired ? styles.badgeExpired : styles.badgeOngoing}`}>
-                        {isExpired ? 'Waktu Habis (Expired)' : 'Tersedia'}
+                        {isExpired ? t.cart_item_expired : t.cart_item_available}
                     </span>
                 </div>
                 <p className={styles.subtitle}>{item.subtitle}</p>
                 {renderDateInfo()}
                 <div className={styles.actions}>
-                    <button className={styles.removeBtn} onClick={() => onRemove(item.id)}>Hapus</button>
+                    <button className={styles.removeBtn} onClick={() => onRemove(item.id)}>{t.cart_item_remove}</button>
                     {isHotel && (
                         <>
                             <span className={styles.separator}>|</span>
-                            <button className={styles.editBtn} onClick={() => onEditDates(item)}>Ubah Tanggal</button>
+                            <button className={styles.editBtn} onClick={() => onEditDates(item)}>{t.cart_item_edit_date}</button>
                         </>
                     )}
                 </div>
             </div>
             <div className={styles.priceCol}>
-                <span className={styles.price}>Rp {(item.price * item.quantity).toLocaleString('id-ID')}</span>
+                <span className={styles.price}>{formatCurrency(item.price * item.quantity, currency)}</span>
                 {item.quantity > 1 && <span className={styles.qty}>({item.quantity}x)</span>}
             </div>
         </div>

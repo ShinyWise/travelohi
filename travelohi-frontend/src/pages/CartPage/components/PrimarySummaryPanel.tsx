@@ -3,6 +3,7 @@ import { type CartItem } from './CartItemCard';
 import PromoCodeInput from './PromoCodeInput';
 import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
+import { formatCurrency } from '../../../utils/currencyFormatter';
 import styles from './PriceSummaryPanel.module.scss';
 interface Props {
     cartItems: CartItem[];
@@ -28,7 +29,7 @@ const PriceSummaryPanel: React.FC<Props> = ({
     onCheckout,
     checkoutDisabled
 }) => {
-    const { language } = useAppContext();
+    const { language, currency } = useAppContext();
     const t = translations[language];
     const subtotal = cartItems
         .filter(item => item.status !== 'expired')
@@ -49,19 +50,19 @@ const PriceSummaryPanel: React.FC<Props> = ({
             <div className={styles.summaryList}>
                 <div className={styles.summaryItem}>
                     <span className={styles.label}>{t.summary_total_items}</span>
-                    <span className={styles.value}>Rp {subtotal.toLocaleString('id-ID')}</span>
+                    <span className={styles.value}>{formatCurrency(subtotal, currency)}</span>
                 </div>
                 {discountAmount > 0 && (
                     <div className={`${styles.summaryItem} ${styles.discountRow}`}>
                         <span className={styles.label}>{t.summary_total_discount}</span>
-                        <span className={styles.value}>- Rp {discountAmount.toLocaleString('id-ID')}</span>
+                        <span className={styles.value}>- {formatCurrency(discountAmount, currency)}</span>
                     </div>
                 )}
             </div>
             <hr />
             <div className={styles.totalRow}>
                 <span>{t.summary_total_price}</span>
-                <span className={styles.totalPrice}>Rp {total.toLocaleString('id-ID')}</span>
+                <span className={styles.totalPrice}>{formatCurrency(total, currency)}</span>
             </div>
             <button
                 className={styles.checkoutBtn}

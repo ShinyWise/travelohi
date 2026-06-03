@@ -79,7 +79,7 @@ func (r *postgresCartRepo) AddToCart(ctx context.Context, item cart.CartItem) er
 
 func (r *postgresCartRepo) GetActiveCartItems(ctx context.Context, userID string) ([]cart.CartItem, error) {
 	var models []CartItemModel
-	err := r.db.WithContext(ctx).Where("user_id = ? AND status = 'in_cart'", userID).Find(&models).Error
+	err := r.db.WithContext(ctx).Where("user_id = ? AND status IN ('in_cart', 'expired')", userID).Find(&models).Error
 	if err != nil {
 		return nil, err
 	}
@@ -115,20 +115,30 @@ func (r *postgresCartRepo) GetActiveCartItems(ctx context.Context, userID string
 				LogoUrl       string    `gorm:"column:logo_url"`
 				DepartureTime time.Time `gorm:"column:departure_time"`
 				ArrivalTime   time.Time `gorm:"column:arrival_time"`
+				OriginAirport string    `gorm:"column:origin_airport"`
+				DestAirport   string    `gorm:"column:destination_airport"`
 			}
 			err := r.db.Raw(`
-				SELECT fs.seat_number, f.flight_code, a.name as airline_name, coalesce('data:image/jpeg;base64,' || encode(a.logo, 'base64'), '') as logo_url, f.departure_time, f.arrival_time
+				SELECT fs.seat_number, f.flight_code, a.name as airline_name, coalesce('data:image/jpeg;base64,' || encode(a.logo, 'base64'), '') as logo_url, f.departure_time, f.arrival_time, f.origin_airport, f.destination_airport
 				FROM flight_seats fs
 				JOIN flights f ON fs.flight_id = f.id
 				LEFT JOIN airlines a ON f.airline_id = a.id
 				WHERE fs.id = ?
 			`, m.ReferenceID).Scan(&details).Error
 			if err == nil {
-				displayName = details.AirlineName + " (" + details.FlightCode + ") - Seat " + details.SeatNumber
+				displayName = details.AirlineName + " (" + details.FlightCode + ") " + details.OriginAirport + " ➔ " + details.DestAirport + " - Seat " + details.SeatNumber
 				displayImageUrl = details.LogoUrl
 				checkInDate = details.DepartureTime.Format("2006-01-02 15:04")
 				checkOutDate = details.ArrivalTime.Format("2006-01-02 15:04")
 			}
+		}
+
+		checkInTime, err := time.Parse("2006-01-02 15:04", checkInDate)
+		if err != nil {
+			checkInTime, err = time.Parse("2006-01-02", checkInDate)
+		}
+		if err == nil && checkInTime.Before(time.Now()) {
+			m.Status = "expired"
 		}
 
 		items = append(items, cart.CartItem{

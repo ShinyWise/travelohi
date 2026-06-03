@@ -206,6 +206,9 @@ func (uc *cartUseCase) Checkout(ctx context.Context, userID, paymentMethod, cred
 
 	var totalPrice int64 = 0
 	for _, item := range items {
+		if item.Status == "expired" {
+			return "", errors.New("cannot checkout with expired items in the cart. Please remove them first")
+		}
 		totalPrice += item.Price * int64(item.Quantity)
 	}
 
