@@ -23,12 +23,20 @@ const HotelDetailsPage: React.FC = () => {
     const { language } = useAppContext();
     const t = translations[language];
     const { showToast } = useToast();
-    // initialize dates: check-in today, check-out tomorrow
-    const getToday = () => new Date().toISOString().split('T')[0];
+    const getToday = () => {
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const d = String(now.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    };
     const getTomorrow = () => {
         const d = new Date();
         d.setDate(d.getDate() + 1);
-        return d.toISOString().split('T')[0];
+        const y = d.getFullYear();
+        const mo = String(d.getMonth() + 1).padStart(2, '0');
+        const dy = String(d.getDate()).padStart(2, '0');
+        return `${y}-${mo}-${dy}`;
     };
     const [checkIn, setCheckIn] = useState(searchParams.get('checkIn') || getToday());
     const [checkOut, setCheckOut] = useState(searchParams.get('checkOut') || getTomorrow());

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
+import { formatCurrency } from '../../../utils/currencyFormatter';
 import styles from './LuggageSelector.module.scss';
 interface BaggageAddon {
     id: string;
@@ -13,7 +14,7 @@ interface Props {
     onSelectLuggage: (addon: BaggageAddon | null) => void;
 }
 const LuggageSelector: React.FC<Props> = ({ options, selectedLuggageId, onSelectLuggage }) => {
-    const { language } = useAppContext();
+    const { language, currency } = useAppContext();
     const t = translations[language];
     return (
         <div className={styles.luggageContainer}>
@@ -27,7 +28,7 @@ const LuggageSelector: React.FC<Props> = ({ options, selectedLuggageId, onSelect
                     onClick={() => onSelectLuggage(null)}
                 >
                     <h4>{t.luggage_no_addon}</h4>
-                    <span>Rp 0</span>
+                    <span>{formatCurrency(0, currency)}</span>
                 </div>
                 {options.map((addon) => (
                     <div
@@ -36,7 +37,7 @@ const LuggageSelector: React.FC<Props> = ({ options, selectedLuggageId, onSelect
                         onClick={() => onSelectLuggage(addon)}
                     >
                         <h4>+ {addon.weightKg} kg</h4>
-                        <span>+ Rp {addon.price.toLocaleString('id-ID')}</span>
+                        <span>+ {formatCurrency(addon.price, currency)}</span>
                     </div>
                 ))}
             </div>

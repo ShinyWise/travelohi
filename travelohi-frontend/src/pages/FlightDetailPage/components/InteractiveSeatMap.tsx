@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
+import { formatCurrency } from '../../../utils/currencyFormatter';
 import styles from './InteractiveSeatMap.module.scss';
 interface FlightSeat {
     id: string;
@@ -15,7 +16,7 @@ interface Props {
     onSelectSeat: (seat: FlightSeat) => void;
 }
 const InteractiveSeatMap: React.FC<Props> = ({ seats, selectedSeatId, onSelectSeat }) => {
-    const { language } = useAppContext();
+    const { language, currency } = useAppContext();
     const t = translations[language];
     // group seats by row number (e.g., "12a" -> row 12, letter a)
     const rows = useMemo(() => {
@@ -67,7 +68,7 @@ const InteractiveSeatMap: React.FC<Props> = ({ seats, selectedSeatId, onSelectSe
                                         className={seatClassList}
                                         disabled={seat.isBooked}
                                         onClick={() => onSelectSeat(seat)}
-                                        title={`${seat.seatClass} - Rp ${seat.price.toLocaleString('id-ID')}`}
+                                        title={`${seat.seatClass} - ${formatCurrency(seat.price, currency)}`}
                                     >
                                         {seat.seatNumber.replace(/\d+/, '')}
                                     </button>

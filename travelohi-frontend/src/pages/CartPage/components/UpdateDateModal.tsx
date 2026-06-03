@@ -26,7 +26,13 @@ const UpdateDateModal: React.FC<Props> = ({ isOpen, onClose, itemId, currentChec
         }
     }, [isOpen, currentCheckIn, currentCheckOut]);
     if (!isOpen || !itemId) return null;
-    const getToday = () => new Date().toISOString().split('T')[0];
+    const getToday = () => {
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const d = String(now.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    };
     const handleSave = async () => {
         setIsUpdating(true);
         try {
@@ -53,7 +59,10 @@ const UpdateDateModal: React.FC<Props> = ({ isOpen, onClose, itemId, currentChec
                             if (e.target.value >= checkOut) {
                                 const next = new Date(e.target.value);
                                 next.setDate(next.getDate() + 1);
-                                setCheckOut(next.toISOString().split('T')[0]);
+                                const ny = next.getFullYear();
+                                const nm = String(next.getMonth() + 1).padStart(2, '0');
+                                const nd = String(next.getDate()).padStart(2, '0');
+                                setCheckOut(`${ny}-${nm}-${nd}`);
                             }
                         }}
                     />

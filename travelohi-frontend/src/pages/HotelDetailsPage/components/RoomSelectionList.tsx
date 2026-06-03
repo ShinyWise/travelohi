@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
+import { formatCurrency } from '../../../utils/currencyFormatter';
 import ProgressiveImage from '../../../components/ProgressiveImage';
 import { Users } from 'lucide-react';
 import styles from './RoomSelectionList.module.scss';
@@ -22,7 +23,7 @@ interface Props {
 }
 const RoomSelectionList: React.FC<Props> = ({ rooms, onAddToCart, isProcessingId, cartRoomIds = [] }) => {
     const navigate = useNavigate();
-    const { language } = useAppContext();
+    const { language, currency } = useAppContext();
     const t = translations[language];
     if (!rooms || rooms.length === 0) {
         return (
@@ -65,7 +66,7 @@ const RoomSelectionList: React.FC<Props> = ({ rooms, onAddToCart, isProcessingId
                                     </div>
                                 )}
                                 <div className={styles.priceBlock}>
-                                    <span className={styles.price}>Rp {Number(room.pricePerNight).toLocaleString('id-ID')}</span>
+                                    <span className={styles.price}>{formatCurrency(Number(room.pricePerNight), currency)}</span>
                                     <span className={styles.suffix}>{t.rooms_per_night}</span>
                                 </div>
                                 <div className={styles.buttonGroup}>
