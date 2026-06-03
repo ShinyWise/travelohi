@@ -49,7 +49,7 @@ func (r *postgresTelemetryRepo) UpsertGlobalMetric(ctx context.Context, query st
 	return r.db.WithContext(ctx).Clauses(clause.OnConflict{
 		Columns: []clause.Column{{Name: "search_query"}},
 		DoUpdates: clause.Assignments(map[string]interface{}{
-			"search_count":     gorm.Expr("search_count + 1"),
+			"search_count":     gorm.Expr("global_search_metrics.search_count + 1"),
 			"last_searched_at": time.Now(),
 		}),
 	}).Create(&GlobalSearchMetricModel{
