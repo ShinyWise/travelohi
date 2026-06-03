@@ -1,35 +1,42 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
+import { formatCurrency } from '../../../utils/currencyFormatter';
 import { Wallet, CreditCard } from 'lucide-react';
 import styles from './PaymentMethodSelector.module.scss';
 export type PaymentMethod = 'hi_wallet' | 'credit_card' | null;
-interface CreditCard {
-    id: string;
-    lastFour: string;
-    type: string;
-}
+
 interface Props {
     walletBalance: number;
     totalAmount: number;
-    creditCards: CreditCard[];
     selectedMethod: PaymentMethod;
-    selectedCardId: string | null;
+    typedCardNumber: string;
     onSelectMethod: (method: PaymentMethod) => void;
-    onSelectCard: (cardId: string) => void;
+    onChangeCardNumber: (cardNumber: string) => void;
 }
 const PaymentMethodSelector: React.FC<Props> = ({
     walletBalance,
     totalAmount,
-    creditCards,
     selectedMethod,
-    selectedCardId,
+    typedCardNumber,
     onSelectMethod,
-    onSelectCard
+    onChangeCardNumber
 }) => {
-    const { language } = useAppContext();
+    const { language, currency } = useAppContext();
     const t = translations[language];
     const isWalletSufficient = walletBalance >= totalAmount;
+
+    const [displayCardNumber, setDisplayCardNumber] = useState('');
+    useEffect(() => {
+        if (typedCardNumber === '') setDisplayCardNumber('');
+    }, [typedCardNumber]);
+
+    const handleCardInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const raw = e.target.value.replace(/\D/g, '').slice(0, 16);
+        const formatted = raw.replace(/(\d{4})(?=\d)/g, '$1 ');
+        setDisplayCardNumber(formatted);
+        onChangeCardNumber(raw);
+    };
     return (
         <div className={styles.container}>
             <h3 className={styles.title}>{t.payment_method_title}</h3>
@@ -50,7 +57,7 @@ const PaymentMethodSelector: React.FC<Props> = ({
                     </div>
                 </div>
                 <div className={styles.methodDetails}>
-                    <span>{t.payment_wallet_balance}Rp {walletBalance.toLocaleString('id-ID')}</span>
+                    <span>{t.payment_wallet_balance}{formatCurrency(walletBalance, currency)}</span>
                     {!isWalletSufficient && (
                         <span className={styles.errorText}>{t.payment_wallet_insufficient}</span>
                     )}
@@ -74,31 +81,28 @@ const PaymentMethodSelector: React.FC<Props> = ({
                 </div>
                 {selectedMethod === 'credit_card' && (
                     <div className={styles.cardDropdownArea}>
-                        {creditCards.length > 0 ? (
-                            <>
-                                <p>{t.payment_cc_select}</p>
-                                <div className={styles.cardList}>
-                                    {creditCards.map(card => (
-                                        <label key={card.id} className={styles.cardLabel}>
-                                            <input
-                                                type="radio"
-                                                name="credit_card"
-                                                value={card.id}
-                                                checked={selectedCardId === card.id}
-                                                onChange={() => onSelectCard(card.id)}
-                                            />
-                                            <span>
-                                                {card.type === 'Kartu Kredit' && language === 'EN' ? 'Credit Card' : card.type} {t.payment_cc_ending_in} {card.lastFour}
-                                            </span>
-                                        </label>
-                                    ))}
-                                </div>
-                            </>
-                        ) : (
-                            <div className={styles.noCardWarning}>
-                                {t.payment_cc_none}
-                            </div>
-                        )}
+                        <p>{t.payment_cc_select}</p>
+                        <input
+                            type="text"
+                            inputMode="numeric"
+                            className={styles.ccInput}
+                            placeholder="1234 5678 9012 3456"
+                            maxLength={19}
+                            value={displayCardNumber}
+                            onChange={handleCardInput}
+                            style={{
+                                width: '100%',
+                                padding: '10px 12px',
+                                border: '1px solid var(--border-color)',
+                                borderRadius: '8px',
+                                fontSize: '1rem',
+                                color: 'var(--text-primary)',
+                                backgroundColor: 'var(--bg-secondary)',
+                                marginTop: '8px',
+                                fontFamily: 'monospace',
+                                letterSpacing: '0.1em'
+                            }}
+                        />
                     </div>
                 )}
             </div>

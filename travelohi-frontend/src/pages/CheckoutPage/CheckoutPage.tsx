@@ -8,13 +8,14 @@ import { transport } from '../../utils/grpcClient';
 import { useAuth } from '../../context/AuthContext';
 import { useAppContext } from '../../context/ThemeContext';
 import { translations } from '../../utils/translations';
+import { formatCurrency } from '../../utils/currencyFormatter';
 import styles from './CheckoutPage.module.scss';
 const cartClient = new CartServiceClient(transport);
 const accountClient = new AccountServiceClient(transport);
 const CheckoutPage: React.FC = () => {
     const { userId } = useAuth();
     const navigate = useNavigate();
-    const { language } = useAppContext();
+    const { language, currency } = useAppContext();
     const t = translations[language];
     // data states
     const [cartTotal, setCartTotal] = useState<number>(0);
@@ -22,7 +23,7 @@ const CheckoutPage: React.FC = () => {
     const [creditCards, setCreditCards] = useState<any[]>([]);
     // interaction states
     const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>(null);
-    const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
+    const [typedCardNumber, setTypedCardNumber] = useState<string>('');
     // async states
     const [isLoading, setIsLoading] = useState(true);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -50,6 +51,7 @@ const CheckoutPage: React.FC = () => {
 
                 const mapped = bankRes.response.accounts.map((acc: any) => ({
                     id: acc.id,
+                    cardNumber: acc.cardNumber,
                     lastFour: acc.cardNumber.slice(-4),
                     type: acc.bankName
                 }));
@@ -67,16 +69,24 @@ const CheckoutPage: React.FC = () => {
             setError(t.checkout_select_payment_error);
             return;
         }
-        if (selectedMethod === 'credit_card' && !selectedCardId) {
-            setError(t.checkout_select_card_error);
-            return;
+        if (selectedMethod === 'credit_card') {
+            if (!typedCardNumber || typedCardNumber.length !== 16) {
+                setError(t.checkout_select_card_error);
+                return;
+            }
+            const matchedCard = creditCards.find(c => c.cardNumber === typedCardNumber);
+            if (!matchedCard) {
+                setError(t.checkout_card_not_registered || "This credit card is not registered to your account.");
+                return;
+            }
         }
+        
         setIsProcessing(true);
         setError(null);
         try {
             const { response } = await cartClient.checkout({
                 paymentMethod: selectedMethod,
-                creditCardId: selectedMethod === 'credit_card' ? selectedCardId! : ''
+                creditCardId: selectedMethod === 'credit_card' ? creditCards.find(c => c.cardNumber === typedCardNumber)?.id || '' : ''
             });
             if (response.success && response.transactionId) {
                 localStorage.removeItem('travelohi_applied_promo');
@@ -91,7 +101,7 @@ const CheckoutPage: React.FC = () => {
             setIsProcessing(false);
         }
     };
-    const isFormValid = selectedMethod === 'hi_wallet' || (selectedMethod === 'credit_card' && selectedCardId !== null);
+    const isFormValid = selectedMethod === 'hi_wallet' || (selectedMethod === 'credit_card' && typedCardNumber.length > 0);
     if (isLoading) return <div className={styles.loadingState}>{t.checkout_loading}</div>;
     return (
         <div className={styles.pageContainer}>
@@ -107,18 +117,17 @@ const CheckoutPage: React.FC = () => {
                     <PaymentMethodSelector
                         walletBalance={walletBalance}
                         totalAmount={cartTotal}
-                        creditCards={creditCards}
                         selectedMethod={selectedMethod}
-                        selectedCardId={selectedCardId}
+                        typedCardNumber={typedCardNumber}
                         onSelectMethod={setSelectedMethod}
-                        onSelectCard={setSelectedCardId}
+                        onChangeCardNumber={setTypedCardNumber}
                     />
                 </div>
                 <aside className={styles.summaryCol}>
                     <div className={styles.summaryCard}>
                         <h3>{t.checkout_total_bill}</h3>
                         <div className={styles.totalAmount}>
-                            Rp {cartTotal.toLocaleString('id-ID')}
+                            {formatCurrency(cartTotal, currency)}
                         </div>
                         <button
                             className={styles.payBtn}

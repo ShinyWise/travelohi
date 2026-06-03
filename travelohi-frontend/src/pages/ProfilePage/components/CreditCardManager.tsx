@@ -17,7 +17,15 @@ const CreditCardManager: React.FC = () => {
     const [isAdding, setIsAdding] = useState(false);
     const [bankName, setBankName] = useState('');
     const [cardNumber, setCardNumber] = useState('');
+    const [displayCardNumber, setDisplayCardNumber] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+
+    const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const raw = e.target.value.replace(/\D/g, '').slice(0, 16);
+        const formatted = raw.replace(/(\d{4})(?=\d)/g, '$1 ');
+        setCardNumber(raw);
+        setDisplayCardNumber(formatted);
+    };
 
     const transport = new GrpcWebFetchTransport({
         baseUrl: "http://localhost:8080",
@@ -56,6 +64,7 @@ const CreditCardManager: React.FC = () => {
                     setIsAdding(false);
                     setBankName('');
                     setCardNumber('');
+                    setDisplayCardNumber('');
                 }
             } catch (err) {
                 console.error("Failed to add bank account:", err);
@@ -124,11 +133,11 @@ const CreditCardManager: React.FC = () => {
                     <FormInput
                         label={t.cc_manager_num_label}
                         type="text"
-                        value={cardNumber}
-                        onChange={(e) => setCardNumber(e.target.value)}
+                        value={displayCardNumber}
+                        onChange={handleCardNumberChange}
                         placeholder="1234 5678 9101 1121"
                         required
-                        maxLength={16}
+                        maxLength={19}
                     />
                     <div className={styles.actionButtons}>
                         <button type="submit" className={styles.saveBtn} disabled={isLoading}>
