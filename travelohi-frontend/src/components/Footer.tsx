@@ -11,23 +11,23 @@ const Footer: React.FC = () => {
         <footer className={styles.footer}>
             <div className={styles.footerContainer}>
                 <div className={styles.linkGroup}>
-                    <h4>{t.external_links}</h4>
+                    <h4>{t.follow_us}</h4>
                     <ul>
-                        <li><a href="https://www.binus.ac.id" target="_blank" rel="noopener noreferrer">BINUS University</a></li>
-                        <li><a href="https://reactjs.org" target="_blank" rel="noopener noreferrer">React Documentation</a></li>
-                        <li><a href="https://grpc.io/docs/" target="_blank" rel="noopener noreferrer">gRPC Specifications</a></li>
-                        <li><a href="https://www.postgresql.org/" target="_blank" rel="noopener noreferrer">PostgreSQL</a></li>
-                        <li><a href="https://www.docker.com/" target="_blank" rel="noopener noreferrer">Docker Containerization</a></li>
+                        <li><a href="https://www.instagram.com/franssebstian/" rel="noopener noreferrer">Instagram</a></li>
+                        <li><a href="https://www.threads.com/@franssebstian" target="_blank" rel="noopener noreferrer">Threads</a></li>
+                        <li><a href="https://www.linkedin.com/in/frans-winata-769b3a30b" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                        <li><a href="https://youtube.com" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+                        <li><a href="https://tiktok.com" target="_blank" rel="noopener noreferrer">TikTok</a></li>
                     </ul>
                 </div>
 
                 <div className={styles.linkGroup}>
                     <h4>{t.internal_links}</h4>
                     <ul>
-                        <li><a href="/about">{t.about_travelohi}</a></li>
-                        <li><a href="/promos">{t.active_promos}</a></li>
-                        <li><a href="/support">{t.customer_service}</a></li>
-                        <li><a href="/careers">{t.careers}</a></li>
+                        <li><a href="/">{t.home}</a></li>
+                        <li><a href="/search">{t.search_tickets}</a></li>
+                        <li><a href="/login">{t.login}</a></li>
+                        <li><a href="/register">{t.register}</a></li>
                     </ul>
                 </div>
             </div>

@@ -179,11 +179,15 @@ const FilterSidebar: React.FC<Props> = ({ searchType }) => {
                     <h4>{t.transit}</h4>
                     <div className={styles.options}>
                         <label>
-                            <input type="checkbox" checked={localTransit === 'direct'} onChange={() => setLocalTransit(prev => prev === 'direct' ? '' : 'direct')} />
+                            <input type="radio" checked={localTransit === ''} onChange={() => setLocalTransit('')} />
+                            {t.search_tab_all}
+                        </label>
+                        <label>
+                            <input type="radio" checked={localTransit === 'direct'} onChange={() => setLocalTransit('direct')} />
                             {t.direct}
                         </label>
                         <label>
-                            <input type="checkbox" checked={localTransit === '1_transit'} onChange={() => setLocalTransit(prev => prev === '1_transit' ? '' : '1_transit')} />
+                            <input type="radio" checked={localTransit === '1_transit'} onChange={() => setLocalTransit('1_transit')} />
                             {t.transit_flight}
                         </label>
                     </div>
@@ -223,7 +227,7 @@ const FilterSidebar: React.FC<Props> = ({ searchType }) => {
                                 WiFi
                             </label>
                             <label>
-                                <input type="checkbox" checked={localFacilities.includes('Pool')} onChange={() => toggleArrayItem(setLocalFacilities, 'Pool')} />
+                                <input type="checkbox" checked={localFacilities.includes('Swimming Pool')} onChange={() => toggleArrayItem(setLocalFacilities, 'Swimming Pool')} />
                                 {t.pool}
                             </label>
                             <label>
@@ -233,6 +237,26 @@ const FilterSidebar: React.FC<Props> = ({ searchType }) => {
                             <label>
                                 <input type="checkbox" checked={localFacilities.includes('Restaurant')} onChange={() => toggleArrayItem(setLocalFacilities, 'Restaurant')} />
                                 {t.restaurant}
+                            </label>
+                            <label>
+                                <input type="checkbox" checked={localFacilities.includes('Spa')} onChange={() => toggleArrayItem(setLocalFacilities, 'Spa')} />
+                                {t.spa}
+                            </label>
+                            <label>
+                                <input type="checkbox" checked={localFacilities.includes('24-Hour Front Desk')} onChange={() => toggleArrayItem(setLocalFacilities, '24-Hour Front Desk')} />
+                                {t.front_desk}
+                            </label>
+                            <label>
+                                <input type="checkbox" checked={localFacilities.includes('Elevator')} onChange={() => toggleArrayItem(setLocalFacilities, 'Elevator')} />
+                                {t.elevator}
+                            </label>
+                            <label>
+                                <input type="checkbox" checked={localFacilities.includes('Parking')} onChange={() => toggleArrayItem(setLocalFacilities, 'Parking')} />
+                                {t.parking}
+                            </label>
+                            <label>
+                                <input type="checkbox" checked={localFacilities.includes('Airport Shuttle')} onChange={() => toggleArrayItem(setLocalFacilities, 'Airport Shuttle')} />
+                                {t.airport_shuttle}
                             </label>
                         </div>
                     </div>

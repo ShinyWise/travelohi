@@ -95,7 +95,12 @@ const CheckoutPage: React.FC = () => {
     if (isLoading) return <div className={styles.loadingState}>{t.checkout_loading}</div>;
     return (
         <div className={styles.pageContainer}>
-            <h2>{t.checkout_title}</h2>
+            <div className={styles.header}>
+                <button className={styles.backButton} onClick={() => navigate('/cart')}>
+                    &#8592; {t.back_to_cart}
+                </button>
+                <h2>{t.checkout_title}</h2>
+            </div>
             {error && <div className={styles.errorBox}>{error}</div>}
             <div className={styles.layout}>
                 <div className={styles.mainCol}>
