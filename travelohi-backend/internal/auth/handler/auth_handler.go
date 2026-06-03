@@ -110,7 +110,7 @@ func (h *authHandler) Logout(ctx context.Context, req *authpb.LogoutRequest) (*a
 }
 
 func (h *authHandler) GetSecurityQuestion(ctx context.Context, req *authpb.GetSecurityQuestionRequest) (*authpb.GetSecurityQuestionResponse, error) {
-	qID, err := h.usecase.GetSecurityQuestion(ctx, req.GetEmail())
+	qID, err := h.usecase.GetSecurityQuestion(ctx, req.GetEmail(), req.GetCaptchaToken())
 	if err != nil {
 		return nil, status.Error(codes.NotFound, "user not found or invalid")
 	}
@@ -120,7 +120,7 @@ func (h *authHandler) GetSecurityQuestion(ctx context.Context, req *authpb.GetSe
 }
 
 func (h *authHandler) ResetPassword(ctx context.Context, req *authpb.ResetPasswordRequest) (*authpb.AuthResponse, error) {
-	res, err := h.usecase.ResetPassword(ctx, req.GetEmail(), req.GetSecurityQuestionId(), req.GetSecurityAnswer(), req.GetNewPassword())
+	res, err := h.usecase.ResetPassword(ctx, req.GetEmail(), req.GetSecurityQuestionId(), req.GetSecurityAnswer(), req.GetNewPassword(), req.GetCaptchaToken())
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}

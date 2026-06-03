@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import ReCAPTCHA from 'react-google-recaptcha';
 import FormInput from '../../components/FormInput';
 import { useAppContext } from '../../context/ThemeContext';
 import { translations } from '../../utils/translations';
@@ -32,6 +33,9 @@ const ForgotPasswordPage: React.FC = () => {
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [grpcError, setGrpcError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+
+    const recaptchaRef = useRef<ReCAPTCHA>(null);
+
     const validateEmail = (val: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.com$/;
         return emailRegex.test(val);
@@ -40,22 +44,32 @@ const ForgotPasswordPage: React.FC = () => {
         e.preventDefault();
         setGrpcError(null);
         setErrors({});
+
         if (!validateEmail(email)) {
             setErrors({ email: t.email_format_error });
             return;
         }
+
+        const captchaToken = recaptchaRef.current?.getValue();
+        if (!captchaToken) {
+            setGrpcError(t.recaptcha_error);
+            return;
+        }
+
         setIsLoading(true);
         try {
             // cek emailnya ad ga
-            const res = await client.getSecurityQuestion({ email });
+            const res = await client.getSecurityQuestion({ email, captchaToken });
             setFetchedQuestionId(res.response.securityQuestionId);
             setStep(2);
+            recaptchaRef.current?.reset();
         } catch (err: any) {
             if (err.message && err.message.toLowerCase().includes("suspended")) {
                 setGrpcError(t.account_suspended_error);
             } else {
                 setGrpcError(t.email_not_found_error);
             }
+            recaptchaRef.current?.reset();
         } finally {
             setIsLoading(false);
         }
@@ -81,6 +95,13 @@ const ForgotPasswordPage: React.FC = () => {
         e.preventDefault();
         setGrpcError(null);
         if (!validateStepTwo()) return;
+
+        const captchaToken = recaptchaRef.current?.getValue();
+        if (!captchaToken) {
+            setGrpcError(t.recaptcha_error);
+            return;
+        }
+
         setIsLoading(true);
         try {
             await client.resetPassword({
@@ -88,6 +109,7 @@ const ForgotPasswordPage: React.FC = () => {
                 securityQuestionId: fetchedQuestionId || 0,
                 securityAnswer: formData.securityAnswer,
                 newPassword: formData.newPassword,
+                captchaToken: captchaToken,
             });
             // redict kalo bener
             navigate('/login', {
@@ -99,6 +121,7 @@ const ForgotPasswordPage: React.FC = () => {
             } else {
                 setGrpcError(err.message || t.forgot_reset_failed);
             }
+            recaptchaRef.current?.reset();
         } finally {
             setIsLoading(false);
         }
@@ -135,6 +158,12 @@ const ForgotPasswordPage: React.FC = () => {
                             required
                             placeholder="name@domain.com"
                         />
+                        <div className={styles.captchaContainer} style={{ marginBottom: '20px' }}>
+                            <ReCAPTCHA
+                                ref={recaptchaRef}
+                                sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY || "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"}
+                            />
+                        </div>
                         <button type="submit" className={styles.actionBtn} disabled={isLoading}>
                             {isLoading ? t.fetch_question_loading : t.continue_btn}
                         </button>
@@ -205,6 +234,12 @@ const ForgotPasswordPage: React.FC = () => {
                             autoComplete="new-password"
                             required
                         />
+                        <div className={styles.captchaContainer} style={{ marginBottom: '20px' }}>
+                            <ReCAPTCHA
+                                ref={recaptchaRef}
+                                sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY || "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"}
+                            />
+                        </div>
                         <button type="submit" className={styles.actionBtn} disabled={isLoading}>
                             {isLoading ? t.reset_loading : t.reset_btn}
                         </button>

@@ -333,8 +333,11 @@ func (uc *authUseCase) Logout(ctx context.Context, token string) error {
 	return nil
 }
 
-func (uc *authUseCase) GetSecurityQuestion(ctx context.Context, email string) (int32, error) {
+func (uc *authUseCase) GetSecurityQuestion(ctx context.Context, email, captchaToken string) (int32, error) {
 	if err := validateEmailPattern(email); err != nil {
+		return 0, err
+	}
+	if err := verifyRecaptcha(captchaToken); err != nil {
 		return 0, err
 	}
 	user, err := uc.repo.GetByEmail(ctx, email)
@@ -347,11 +350,14 @@ func (uc *authUseCase) GetSecurityQuestion(ctx context.Context, email string) (i
 	return user.SecurityQuestionID, nil
 }
 
-func (uc *authUseCase) ResetPassword(ctx context.Context, email string, questionID int32, answer string, newPassword string) (*auth.AuthResult, error) {
+func (uc *authUseCase) ResetPassword(ctx context.Context, email string, questionID int32, answer string, newPassword string, captchaToken string) (*auth.AuthResult, error) {
 	if err := validateEmailPattern(email); err != nil {
 		return nil, err
 	}
 	if err := validatePasswordPattern(newPassword); err != nil {
+		return nil, err
+	}
+	if err := verifyRecaptcha(captchaToken); err != nil {
 		return nil, err
 	}
 	user, err := uc.repo.GetByEmail(ctx, email)

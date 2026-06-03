@@ -238,6 +238,22 @@ type CartItemModel struct {
 
 func (CartItemModel) TableName() string { return "cart_items" }
 
+type BookingModel struct {
+	ID                   string    `gorm:"primaryKey;column:id"`
+	UserID               string    `gorm:"column:user_id"`
+	TransactionID        string    `gorm:"column:transaction_id"`
+	ItemType             string    `gorm:"column:item_type"`
+	DisplayName          string    `gorm:"column:display_name"`
+	CheckInDate          string    `gorm:"column:check_in_date"`
+	CheckOutDate         string    `gorm:"column:check_out_date"`
+	Status               string    `gorm:"column:status"`
+	BookingReferenceCode string    `gorm:"column:booking_reference_code"`
+	RoomID               string    `gorm:"column:room_id"`
+	CreatedAt            time.Time `gorm:"column:created_at"`
+}
+
+func (BookingModel) TableName() string { return "booking_models" }
+
 // helper functions
 
 func hashPassword(plain string) string {
@@ -301,7 +317,7 @@ func main() {
 	// truncate tables in fk-safe order for idempotency
 	log.Println("🗑️  Truncating tables (idempotent run)...")
 	tables := []string{
-		"cart_items",
+		"cart_items", "booking_models",
 		"flight_seats", "flights", "airlines",
 		"hotel_reviews", "hotel_rooms", "hotels",
 		"account_models", "auths",
@@ -623,6 +639,40 @@ func main() {
 	// seed hotel reviews and cart bookings
 	seedReviews(db, seededUsers, seededHotels)
 	seedCartItems(db, seededUsers, seededRooms, seededSeats)
+
+	// ensure admin has a reviewable hotel booking
+	var adminUser seededUser
+	for _, u := range seededUsers {
+		if strings.Contains(u.id, "admin") || u.name == "System Admin" { // admin ID is random UUID, find it
+			adminUser = u
+			break
+		}
+	}
+	// fallback if search fails (find admin by checking ID in account_models)
+	if adminUser.id == "" {
+		var a AccountModel
+		db.Where("email = ?", "admin@travelohi.com").First(&a)
+		adminUser = seededUser{id: a.ID, name: a.FirstName + " " + a.LastName}
+	}
+
+	if adminUser.id != "" && len(seededRooms) > 0 {
+		r := seededRooms[rand.Intn(len(seededRooms))]
+		b := BookingModel{
+			ID:                   "TEST-REVIEW-ADMIN",
+			UserID:               adminUser.id,
+			TransactionID:        "TX-ADMIN-INITIAL",
+			ItemType:             "hotel_room",
+			DisplayName:          "Capital Cube Bali Hotel | Standard Room",
+			CheckInDate:          "2026-05-01",
+			CheckOutDate:         "2026-05-05",
+			Status:               "completed",
+			BookingReferenceCode: "REV-ADMIN",
+			RoomID:               r.ID,
+			CreatedAt:            time.Now().AddDate(0, -1, 0),
+		}
+		db.Create(&b)
+		log.Printf("  ✅ Admin history seeded for %s", adminUser.name)
+	}
 
 	log.Println("")
 	log.Println("✅ Seeding completed successfully!")

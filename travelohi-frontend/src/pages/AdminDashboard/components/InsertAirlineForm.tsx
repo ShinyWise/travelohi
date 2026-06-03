@@ -78,9 +78,22 @@ const InsertAirlineForm: React.FC = () => {
                 return;
             }
 
+            const trimmedIata = iataCode.trim().toUpperCase();
+            if (trimmedIata.length < 2 || trimmedIata.length > 3) {
+                setToast({ type: 'error', msg: 'Kode IATA harus 2 atau 3 karakter.' });
+                setIsSubmitting(false);
+                return;
+            }
+
+            if (!/^[A-Z0-9]+$/.test(trimmedIata)) {
+                setToast({ type: 'error', msg: 'Kode IATA hanya boleh berisi huruf dan angka.' });
+                setIsSubmitting(false);
+                return;
+            }
+
             const { response } = await adminClient.insertAirline({
                 name,
-                iataCode,
+                iataCode: trimmedIata,
                 logo: selectedFile.bytes
             });
 

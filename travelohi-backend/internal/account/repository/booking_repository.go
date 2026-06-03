@@ -102,7 +102,7 @@ func (r *PostgresBookingRepository) GetBookingHistory(ctx context.Context, userI
 	case "ongoing":
 		query = query.Where("status = ?", "ongoing")
 	case "past":
-		query = query.Where("status IN ?", []string{"completed", "cancelled"})
+		query = query.Where("status IN ?", []string{"completed", "cancelled", "reviewed"})
 	}
 
 	err := query.Count(&total).Error

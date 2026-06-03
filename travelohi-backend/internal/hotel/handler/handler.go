@@ -151,7 +151,10 @@ func (h *HotelHandler) AddHotelReview(ctx context.Context, req *hotelpb.AddHotel
 
 	avg := (req.RatingCleanliness + req.RatingComfort + req.RatingLocation + req.RatingService) / 4.0
 
-	userName := "Traveler"
+	userName := req.GetUserName()
+	if userName == "" {
+		userName = "Traveler"
+	}
 	if req.IsAnonymous {
 		userName = "Anonymous"
 	}

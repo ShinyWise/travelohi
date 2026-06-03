@@ -1,6 +1,8 @@
 import React from 'react';
 import { Calendar, Plane } from 'lucide-react';
 import ProgressiveImage from '../../../components/ProgressiveImage';
+import { useAppContext } from '../../../context/ThemeContext';
+import { formatFlightTimeline } from '../../../utils/dateUtils';
 import styles from './CartItemCard.module.scss';
 export interface CartItem {
     id: string;
@@ -20,8 +22,36 @@ interface Props {
     onEditDates: (item: CartItem) => void;
 }
 const CartItemCard: React.FC<Props> = ({ item, onRemove, onEditDates }) => {
+    const { language } = useAppContext();
     const isHotel = item.itemType === 'hotel_room';
     const isExpired = item.status === 'expired';
+
+    const renderDateInfo = () => {
+        if (isHotel) {
+            return (
+                <div className={styles.dateInfo}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <Calendar size={14} />
+                        <span>{item.checkInDate} s/d {item.checkOutDate}</span>
+                    </span>
+                </div>
+            );
+        }
+
+        const timeline = formatFlightTimeline(item.checkInDate, item.checkOutDate, language);
+        return (
+            <div className={styles.flightDateInfo}>
+                <div className={styles.flightDateLabel}>
+                    <Plane size={14} />
+                    <span>{timeline.dateLabel}</span>
+                </div>
+                <div className={styles.flightTimeRange}>
+                    {timeline.timeRange}
+                </div>
+            </div>
+        );
+    };
+
     return (
         <div className={`${styles.card} ${isExpired ? styles.expiredCard : ''}`}>
             <div className={styles.imageCol}>
@@ -39,19 +69,7 @@ const CartItemCard: React.FC<Props> = ({ item, onRemove, onEditDates }) => {
                     </span>
                 </div>
                 <p className={styles.subtitle}>{item.subtitle}</p>
-                <div className={styles.dateInfo}>
-                    {isHotel ? (
-                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                            <Calendar size={14} />
-                            <span>{item.checkInDate} s/d {item.checkOutDate}</span>
-                        </span>
-                    ) : (
-                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                            <Plane size={14} />
-                            <span>{item.checkInDate} (Kedatangan: {item.checkOutDate})</span>
-                        </span>
-                    )}
-                </div>
+                {renderDateInfo()}
                 <div className={styles.actions}>
                     <button className={styles.removeBtn} onClick={() => onRemove(item.id)}>Hapus</button>
                     {isHotel && (

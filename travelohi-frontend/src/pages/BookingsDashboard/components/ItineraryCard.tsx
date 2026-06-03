@@ -1,7 +1,8 @@
 import React from 'react';
 import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
-import { Calendar } from 'lucide-react';
+import { Calendar, Plane } from 'lucide-react';
+import { formatFlightTimeline } from '../../../utils/dateUtils';
 import styles from './ItineraryCard.module.scss';
 
 export interface BookingItem {
@@ -27,6 +28,30 @@ const ItineraryCard: React.FC<Props> = ({ booking, onViewTicket }) => {
 
     const isHotel = booking.itemType === 'hotel_room';
 
+    const renderDateInfo = () => {
+        if (isHotel) {
+            return (
+                <span className={styles.date} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    <Calendar size={14} />
+                    <span>{booking.checkInDate} - {booking.checkOutDate}</span>
+                </span>
+            );
+        }
+
+        const timeline = formatFlightTimeline(booking.checkInDate, booking.checkOutDate, language);
+        return (
+            <div className={styles.flightDateInfo}>
+                <div className={styles.flightDateLabel}>
+                    <Plane size={14} />
+                    <span>{timeline.dateLabel}</span>
+                </div>
+                <div className={styles.flightTimeRange}>
+                    {timeline.timeRange}
+                </div>
+            </div>
+        );
+    };
+
     return (
         <div className={styles.card}>
             <div className={styles.infoBox}>
@@ -47,10 +72,7 @@ const ItineraryCard: React.FC<Props> = ({ booking, onViewTicket }) => {
                 <p className={styles.subtitle}>
                     {t.profile_booking_code}: <strong>{booking.bookingReferenceCode}</strong>
                 </p>
-                <span className={styles.date} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                    <Calendar size={14} />
-                    <span>{booking.checkInDate} - {booking.checkOutDate}</span>
-                </span>
+                {renderDateInfo()}
             </div>
 
             <div className={styles.actionBox}>

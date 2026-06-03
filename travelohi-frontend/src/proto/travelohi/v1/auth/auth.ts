@@ -205,6 +205,10 @@ export interface GetSecurityQuestionRequest {
      * @generated from protobuf field: string email = 1
      */
     email: string;
+    /**
+     * @generated from protobuf field: string captcha_token = 2
+     */
+    captchaToken: string;
 }
 /**
  * @generated from protobuf message travelohi.v1.auth.GetSecurityQuestionResponse
@@ -235,6 +239,10 @@ export interface ResetPasswordRequest {
      * @generated from protobuf field: int32 security_question_id = 4
      */
     securityQuestionId: number;
+    /**
+     * @generated from protobuf field: string captcha_token = 5
+     */
+    captchaToken: string;
 }
 /**
  * @generated from protobuf message travelohi.v1.auth.CheckEmailRequest
@@ -982,12 +990,14 @@ export const LogoutResponse = new LogoutResponse$Type();
 class GetSecurityQuestionRequest$Type extends MessageType<GetSecurityQuestionRequest> {
     constructor() {
         super("travelohi.v1.auth.GetSecurityQuestionRequest", [
-            { no: 1, name: "email", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 1, name: "email", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "captcha_token", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<GetSecurityQuestionRequest>): GetSecurityQuestionRequest {
         const message = globalThis.Object.create((this.messagePrototype!));
         message.email = "";
+        message.captchaToken = "";
         if (value !== undefined)
             reflectionMergePartial<GetSecurityQuestionRequest>(this, message, value);
         return message;
@@ -999,6 +1009,9 @@ class GetSecurityQuestionRequest$Type extends MessageType<GetSecurityQuestionReq
             switch (fieldNo) {
                 case /* string email */ 1:
                     message.email = reader.string();
+                    break;
+                case /* string captcha_token */ 2:
+                    message.captchaToken = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1015,6 +1028,9 @@ class GetSecurityQuestionRequest$Type extends MessageType<GetSecurityQuestionReq
         /* string email = 1; */
         if (message.email !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.email);
+        /* string captcha_token = 2; */
+        if (message.captchaToken !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.captchaToken);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -1079,7 +1095,8 @@ class ResetPasswordRequest$Type extends MessageType<ResetPasswordRequest> {
             { no: 1, name: "email", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "security_answer", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "new_password", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 4, name: "security_question_id", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+            { no: 4, name: "security_question_id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 5, name: "captcha_token", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<ResetPasswordRequest>): ResetPasswordRequest {
@@ -1088,6 +1105,7 @@ class ResetPasswordRequest$Type extends MessageType<ResetPasswordRequest> {
         message.securityAnswer = "";
         message.newPassword = "";
         message.securityQuestionId = 0;
+        message.captchaToken = "";
         if (value !== undefined)
             reflectionMergePartial<ResetPasswordRequest>(this, message, value);
         return message;
@@ -1108,6 +1126,9 @@ class ResetPasswordRequest$Type extends MessageType<ResetPasswordRequest> {
                     break;
                 case /* int32 security_question_id */ 4:
                     message.securityQuestionId = reader.int32();
+                    break;
+                case /* string captcha_token */ 5:
+                    message.captchaToken = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1133,6 +1154,9 @@ class ResetPasswordRequest$Type extends MessageType<ResetPasswordRequest> {
         /* int32 security_question_id = 4; */
         if (message.securityQuestionId !== 0)
             writer.tag(4, WireType.Varint).int32(message.securityQuestionId);
+        /* string captcha_token = 5; */
+        if (message.captchaToken !== "")
+            writer.tag(5, WireType.LengthDelimited).string(message.captchaToken);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

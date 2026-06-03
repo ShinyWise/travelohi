@@ -96,6 +96,29 @@
         display: inline-block;
     }
 
+    .flightDateInfo {
+        margin-bottom: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .flightDateLabel {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+
+        .flightTimeRange {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            font-weight: bold;
+            padding-left: 20px;
+        }
+    }
+
     .actions {
         display: flex;
         align-items: center;

@@ -66,8 +66,8 @@ type AuthUseCase interface {
 	SendOTP(ctx context.Context, email string) error
 	LoginWithOTP(ctx context.Context, email, otp string) (*AuthResult, error)
 	Logout(ctx context.Context, token string) error
-	GetSecurityQuestion(ctx context.Context, email string) (int32, error)
-	ResetPassword(ctx context.Context, email string, questionID int32, answer string, newPassword string) (*AuthResult, error)
+	GetSecurityQuestion(ctx context.Context, email, captchaToken string) (int32, error)
+	ResetPassword(ctx context.Context, email string, questionID int32, answer string, newPassword string, captchaToken string) (*AuthResult, error)
 
 	CheckEmail(ctx context.Context, email string, captchaToken string) (bool, bool, error)
 }

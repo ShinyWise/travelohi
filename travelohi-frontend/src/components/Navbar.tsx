@@ -166,32 +166,24 @@ const Navbar: React.FC = () => {
 
 
                         {isAuthenticated && (
-                            isAdmin ? (
-                                <>
-                                    <span className={styles.navItemText} onClick={() => { setIsMobileMenuOpen(false); navigate('/admin'); }}>
-                                        Admin Panel
-                                    </span>
-                                </>
-                            ) : (
-                                <>
-                                    <span
-                                        className={styles.navItemText}
-                                        onClick={() => { setIsMobileMenuOpen(false); navigate('/bookings'); }}
-                                    >
-                                        {t.my_orders} {ongoingCount > 0 && <span className={styles.badge}>{ongoingCount}</span>}
-                                    </span>
-                                    <span className={styles.navItemText} onClick={() => { setIsMobileMenuOpen(false); navigate('/cart'); }} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                                        <ShoppingCart size={18} />
-                                        <span>{t.cart}</span>
-                                    </span>
-                                    <span
-                                        className={styles.navItemText}
-                                        onClick={() => { setIsMobileMenuOpen(false); navigate('/game'); }}
-                                    >
-                                        {t.game_arena_title}
-                                    </span>
-                                </>
-                            )
+                            <>
+                                <span
+                                    className={styles.navItemText}
+                                    onClick={() => { setIsMobileMenuOpen(false); navigate('/bookings'); }}
+                                >
+                                    {t.my_orders} {ongoingCount > 0 && <span className={styles.badge}>{ongoingCount}</span>}
+                                </span>
+                                <span className={styles.navItemText} onClick={() => { setIsMobileMenuOpen(false); navigate('/cart'); }} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                                    <ShoppingCart size={18} />
+                                    <span>{t.cart}</span>
+                                </span>
+                                <span
+                                    className={styles.navItemText}
+                                    onClick={() => { setIsMobileMenuOpen(false); navigate('/game'); }}
+                                >
+                                    {t.game_arena_title}
+                                </span>
+                            </>
                         )}
 
                         <div className={styles.preferencesGroup}>
@@ -241,7 +233,7 @@ const Navbar: React.FC = () => {
                                                     <CreditCard size={16} />
                                                 </span>
                                                 <div className={styles.paymentDetails}>
-                                                    <span className={styles.optionName}>{t.payment_methods_card || 'Credit Card'}</span>
+                                                    <span className={styles.optionName}>{t.payment_methods || 'Credit Card'}</span>
                                                     {isAuthenticated && bankAccounts.length > 0 ? (
                                                         bankAccounts.map(acc => (
                                                             <span key={acc.id} className={styles.optionInfo} style={{ display: 'block' }}>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import StarRatingInput from './StarRatingInput';
 import { HotelServiceClient } from '../../../proto/travelohi/v1/hotel/hotel.client';
+import { AccountServiceClient } from '../../../proto/travelohi/v1/account/account.client';
 import { transport } from '../../../utils/grpcClient';
 import { useAuth } from '../../../context/AuthContext';
 import { useAppContext } from '../../../context/ThemeContext';
@@ -60,6 +61,18 @@ const ReviewSubmissionModal: React.FC<Props> = ({
         setIsSubmitting(true);
         setError(null);
 
+        let fullName = '';
+        try {
+            // fetch user name for better review display
+            const accountClient = new AccountServiceClient(transport);
+            const { response: profileRes } = await accountClient.getProfile({ userId });
+            if (profileRes.profile) {
+                fullName = `${profileRes.profile.firstName} ${profileRes.profile.lastName}`.trim();
+            }
+        } catch (err) {
+            console.warn("Failed to fetch profile name for review, defaulting to Traveler", err);
+        }
+
         try {
             const { response } = await hotelClient.addHotelReview({
                 hotelId,
@@ -69,7 +82,8 @@ const ReviewSubmissionModal: React.FC<Props> = ({
                 ratingLocation: location,
                 ratingService: service,
                 comment: comment.trim(),
-                isAnonymous
+                isAnonymous,
+                userName: fullName
             });
 
             if (response.success) {
@@ -116,11 +130,14 @@ const ReviewSubmissionModal: React.FC<Props> = ({
                             rows={4}
                             disabled={isSubmitting}
                         />
-                        <span className={styles.charCount}>
-                            {comment.length < 10
-                                ? t.review_char_count_error.replace('{count}', (10 - comment.length).toString())
-                                : t.review_char_count_sufficient}
-                        </span>
+                        <div className={styles.charCountRow}>
+                            <span className={comment.length < 10 ? styles.charCountError : styles.charCountSuccess}>
+                                {t.review_char_count.replace('{count}', comment.length.toString())}
+                            </span>
+                            {comment.length < 10 && (
+                                <span className={styles.minHint}>({t.review_char_min_hint})</span>
+                            )}
+                        </div>
                     </div>
 
                     <div className={styles.optionsGroup}>

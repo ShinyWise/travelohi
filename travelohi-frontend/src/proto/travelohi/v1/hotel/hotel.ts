@@ -294,6 +294,10 @@ export interface AddHotelReviewRequest {
      * @generated from protobuf field: string booking_id = 8
      */
     bookingId: string;
+    /**
+     * @generated from protobuf field: string user_name = 9
+     */
+    userName: string;
 }
 /**
  * @generated from protobuf message travelohi.v1.hotel.AddHotelReviewResponse
@@ -1007,7 +1011,8 @@ class AddHotelReviewRequest$Type extends MessageType<AddHotelReviewRequest> {
             { no: 5, name: "rating_service", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ },
             { no: 6, name: "comment", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 7, name: "is_anonymous", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
-            { no: 8, name: "booking_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 8, name: "booking_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 9, name: "user_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<AddHotelReviewRequest>): AddHotelReviewRequest {
@@ -1020,6 +1025,7 @@ class AddHotelReviewRequest$Type extends MessageType<AddHotelReviewRequest> {
         message.comment = "";
         message.isAnonymous = false;
         message.bookingId = "";
+        message.userName = "";
         if (value !== undefined)
             reflectionMergePartial<AddHotelReviewRequest>(this, message, value);
         return message;
@@ -1052,6 +1058,9 @@ class AddHotelReviewRequest$Type extends MessageType<AddHotelReviewRequest> {
                     break;
                 case /* string booking_id */ 8:
                     message.bookingId = reader.string();
+                    break;
+                case /* string user_name */ 9:
+                    message.userName = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1089,6 +1098,9 @@ class AddHotelReviewRequest$Type extends MessageType<AddHotelReviewRequest> {
         /* string booking_id = 8; */
         if (message.bookingId !== "")
             writer.tag(8, WireType.LengthDelimited).string(message.bookingId);
+        /* string user_name = 9; */
+        if (message.userName !== "")
+            writer.tag(9, WireType.LengthDelimited).string(message.userName);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

@@ -93,6 +93,7 @@ message LogoutResponse {
 
 message GetSecurityQuestionRequest {
   string email = 1;
+  string captcha_token = 2;
 }
 
 message GetSecurityQuestionResponse {
@@ -104,6 +105,7 @@ message ResetPasswordRequest {
   string security_answer = 2;
   string new_password = 3;
   int32 security_question_id = 4;
+  string captcha_token = 5;
 }
 
 message CheckEmailRequest {

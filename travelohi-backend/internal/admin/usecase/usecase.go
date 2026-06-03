@@ -2,7 +2,10 @@ package usecase
 
 import (
 	"context"
+	"errors"
 	"log"
+	"regexp"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/travelohi/backend/internal/admin"
@@ -49,10 +52,20 @@ func (u *adminUseCase) InsertHotel(ctx context.Context, req *adminpb.InsertHotel
 
 
 func (u *adminUseCase) InsertAirline(ctx context.Context, req *adminpb.InsertAirlineRequest) error {
+	iataCode := strings.ToUpper(strings.TrimSpace(req.GetIataCode()))
+	if len(iataCode) < 2 || len(iataCode) > 3 {
+		return errors.New("IATA Code must be 2 or 3 characters long")
+	}
+	// regex check for uppercase letters
+	isLetter := regexp.MustCompile(`^[A-Z0-9]+$`).MatchString
+	if !isLetter(iataCode) {
+		return errors.New("IATA Code must only contain alphanumeric characters")
+	}
+
 	airline := &admin.Airline{
 		ID:       uuid.New().String(),
 		Name:     req.GetName(),
-		IATACode: req.GetIataCode(),
+		IATACode: iataCode,
 		Logo:     req.GetLogo(),
 	}
 
