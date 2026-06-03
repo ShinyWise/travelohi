@@ -155,4 +155,12 @@
         transform: translateY(-2px);
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
+
+    &.seatSelectedBusiness {
+        background-color: #f39c12;
+        border: 1px solid #d68910;
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
 }

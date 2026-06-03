@@ -55,7 +55,7 @@ const InteractiveSeatMap: React.FC<Props> = ({ seats, selectedSeatId, onSelectSe
                                 const stateClass = seat.isBooked
                                     ? styles.seatBooked
                                     : isSelected
-                                        ? styles.seatSelected
+                                        ? (isBusiness ? styles.seatSelectedBusiness : styles.seatSelected)
                                         : isBusiness
                                             ? styles.seatBusiness
                                             : styles.seatAvailable;

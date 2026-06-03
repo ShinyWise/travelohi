@@ -11,7 +11,26 @@ import { useAppContext } from '../../context/ThemeContext';
 import { translations } from '../../utils/translations';
 import { formatCurrency } from '../../utils/currencyFormatter';
 import { useToast } from '../../components/Toast';
+import { ArrowRight } from 'lucide-react';
 import styles from './FlightDetailPage.module.scss';
+
+const AIRPORT_MAP: Record<string, string> = {
+    CGK: 'Soekarno-Hatta International Airport',
+    DPS: 'Ngurah Rai International Airport',
+    BDO: 'Husein Sastranegara International Airport',
+    SUB: 'Juanda International Airport',
+    YIA: 'Yogyakarta International Airport',
+    KNO: 'Kualanamu International Airport',
+    LOP: 'Lombok International Airport',
+    UPG: 'Sultan Hasanuddin International Airport',
+    PLM: 'Sultan Mahmud Badaruddin II International Airport',
+};
+
+const getAirportDisplay = (code: string | undefined) => {
+    if (!code) return '—';
+    const name = AIRPORT_MAP[code];
+    return name ? `${name} (${code})` : code;
+};
 const flightClient = new FlightServiceClient(transport);
 const cartClient = new CartServiceClient(transport);
 const FlightDetailsPage: React.FC = () => {
@@ -46,9 +65,33 @@ const FlightDetailsPage: React.FC = () => {
         };
         fetchDetails();
     }, [flightId, language]);
+
     const totalPrice = Number(selectedSeat?.price || flightData?.startingPrice || 0) + Number(selectedLuggage?.price || 0);
+
+    const seatAvailability = React.useMemo(() => {
+        if (!seats || seats.length === 0) return null;
+        const available = seats.filter(s => !s.isBooked);
+        const byClass = available.reduce((acc, s) => {
+            acc[s.seatClass] = (acc[s.seatClass] || 0) + 1;
+            return acc;
+        }, {} as Record<string, number>);
+        
+        return Object.entries(byClass)
+            .map(([cls, count]) => `${cls}: ${count} available`)
+            .join(' | ');
+    }, [seats]);
     const handleAddToCart = async (redirect: boolean = false) => {
         if (!isAuthenticated) {
+            if (selectedSeat) {
+                sessionStorage.setItem('pendingFlightBooking', JSON.stringify({
+                    itemType: 'flight_seat',
+                    referenceId: selectedSeat.id,
+                    checkInDate: flightData.departureTime,
+                    checkOutDate: flightData.arrivalTime,
+                    quantity: 1,
+                    luggageWeight: selectedLuggage?.weightKg || 0,
+                }));
+            }
             navigate('/login', {
                 state: {
                     message: t.flight_login_required
@@ -136,11 +179,18 @@ const FlightDetailsPage: React.FC = () => {
                         </div>
                     </div>
                     <p className={styles.flightRoute}>
-                        {flightData?.originAirport} ➔ {flightData?.destinationAirport}
+                        {getAirportDisplay(flightData?.originAirport)} 
+                        <ArrowRight size={18} style={{ margin: '0 8px', verticalAlign: 'middle' }} /> 
+                        {getAirportDisplay(flightData?.destinationAirport)}
                         <span className={styles.flightDuration}>
                             &nbsp;·&nbsp;{t.flight_duration_minutes.replace('{minutes}', flightData?.durationMinutes?.toString() || '')}
                         </span>
                     </p>
+                    {seatAvailability && (
+                        <p className={styles.seatAvailability}>
+                            {seatAvailability}
+                        </p>
+                    )}
                 </div>
             </div>
             {error && <div className={styles.errorBox}>{error}</div>}
@@ -183,6 +233,7 @@ const FlightDetailsPage: React.FC = () => {
             <CheckoutActionBanner
                 totalPrice={totalPrice}
                 isReady={!!selectedSeat}
+                isAuthenticated={isAuthenticated}
                 onAddToCart={() => handleAddToCart(false)}
                 onBuyNow={() => handleAddToCart(true)}
                 isLoading={isProcessing}
