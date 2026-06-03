@@ -30,7 +30,6 @@ var dummyImageBytes = []byte{
 
 type ByteaArray [][]byte
 
-// Value implements driver.Valuer
 func (a ByteaArray) Value() (driver.Value, error) {
 	if a == nil {
 		return nil, nil
@@ -50,7 +49,6 @@ func (a ByteaArray) Value() (driver.Value, error) {
 	return sb.String(), nil
 }
 
-// Scan implements sql.Scanner
 func (a *ByteaArray) Scan(src interface{}) error {
 	if src == nil {
 		*a = nil
@@ -101,8 +99,6 @@ func (a *ByteaArray) Scan(src interface{}) error {
 	return nil
 }
 
-// database models matching the gorm schemas
-
 type AuthModel struct {
 	ID                 string    `gorm:"primaryKey;column:id;type:varchar(255)"`
 	Email              string    `gorm:"unique;not null;column:email;type:varchar(255)"`
@@ -135,7 +131,6 @@ type AccountModel struct {
 
 func (AccountModel) TableName() string { return "account_models" }
 
-// hotel model with json serialized list fields
 type HotelModel struct {
 	ID                string     `gorm:"primaryKey;column:id"`
 	Name              string     `gorm:"column:name"`
@@ -154,7 +149,6 @@ type HotelModel struct {
 
 func (HotelModel) TableName() string { return "hotels" }
 
-// room model
 type HotelRoomModel struct {
 	ID             string   `gorm:"primaryKey;column:id"`
 	HotelID        string   `gorm:"column:hotel_id"`
@@ -168,7 +162,6 @@ type HotelRoomModel struct {
 
 func (HotelRoomModel) TableName() string { return "hotel_rooms" }
 
-// review model
 type HotelReviewModel struct {
 	ID                string    `gorm:"primaryKey;column:id"`
 	HotelID           string    `gorm:"column:hotel_id"`
@@ -208,7 +201,6 @@ type FlightModel struct {
 
 func (FlightModel) TableName() string { return "flights" }
 
-// flight seat model
 type FlightSeatModel struct {
 	ID         string `gorm:"primaryKey;column:id;type:varchar(255)"`
 	FlightID   string `gorm:"column:flight_id;type:varchar(255)"`
@@ -220,7 +212,6 @@ type FlightSeatModel struct {
 
 func (FlightSeatModel) TableName() string { return "flight_seats" }
 
-// cart item model
 type CartItemModel struct {
 	ID            string    `gorm:"primaryKey;column:id;type:varchar(255)"`
 	UserID        string    `gorm:"column:user_id;type:varchar(255);not null"`
@@ -253,8 +244,13 @@ type BookingModel struct {
 
 func (BookingModel) TableName() string { return "booking_models" }
 
-// helper functions
+var baseTime = time.Date(2026, 6, 1, 0, 0, 0, 0, time.UTC)
 
+func deterministicUUID(ns string, id interface{}) string {
+	return uuid.NewSHA1(uuid.NameSpaceDNS, []byte(fmt.Sprintf("%s-%v", ns, id))).String()
+}
+
+// helper functions
 func hashPassword(plain string) string {
 	hash, err := bcrypt.GenerateFromPassword([]byte(plain), bcrypt.DefaultCost)
 	if err != nil {
@@ -268,15 +264,12 @@ func randFloat32(min, max float64) float32 {
 	if val >= 9.99 {
 		return 9.99
 	}
-	// Truncate to 2 decimal places to prevent NUMERIC(3,2) overflow
 	return float32(int(val*100)) / 100.0
 }
 
 // main entry point
 func main() {
-	log.Println("🌱 Starting TraveloHI V2 Database Seeder...")
-
-	// connect using fallback local dsn if env is unset
+	log.Println("Starting TraveloHI V3 Database Seeder...")
 	dsn := os.Getenv("DB_URL")
 	if dsn == "" {
 		dsn = "host=localhost user=root password=secretpassword dbname=travelohi_db port=5432 sslmode=disable TimeZone=Asia/Jakarta"
@@ -285,7 +278,6 @@ func main() {
 	var db *gorm.DB
 	var err error
 
-	// Retry connection if PostgreSQL is not ready yet
 	for i := 1; i <= 10; i++ {
 		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
 			Logger: logger.Default.LogMode(logger.Warn),
@@ -302,12 +294,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("❌ Fatal: Could not connect to database after 10 attempts: %v", err)
 	}
-	// ---------------------------------------------------------
 
-	gofakeit.Seed(42) // Fixed seed → reproducible fake data
-	rand.Seed(42)     //nolint:staticcheck
-
-	// truncate tables in fk-safe order for idempotency
+	gofakeit.Seed(42)
+	rand.Seed(42)
 	log.Println("🗑️  Truncating tables (idempotent run)...")
 	tables := []string{
 		"cart_items", "booking_models",
@@ -325,11 +314,10 @@ func main() {
 	// hash password at runtime
 	const plainPassword = "password123"
 	hashedPassword := hashPassword(plainPassword)
-	log.Printf("🔐 Password '%s' hashed with bcrypt cost %d.", plainPassword, bcrypt.DefaultCost)
+	hashedSecurityAnswer := hashPassword("securityanswer")
+	log.Printf("Password '%s' hashed with bcrypt cost %d.", plainPassword, bcrypt.DefaultCost)
 
-	// seed users (49 random + 1 admin)
 	log.Println("--- Seeding Users ---")
-	// collect seeded users for reference
 	var seededUsers []seededUser
 
 	for i := 1; i <= 50; i++ {
@@ -344,11 +332,15 @@ func main() {
 			lastName = "Admin"
 			isAdmin = true
 		} else if i == 49 {
+			email = "test@travelohi.com"
+			firstName = "Test"
+			lastName = "User"
+		} else if i == 48 {
 			email = "banned@travelohi.com"
 			firstName = "Banned"
 			lastName = "User"
 			isBanned = true
-		} else if i == 48 {
+		} else if i == 47 {
 			email = "inactive@travelohi.com"
 			firstName = "Inactive"
 			lastName = "User"
@@ -359,7 +351,7 @@ func main() {
 			email = strings.ToLower(firstName+"."+lastName) + "@gmail.com"
 		}
 
-		userID := uuid.New().String()
+		userID := deterministicUUID("user", i)
 
 		// auth record
 		auth := AuthModel{
@@ -367,9 +359,9 @@ func main() {
 			Email:              email,
 			PasswordHash:       hashedPassword,
 			SecurityQuestionId: gofakeit.Number(1, 5),
-			SecurityAnswerHash: hashPassword(gofakeit.Word()),
+			SecurityAnswerHash: hashedSecurityAnswer,
 			IsBanned:           isBanned,
-			CreatedAt:          time.Now(),
+			CreatedAt:          baseTime,
 		}
 		if err := db.Create(&auth).Error; err != nil {
 			log.Printf("  WARN: auth insert failed for %s: %v", email, err)
@@ -390,7 +382,7 @@ func main() {
 			HiWalletBalance:      int64(gofakeit.Number(0, 10_000_000)),
 			PhoneNumber:          gofakeit.Phone(),
 			Address:              gofakeit.Address().Address,
-			UpdatedAt:            time.Now(),
+			UpdatedAt:            baseTime,
 			IsAdmin:              isAdmin,
 			IsBanned:             isBanned,
 		}
@@ -408,9 +400,7 @@ func main() {
 		}
 	}
 
-	// seed hotels and rooms
 	log.Println("--- Seeding Hotels ---")
-	// collect hotel ids for reference
 	var seededHotels []string
 	var seededRooms []HotelRoomModel
 
@@ -486,7 +476,7 @@ func main() {
 		sv := randFloat32(7.0, 9.8)
 		avg := (cl + co + lo + sv) / 4.0
 
-		hotelID := uuid.New().String()
+		hotelID := deterministicUUID("hotel", i)
 		hotel := HotelModel{
 			ID:                hotelID,
 			Name:              hotelName,
@@ -508,14 +498,14 @@ func main() {
 			continue
 		}
 
-		for _, rt := range roomTypes {
+		for rtIdx, rt := range roomTypes {
 			priceVariance := int64(gofakeit.Number(-50_000, 200_000))
 
 			rand.Shuffle(len(allFacilities), func(a, b int) { allFacilities[a], allFacilities[b] = allFacilities[b], allFacilities[a] })
 			roomFac := make([]string, 3)
 			copy(roomFac, allFacilities)
 
-			roomId := uuid.New().String()
+			roomId := deterministicUUID("room", i*10+rtIdx)
 			room := HotelRoomModel{
 				ID:             roomId,
 				HotelID:        hotelID,
@@ -548,9 +538,9 @@ func main() {
 	}
 
 	seededAirlines := make([]AirlineModel, 0, len(airlineDefs))
-	for _, a := range airlineDefs {
+	for aIdx, a := range airlineDefs {
 		airline := AirlineModel{
-			ID:   uuid.New().String(),
+			ID:   deterministicUUID("airline", aIdx),
 			Name: a.name,
 			Logo: assetMap[a.asset],
 		}
@@ -589,7 +579,7 @@ func main() {
 			dest = airports[rand.Intn(len(airports))]
 		}
 
-		depTime := gofakeit.DateRange(time.Now().Add(24*time.Hour), time.Now().AddDate(0, 3, 0))
+		depTime := gofakeit.DateRange(baseTime.Add(24*time.Hour), baseTime.AddDate(0, 3, 0))
 		durationMin := gofakeit.Number(60, 300)
 		arrTime := depTime.Add(time.Duration(durationMin) * time.Minute)
 
@@ -601,7 +591,7 @@ func main() {
 			}
 		}
 
-		flightID := uuid.New().String()
+		flightID := deterministicUUID("flight", i)
 		flightCode := fmt.Sprintf("%s%d", iataCode, gofakeit.Number(100, 999))
 
 		basePrice := int64(gofakeit.Number(500_000, 3_000_000))
@@ -624,7 +614,6 @@ func main() {
 			continue
 		}
 
-		// seed seats for each flight
 		seatRows := map[string]struct {
 			rows    int
 			letters []string
@@ -641,11 +630,10 @@ func main() {
 				actualRow := currentRow + rowOffset
 				for _, letter := range cfg.letters {
 					seatPrice := basePrice + sc.priceExtra
-					// add minor price variance
 					seatPrice += int64(gofakeit.Number(-50_000, 100_000))
 
 					seat := FlightSeatModel{
-						ID:         uuid.New().String(),
+						ID:         deterministicUUID(fmt.Sprintf("seat-%s", flightID), seatCount),
 						FlightID:   flightID,
 						SeatNumber: fmt.Sprintf("%d%s", actualRow, letter),
 						SeatClass:  sc.class,
@@ -670,7 +658,7 @@ func main() {
 
 	var adminUser seededUser
 	for _, u := range seededUsers {
-		if strings.Contains(u.id, "admin") || u.name == "System Admin" {
+		if u.name == "System Admin" {
 			adminUser = u
 			break
 		}
@@ -682,7 +670,7 @@ func main() {
 	}
 
 	if adminUser.id != "" && len(seededRooms) > 0 {
-		r := seededRooms[rand.Intn(len(seededRooms))]
+		r := seededRooms[0]
 		var h HotelModel
 		db.Where("id = ?", r.HotelID).First(&h)
 		b := BookingModel{
@@ -696,7 +684,7 @@ func main() {
 			Status:               "completed",
 			BookingReferenceCode: "REV-ADMIN",
 			RoomID:               r.ID,
-			CreatedAt:            time.Now().AddDate(0, -1, 0),
+			CreatedAt:            baseTime.AddDate(0, -1, 0),
 		}
 		db.Create(&b)
 		log.Printf("  ✅ Admin history seeded for %s", adminUser.name)
@@ -741,7 +729,7 @@ func seedReviews(db *gorm.DB, users []seededUser, hotelIDs []string) {
 			// spread reviews over the past 2 years
 			daysAgo := rand.Intn(730)
 			rev := HotelReviewModel{
-				ID:                uuid.New().String(),
+				ID:                deterministicUUID(fmt.Sprintf("review-%s", hotelID), r),
 				HotelID:           hotelID,
 				UserID:            reviewer.id,
 				UserName:          reviewer.name,
@@ -751,7 +739,7 @@ func seedReviews(db *gorm.DB, users []seededUser, hotelIDs []string) {
 				RatingService:     sv,
 				RatingAverage:     avg,
 				Comment:           gofakeit.Paragraph(1, 3, rand.Intn(10)+5, " "),
-				CreatedAt:         time.Now().AddDate(0, 0, -daysAgo),
+				CreatedAt:         baseTime.AddDate(0, 0, -daysAgo),
 			}
 			if err := db.Create(&rev).Error; err != nil {
 				log.Printf("  WARN: review insert failed: %v", err)
@@ -788,11 +776,11 @@ func seedCartItems(db *gorm.DB, users []seededUser, rooms []HotelRoomModel, seat
 			u := users[rand.Intn(len(users))]
 			r := rooms[rand.Intn(len(rooms))]
 			daysAgo := rand.Intn(30)
-			checkIn := time.Now().AddDate(0, 0, -daysAgo)
+			checkIn := baseTime.AddDate(0, 0, -daysAgo)
 			checkOut := checkIn.AddDate(0, 0, rand.Intn(5)+1)
 
 			item := CartItemModel{
-				ID:           uuid.New().String(),
+				ID:           deterministicUUID("cart-hotel", i),
 				UserID:       u.id,
 				ItemType:     "hotel_room",
 				ReferenceID:  r.ID,
@@ -817,14 +805,14 @@ func seedCartItems(db *gorm.DB, users []seededUser, rooms []HotelRoomModel, seat
 			daysAgo := rand.Intn(30)
 
 			item := CartItemModel{
-				ID:          uuid.New().String(),
+				ID:          deterministicUUID("cart-flight", i),
 				UserID:      u.id,
 				ItemType:    "flight_seat",
 				ReferenceID: s.ID,
 				Price:       s.Price,
 				Status:      "paid",
 				Quantity:    1,
-				CreatedAt:   time.Now().AddDate(0, 0, -daysAgo),
+				CreatedAt:   baseTime.AddDate(0, 0, -daysAgo),
 			}
 			if err := db.Create(&item).Error; err == nil {
 				totalPaid++
