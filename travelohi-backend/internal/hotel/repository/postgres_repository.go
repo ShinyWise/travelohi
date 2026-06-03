@@ -184,7 +184,7 @@ func (r *PostgresHotelRepository) SearchHotels(ctx context.Context, filter hotel
 			COALESCE(avail.total_available, 0) as availability
 		FROM hotels h
 		JOIN (
-			SELECT r.hotel_id, SUM(r.capacity - COALESCE(b.booked_count, 0)) as total_available
+			SELECT r.hotel_id, SUM(r.total_inventory - COALESCE(b.booked_count, 0)) as total_available
 			FROM hotel_rooms r
 			LEFT JOIN (
 				SELECT room_id, COUNT(*) as booked_count
