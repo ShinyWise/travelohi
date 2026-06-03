@@ -93,6 +93,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         localStorage.removeItem('user_id');
         localStorage.removeItem('profile_picture_url');
         localStorage.removeItem('is_admin');
+        sessionStorage.removeItem('pendingFlightBooking');
+        sessionStorage.removeItem('pendingHotelBooking');
     };
 
     const updateProfilePicture = (url: string) => {

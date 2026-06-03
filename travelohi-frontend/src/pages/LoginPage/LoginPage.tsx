@@ -7,6 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useAppContext } from '../../context/ThemeContext';
 import { translations } from '../../utils/translations';
 import { AuthServiceClient } from '../../proto/travelohi/v1/auth/auth.client';
+import { CartServiceClient } from '../../proto/travelohi/v1/cart/cart.client';
 import { transport } from '../../utils/grpcClient';
 import { AlertTriangle } from 'lucide-react';
 import { useToast } from '../../components/Toast';
@@ -111,6 +112,43 @@ const LoginPage: React.FC = () => {
             });
             if (response.accessToken && response.userId) {
                 await login(response.accessToken, response.userId);
+
+                const pendingFlightBooking = sessionStorage.getItem('pendingFlightBooking');
+                if (pendingFlightBooking) {
+                    try {
+                        const bookingData = JSON.parse(pendingFlightBooking);
+                        const cartClient = new CartServiceClient(transport);
+                        await cartClient.addToCart(bookingData);
+                        sessionStorage.removeItem('pendingFlightBooking');
+                        showToast("Seat added to cart successfully!", "success");
+                        navigate('/cart', { replace: true });
+                        return;
+                    } catch (e: any) {
+                        console.error("Failed to process pending booking:", e);
+                        sessionStorage.removeItem('pendingFlightBooking');
+                        showToast(e.message || "Failed to add seat. It may have been booked.", "error");
+                    }
+                }
+
+                const pendingHotelBooking = sessionStorage.getItem('pendingHotelBooking');
+                if (pendingHotelBooking) {
+                    try {
+                        const bookingData = JSON.parse(pendingHotelBooking);
+                        const cartClient = new CartServiceClient(transport);
+                        await cartClient.addToCart(bookingData);
+                        sessionStorage.removeItem('pendingHotelBooking');
+                        showToast("Room added to cart successfully!", "success");
+                        if (bookingData.redirect) {
+                            navigate('/cart', { replace: true });
+                            return;
+                        }
+                    } catch (e: any) {
+                        console.error("Failed to process pending hotel booking:", e);
+                        sessionStorage.removeItem('pendingHotelBooking');
+                        showToast(e.message || "Failed to add room.", "error");
+                    }
+                }
+
                 const from = location.state?.from?.pathname || "/";
                 navigate(from, { replace: true });
             } else {
@@ -127,6 +165,43 @@ const LoginPage: React.FC = () => {
     const handleOTPLoginSuccess = async (token: string, userId: string) => {
         await login(token, userId);
         setIsOtpModalOpen(false);
+
+        const pendingFlightBooking = sessionStorage.getItem('pendingFlightBooking');
+        if (pendingFlightBooking) {
+            try {
+                const bookingData = JSON.parse(pendingFlightBooking);
+                const cartClient = new CartServiceClient(transport);
+                await cartClient.addToCart(bookingData);
+                sessionStorage.removeItem('pendingFlightBooking');
+                showToast("Seat added to cart successfully!", "success");
+                navigate('/cart', { replace: true });
+                return;
+            } catch (e: any) {
+                console.error("Failed to process pending booking:", e);
+                sessionStorage.removeItem('pendingFlightBooking');
+                showToast(e.message || "Failed to add seat. It may have been booked.", "error");
+            }
+        }
+
+        const pendingHotelBooking = sessionStorage.getItem('pendingHotelBooking');
+        if (pendingHotelBooking) {
+            try {
+                const bookingData = JSON.parse(pendingHotelBooking);
+                const cartClient = new CartServiceClient(transport);
+                await cartClient.addToCart(bookingData);
+                sessionStorage.removeItem('pendingHotelBooking');
+                showToast("Room added to cart successfully!", "success");
+                if (bookingData.redirect) {
+                    navigate('/cart', { replace: true });
+                    return;
+                }
+            } catch (e: any) {
+                console.error("Failed to process pending hotel booking:", e);
+                sessionStorage.removeItem('pendingHotelBooking');
+                showToast(e.message || "Failed to add room.", "error");
+            }
+        }
+
         const from = location.state?.from?.pathname || "/";
         navigate(from, { replace: true });
     };
