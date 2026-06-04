@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"encoding/json"
 	"time"
 
 	"github.com/travelohi/backend/internal/cart"
@@ -46,17 +45,6 @@ type postgresCartRepo struct {
 
 func NewPostgresCartRepository(db *gorm.DB) cart.CartRepository {
 	return &postgresCartRepo{db: db}
-}
-
-func getFirstImageUrl(jsonStr string) string {
-	if jsonStr == "" {
-		return ""
-	}
-	var urls []string
-	if err := json.Unmarshal([]byte(jsonStr), &urls); err == nil && len(urls) > 0 {
-		return urls[0]
-	}
-	return ""
 }
 
 func (r *postgresCartRepo) AddToCart(ctx context.Context, item cart.CartItem) error {
