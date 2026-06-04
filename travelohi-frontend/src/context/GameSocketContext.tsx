@@ -6,13 +6,14 @@ interface GameSocketContextType {
     client: GameWebSocketClient | null;
     socketState: SocketState;
     statusMessage: string;
+    isArenaActive: boolean;
+    matchQueuePosition: number;
     connectToGame: () => void;
     leaveGame: () => void;
 }
 
 const GameSocketContext = createContext<GameSocketContextType | undefined>(undefined);
 
-// backend WS endpoint
 const WS_URL = 'ws://localhost:8080/ws/game';
 
 export const GameSocketProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -20,16 +21,21 @@ export const GameSocketProvider: React.FC<{ children: ReactNode }> = ({ children
 
     const [socketState, setSocketState] = useState<SocketState>('idle');
     const [statusMessage, setStatusMessage] = useState<string>('');
+    const [isArenaActive, setIsArenaActive] = useState<boolean>(false);
+    const [matchQueuePosition, setMatchQueuePosition] = useState<number>(0);
 
     const clientRef = useRef<GameWebSocketClient | null>(null);
 
     useEffect(() => {
-        // init client 
         clientRef.current = new GameWebSocketClient(WS_URL);
 
         clientRef.current.onStateChange = (state, message) => {
             setSocketState(state);
             setStatusMessage(message || '');
+        };
+        clientRef.current.onQueueUpdate = (isActive, pos) => {
+            setIsArenaActive(isActive);
+            setMatchQueuePosition(pos);
         };
 
         return () => {
@@ -50,6 +56,8 @@ export const GameSocketProvider: React.FC<{ children: ReactNode }> = ({ children
         clientRef.current?.disconnect();
         setSocketState('idle');
         setStatusMessage('');
+        setIsArenaActive(false);
+        setMatchQueuePosition(0);
     };
 
     return (
@@ -57,6 +65,8 @@ export const GameSocketProvider: React.FC<{ children: ReactNode }> = ({ children
             client: clientRef.current,
             socketState,
             statusMessage,
+            isArenaActive,
+            matchQueuePosition,
             connectToGame,
             leaveGame
         }}>

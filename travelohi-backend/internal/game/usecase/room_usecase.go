@@ -127,7 +127,6 @@ func (u *roomUseCase) HandleDisconnect(userID string) {
 func (u *roomUseCase) runGameLoop(ctx context.Context, room *gameRoom) {
 	defer u.cleanupRoom(room)
 
-	// Tick every 50ms
 	ticker := time.NewTicker(50 * time.Millisecond)
 	defer ticker.Stop()
 
@@ -284,7 +283,6 @@ func (u *roomUseCase) runGameLoop(ctx context.Context, room *gameRoom) {
 				damage = 10
 			}
 
-			// Validate hit using AABB collision check
 			if damage > 0 {
 				const playerWidth = 60
 				const kickReach = 40
@@ -326,7 +324,7 @@ func (u *roomUseCase) runGameLoop(ctx context.Context, room *gameRoom) {
 				}
 
 				if hitLanded && actionName == "low_kick" && defenderY < 300 {
-					hitLanded = false // Evaded by jumping
+					hitLanded = false
 				}
 
 				if hitLanded {
@@ -505,3 +503,10 @@ func (u *roomUseCase) cleanupRoom(room *gameRoom) {
 	_ = room.P2.Conn.Close()
 	log.Printf("[Game Loop] Room %s closed and cleaned up.", room.ID)
 }
+
+func (u *roomUseCase) GetActiveRoomCount() int {
+	u.mu.RLock()
+	defer u.mu.RUnlock()
+	return len(u.rooms)
+}
+

@@ -22,16 +22,54 @@ type matchmakingUseCase struct {
 	repo         game.Repository
 	mu           sync.Mutex
 	waitingQueue []*game.Player
+	isMatching   bool
 }
 
 func NewMatchmakingUseCase(cache game.CacheRepository, roomUseCase game.RoomUseCase, repo game.Repository) game.MatchmakingUseCase {
-	return &matchmakingUseCase{
+	muc := &matchmakingUseCase{
 		cache:        cache,
 		roomUseCase:  roomUseCase,
 		repo:         repo,
 		waitingQueue: make([]*game.Player, 0),
+		isMatching:   false,
+	}
+	go muc.startQueueWorker()
+	return muc
+}
+
+func (u *matchmakingUseCase) startQueueWorker() {
+	ticker := time.NewTicker(500 * time.Millisecond)
+	var prevActiveCount int
+
+	for range ticker.C {
+		u.mu.Lock()
+		activeCount := u.roomUseCase.GetActiveRoomCount()
+		
+		if prevActiveCount > 0 && activeCount == 0 && len(u.waitingQueue) > 0 {
+			u.BroadcastQueueState()
+		}
+		prevActiveCount = activeCount
+
+		if len(u.waitingQueue) >= 2 && !u.isMatching && activeCount == 0 {
+			p1 := u.waitingQueue[0]
+			p2 := u.waitingQueue[1]
+			u.waitingQueue = u.waitingQueue[2:]
+			u.isMatching = true
+			u.BroadcastQueueState()
+			u.mu.Unlock()
+
+			go func(player1, player2 *game.Player) {
+				u.startMatch(player1, player2)
+				u.mu.Lock()
+				u.isMatching = false
+				u.mu.Unlock()
+			}(p1, p2)
+		} else {
+			u.mu.Unlock()
+		}
 	}
 }
+
 
 func (u *matchmakingUseCase) HandleJoinQueue(ctx context.Context, player *game.Player) error {
 	rateLimitKey := "game_rate_limit:" + player.UserID
@@ -77,22 +115,12 @@ func (u *matchmakingUseCase) HandleJoinQueue(ctx context.Context, player *game.P
 	u.mu.Lock()
 	u.waitingQueue = append(u.waitingQueue, player)
 	log.Printf("[Matchmaking] User %s joined the queue. Total in queue: %d", player.UserID, len(u.waitingQueue))
-
-	// check for a match
-	if len(u.waitingQueue) >= 2 {
-		p1 := u.waitingQueue[0]
-		p2 := u.waitingQueue[1]
-
-		u.waitingQueue = u.waitingQueue[2:]
-		u.mu.Unlock()
-
-		u.startMatch(p1, p2)
-		return nil
-	}
+	u.BroadcastQueueState()
 	u.mu.Unlock()
 
 	return nil
 }
+
 
 func (u *matchmakingUseCase) startMatch(p1, p2 *game.Player) {
 	roomID := uuid.New().String()
@@ -143,6 +171,7 @@ func (u *matchmakingUseCase) HandleDisconnect(userID string) {
 		if p.UserID == userID {
 			u.waitingQueue = append(u.waitingQueue[:i], u.waitingQueue[i+1:]...)
 			log.Printf("[Matchmaking] Removed disconnected user %s from queue", userID)
+			u.BroadcastQueueState()
 			return
 		}
 	}
@@ -166,5 +195,23 @@ func (u *matchmakingUseCase) sendProtoMessage(conn *websocket.Conn, event *gamep
 	}
 	if err := conn.WriteMessage(websocket.BinaryMessage, bytes); err != nil {
 		log.Printf("[Matchmaking] Failed to write to websocket: %v", err)
+	}
+}
+
+func (u *matchmakingUseCase) BroadcastQueueState() {
+	activeCount := u.roomUseCase.GetActiveRoomCount()
+	isArenaActive := activeCount > 0
+
+	for i, player := range u.waitingQueue {
+		position := (i / 2) + 1
+		event := &gamepb.GameServerEvent{
+			Payload: &gamepb.GameServerEvent_QueueUpdate{
+				QueueUpdate: &gamepb.QueueUpdateEvent{
+					IsArenaActive:      isArenaActive,
+					MatchQueuePosition: int32(position),
+				},
+			},
+		}
+		u.sendProtoMessage(player.Conn, event)
 	}
 }

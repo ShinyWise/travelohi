@@ -6,9 +6,9 @@ import { AlertTriangle, AlertCircle } from 'lucide-react';
 import styles from './MatchmakingQueue.module.scss';
 
 const MatchmakingQueue: React.FC = () => {
-    const { socketState, statusMessage, connectToGame, leaveGame } = useGameSocket();
+    const { socketState, statusMessage, isArenaActive, matchQueuePosition, connectToGame, leaveGame } = useGameSocket();
     const { language } = useAppContext();
-    const t = translations[language];
+    const t = translations[language as keyof typeof translations] || translations['EN'];
 
     if (socketState === 'playing') {
         return null;
@@ -38,8 +38,15 @@ const MatchmakingQueue: React.FC = () => {
                 {socketState === 'queued' && (
                     <>
                         <div className={styles.pulseRadar} />
-                        <h3>{t.game_finding_opponent}</h3>
+                        <h3>{isArenaActive ? t.game_waiting_arena : t.game_finding_opponent}</h3>
                         <p>{t.game_matching_desc}</p>
+                        {matchQueuePosition > 0 && (
+                            <div className={styles.queuePositionBadge} style={{ marginBottom: '15px', fontWeight: 'bold', color: '#f39c12' }}>
+                                {matchQueuePosition === 1 
+                                    ? t.game_queue_next 
+                                    : t.game_queue_pos.replace('#{pos}', matchQueuePosition.toString())}
+                            </div>
+                        )}
                         <button className={styles.actionBtn} onClick={leaveGame}>
                             {t.game_cancel}
                         </button>

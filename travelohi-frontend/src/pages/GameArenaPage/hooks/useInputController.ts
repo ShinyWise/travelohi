@@ -12,6 +12,13 @@ export const useInputController = (
     const lastAttackTime = useRef<number>(0);
 
     useEffect(() => {
+        if (socketState === 'playing') {
+            keysRef.current = { left: false, right: false, s: false, a: false, d: false };
+            lastAttackTime.current = 0;
+        }
+    }, [socketState]);
+
+    useEffect(() => {
         const preventScrollKeys = [' ', 'spacebar', 'arrowleft', 'arrowright', 'arrowup', 'arrowdown'];
 
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -30,7 +37,6 @@ export const useInputController = (
 
             const state = gameStateRef.current;
 
-            // combos
             if (key === ' ' || e.code === 'Space') {
                 const now = performance.now();
                 if (now - lastAttackTime.current < 500) return; //buat delay

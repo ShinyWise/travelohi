@@ -30,6 +30,7 @@ type CacheRepository interface {
 type MatchmakingUseCase interface {
 	HandleJoinQueue(ctx context.Context, player *Player) error
 	HandleDisconnect(userID string)
+	BroadcastQueueState()
 }
 
 type Repository interface {
@@ -43,4 +44,5 @@ type RoomUseCase interface {
 	StartRoom(roomID string, p1, p2 *Player)
 	ProcessAction(roomID, userID, actionType string) error
 	HandleDisconnect(userID string)
+	GetActiveRoomCount() int
 }

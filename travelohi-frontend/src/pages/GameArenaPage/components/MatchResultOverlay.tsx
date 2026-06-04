@@ -25,6 +25,11 @@ const MatchResultOverlay: React.FC = () => {
                 <p className={styles.message}>
                     {t[statusMessage as keyof typeof t] || statusMessage}
                 </p>
+                {isWin && (
+                    <p className={styles.message} style={{ color: '#2ecc71', fontWeight: 'bold', marginTop: '10px' }}>
+                        {t.game_prize_won}
+                    </p>
+                )}
 
                 <div className={styles.actions}>
                     <button className={styles.playAgainBtn} onClick={connectToGame}>

@@ -2,7 +2,6 @@ class AudioController {
     private bgm: HTMLAudioElement;
 
     constructor() {
-        // dummy, WIP
         this.bgm = new Audio('/assets/battle-bgm.mp3');
         this.bgm.loop = true;
         this.bgm.volume = 0.2;

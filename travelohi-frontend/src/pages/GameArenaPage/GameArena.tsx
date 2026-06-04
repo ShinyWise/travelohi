@@ -26,7 +26,6 @@ const GameArena: React.FC = () => {
     const prevPlayerActionRef = useRef<string>('idle');
     const prevEnemyActionRef = useRef<string>('idle');
 
-    // headless input controller
     const keysPressedRef = useInputController(client, socketState, gameStateRef);
 
     useEffect(() => {
@@ -74,14 +73,12 @@ const GameArena: React.FC = () => {
         };
     }, [client]);
 
-    // init player on match start
     useEffect(() => {
         if (socketState === 'playing' && client) {
             gameStateRef.current.player.name = 'Anda';
             const cleanOpponentName = client.opponentName.replace(/\s*\[P\d\]$/, '');
             gameStateRef.current.enemy.name = cleanOpponentName;
 
-            // default state
             gameStateRef.current.player.hp = 100;
             gameStateRef.current.enemy.hp = 100;
             gameStateRef.current.timeRemaining = 60.0;
@@ -107,7 +104,6 @@ const GameArena: React.FC = () => {
         }
     }, [socketState, client]);
 
-    // 3. rendering/physics loop
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -192,7 +188,6 @@ const GameArena: React.FC = () => {
         return () => cancelAnimationFrame(animationFrameId);
     }, [socketState, keysPressedRef]);
 
-    // audio control
     useEffect(() => {
         if (socketState === 'playing') {
             audioController.playBGM();

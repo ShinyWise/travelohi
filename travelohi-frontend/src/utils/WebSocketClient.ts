@@ -11,8 +11,12 @@ export class GameWebSocketClient {
 
     private userId: string | null = null;
 
+    public isArenaActive: boolean = false;
+    public matchQueuePosition: number = 0;
+
     public onStateChange: ((state: SocketState, message?: string) => void) | null = null;
     public onGameStateSync: ((binaryData: Uint8Array) => void) | null = null;
+    public onQueueUpdate: ((isActive: boolean, pos: number) => void) | null = null;
 
     constructor(url: string) {
         this.url = url;
@@ -46,7 +50,6 @@ export class GameWebSocketClient {
         };
 
         this.ws.onmessage = (event) => {
-            // handle protobuf payload
             if (event.data instanceof ArrayBuffer) {
                 try {
                     const binary = new Uint8Array(event.data);
@@ -59,6 +62,15 @@ export class GameWebSocketClient {
                             this.opponentName = match.opponentName;
                             this.isPlayerOne = match.isPlayerOne;
                             this.onStateChange?.('playing');
+                            break;
+                        }
+                        case 'queueUpdate': {
+                            const update = serverEvent.payload.queueUpdate;
+                            this.isArenaActive = update.isArenaActive;
+                            this.matchQueuePosition = update.matchQueuePosition;
+                            if (this.onQueueUpdate) {
+                                this.onQueueUpdate(this.isArenaActive, this.matchQueuePosition);
+                            }
                             break;
                         }
                         case 'stateUpdate':
@@ -101,7 +113,6 @@ export class GameWebSocketClient {
         };
 
         this.ws.onclose = (event) => {
-            // Handle standard close
             if (event.code === 4290) {
                 this.onStateChange?.('rate_limited', 'game_msg_rate_limited_short');
             } else if (event.code !== 1000 && this.roomId) {
