@@ -2,11 +2,19 @@ package mailer
 
 import (
 	"fmt"
+	"os"
 )
 
-const BaseFrontendURL = "http://localhost:5173" // Update this when deploying
+func getBaseFrontendURL() string {
+	url := os.Getenv("FRONTEND_URL")
+	if url == "" {
+		return "http://localhost:5173"
+	}
+	return url
+}
 
 func BaseEmailTemplate(title string, contentHTML string) string {
+	baseURL := getBaseFrontendURL()
 	return fmt.Sprintf(`
 <!DOCTYPE html>
 <html>
@@ -94,7 +102,7 @@ func BaseEmailTemplate(title string, contentHTML string) string {
     </div>
 </body>
 </html>
-`, title, BaseFrontendURL, contentHTML)
+`, title, baseURL, contentHTML)
 }
 
 func GenerateOTPEmail(otp string) string {
@@ -110,13 +118,14 @@ func GenerateOTPEmail(otp string) string {
 }
 
 func GenerateWelcomeEmail() string {
+	baseURL := getBaseFrontendURL()
 	content := `
 		<h2>Welcome to TraveloHI!</h2>
 		<p>Hi there,</p>
 		<p>Your account has been registered successfully! We are thrilled to have you on board.</p>
 		<p>TraveloHI is your one-stop platform for booking the best flights and hotels around the world. Whether you're planning a quick business trip or a luxury vacation, we've got you covered.</p>
 		<center>
-			<a href="` + BaseFrontendURL + `/login" class="btn">Log In Now</a>
+			<a href="` + baseURL + `/login" class="btn">Log In Now</a>
 		</center>
 		<p>Ready to explore the world? Let's start your journey today!</p>
 	`
@@ -124,7 +133,8 @@ func GenerateWelcomeEmail() string {
 }
 
 func GenerateActivationEmail(token string) string {
-	activationLink := fmt.Sprintf("%s/activate?token=%s", BaseFrontendURL, token)
+	baseURL := getBaseFrontendURL()
+	activationLink := fmt.Sprintf("%s/activate?token=%s", baseURL, token)
 	content := fmt.Sprintf(`
 		<h2>Activate Your Account</h2>
 		<p>Hi there,</p>
@@ -149,6 +159,7 @@ func GenerateBroadcastEmail(title, body string) string {
 }
 
 func GeneratePaymentSuccessEmail(transactionID string, totalAmount int64, items []PaymentEmailItem) string {
+	baseURL := getBaseFrontendURL()
 	itemRows := ""
 	for _, item := range items {
 		itemRows += fmt.Sprintf(`
@@ -186,7 +197,7 @@ func GeneratePaymentSuccessEmail(transactionID string, totalAmount int64, items 
 			<a href="%s/bookings" class="btn">View My Bookings</a>
 		</center>
 		<p>Thank you for choosing TraveloHI! Have a wonderful trip.</p>
-	`, itemRows, formatAmount(totalAmount), transactionID, BaseFrontendURL)
+	`, itemRows, formatAmount(totalAmount), transactionID, baseURL)
 	return BaseEmailTemplate("Payment Confirmation - TraveloHI", content)
 }
 

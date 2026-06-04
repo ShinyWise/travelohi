@@ -46,6 +46,7 @@ services:
       - SMTP_PORT=${SMTP_PORT}
       - SMTP_USER=${SMTP_USER}
       - SMTP_PASS=${SMTP_PASS}
+      - FRONTEND_URL=${FRONTEND_URL}
     depends_on:
       postgres:
         condition: service_healthy
@@ -123,6 +124,7 @@ services:
       - SMTP_PORT=${SMTP_PORT}
       - SMTP_USER=${SMTP_USER}
       - SMTP_PASS=${SMTP_PASS}
+      - FRONTEND_URL=${FRONTEND_URL}
     depends_on:
       postgres:
         condition: service_healthy
@@ -145,6 +147,7 @@ services:
       - SMTP_PORT=${SMTP_PORT}
       - SMTP_USER=${SMTP_USER}
       - SMTP_PASS=${SMTP_PASS}
+      - FRONTEND_URL=${FRONTEND_URL}
     depends_on:
       postgres:
         condition: service_healthy
