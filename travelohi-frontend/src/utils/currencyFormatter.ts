@@ -3,7 +3,7 @@ export const formatCurrency = (price: number | string | bigint, currency: 'IDR' 
     if (isNaN(num)) return '';
 
     if (currency === 'USD') {
-        const usdPrice = num / 16000;
+        const usdPrice = num / 20000;
         return new Intl.NumberFormat('en-US', { 
             style: 'currency', 
             currency: 'USD' 

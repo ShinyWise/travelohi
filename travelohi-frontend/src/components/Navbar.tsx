@@ -177,12 +177,6 @@ const Navbar: React.FC = () => {
                                     <ShoppingCart size={18} />
                                     <span>{t.cart}</span>
                                 </span>
-                                <span
-                                    className={styles.navItemText}
-                                    onClick={() => { setIsMobileMenuOpen(false); navigate('/game'); }}
-                                >
-                                    {t.game_arena_title}
-                                </span>
                             </>
                         )}
 
@@ -327,6 +321,15 @@ const Navbar: React.FC = () => {
                                                 Admin Panel
                                             </button>
                                         )}
+                                        <button
+                                            onClick={() => {
+                                                setIsUserDropdownOpen(false);
+                                                navigate('/game');
+                                            }}
+                                            className={styles.dropdownItem}
+                                        >
+                                            {t.game_arena_title}
+                                        </button>
                                         <button
                                             onClick={() => {
                                                 setIsUserDropdownOpen(false);

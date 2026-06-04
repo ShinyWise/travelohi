@@ -169,7 +169,7 @@ func (uc *AccountUseCase) RedeemWalletCoupon(ctx context.Context, userID string,
 
 func (uc *AccountUseCase) GetExchangeRate(ctx context.Context) float64 {
 	// static exchange rate
-	return 16000.00 // 1 USD = 17,000 IDR
+	return 20000.00 // 1 USD = 20,000 IDR
 }
 
 func (uc *AccountUseCase) AddBankAccount(ctx context.Context, userID, bankName, cardNumber string) (*account.BankAccount, error) {

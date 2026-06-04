@@ -51,7 +51,7 @@ const FilterSidebar: React.FC<Props> = ({ searchType }) => {
         const prefix = currency === 'USD' ? '$' : 'Rp ';
         const format = (val: number) => {
             if (currency === 'USD') {
-                return Math.round((val / 16000) / 10) * 10;
+                return Math.round((val / 20000) / 10) * 10;
             }
             return parseInt(String(val), 10).toLocaleString('id-ID');
         };
