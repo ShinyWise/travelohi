@@ -9,6 +9,7 @@ import { transport } from '../../utils/grpcClient';
 import { bytesToDataUrl } from '../../utils/imageUtils';
 import ProfileForm from './components/ProfileForm';
 import CreditCardManager from './components/CreditCardManager';
+import WalletCouponRedeemer from './components/WalletCouponRedeemer';
 import LogoutConfirmationModal from '../../components/LogoutConfirmationModal';
 import ProgressiveImage from '../../components/ProgressiveImage';
 import styles from './ProfilePage.module.scss';
@@ -29,22 +30,23 @@ const ProfilePage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
-    useEffect(() => {
-        const fetchProfile = async () => {
-            if (!userId) return;
-            try {
-                const { response } = await accountClient.getProfile({ userId });
-                setProfileData(response.profile);
-                if (response.profile?.profilePicture && response.profile.profilePicture.length > 0) {
-                    const dataUrl = bytesToDataUrl(response.profile.profilePicture);
-                    updateProfilePicture(dataUrl);
-                }
-            } catch (err: any) {
-                setError(err.message || "Gagal memuat data profil.");
-            } finally {
-                setIsLoading(false);
+    const fetchProfile = async () => {
+        if (!userId) return;
+        try {
+            const { response } = await accountClient.getProfile({ userId });
+            setProfileData(response.profile);
+            if (response.profile?.profilePicture && response.profile.profilePicture.length > 0) {
+                const dataUrl = bytesToDataUrl(response.profile.profilePicture);
+                updateProfilePicture(dataUrl);
             }
-        };
+        } catch (err: any) {
+            setError(err.message || "Gagal memuat data profil.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
         fetchProfile();
     }, [userId, updateProfilePicture]);
 
@@ -105,6 +107,10 @@ const ProfilePage: React.FC = () => {
                         <ProfileForm
                             initialData={profileData}
                             onProfileUpdated={(updatedData) => setProfileData(updatedData)}
+                        />
+                        <WalletCouponRedeemer
+                            currentBalance={profileData.hiWalletBalance || 0n}
+                            onRedeemSuccess={fetchProfile}
                         />
                         <CreditCardManager />
                     </>

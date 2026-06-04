@@ -29,7 +29,7 @@ export const formatTimeOnly = (dateStr: string): string => {
         const date = new Date(dateStr);
         return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
     } catch (e) {
-        // Fallback for non-standard formats if any
+
         const match = dateStr.match(/\d{2}:\d{2}/);
         return match ? match[0] : dateStr;
     }

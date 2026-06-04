@@ -99,7 +99,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ onFocus }) => {
                             ...a,
                             displayTitle: cityName !== a.name ? `${cityName} (${a.name})` : a.name
                         };
-                    }).filter(a => !localAirports.find(la => la.id === a.name)); // Avoid duplicates
+                    }).filter(a => !localAirports.find(la => la.id === a.name));
 
                     setAirlineResults([...localAirports, ...backendAirlines]);
                 })

@@ -24,16 +24,13 @@ const BookingHistoryView: React.FC<Props> = ({ searchQuery, itemTypeFilter }) =>
     const { language } = useAppContext();
     const t = translations[language];
 
-    // data states
     const [rawHistoryItems, setRawHistoryItems] = useState<BookingItem[]>([]);
 
-    // infinite scroll states
     const [offset, setOffset] = useState(0);
     const [hasMore, setHasMore] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // rev modal state
     const [reviewModalData, setReviewModalData] = useState<{ id: string; hotelId: string; title: string } | null>(null);
 
     const fetchHistory = useCallback(async (currentOffset: number, isReset: boolean) => {
@@ -62,7 +59,6 @@ const BookingHistoryView: React.FC<Props> = ({ searchQuery, itemTypeFilter }) =>
         }
     }, [userId, t.tickets_error_history]);
 
-    // init
     useEffect(() => {
         if (userId) {
             setRawHistoryItems([]);
@@ -87,7 +83,6 @@ const BookingHistoryView: React.FC<Props> = ({ searchQuery, itemTypeFilter }) =>
         ));
     };
 
-    // filter and format
     const filteredHistoryItems = useMemo(() => {
         const query = searchQuery.toLowerCase().trim();
         const nowStr = new Date().toISOString().split('T')[0];
@@ -109,7 +104,6 @@ const BookingHistoryView: React.FC<Props> = ({ searchQuery, itemTypeFilter }) =>
                 const matchesType = itemTypeFilter === 'all' || item.type === itemTypeFilter;
                 if (!matchesType) return false;
 
-                // Date validation controls
                 if (item.itemType === 'hotel_room') {
                     if (item.checkOutDate && item.checkOutDate >= nowStr) {
                         return false;

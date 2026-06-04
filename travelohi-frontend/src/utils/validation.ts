@@ -1,5 +1,5 @@
 /*
-* Password Validation Rules:
+ * Password Validation Rules:
  * - Must be 8-30 characters long
  * - Only allowed characters are printable ASCII (letters, numbers, symbols)
  * - Spaces are NOT allowed

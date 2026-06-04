@@ -100,7 +100,6 @@ const SearchResultsPage: React.FC = () => {
                     const flights = (flightRes.response?.flights || []).map(f => ({ ...f, _type: 'flight' }));
                     const hotels = (hotelRes.response?.hotels || []).map(h => ({ ...h, _type: 'hotel' }));
 
-                    // Group all flights first, then all hotels
                     const combined = [...flights, ...hotels];
 
                     setResults(combined);

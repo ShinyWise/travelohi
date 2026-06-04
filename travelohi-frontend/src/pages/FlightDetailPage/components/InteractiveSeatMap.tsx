@@ -18,7 +18,6 @@ interface Props {
 const InteractiveSeatMap: React.FC<Props> = ({ seats, selectedSeatId, onSelectSeat }) => {
     const { language, currency } = useAppContext();
     const t = translations[language];
-    // group seats by row number (e.g., "12a" -> row 12, letter a)
     const rows = useMemo(() => {
         const grouped = seats.reduce((acc, seat) => {
             const rowMatch = seat.seatNumber.match(/\d+/);

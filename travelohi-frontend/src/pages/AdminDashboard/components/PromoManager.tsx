@@ -13,11 +13,8 @@ interface PromoRecord {
 }
 
 const PromoManager: React.FC = () => {
-    // form state
     const [code, setCode] = useState('');
     const [discountAmount, setDiscountAmount] = useState('');
-
-    // list state
     const [promos, setPromos] = useState<PromoRecord[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [toast, setToast] = useState<{ type: 'success' | 'error', msg: string } | null>(null);
@@ -74,7 +71,6 @@ const PromoManager: React.FC = () => {
     const handleToggleStatus = async (promoId: string, currentStatus: boolean) => {
         previousPromosRef.current = [...promos];
 
-        // optimistic ui
         const updated = promos.map(p => p.id === promoId ? { ...p, isActive: !currentStatus } : p);
         setPromos(updated);
 

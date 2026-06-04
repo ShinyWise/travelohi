@@ -61,7 +61,6 @@ const ActiveItinerariesView: React.FC<Props> = ({ searchQuery, itemTypeFilter })
 
             if (!matchesType) return false;
 
-            // Date validation controls
             if (item.itemType === 'hotel_room') {
                 if (item.checkOutDate && item.checkOutDate < nowStr) {
                     return false;

@@ -115,7 +115,6 @@ func (uc *AccountUseCase) InternalCreateBooking(ctx context.Context, booking *ac
 		return nil, err
 	}
 
-	// Also insert into bookings table for hotel service integration if it's a hotel room
 	if booking.ItemType == "hotel_room" && booking.RoomID != "" {
 		err = uc.bookingRepo.CreateRawBooking(ctx, booking.ID, booking.RoomID, booking.UserID, booking.CheckInDate, booking.CheckOutDate, "ongoing")
 		if err != nil {

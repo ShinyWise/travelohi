@@ -21,18 +21,15 @@ const LoginPage: React.FC = () => {
     const t = translations[language];
     const { showToast } = useToast();
     const recaptchaRef = useRef<ReCAPTCHA>(null);
-    // core flow state
     const [step, setStep] = useState<1 | 2>(1);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [emailError, setEmailError] = useState('');
-    // ui states
     const [grpcError, setGrpcError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
     const [isInactive, setIsInactive] = useState(false);
     const [isResending, setIsResending] = useState(false);
-    // show redirect message (e.g. after registration) as a toast
     const queryParams = new URLSearchParams(window.location.search);
     const isSessionExpired = queryParams.get('expired') === 'true';
     const message = location.state?.message;
@@ -211,7 +208,7 @@ const LoginPage: React.FC = () => {
         try {
             await client.resendActivationEmail({ email });
             showToast("Activation email sent! Please check your inbox.", "success");
-            setIsInactive(false); // reset back to normal state
+            setIsInactive(false);
             setEmail('');
         } catch (err: any) {
             setGrpcError(err.message || "Failed to resend activation email.");
@@ -225,7 +222,6 @@ const LoginPage: React.FC = () => {
             <div className={styles.formCard}>
                 <h2>{t.login_title}</h2>
                 {grpcError && <div className={styles.serverError}>{grpcError}</div>}
-                {/* conditional forms for step 1 and step 2 */}
 
                 {isInactive ? (
                     <div className={styles.inactiveState}>
@@ -312,7 +308,6 @@ const LoginPage: React.FC = () => {
                         </button>
                     </form>
                 )}
-                {/* global options visible in both steps */}
                 <div className={styles.divider}>
                     <span>{t.login_or_divider}</span>
                 </div>

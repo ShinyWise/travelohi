@@ -84,11 +84,9 @@ const RegisterPage: React.FC = () => {
         if (!emailRegex.test(formData.email)) {
             newErrors.email = t.email_format_error;
         }
-        // > 5 chars, no symbols/numbers
         const nameRegex = /^[a-zA-Z]{6,}$/;
         if (!nameRegex.test(formData.firstName)) newErrors.firstName = t.name_validation_error;
         if (!nameRegex.test(formData.lastName)) newErrors.lastName = t.name_validation_error;
-        // >= 13 years
         const birthDate = new Date(formData.dob);
         const ageDiffMs = Date.now() - birthDate.getTime();
         const ageDate = new Date(ageDiffMs);

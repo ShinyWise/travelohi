@@ -17,14 +17,11 @@ const CheckoutPage: React.FC = () => {
     const navigate = useNavigate();
     const { language, currency } = useAppContext();
     const t = translations[language];
-    // data states
     const [cartTotal, setCartTotal] = useState<number>(0);
     const [walletBalance, setWalletBalance] = useState<number>(0);
     const [creditCards, setCreditCards] = useState<any[]>([]);
-    // interaction states
     const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>(null);
     const [typedCardNumber, setTypedCardNumber] = useState<string>('');
-    // async states
     const [isLoading, setIsLoading] = useState(true);
     const [isProcessing, setIsProcessing] = useState(false);
     const [error, setError] = useState<string | null>(null);

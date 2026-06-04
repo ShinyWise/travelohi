@@ -107,7 +107,6 @@ const FilterSidebar: React.FC<Props> = ({ searchType }) => {
                     {t.reset}
                 </button>
             </div>
-            {/* price filter */}
             <div className={styles.filterGroup}>
                 <h4>{t.price_limit}</h4>
                 <select 
@@ -122,7 +121,6 @@ const FilterSidebar: React.FC<Props> = ({ searchType }) => {
                     ))}
                 </select>
             </div>
-            {/* sorting */}
             {searchType !== 'all' && (
                 <div className={styles.filterGroup}>
                     <h4>{t.sort_by}</h4>
@@ -173,7 +171,6 @@ const FilterSidebar: React.FC<Props> = ({ searchType }) => {
                 </div>
             </div>
             )}
-            {/* flight filters */}
             {searchType === 'flight' && (
                 <div className={styles.filterGroup}>
                     <h4>{t.transit}</h4>
@@ -193,7 +190,6 @@ const FilterSidebar: React.FC<Props> = ({ searchType }) => {
                     </div>
                 </div>
             )}
-            {/* hotel filters */}
             {searchType === 'hotel' && (
                 <>
                     <div className={styles.filterGroup}>

@@ -42,7 +42,6 @@ const UserManagementTable: React.FC = () => {
     }, [offset]);
 
     const handleToggleBan = async (userId: string, currentStatus: boolean) => {
-        //prev state
         previousUsersRef.current = [...users];
 
         // update UI dlu
@@ -50,7 +49,6 @@ const UserManagementTable: React.FC = () => {
             user.id === userId ? { ...user, isBanned: !currentStatus } : user
         ));
 
-        // request server
         try {
             await adminClient.banUser({ userId, banStatus: !currentStatus });
         } catch (err) {

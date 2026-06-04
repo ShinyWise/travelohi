@@ -40,7 +40,6 @@ const PaymentMethodSelector: React.FC<Props> = ({
     return (
         <div className={styles.container}>
             <h3 className={styles.title}>{t.payment_method_title}</h3>
-            {/* hi-wallet option */}
             <div
                 className={`${styles.methodCard} ${selectedMethod === 'hi_wallet' ? styles.active : ''} ${!isWalletSufficient ? styles.disabled : ''}`}
                 onClick={() => isWalletSufficient && onSelectMethod('hi_wallet')}
@@ -63,7 +62,6 @@ const PaymentMethodSelector: React.FC<Props> = ({
                     )}
                 </div>
             </div>
-            {/* credit card option */}
             <div
                 className={`${styles.methodCard} ${selectedMethod === 'credit_card' ? styles.active : ''}`}
                 onClick={() => onSelectMethod('credit_card')}

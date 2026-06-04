@@ -30,12 +30,10 @@ const InsertHotelForm: React.FC = () => {
     const activeUrlsRef = useRef<string[]>([]);
     const slotInputRefs = useRef<(HTMLInputElement | null)[]>([null, null, null, null]);
 
-    // Facilities states
     const [checkedFacilities, setCheckedFacilities] = useState<string[]>([]);
     const [customFacilities, setCustomFacilities] = useState<string[]>([]);
     const [newCustomFacility, setNewCustomFacility] = useState('');
 
-    // ui state
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [toast, setToast] = useState<{ type: 'success' | 'error', msg: string } | null>(null);
 

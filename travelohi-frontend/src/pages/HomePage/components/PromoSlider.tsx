@@ -3,7 +3,6 @@ import { useAppContext } from '../../../context/ThemeContext';
 import { translations } from '../../../utils/translations';
 import styles from './PromoSlider.module.scss';
 
-// Mock data
 const PROMOS = [
     {
         id: 1,
@@ -36,7 +35,6 @@ const PromoSlider: React.FC = () => {
     const t = translations[language];
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    // autoslide
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentIndex((prevIndex) => (prevIndex === PROMOS.length - 1 ? 0 : prevIndex + 1));

@@ -23,7 +23,6 @@ const BookingsDashboard: React.FC = () => {
                 activeTab={activeTab}
                 onTabChange={(tab) => {
                     setActiveTab(tab);
-                    // reset filter criteria
                     setSearchQuery('');
                     setItemTypeFilter('all');
                 }}

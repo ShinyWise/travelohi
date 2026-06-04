@@ -48,7 +48,6 @@ const ETicketModal: React.FC<Props> = ({ isOpen, onClose, bookingId }) => {
 
     if (!isOpen) return null;
 
-    // Generate real QR code image URL using QR code API
     const qrCodeUrl = ticketData?.qrCodeData
         ? `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(ticketData.qrCodeData)}`
         : undefined;

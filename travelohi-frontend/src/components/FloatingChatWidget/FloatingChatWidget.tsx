@@ -11,7 +11,6 @@ const FloatingChatWidget: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Hide on pages where chat is already the main content or not applicable
     const hiddenPaths = ['/support', '/admin', '/login', '/register', '/forgot-password', '/activate'];
     if (!isAuthenticated || hiddenPaths.includes(location.pathname)) {
         return null;

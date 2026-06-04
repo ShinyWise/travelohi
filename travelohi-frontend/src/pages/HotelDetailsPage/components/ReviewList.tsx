@@ -32,7 +32,6 @@ const ReviewList: React.FC<Props> = ({ reviews }) => {
                 {currentReviews.map((review) => {
                     const isAnonymous = !review.userName || review.userName.trim() === '' || review.userName.toLowerCase() === 'anonymous';
                     const displayName = isAnonymous ? t.anonymous_traveler : review.userName;
-                    // basic avatar placeholder
                     const initial = isAnonymous ? '?' : displayName.charAt(0).toUpperCase();
                     return (
                         <div key={review.id} className={styles.reviewCard}>

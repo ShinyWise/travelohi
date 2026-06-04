@@ -99,7 +99,7 @@ const HotelDetailsPage: React.FC = () => {
                 referenceId: room.id,
                 checkInDate: checkIn,
                 checkOutDate: checkOut,
-                quantity: 1, // default
+                quantity: 1,
                 luggageWeight: 0,
                 redirect: redirect
             }));
@@ -117,7 +117,7 @@ const HotelDetailsPage: React.FC = () => {
                 referenceId: room.id,
                 checkInDate: checkIn,
                 checkOutDate: checkOut,
-                quantity: 1, // default
+                quantity: 1,
                 luggageWeight: 0,
             });
             if (response.success) {
@@ -221,7 +221,6 @@ const HotelDetailsPage: React.FC = () => {
                 </div>
             </div>
 
-            {/* renders conditionally based on dates */}
             <RoomSelectionList
                 rooms={rooms}
                 onAddToCart={handleAddToCart}

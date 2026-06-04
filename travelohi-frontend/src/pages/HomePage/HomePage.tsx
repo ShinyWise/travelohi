@@ -18,7 +18,6 @@ const HomePage: React.FC = () => {
     useEffect(() => {
         const fetchRecommendations = async () => {
             try {
-                // run both grpc calls in parallel for better performance
                 const [flightsRes, hotelsRes] = await Promise.all([
                     telemetryClient.getPopularFlightDestinations({}),
                     telemetryClient.getPopularHotels({})

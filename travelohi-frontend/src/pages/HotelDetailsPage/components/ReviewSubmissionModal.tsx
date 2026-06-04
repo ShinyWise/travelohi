@@ -31,17 +31,14 @@ const ReviewSubmissionModal: React.FC<Props> = ({
     const { language } = useAppContext();
     const t = translations[language];
 
-    // rating states
     const [cleanliness, setCleanliness] = useState(0);
     const [comfort, setComfort] = useState(0);
     const [location, setLocation] = useState(0);
     const [service, setService] = useState(0);
 
-    // text/option state
     const [comment, setComment] = useState('');
     const [isAnonymous, setIsAnonymous] = useState(false);
 
-    //  submission state
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -63,7 +60,6 @@ const ReviewSubmissionModal: React.FC<Props> = ({
 
         let fullName = '';
         try {
-            // fetch user name for better review display
             const accountClient = new AccountServiceClient(transport);
             const { response: profileRes } = await accountClient.getProfile({ userId });
             if (profileRes.profile) {
@@ -89,7 +85,6 @@ const ReviewSubmissionModal: React.FC<Props> = ({
             if (response.success) {
                 onSuccess();
                 onClose();
-                // reset state
                 setCleanliness(0); setComfort(0); setLocation(0); setService(0);
                 setComment(''); setIsAnonymous(false);
             } else {
