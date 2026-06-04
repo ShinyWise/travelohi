@@ -29,7 +29,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setToasts(prev => [...prev, { id, message, type }]);
         setTimeout(() => {
             setToasts(prev => prev.filter(t => t.id !== id));
-        }, 3500);
+        }, 5500);
     }, []);
 
     const dismiss = (id: number) => setToasts(prev => prev.filter(t => t.id !== id));
