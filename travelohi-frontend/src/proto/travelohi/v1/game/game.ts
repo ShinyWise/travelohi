@@ -43,8 +43,7 @@ export interface JoinQueueRequest {
     /**
      * @generated from protobuf field: string user_id = 1
      */
-    userId: string; // Resolved via JWT
-}
+    userId: string; // Resolved via JWT}
 /**
  * @generated from protobuf message travelohi.v1.game.PlayerActionRequest
  */
@@ -56,8 +55,7 @@ export interface PlayerActionRequest {
     /**
      * @generated from protobuf field: string action_type = 2
      */
-    actionType: string; // "move_left", "move_right", "low_kick", "front_kick"
-}
+    actionType: string; // "move_left", "move_right", "low_kick", "front_kick"}
 /**
  * server to client event
  *
@@ -92,8 +90,27 @@ export interface GameServerEvent {
          */
         error: ErrorEvent;
     } | {
+        oneofKind: "queueUpdate";
+        /**
+         * @generated from protobuf field: travelohi.v1.game.QueueUpdateEvent queue_update = 5
+         */
+        queueUpdate: QueueUpdateEvent;
+    } | {
         oneofKind: undefined;
     };
+}
+/**
+ * @generated from protobuf message travelohi.v1.game.QueueUpdateEvent
+ */
+export interface QueueUpdateEvent {
+    /**
+     * @generated from protobuf field: bool is_arena_active = 1
+     */
+    isArenaActive: boolean;
+    /**
+     * @generated from protobuf field: int32 match_queue_position = 2
+     */
+    matchQueuePosition: number;
 }
 /**
  * @generated from protobuf message travelohi.v1.game.MatchFoundEvent
@@ -348,7 +365,8 @@ class GameServerEvent$Type extends MessageType<GameServerEvent> {
             { no: 1, name: "match_found", kind: "message", oneof: "payload", T: () => MatchFoundEvent },
             { no: 2, name: "state_update", kind: "message", oneof: "payload", T: () => GameStateUpdate },
             { no: 3, name: "match_end", kind: "message", oneof: "payload", T: () => MatchEndEvent },
-            { no: 4, name: "error", kind: "message", oneof: "payload", T: () => ErrorEvent }
+            { no: 4, name: "error", kind: "message", oneof: "payload", T: () => ErrorEvent },
+            { no: 5, name: "queue_update", kind: "message", oneof: "payload", T: () => QueueUpdateEvent }
         ]);
     }
     create(value?: PartialMessage<GameServerEvent>): GameServerEvent {
@@ -387,6 +405,12 @@ class GameServerEvent$Type extends MessageType<GameServerEvent> {
                         error: ErrorEvent.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).error)
                     };
                     break;
+                case /* travelohi.v1.game.QueueUpdateEvent queue_update */ 5:
+                    message.payload = {
+                        oneofKind: "queueUpdate",
+                        queueUpdate: QueueUpdateEvent.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).queueUpdate)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -411,6 +435,9 @@ class GameServerEvent$Type extends MessageType<GameServerEvent> {
         /* travelohi.v1.game.ErrorEvent error = 4; */
         if (message.payload.oneofKind === "error")
             ErrorEvent.internalBinaryWrite(message.payload.error, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
+        /* travelohi.v1.game.QueueUpdateEvent queue_update = 5; */
+        if (message.payload.oneofKind === "queueUpdate")
+            QueueUpdateEvent.internalBinaryWrite(message.payload.queueUpdate, writer.tag(5, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -421,6 +448,61 @@ class GameServerEvent$Type extends MessageType<GameServerEvent> {
  * @generated MessageType for protobuf message travelohi.v1.game.GameServerEvent
  */
 export const GameServerEvent = new GameServerEvent$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class QueueUpdateEvent$Type extends MessageType<QueueUpdateEvent> {
+    constructor() {
+        super("travelohi.v1.game.QueueUpdateEvent", [
+            { no: 1, name: "is_arena_active", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 2, name: "match_queue_position", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+        ]);
+    }
+    create(value?: PartialMessage<QueueUpdateEvent>): QueueUpdateEvent {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.isArenaActive = false;
+        message.matchQueuePosition = 0;
+        if (value !== undefined)
+            reflectionMergePartial<QueueUpdateEvent>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: QueueUpdateEvent): QueueUpdateEvent {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bool is_arena_active */ 1:
+                    message.isArenaActive = reader.bool();
+                    break;
+                case /* int32 match_queue_position */ 2:
+                    message.matchQueuePosition = reader.int32();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: QueueUpdateEvent, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* bool is_arena_active = 1; */
+        if (message.isArenaActive !== false)
+            writer.tag(1, WireType.Varint).bool(message.isArenaActive);
+        /* int32 match_queue_position = 2; */
+        if (message.matchQueuePosition !== 0)
+            writer.tag(2, WireType.Varint).int32(message.matchQueuePosition);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message travelohi.v1.game.QueueUpdateEvent
+ */
+export const QueueUpdateEvent = new QueueUpdateEvent$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class MatchFoundEvent$Type extends MessageType<MatchFoundEvent> {
     constructor() {

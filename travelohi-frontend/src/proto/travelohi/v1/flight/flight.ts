@@ -190,8 +190,7 @@ export interface SearchFlightsRequest {
     /**
      * @generated from protobuf field: string departure_date = 3
      */
-    departureDate: string; // YYYY-MM-DD
-    /**
+    departureDate: string; // YYYY-MM-DD    /**
      * @generated from protobuf field: string transit_filter = 4
      */
     transitFilter: string;

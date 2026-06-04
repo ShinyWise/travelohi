@@ -32,7 +32,13 @@ message GameServerEvent {
     GameStateUpdate state_update = 2;
     MatchEndEvent match_end = 3;
     ErrorEvent error = 4;
+    QueueUpdateEvent queue_update = 5;
   }
+}
+
+message QueueUpdateEvent {
+  bool is_arena_active = 1;
+  int32 match_queue_position = 2;
 }
 
 message MatchFoundEvent {

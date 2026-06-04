@@ -121,8 +121,7 @@ export interface AuthResponse {
     /**
      * @generated from protobuf field: string access_token = 1
      */
-    accessToken: string; // jwt disimpen disini buat frontend
-    /**
+    accessToken: string; // jwt disimpen disini buat frontend    /**
      * @generated from protobuf field: string user_id = 2
      */
     userId: string;

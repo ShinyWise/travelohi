@@ -209,6 +209,7 @@ type GameServerEvent struct {
 	//	*GameServerEvent_StateUpdate
 	//	*GameServerEvent_MatchEnd
 	//	*GameServerEvent_Error
+	//	*GameServerEvent_QueueUpdate
 	Payload       isGameServerEvent_Payload `protobuf_oneof:"payload"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -287,6 +288,15 @@ func (x *GameServerEvent) GetError() *ErrorEvent {
 	return nil
 }
 
+func (x *GameServerEvent) GetQueueUpdate() *QueueUpdateEvent {
+	if x != nil {
+		if x, ok := x.Payload.(*GameServerEvent_QueueUpdate); ok {
+			return x.QueueUpdate
+		}
+	}
+	return nil
+}
+
 type isGameServerEvent_Payload interface {
 	isGameServerEvent_Payload()
 }
@@ -307,6 +317,10 @@ type GameServerEvent_Error struct {
 	Error *ErrorEvent `protobuf:"bytes,4,opt,name=error,proto3,oneof"`
 }
 
+type GameServerEvent_QueueUpdate struct {
+	QueueUpdate *QueueUpdateEvent `protobuf:"bytes,5,opt,name=queue_update,json=queueUpdate,proto3,oneof"`
+}
+
 func (*GameServerEvent_MatchFound) isGameServerEvent_Payload() {}
 
 func (*GameServerEvent_StateUpdate) isGameServerEvent_Payload() {}
@@ -314,6 +328,60 @@ func (*GameServerEvent_StateUpdate) isGameServerEvent_Payload() {}
 func (*GameServerEvent_MatchEnd) isGameServerEvent_Payload() {}
 
 func (*GameServerEvent_Error) isGameServerEvent_Payload() {}
+
+func (*GameServerEvent_QueueUpdate) isGameServerEvent_Payload() {}
+
+type QueueUpdateEvent struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	IsArenaActive      bool                   `protobuf:"varint,1,opt,name=is_arena_active,json=isArenaActive,proto3" json:"is_arena_active,omitempty"`
+	MatchQueuePosition int32                  `protobuf:"varint,2,opt,name=match_queue_position,json=matchQueuePosition,proto3" json:"match_queue_position,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *QueueUpdateEvent) Reset() {
+	*x = QueueUpdateEvent{}
+	mi := &file_proto_travelohi_v1_game_game_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *QueueUpdateEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueueUpdateEvent) ProtoMessage() {}
+
+func (x *QueueUpdateEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_travelohi_v1_game_game_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use QueueUpdateEvent.ProtoReflect.Descriptor instead.
+func (*QueueUpdateEvent) Descriptor() ([]byte, []int) {
+	return file_proto_travelohi_v1_game_game_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *QueueUpdateEvent) GetIsArenaActive() bool {
+	if x != nil {
+		return x.IsArenaActive
+	}
+	return false
+}
+
+func (x *QueueUpdateEvent) GetMatchQueuePosition() int32 {
+	if x != nil {
+		return x.MatchQueuePosition
+	}
+	return 0
+}
 
 type MatchFoundEvent struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
@@ -327,7 +395,7 @@ type MatchFoundEvent struct {
 
 func (x *MatchFoundEvent) Reset() {
 	*x = MatchFoundEvent{}
-	mi := &file_proto_travelohi_v1_game_game_proto_msgTypes[4]
+	mi := &file_proto_travelohi_v1_game_game_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -339,7 +407,7 @@ func (x *MatchFoundEvent) String() string {
 func (*MatchFoundEvent) ProtoMessage() {}
 
 func (x *MatchFoundEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_game_game_proto_msgTypes[4]
+	mi := &file_proto_travelohi_v1_game_game_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -352,7 +420,7 @@ func (x *MatchFoundEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MatchFoundEvent.ProtoReflect.Descriptor instead.
 func (*MatchFoundEvent) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_game_game_proto_rawDescGZIP(), []int{4}
+	return file_proto_travelohi_v1_game_game_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *MatchFoundEvent) GetRoomId() string {
@@ -400,7 +468,7 @@ type GameStateUpdate struct {
 
 func (x *GameStateUpdate) Reset() {
 	*x = GameStateUpdate{}
-	mi := &file_proto_travelohi_v1_game_game_proto_msgTypes[5]
+	mi := &file_proto_travelohi_v1_game_game_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -412,7 +480,7 @@ func (x *GameStateUpdate) String() string {
 func (*GameStateUpdate) ProtoMessage() {}
 
 func (x *GameStateUpdate) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_game_game_proto_msgTypes[5]
+	mi := &file_proto_travelohi_v1_game_game_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -425,7 +493,7 @@ func (x *GameStateUpdate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GameStateUpdate.ProtoReflect.Descriptor instead.
 func (*GameStateUpdate) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_game_game_proto_rawDescGZIP(), []int{5}
+	return file_proto_travelohi_v1_game_game_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *GameStateUpdate) GetPlayerOneHp() int32 {
@@ -501,7 +569,7 @@ type MatchEndEvent struct {
 
 func (x *MatchEndEvent) Reset() {
 	*x = MatchEndEvent{}
-	mi := &file_proto_travelohi_v1_game_game_proto_msgTypes[6]
+	mi := &file_proto_travelohi_v1_game_game_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -513,7 +581,7 @@ func (x *MatchEndEvent) String() string {
 func (*MatchEndEvent) ProtoMessage() {}
 
 func (x *MatchEndEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_game_game_proto_msgTypes[6]
+	mi := &file_proto_travelohi_v1_game_game_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -526,7 +594,7 @@ func (x *MatchEndEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MatchEndEvent.ProtoReflect.Descriptor instead.
 func (*MatchEndEvent) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_game_game_proto_rawDescGZIP(), []int{6}
+	return file_proto_travelohi_v1_game_game_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *MatchEndEvent) GetWinnerId() string {
@@ -552,7 +620,7 @@ type ErrorEvent struct {
 
 func (x *ErrorEvent) Reset() {
 	*x = ErrorEvent{}
-	mi := &file_proto_travelohi_v1_game_game_proto_msgTypes[7]
+	mi := &file_proto_travelohi_v1_game_game_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -564,7 +632,7 @@ func (x *ErrorEvent) String() string {
 func (*ErrorEvent) ProtoMessage() {}
 
 func (x *ErrorEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_travelohi_v1_game_game_proto_msgTypes[7]
+	mi := &file_proto_travelohi_v1_game_game_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -577,7 +645,7 @@ func (x *ErrorEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ErrorEvent.ProtoReflect.Descriptor instead.
 func (*ErrorEvent) Descriptor() ([]byte, []int) {
-	return file_proto_travelohi_v1_game_game_proto_rawDescGZIP(), []int{7}
+	return file_proto_travelohi_v1_game_game_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *ErrorEvent) GetMessage() string {
@@ -602,14 +670,18 @@ const file_proto_travelohi_v1_game_game_proto_rawDesc = "" +
 	"\x13PlayerActionRequest\x12\x17\n" +
 	"\aroom_id\x18\x01 \x01(\tR\x06roomId\x12\x1f\n" +
 	"\vaction_type\x18\x02 \x01(\tR\n" +
-	"actionType\"\xa4\x02\n" +
+	"actionType\"\xee\x02\n" +
 	"\x0fGameServerEvent\x12E\n" +
 	"\vmatch_found\x18\x01 \x01(\v2\".travelohi.v1.game.MatchFoundEventH\x00R\n" +
 	"matchFound\x12G\n" +
 	"\fstate_update\x18\x02 \x01(\v2\".travelohi.v1.game.GameStateUpdateH\x00R\vstateUpdate\x12?\n" +
 	"\tmatch_end\x18\x03 \x01(\v2 .travelohi.v1.game.MatchEndEventH\x00R\bmatchEnd\x125\n" +
-	"\x05error\x18\x04 \x01(\v2\x1d.travelohi.v1.game.ErrorEventH\x00R\x05errorB\t\n" +
-	"\apayload\"\x9c\x01\n" +
+	"\x05error\x18\x04 \x01(\v2\x1d.travelohi.v1.game.ErrorEventH\x00R\x05error\x12H\n" +
+	"\fqueue_update\x18\x05 \x01(\v2#.travelohi.v1.game.QueueUpdateEventH\x00R\vqueueUpdateB\t\n" +
+	"\apayload\"l\n" +
+	"\x10QueueUpdateEvent\x12&\n" +
+	"\x0fis_arena_active\x18\x01 \x01(\bR\risArenaActive\x120\n" +
+	"\x14match_queue_position\x18\x02 \x01(\x05R\x12matchQueuePosition\"\x9c\x01\n" +
 	"\x0fMatchFoundEvent\x12\x17\n" +
 	"\aroom_id\x18\x01 \x01(\tR\x06roomId\x12#\n" +
 	"\ropponent_name\x18\x02 \x01(\tR\fopponentName\x12'\n" +
@@ -650,31 +722,33 @@ func file_proto_travelohi_v1_game_game_proto_rawDescGZIP() []byte {
 	return file_proto_travelohi_v1_game_game_proto_rawDescData
 }
 
-var file_proto_travelohi_v1_game_game_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_proto_travelohi_v1_game_game_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_proto_travelohi_v1_game_game_proto_goTypes = []any{
 	(*GameClientEvent)(nil),     // 0: travelohi.v1.game.GameClientEvent
 	(*JoinQueueRequest)(nil),    // 1: travelohi.v1.game.JoinQueueRequest
 	(*PlayerActionRequest)(nil), // 2: travelohi.v1.game.PlayerActionRequest
 	(*GameServerEvent)(nil),     // 3: travelohi.v1.game.GameServerEvent
-	(*MatchFoundEvent)(nil),     // 4: travelohi.v1.game.MatchFoundEvent
-	(*GameStateUpdate)(nil),     // 5: travelohi.v1.game.GameStateUpdate
-	(*MatchEndEvent)(nil),       // 6: travelohi.v1.game.MatchEndEvent
-	(*ErrorEvent)(nil),          // 7: travelohi.v1.game.ErrorEvent
+	(*QueueUpdateEvent)(nil),    // 4: travelohi.v1.game.QueueUpdateEvent
+	(*MatchFoundEvent)(nil),     // 5: travelohi.v1.game.MatchFoundEvent
+	(*GameStateUpdate)(nil),     // 6: travelohi.v1.game.GameStateUpdate
+	(*MatchEndEvent)(nil),       // 7: travelohi.v1.game.MatchEndEvent
+	(*ErrorEvent)(nil),          // 8: travelohi.v1.game.ErrorEvent
 }
 var file_proto_travelohi_v1_game_game_proto_depIdxs = []int32{
 	1, // 0: travelohi.v1.game.GameClientEvent.join_queue:type_name -> travelohi.v1.game.JoinQueueRequest
 	2, // 1: travelohi.v1.game.GameClientEvent.action:type_name -> travelohi.v1.game.PlayerActionRequest
-	4, // 2: travelohi.v1.game.GameServerEvent.match_found:type_name -> travelohi.v1.game.MatchFoundEvent
-	5, // 3: travelohi.v1.game.GameServerEvent.state_update:type_name -> travelohi.v1.game.GameStateUpdate
-	6, // 4: travelohi.v1.game.GameServerEvent.match_end:type_name -> travelohi.v1.game.MatchEndEvent
-	7, // 5: travelohi.v1.game.GameServerEvent.error:type_name -> travelohi.v1.game.ErrorEvent
-	0, // 6: travelohi.v1.game.GameService.StreamGameLoop:input_type -> travelohi.v1.game.GameClientEvent
-	3, // 7: travelohi.v1.game.GameService.StreamGameLoop:output_type -> travelohi.v1.game.GameServerEvent
-	7, // [7:8] is the sub-list for method output_type
-	6, // [6:7] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	5, // 2: travelohi.v1.game.GameServerEvent.match_found:type_name -> travelohi.v1.game.MatchFoundEvent
+	6, // 3: travelohi.v1.game.GameServerEvent.state_update:type_name -> travelohi.v1.game.GameStateUpdate
+	7, // 4: travelohi.v1.game.GameServerEvent.match_end:type_name -> travelohi.v1.game.MatchEndEvent
+	8, // 5: travelohi.v1.game.GameServerEvent.error:type_name -> travelohi.v1.game.ErrorEvent
+	4, // 6: travelohi.v1.game.GameServerEvent.queue_update:type_name -> travelohi.v1.game.QueueUpdateEvent
+	0, // 7: travelohi.v1.game.GameService.StreamGameLoop:input_type -> travelohi.v1.game.GameClientEvent
+	3, // 8: travelohi.v1.game.GameService.StreamGameLoop:output_type -> travelohi.v1.game.GameServerEvent
+	8, // [8:9] is the sub-list for method output_type
+	7, // [7:8] is the sub-list for method input_type
+	7, // [7:7] is the sub-list for extension type_name
+	7, // [7:7] is the sub-list for extension extendee
+	0, // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_proto_travelohi_v1_game_game_proto_init() }
@@ -691,6 +765,7 @@ func file_proto_travelohi_v1_game_game_proto_init() {
 		(*GameServerEvent_StateUpdate)(nil),
 		(*GameServerEvent_MatchEnd)(nil),
 		(*GameServerEvent_Error)(nil),
+		(*GameServerEvent_QueueUpdate)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -698,7 +773,7 @@ func file_proto_travelohi_v1_game_game_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_travelohi_v1_game_game_proto_rawDesc), len(file_proto_travelohi_v1_game_game_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

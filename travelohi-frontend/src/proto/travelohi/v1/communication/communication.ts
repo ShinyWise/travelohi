@@ -107,8 +107,7 @@ export interface MessagePayload {
     /**
      * @generated from protobuf field: string status = 5
      */
-    status: string; // sent, seen
-}
+    status: string; // sent, seen}
 /**
  * @generated from protobuf message travelohi.v1.communication.TypingIndicatorPayload
  */
@@ -129,8 +128,7 @@ export interface ReadReceiptPayload {
     /**
      * @generated from protobuf field: string new_status = 2
      */
-    newStatus: string; // seen
-}
+    newStatus: string; // seen}
 /**
  * @generated from protobuf message travelohi.v1.communication.GetChatHistoryRequest
  */
@@ -142,8 +140,7 @@ export interface GetChatHistoryRequest {
     /**
      * @generated from protobuf field: int32 limit = 2
      */
-    limit: number; // buat infinite scrolling
-    /**
+    limit: number; // buat infinite scrolling    /**
      * @generated from protobuf field: int32 offset = 3
      */
     offset: number;

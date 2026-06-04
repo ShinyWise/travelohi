@@ -52,6 +52,7 @@ message HotelReview {
   float rating_average = 9;
   string comment = 10;
   string created_at = 11;
+  string user_profile_pic = 12;
 }
 
 message SearchHotelsRequest {

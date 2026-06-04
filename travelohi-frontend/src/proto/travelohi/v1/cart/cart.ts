@@ -67,28 +67,24 @@ export interface AddToCartRequest {
     /**
      * @generated from protobuf field: string item_type = 1
      */
-    itemType: string; // hotel or flight
-    /**
+    itemType: string; // hotel or flight    /**
      * @generated from protobuf field: string reference_id = 2
      */
     referenceId: string;
     /**
      * @generated from protobuf field: string check_in_date = 3
      */
-    checkInDate: string; // kalo pilih hotel 
-    /**
+    checkInDate: string; // kalo pilih hotel     /**
      * @generated from protobuf field: string check_out_date = 4
      */
-    checkOutDate: string; // kalo pilih hotel
-    /**
+    checkOutDate: string; // kalo pilih hotel    /**
      * @generated from protobuf field: int32 quantity = 5
      */
     quantity: number;
     /**
      * @generated from protobuf field: int32 luggage_weight = 6
      */
-    luggageWeight: number; // kalo pilih flight
-}
+    luggageWeight: number; // kalo pilih flight}
 /**
  * @generated from protobuf message travelohi.v1.cart.ViewCartRequest
  */
@@ -161,8 +157,7 @@ export interface CheckoutRequest {
     /**
      * @generated from protobuf field: string payment_method = 1
      */
-    paymentMethod: string; // hi_wallet or credit_card
-    /**
+    paymentMethod: string; // hi_wallet or credit_card    /**
      * @generated from protobuf field: string credit_card_id = 2
      */
     creditCardId: string;

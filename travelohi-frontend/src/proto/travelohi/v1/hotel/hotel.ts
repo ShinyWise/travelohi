@@ -38,8 +38,7 @@ export interface Hotel {
     /**
      * @generated from protobuf field: repeated string facilities = 6
      */
-    facilities: string[]; // e.g., "Swimming Pool", "WiFi"
-    /**
+    facilities: string[]; // e.g., "Swimming Pool", "WiFi"    /**
      * @generated from protobuf field: float rating_cleanliness = 7
      */
     ratingCleanliness: number;
@@ -87,8 +86,7 @@ export interface HotelRoom {
     /**
      * @generated from protobuf field: string name = 3
      */
-    name: string; // e.g., "Deluxe King"
-    /**
+    name: string; // e.g., "Deluxe King"    /**
      * @generated from protobuf field: int64 price_per_night = 4
      */
     pricePerNight: bigint;
@@ -99,8 +97,7 @@ export interface HotelRoom {
     /**
      * @generated from protobuf field: repeated string facilities = 6
      */
-    facilities: string[]; // e.g., "Bathtub", "Non-smoking"
-    /**
+    facilities: string[]; // e.g., "Bathtub", "Non-smoking"    /**
      * @generated from protobuf field: int32 available_count = 7
      */
     availableCount: number;
@@ -157,6 +154,10 @@ export interface HotelReview {
      * @generated from protobuf field: string created_at = 11
      */
     createdAt: string;
+    /**
+     * @generated from protobuf field: string user_profile_pic = 12
+     */
+    userProfilePic: string;
 }
 /**
  * @generated from protobuf message travelohi.v1.hotel.SearchHotelsRequest
@@ -165,8 +166,7 @@ export interface SearchHotelsRequest {
     /**
      * @generated from protobuf field: string query = 1
      */
-    query: string; // name/city
-    /**
+    query: string; // name/city    /**
      * @generated from protobuf field: string check_in_date = 2
      */
     checkInDate: string;
@@ -197,16 +197,13 @@ export interface SearchHotelsRequest {
      *
      * @generated from protobuf field: string sort_by = 8
      */
-    sortBy: string; // "rating", "price", "reviews", "availability"
-    /**
+    sortBy: string; // "rating", "price", "reviews", "availability"    /**
      * @generated from protobuf field: string sort_order = 9
      */
-    sortOrder: string; // "asc", "desc"
-    /**
+    sortOrder: string; // "asc", "desc"    /**
      * @generated from protobuf field: int32 limit = 10
      */
-    limit: number; // Must be 20, 25, or 30
-    /**
+    limit: number; // Must be 20, 25, or 30    /**
      * @generated from protobuf field: int32 offset = 11
      */
     offset: number;
@@ -580,7 +577,8 @@ class HotelReview$Type extends MessageType<HotelReview> {
             { no: 8, name: "rating_service", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ },
             { no: 9, name: "rating_average", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ },
             { no: 10, name: "comment", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 11, name: "created_at", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 11, name: "created_at", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 12, name: "user_profile_pic", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<HotelReview>): HotelReview {
@@ -596,6 +594,7 @@ class HotelReview$Type extends MessageType<HotelReview> {
         message.ratingAverage = 0;
         message.comment = "";
         message.createdAt = "";
+        message.userProfilePic = "";
         if (value !== undefined)
             reflectionMergePartial<HotelReview>(this, message, value);
         return message;
@@ -637,6 +636,9 @@ class HotelReview$Type extends MessageType<HotelReview> {
                     break;
                 case /* string created_at */ 11:
                     message.createdAt = reader.string();
+                    break;
+                case /* string user_profile_pic */ 12:
+                    message.userProfilePic = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -683,6 +685,9 @@ class HotelReview$Type extends MessageType<HotelReview> {
         /* string created_at = 11; */
         if (message.createdAt !== "")
             writer.tag(11, WireType.LengthDelimited).string(message.createdAt);
+        /* string user_profile_pic = 12; */
+        if (message.userProfilePic !== "")
+            writer.tag(12, WireType.LengthDelimited).string(message.userProfilePic);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

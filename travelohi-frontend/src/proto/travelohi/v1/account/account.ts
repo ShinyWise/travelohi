@@ -113,8 +113,7 @@ export interface DeductWalletRequest {
     /**
      * @generated from protobuf field: string user_id = 1
      */
-    userId: string; // Required for server-to-server calls
-    /**
+    userId: string; // Required for server-to-server calls    /**
      * @generated from protobuf field: int64 amount = 2
      */
     amount: bigint;
@@ -126,8 +125,7 @@ export interface RefundWalletRequest {
     /**
      * @generated from protobuf field: string user_id = 1
      */
-    userId: string; // Required for server-to-server calls
-    /**
+    userId: string; // Required for server-to-server calls    /**
      * @generated from protobuf field: int64 amount = 2
      */
     amount: bigint;
@@ -313,28 +311,23 @@ export interface BookingItem {
     /**
      * @generated from protobuf field: string item_type = 3
      */
-    itemType: string; // "hotel_room" or "flight_seat"
-    /**
+    itemType: string; // "hotel_room" or "flight_seat"    /**
      * @generated from protobuf field: string display_name = 4
      */
     displayName: string;
     /**
      * @generated from protobuf field: string check_in_date = 5
      */
-    checkInDate: string; // Date or Departure Time
-    /**
+    checkInDate: string; // Date or Departure Time    /**
      * @generated from protobuf field: string check_out_date = 6
      */
-    checkOutDate: string; // Date or Arrival Time
-    /**
+    checkOutDate: string; // Date or Arrival Time    /**
      * @generated from protobuf field: string status = 7
      */
-    status: string; // "ongoing", "completed", "cancelled"
-    /**
+    status: string; // "ongoing", "completed", "cancelled"    /**
      * @generated from protobuf field: string booking_reference_code = 8
      */
-    bookingReferenceCode: string; // e.g., PNR "XYZ123"
-    /**
+    bookingReferenceCode: string; // e.g., PNR "XYZ123"    /**
      * @generated from protobuf field: string hotel_id = 9
      */
     hotelId: string;
@@ -348,8 +341,7 @@ export interface GetProfileRequest {
     /**
      * @generated from protobuf field: string user_id = 1
      */
-    userId: string; // id diambil dari jwt token
-}
+    userId: string; // id diambil dari jwt token}
 /**
  * @generated from protobuf message travelohi.v1.account.GetProfileResponse
  */
@@ -420,8 +412,7 @@ export interface GetBookingHistoryRequest {
     /**
      * @generated from protobuf field: string filter_status = 2
      */
-    filterStatus: string; // all, ongoing, sama past 
-    /**
+    filterStatus: string; // all, ongoing, sama past     /**
      * @generated from protobuf field: int32 limit = 3
      */
     limit: number;

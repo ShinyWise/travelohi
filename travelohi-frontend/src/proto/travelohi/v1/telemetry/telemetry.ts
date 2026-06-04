@@ -100,8 +100,7 @@ export interface GetRecentSearchesResponse {
     /**
      * @generated from protobuf field: repeated string queries = 1
      */
-    queries: string[]; // limit 3
-}
+    queries: string[]; // limit 3}
 /**
  * @generated from protobuf message travelohi.v1.telemetry.GetGlobalRecommendationsRequest
  */
@@ -114,8 +113,7 @@ export interface GetGlobalRecommendationsResponse {
     /**
      * @generated from protobuf field: repeated string recommended_queries = 1
      */
-    recommendedQueries: string[]; // limit 5
-}
+    recommendedQueries: string[]; // limit 5}
 /**
  * @generated from protobuf message travelohi.v1.telemetry.GetPopularFlightsRequest
  */
@@ -128,8 +126,7 @@ export interface GetPopularFlightsResponse {
     /**
      * @generated from protobuf field: repeated travelohi.v1.telemetry.GetPopularFlightsResponse.PopularDestination destinations = 1
      */
-    destinations: GetPopularFlightsResponse_PopularDestination[]; // limit 5
-}
+    destinations: GetPopularFlightsResponse_PopularDestination[]; // limit 5}
 /**
  * @generated from protobuf message travelohi.v1.telemetry.GetPopularFlightsResponse.PopularDestination
  */
@@ -159,8 +156,7 @@ export interface GetPopularHotelsResponse {
     /**
      * @generated from protobuf field: repeated travelohi.v1.telemetry.GetPopularHotelsResponse.PopularHotel hotels = 1
      */
-    hotels: GetPopularHotelsResponse_PopularHotel[]; // limit 5
-}
+    hotels: GetPopularHotelsResponse_PopularHotel[]; // limit 5}
 /**
  * @generated from protobuf message travelohi.v1.telemetry.GetPopularHotelsResponse.PopularHotel
  */
