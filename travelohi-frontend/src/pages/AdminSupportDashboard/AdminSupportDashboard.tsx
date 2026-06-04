@@ -104,6 +104,7 @@ const AdminSupportDashboard: React.FC = () => {
                             conversationId={selectedConversation.id}
                             adminId={userId!}
                             remoteUsername={selectedConversation.username}
+                            remoteProfilePicUrl={selectedConversation.profilePicUrl}
                             onBack={isMobile ? handleBackToInbox : undefined}
                         />
                     ) : (

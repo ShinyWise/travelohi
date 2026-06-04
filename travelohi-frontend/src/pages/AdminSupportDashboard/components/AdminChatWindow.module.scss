@@ -21,14 +21,37 @@
 
         h3 {
             margin: 0;
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-
-            span {
-                color: var(--text-primary);
-                font-weight: bold;
-            }
+            font-size: 1rem;
+            color: var(--text-primary);
+            font-weight: 600;
         }
+    }
+
+    .headerAvatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--border-color);
+        flex-shrink: 0;
+    }
+
+    .headerUserInfo {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+
+        h3 {
+            margin: 0;
+            font-size: 1rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+    }
+
+    .headerSubtitle {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
     }
 
     .backButton {

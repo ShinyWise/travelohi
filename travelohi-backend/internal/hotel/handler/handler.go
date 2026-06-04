@@ -133,6 +133,7 @@ func (h *HotelHandler) GetHotelDetails(ctx context.Context, req *hotelpb.GetHote
 			RatingAverage:     rev.RatingAverage,
 			Comment:           rev.Comment,
 			CreatedAt:         rev.CreatedAt.Format(time.RFC3339),
+			UserProfilePic:    rev.UserProfilePic,
 		}
 	}
 

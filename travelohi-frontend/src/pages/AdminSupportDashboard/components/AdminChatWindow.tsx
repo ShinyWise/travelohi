@@ -19,10 +19,11 @@ interface Props {
     conversationId: string;
     adminId: string;
     remoteUsername: string;
+    remoteProfilePicUrl?: string;
     onBack?: () => void;
 }
 
-const AdminChatWindow: React.FC<Props> = ({ conversationId, adminId, remoteUsername, onBack }) => {
+const AdminChatWindow: React.FC<Props> = ({ conversationId, adminId, remoteUsername, remoteProfilePicUrl, onBack }) => {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [inputText, setInputText] = useState('');
     const [isTyping, setIsTyping] = useState(false);
@@ -367,14 +368,22 @@ const AdminChatWindow: React.FC<Props> = ({ conversationId, adminId, remoteUsern
     return (
         <div className={styles.chatWindow}>
             <div className={styles.header}>
-                <div className={styles.titleInfo}>
-                    {onBack && (
-                        <button type="button" onClick={onBack} className={styles.backButton} aria-label="Back">
-                            ←
-                        </button>
-                    )}
-                    <h3>Berbicara dengan: <span>{remoteUsername}</span></h3>
+            <div className={styles.titleInfo}>
+                {onBack && (
+                    <button type="button" onClick={onBack} className={styles.backButton} aria-label="Back">
+                        ←
+                    </button>
+                )}
+                <img
+                    src={remoteProfilePicUrl || '/assets/default-avatar.png'}
+                    alt={remoteUsername}
+                    className={styles.headerAvatar}
+                />
+                <div className={styles.headerUserInfo}>
+                    <h3>{remoteUsername}</h3>
+                    <span className={styles.headerSubtitle}>Customer</span>
                 </div>
+            </div>
                 <div className={styles.headerActions}>
                     {showCloseConfirm ? (
                         <div className={styles.closeConfirm}>

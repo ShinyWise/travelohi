@@ -361,29 +361,42 @@ func (r *PostgresHotelRepository) GetAvailableRooms(ctx context.Context, hotelID
 }
 
 func (r *PostgresHotelRepository) GetRecentReviews(ctx context.Context, hotelID string) ([]hotel.HotelReview, error) {
-	var models []HotelReviewModel
+	var results []struct {
+		HotelReviewModel
+		ProfilePicture []byte `gorm:"column:profile_picture"`
+	}
+
 	err := r.db.WithContext(ctx).
-		Where("hotel_id = ?", hotelID).
-		Order("created_at DESC").
-		Find(&models).Error
+		Table("hotel_reviews").
+		Select("hotel_reviews.*, CASE WHEN hotel_reviews.user_name = 'Anonymous' THEN NULL ELSE account_models.profile_picture END as profile_picture").
+		Joins("LEFT JOIN account_models ON hotel_reviews.user_id = account_models.id").
+		Where("hotel_reviews.hotel_id = ?", hotelID).
+		Order("hotel_reviews.created_at DESC").
+		Scan(&results).Error
 	if err != nil {
 		return nil, err
 	}
 
-	reviews := make([]hotel.HotelReview, len(models))
-	for i, m := range models {
+	reviews := make([]hotel.HotelReview, len(results))
+	for i, res := range results {
+		var profilePicUrl string
+		if len(res.ProfilePicture) > 0 {
+			profilePicUrl = "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(res.ProfilePicture)
+		}
+
 		reviews[i] = hotel.HotelReview{
-			ID:                m.ID,
-			HotelID:           m.HotelID,
-			UserID:            m.UserID,
-			UserName:          m.UserName,
-			RatingCleanliness: m.RatingCleanliness,
-			RatingComfort:     m.RatingComfort,
-			RatingLocation:    m.RatingLocation,
-			RatingService:     m.RatingService,
-			RatingAverage:     m.RatingAverage,
-			Comment:           m.Comment,
-			CreatedAt:         m.CreatedAt,
+			ID:                res.ID,
+			HotelID:           res.HotelID,
+			UserID:            res.UserID,
+			UserName:          res.UserName,
+			RatingCleanliness: res.RatingCleanliness,
+			RatingComfort:     res.RatingComfort,
+			RatingLocation:    res.RatingLocation,
+			RatingService:     res.RatingService,
+			RatingAverage:     res.RatingAverage,
+			Comment:           res.Comment,
+			CreatedAt:         res.CreatedAt,
+			UserProfilePic:    profilePicUrl,
 		}
 	}
 	return reviews, nil

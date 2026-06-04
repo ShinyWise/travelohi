@@ -8,6 +8,7 @@ interface HotelReview {
     ratingAverage: number;
     comment: string;
     createdAt: string;
+    userProfilePic?: string;
 }
 interface Props {
     reviews: HotelReview[];
@@ -36,7 +37,13 @@ const ReviewList: React.FC<Props> = ({ reviews }) => {
                     return (
                         <div key={review.id} className={styles.reviewCard}>
                             <div className={styles.userInfo}>
-                                <div className={styles.avatar}>{initial}</div>
+                                <div className={styles.avatar}>
+                                    {!isAnonymous && review.userProfilePic ? (
+                                        <img src={review.userProfilePic} alt={displayName} className={styles.avatarImage} />
+                                    ) : (
+                                        initial
+                                    )}
+                                </div>
                                 <div className={styles.meta}>
                                     <span className={styles.name}>{displayName}</span>
                                     <span className={styles.date}>{review.createdAt || t.just_now}</span>

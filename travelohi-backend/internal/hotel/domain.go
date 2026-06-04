@@ -60,9 +60,10 @@ type HotelReview struct {
 	RatingLocation    float32
 	RatingService     float32
 
-	RatingAverage float32
-	Comment       string
-	CreatedAt     time.Time
+	RatingAverage  float32
+	Comment        string
+	CreatedAt      time.Time
+	UserProfilePic string
 }
 
 type HotelRepository interface {
