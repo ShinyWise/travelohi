@@ -41,11 +41,11 @@ CREATE TABLE IF NOT EXISTS hotels (
     address TEXT,
     pictures BYTEA[], 
     facilities JSONB,
-    rating_cleanliness NUMERIC(3,2) DEFAULT 0,
-    rating_comfort NUMERIC(3,2) DEFAULT 0,
-    rating_location NUMERIC(3,2) DEFAULT 0,
-    rating_service NUMERIC(3,2) DEFAULT 0,
-    rating_average NUMERIC(3,2) DEFAULT 0,
+    rating_cleanliness NUMERIC(4,2) DEFAULT 0,
+    rating_comfort NUMERIC(4,2) DEFAULT 0,
+    rating_location NUMERIC(4,2) DEFAULT 0,
+    rating_service NUMERIC(4,2) DEFAULT 0,
+    rating_average NUMERIC(4,2) DEFAULT 0,
     total_reviews INT DEFAULT 0,
     starting_price BIGINT NOT NULL
 );
@@ -66,11 +66,11 @@ CREATE TABLE IF NOT EXISTS hotel_reviews (
     hotel_id VARCHAR(255) REFERENCES hotels(id),
     user_id VARCHAR(255),
     user_name VARCHAR(255),
-    rating_cleanliness NUMERIC(3,2) DEFAULT 0,
-    rating_comfort NUMERIC(3,2) DEFAULT 0,
-    rating_location NUMERIC(3,2) DEFAULT 0,
-    rating_service NUMERIC(3,2) DEFAULT 0,
-    rating_average NUMERIC(3,2) DEFAULT 0,
+    rating_cleanliness NUMERIC(4,2) DEFAULT 0,
+    rating_comfort NUMERIC(4,2) DEFAULT 0,
+    rating_location NUMERIC(4,2) DEFAULT 0,
+    rating_service NUMERIC(4,2) DEFAULT 0,
+    rating_average NUMERIC(4,2) DEFAULT 0,
     comment TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

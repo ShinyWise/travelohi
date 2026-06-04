@@ -690,6 +690,89 @@ func main() {
 		log.Printf("  ✅ Admin history seeded for %s", adminUser.name)
 	}
 
+	var testUser seededUser
+	for _, u := range seededUsers {
+		if u.name == "Test User" {
+			testUser = u
+			break
+		}
+	}
+	if testUser.id == "" {
+		var a AccountModel
+		db.Where("email = ?", "test@travelohi.com").First(&a)
+		testUser = seededUser{id: a.ID, name: a.FirstName + " " + a.LastName}
+	}
+
+	if testUser.id != "" && len(seededRooms) > 0 && len(seededSeats) > 0 {
+		for i := 0; i < 16; i++ {
+			bookingID := fmt.Sprintf("BOOK-TEST-HIST-%d", i)
+			refCode := fmt.Sprintf("REF-TEST-%d", i)
+			txID := fmt.Sprintf("TX-TEST-%d", i)
+			createdAt := baseTime.AddDate(0, 0, -40+i)
+
+			if i%2 == 0 {
+				room := seededRooms[i%len(seededRooms)]
+				var h HotelModel
+				db.Where("id = ?", room.HotelID).First(&h)
+
+				checkIn := baseTime.AddDate(0, 0, -40+i)
+				checkOut := checkIn.AddDate(0, 0, 3)
+
+				status := "completed"
+				if i%4 == 0 {
+					status = "reviewed"
+				} else if i%6 == 0 {
+					status = "cancelled"
+				}
+
+				b := BookingModel{
+					ID:                   bookingID,
+					UserID:               testUser.id,
+					TransactionID:        txID,
+					ItemType:             "hotel_room",
+					DisplayName:          fmt.Sprintf("%s - %s|%s", h.Name, room.Name, room.ID),
+					CheckInDate:          checkIn.Format("2006-01-02"),
+					CheckOutDate:         checkOut.Format("2006-01-02"),
+					Status:               status,
+					BookingReferenceCode: refCode,
+					RoomID:               room.ID,
+					CreatedAt:            createdAt,
+				}
+				db.Create(&b)
+			} else {
+				seat := seededSeats[i%len(seededSeats)]
+				var f FlightModel
+				db.Where("id = ?", seat.FlightID).First(&f)
+				var a AirlineModel
+				db.Where("id = ?", f.AirlineID).First(&a)
+
+				departure := baseTime.AddDate(0, 0, -40+i)
+				arrival := departure.Add(time.Duration(f.DurationMinutes) * time.Minute)
+
+				status := "completed"
+				if i%5 == 0 {
+					status = "cancelled"
+				}
+
+				b := BookingModel{
+					ID:                   bookingID,
+					UserID:               testUser.id,
+					TransactionID:        txID,
+					ItemType:             "flight_seat",
+					DisplayName:          fmt.Sprintf("%s (%s) %s ➔ %s - Seat %s|%s", a.Name, f.FlightCode, f.OriginAirport, f.DestinationAirport, seat.SeatNumber, seat.ID),
+					CheckInDate:          departure.Format("2006-01-02 15:04"),
+					CheckOutDate:         arrival.Format("2006-01-02 15:04"),
+					Status:               status,
+					BookingReferenceCode: refCode,
+					RoomID:               "",
+					CreatedAt:            createdAt,
+				}
+				db.Create(&b)
+			}
+		}
+		log.Printf("  ✅ 16 booking history items seeded for %s", testUser.name)
+	}
+
 	log.Println("")
 	log.Println("✅ Seeding completed successfully!")
 	log.Printf("   Admin login  : admin@travelohi.com / %s", plainPassword)
