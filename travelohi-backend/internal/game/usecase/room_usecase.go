@@ -83,7 +83,6 @@ func (u *roomUseCase) StartRoom(roomID string, p1, p2 *game.Player) {
 	u.rooms[roomID] = room
 	u.mu.Unlock()
 
-	// launch game loop
 	go u.runGameLoop(ctx, room)
 }
 
@@ -96,7 +95,6 @@ func (u *roomUseCase) ProcessAction(roomID, userID, actionType string) error {
 		return fmt.Errorf("room %s not found or already ended", roomID)
 	}
 
-	// send to action channel
 	select {
 	case room.ActionChan <- playerAction{UserID: userID, ActionType: actionType}:
 		return nil
@@ -145,7 +143,6 @@ func (u *roomUseCase) runGameLoop(ctx context.Context, room *gameRoom) {
 				timerAccumulator -= 1.0
 			}
 
-			// Broadcast state updates
 			isAirborne := room.PlayerOneY < 300 || room.PlayerTwoY < 300
 			isMoving := room.P1MoveState != "stop" || room.P2MoveState != "stop" || isAirborne
 			if isMoving || timerAccumulator < 0.05 {
@@ -170,7 +167,6 @@ func (u *roomUseCase) runGameLoop(ctx context.Context, room *gameRoom) {
 				return
 			}
 
-			// handle action resets safely
 			if len(action.ActionType) > 13 && action.ActionType[:13] == "reset_action_" {
 				act := action.ActionType[13:]
 				if action.UserID == room.P1.UserID {
@@ -198,7 +194,6 @@ func (u *roomUseCase) runGameLoop(ctx context.Context, room *gameRoom) {
 				continue
 			}
 
-			// movement actions
 			if action.ActionType == "move_left" {
 				if action.UserID == room.P1.UserID {
 					room.P1MoveState = "left"
@@ -340,10 +335,8 @@ func (u *roomUseCase) runGameLoop(ctx context.Context, room *gameRoom) {
 				}
 			}
 
-			// broadcast updated state
 			u.broadcastState(room)
 
-			// check for knockout
 			if room.HP1 <= 0 || room.HP2 <= 0 {
 				u.endMatch(ctx, room, "knockout")
 				return
@@ -355,14 +348,12 @@ func (u *roomUseCase) runGameLoop(ctx context.Context, room *gameRoom) {
 func (u *roomUseCase) endMatch(ctx context.Context, room *gameRoom, reason string) {
 	winnerID := ""
 
-	// determine logic based on remaining hp
 	if room.HP1 > room.HP2 {
 		winnerID = room.P1.UserID
 	} else if room.HP2 > room.HP1 {
 		winnerID = room.P2.UserID
 	}
 
-	// save to db
 	matchResult := &game.MatchResult{
 		ID:              uuid.New().String(),
 		PlayerOneID:     room.P1.UserID,
@@ -375,7 +366,6 @@ func (u *roomUseCase) endMatch(ctx context.Context, room *gameRoom, reason strin
 		log.Printf("[Game Loop] Failed to save match result for room %s: %v", room.ID, err)
 	}
 
-	// award prize if there's a winner
 	if winnerID != "" {
 		const prizeAmount = 50000
 		if err := u.repo.AwardPrize(context.Background(), winnerID, prizeAmount); err != nil {
@@ -385,7 +375,6 @@ func (u *roomUseCase) endMatch(ctx context.Context, room *gameRoom, reason strin
 		}
 	}
 
-	// broadcast end event
 	endEvent := &gamepb.GameServerEvent{
 		Payload: &gamepb.GameServerEvent_MatchEnd{
 			MatchEnd: &gamepb.MatchEndEvent{

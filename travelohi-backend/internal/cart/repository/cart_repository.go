@@ -32,7 +32,6 @@ type PromoModel struct {
 	DiscountAmount int64     `gorm:"type:bigint;not null"`
 	MaxUses        int32     `gorm:"type:int;not null"`
 	CurrentUses    int32     `gorm:"type:int;default:0"`
-	ExpiryDate     time.Time `gorm:"type:timestamp"`
 }
 
 func (PromoModel) TableName() string {
@@ -220,7 +219,6 @@ func (r *postgresCartRepo) CreatePromo(ctx context.Context, promo cart.Promo) er
 		DiscountAmount: promo.DiscountAmount,
 		MaxUses:        promo.MaxUses,
 		CurrentUses:    promo.CurrentUses,
-		ExpiryDate:     promo.ExpiryDate,
 	}
 	return r.db.WithContext(ctx).Create(&dbModel).Error
 }
@@ -237,7 +235,6 @@ func (r *postgresCartRepo) GetPromoByCode(ctx context.Context, code string) (*ca
 		DiscountAmount: model.DiscountAmount,
 		MaxUses:        model.MaxUses,
 		CurrentUses:    model.CurrentUses,
-		ExpiryDate:     model.ExpiryDate,
 	}, nil
 }
 

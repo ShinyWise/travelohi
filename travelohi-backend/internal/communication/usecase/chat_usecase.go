@@ -27,7 +27,6 @@ func (u *chatUseCase) SendEvent(ctx context.Context, event *communicationpb.Chat
 	var resMsgID string
 	var resTimestamp string
 
-	// identify payload type
 	switch payload := event.EventPayload.(type) {
 	case *communicationpb.ChatEvent_Message:
 		msgID := payload.Message.GetMessageId()
@@ -40,7 +39,6 @@ func (u *chatUseCase) SendEvent(ctx context.Context, event *communicationpb.Chat
 		resTimestamp = time.Now().Format(time.RFC3339)
 		payload.Message.Timestamp = resTimestamp
 
-		// save message
 		domainMsg := &communication.Message{
 			ID:             msgID,
 			ConversationID: event.GetConversationId(),
@@ -53,7 +51,6 @@ func (u *chatUseCase) SendEvent(ctx context.Context, event *communicationpb.Chat
 		}
 
 	case *communicationpb.ChatEvent_ReadReceipt:
-		// update status
 		if err := u.repo.UpdateMessageStatus(ctx, payload.ReadReceipt.GetMessageId(), payload.ReadReceipt.GetNewStatus()); err != nil {
 			return nil, err
 		}
@@ -98,29 +95,24 @@ func (u *chatUseCase) GetChatHistory(ctx context.Context, req *communicationpb.G
 }
 
 func (u *chatUseCase) GetActiveConversations(ctx context.Context, req *communicationpb.GetActiveConversationsRequest, adminID string) (*communicationpb.GetActiveConversationsResponse, error) {
-	// enforce rbac
 	isAdmin, err := u.repo.IsUserAdmin(ctx, adminID)
 	if err != nil || !isAdmin {
 		return nil, status.Errorf(codes.PermissionDenied, "permission denied: administrator privileges required")
 	}
 
-	// default pagination
 	limit := req.GetLimit()
 	if limit <= 0 {
 		limit = 20
 	}
 
-	// fetch active conversations
 	domainConvos, total, err := u.repo.GetActiveConversations(ctx, req.GetSearchQuery(), limit, req.GetOffset())
 	if err != nil {
 		return nil, err
 	}
 
-	// map to protobuf
 	var pbConvos []*communicationpb.ConversationPreview
 	for _, c := range domainConvos {
 		timestampStr := ""
-		// handle zero timestamps
 		if !c.LatestMessageTimestamp.IsZero() {
 			timestampStr = c.LatestMessageTimestamp.Format(time.RFC3339)
 		}
@@ -153,7 +145,6 @@ func (u *chatUseCase) GetOrCreateConversation(ctx context.Context, req *communic
 }
 
 func (u *chatUseCase) CloseConversation(ctx context.Context, req *communicationpb.CloseConversationRequest, adminID string) (*communicationpb.CloseConversationResponse, error) {
-	// validate admin
 	isAdmin, err := u.repo.IsUserAdmin(ctx, adminID)
 	if err != nil || !isAdmin {
 		return nil, status.Errorf(codes.PermissionDenied, "permission denied: administrator privileges required")
@@ -164,7 +155,6 @@ func (u *chatUseCase) CloseConversation(ctx context.Context, req *communicationp
 		return nil, status.Errorf(codes.Internal, "failed to close conversation: %v", err)
 	}
 
-	// broadcast conversationClosed event
 	u.hub.RouteEvent(&communicationpb.ChatEvent{
 		ConversationId: req.GetConversationId(),
 		SenderId:       adminID,

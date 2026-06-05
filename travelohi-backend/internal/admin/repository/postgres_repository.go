@@ -256,13 +256,11 @@ func (r *postgresAdminRepo) GetUsers(ctx context.Context, limit, offset int32) (
 	var models []AccountModel
 	var total int64
 
-	// count total records
 	err := r.db.WithContext(ctx).Model(&AccountModel{}).Count(&total).Error
 	if err != nil {
 		return nil, 0, err
 	}
 
-	// fetch paginated results
 	err = r.db.WithContext(ctx).
 		Limit(int(limit)).
 		Offset(int(offset)).
@@ -272,7 +270,6 @@ func (r *postgresAdminRepo) GetUsers(ctx context.Context, limit, offset int32) (
 		return nil, 0, err
 	}
 
-	// map to domain entities
 	var users []*admin.UserAdminView
 	for _, m := range models {
 		users = append(users, &admin.UserAdminView{
@@ -289,11 +286,9 @@ func (r *postgresAdminRepo) GetUsers(ctx context.Context, limit, offset int32) (
 
 func (r *postgresAdminRepo) UpdateUserBanStatus(ctx context.Context, userID string, isBanned bool) error {
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		// update profile table
 		if err := tx.Model(&AccountModel{}).Where("id = ?", userID).Update("is_banned", isBanned).Error; err != nil {
 			return err
 		}
-		// update credentials table
 		if err := tx.Table("auths").Where("id = ?", userID).Update("is_banned", isBanned).Error; err != nil {
 			return err
 		}
@@ -304,7 +299,6 @@ func (r *postgresAdminRepo) UpdateUserBanStatus(ctx context.Context, userID stri
 func (r *postgresAdminRepo) GetNewsletterSubscribers(ctx context.Context) ([]*admin.Subscriber, error) {
 	var models []AccountModel
 
-	// query subscribed users who are not banned
 	err := r.db.WithContext(ctx).
 		Where("newsletter_subscribed = ?", true).
 		Where("is_banned = ?", false).

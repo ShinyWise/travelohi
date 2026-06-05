@@ -27,7 +27,6 @@ type Promo struct {
 	DiscountAmount int64
 	MaxUses        int32
 	CurrentUses    int32
-	ExpiryDate     time.Time
 }
 
 type CartRepository interface {
@@ -40,7 +39,6 @@ type CartRepository interface {
 	MarkCartAsPaid(ctx context.Context, userID string) error
 	CheckItemInCart(ctx context.Context, userID, referenceID string) (bool, error)
 
-	// promos
 	CreatePromo(ctx context.Context, promo Promo) error
 	GetPromoByCode(ctx context.Context, code string) (*Promo, error)
 	IncrementPromoUsage(ctx context.Context, code string) error

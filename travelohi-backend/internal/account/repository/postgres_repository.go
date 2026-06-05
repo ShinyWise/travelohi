@@ -8,7 +8,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// gorm model
 type AccountModel struct {
 	ID                   string `gorm:"primarykey;column:id"`
 	Email                string `gorm:"column:email"`

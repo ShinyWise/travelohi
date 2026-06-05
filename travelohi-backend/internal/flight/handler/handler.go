@@ -142,13 +142,11 @@ func (h *FlightHandler) GetFlightDetails(ctx context.Context, req *flightpb.GetF
 }
 
 func (h *FlightHandler) InternalLockSeat(ctx context.Context, req *flightpb.LockSeatRequest) (*flightpb.LockSeatResponse, error) {
-	// extract user id
 	userID, err := utils.ExtractUserID(ctx)
 	if err != nil {
 		return nil, status.Error(codes.Unauthenticated, err.Error())
 	}
 
-	// book seat via usecase
 	price, err := h.usecase.BookSeat(ctx, req.SeatId, userID)
 	if err != nil {
 		return nil, err

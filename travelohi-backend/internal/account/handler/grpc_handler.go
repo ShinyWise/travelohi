@@ -172,7 +172,6 @@ func (h *AccountGrpcHandler) InternalCreateBooking(ctx context.Context, req *acc
 		CheckOutDate:  req.GetCheckOutDate(),
 	}
 
-	// create uuid
 	if newBooking.ID == "" {
 		newBooking.ID = "BOOK-" + req.GetTransactionId()
 	}

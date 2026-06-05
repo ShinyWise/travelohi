@@ -121,7 +121,6 @@ func (uc *authUseCase) RegisterUser(ctx context.Context, req *auth.RegisterData)
 		return nil, auth.ErrHashing
 	}
 
-	// generate account id
 	newUserID := uc.idGen.Generate()
 
 	vaultRecord := &auth.Auth{
@@ -209,22 +208,18 @@ func (uc *authUseCase) Login(ctx context.Context, email, password string, captch
 		return nil, errors.New("Your account has not been activated")
 	}
 
-	// crypto check
 	if err := uc.hasher.Compare(user.PasswordHash, password); err != nil {
 		return nil, auth.ErrInvalidCreds
 	}
 
-	// generate session
 	sessionID := uc.idGen.Generate()
 
 	sessionKey := "session:" + user.ID
 
-	// set session to cache
 	if err := uc.cache.Set(ctx, sessionKey, []byte(sessionID), 86400); err != nil {
 		return nil, auth.ErrInternal
 	}
 
-	// generate access token
 	accessToken, err := uc.tokenMaker.CreateToken(user.ID, sessionID, 24*time.Hour)
 	if err != nil {
 		return nil, auth.ErrInternal
@@ -297,7 +292,6 @@ func (uc *authUseCase) SendOTP(ctx context.Context, email string) error {
 		return auth.ErrInternal
 	}
 
-	// generate otp
 	maxNumber := big.NewInt(1000000)
 	randNumber, _ := rand.Int(rand.Reader, maxNumber)
 	otpcode := fmt.Sprintf("%06d", randNumber.Int64())
@@ -369,22 +363,18 @@ func (uc *authUseCase) ResetPassword(ctx context.Context, email string, question
 		return nil, errors.New("account suspended")
 	}
 
-	// verify security question
 	if user.SecurityQuestionID != questionID {
 		return nil, errors.New("incorrect security question or answer")
 	}
 
-	// verify security answer
 	if err := uc.hasher.Compare(user.SecurityAnswerHash, strings.ToLower(strings.TrimSpace(answer))); err != nil {
 		return nil, errors.New("incorrect security question or answer")
 	}
 
-	// validate new password
 	if err := uc.hasher.Compare(user.PasswordHash, newPassword); err == nil {
 		return nil, errors.New("new password cannot be the same as the old password")
 	}
 
-	// hash and update password
 	hashedNewPassword, err := uc.hasher.Hash(newPassword)
 	if err != nil {
 		return nil, auth.ErrHashing
@@ -445,7 +435,6 @@ func (uc *authUseCase) ActivateAccount(ctx context.Context, token string) error 
 
 	_ = uc.cache.Delete(ctx, activationKey)
 
-	// Send Welcome Email (Registration Success)
 	htmlBody := mailer.GenerateWelcomeEmail()
 	if err := uc.mailer.SendEmail([]string{email}, "Welcome to TraveloHI!", htmlBody); err != nil {
 		log.Printf("[ActivateAccount] Failed to send welcome email to %s: %v\n", email, err)

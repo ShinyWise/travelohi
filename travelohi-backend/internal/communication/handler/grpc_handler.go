@@ -27,7 +27,6 @@ func NewCommunicationHandler(hub communication.HubUseCase, chatUseCase communica
 func (h *CommunicationHandler) StreamChat(req *communicationpb.StreamChatRequest, stream communicationpb.CommunicationService_StreamChatServer) error {
 	ctx := stream.Context()
 
-	// extract user id securely from JWT
 	userIDObj := ctx.Value(interceptor.UserIDKey)
 	if userIDObj == nil {
 		return status.Errorf(codes.Unauthenticated, "unauthorized chat access")
@@ -39,16 +38,14 @@ func (h *CommunicationHandler) StreamChat(req *communicationpb.StreamChatRequest
 		return status.Errorf(codes.InvalidArgument, "conversation_id is required to join a room")
 	}
 
-	// setup channel and register
 	sendCh := make(chan *communicationpb.ChatEvent, 50)
 	h.hub.Register(conversationID, userID, sendCh)
 
-	// unregister client on disconnect
 	defer h.hub.Unregister(conversationID, userID, sendCh)
 	for {
 		select {
 		case <-ctx.Done():
-			return ctx.Err() // client disconnect
+			return ctx.Err()
 		case msg, ok := <-sendCh:
 			if !ok {
 				return nil // tutup
@@ -62,7 +59,6 @@ func (h *CommunicationHandler) StreamChat(req *communicationpb.StreamChatRequest
 }
 
 func (h *CommunicationHandler) SendEvent(ctx context.Context, req *communicationpb.ChatEvent) (*communicationpb.SendEventResponse, error) {
-	// extract user id securely
 	userIDObj := ctx.Value(interceptor.UserIDKey)
 	if userIDObj == nil {
 		return nil, status.Errorf(codes.Unauthenticated, "unauthorized access")
@@ -97,7 +93,6 @@ func (h *CommunicationHandler) GetChatHistory(ctx context.Context, req *communic
 }
 
 func (h *CommunicationHandler) GetActiveConversations(ctx context.Context, req *communicationpb.GetActiveConversationsRequest) (*communicationpb.GetActiveConversationsResponse, error) {
-	// extract user id
 	userIDObj := ctx.Value(interceptor.UserIDKey)
 	if userIDObj == nil {
 		return nil, status.Errorf(codes.Unauthenticated, "unauthorized access")

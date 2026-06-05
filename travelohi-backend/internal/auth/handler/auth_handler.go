@@ -134,7 +134,6 @@ func (h *authHandler) CheckEmail(ctx context.Context, req *authpb.CheckEmailRequ
 	exists, isActive, err := h.usecase.CheckEmail(ctx, req.GetEmail(), req.GetCaptchaToken())
 
 	if err != nil {
-		// if recaptcha fails, throw the error
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 

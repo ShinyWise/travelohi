@@ -34,7 +34,7 @@ func (r *memcachedGameRepo) Get(ctx context.Context, key string) ([]byte, error)
 	item, err := r.client.Get(key)
 	if err != nil {
 		if errors.Is(err, memcache.ErrCacheMiss) {
-			return nil, nil // Return nil, nil when cache miss or not found
+			return nil, nil
 		}
 		return nil, err
 	}

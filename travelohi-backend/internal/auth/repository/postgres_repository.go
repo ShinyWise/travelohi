@@ -39,7 +39,6 @@ func NewPostgresAuthRepository(db *gorm.DB) auth.AuthRepository {
 	return &PostgresAuthRepository{db: db}
 }
 
-// compile-time safety check
 var _ auth.AuthRepository = (*PostgresAuthRepository)(nil)
 
 func (r *PostgresAuthRepository) Create(ctx context.Context, a *auth.Auth) error {

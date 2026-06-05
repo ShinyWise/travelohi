@@ -111,7 +111,6 @@ func (u *matchmakingUseCase) HandleJoinQueue(ctx context.Context, player *game.P
 	val := fmt.Sprintf("%d:%d", playCount, expiry)
 	_ = u.cache.Set(ctx, rateLimitKey, []byte(val), ttl)
 
-	// add to matchmaking pool
 	u.mu.Lock()
 	u.waitingQueue = append(u.waitingQueue, player)
 	log.Printf("[Matchmaking] User %s joined the queue. Total in queue: %d", player.UserID, len(u.waitingQueue))

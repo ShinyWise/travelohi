@@ -23,7 +23,6 @@ func NewHotelHandler(usecase hotel.HotelUseCase) *HotelHandler {
 
 func (h *HotelHandler) SearchHotels(ctx context.Context, req *hotelpb.SearchHotelsRequest) (*hotelpb.SearchHotelsResponse, error) {
 
-	// boundaries
 	limit := req.Limit
 	if limit <= 0 {
 		limit = 20
@@ -37,7 +36,6 @@ func (h *HotelHandler) SearchHotels(ctx context.Context, req *hotelpb.SearchHote
 		offset = 0
 	}
 
-	// domain filter
 	filter := hotel.SearchFilter{
 		Query:      req.Query,
 		CheckIn:    req.CheckInDate,
@@ -57,7 +55,6 @@ func (h *HotelHandler) SearchHotels(ctx context.Context, req *hotelpb.SearchHote
 		return nil, status.Error(codes.Internal, "failed to search hotels")
 	}
 
-	// map domain result to gRPC format
 	grpcHotels := make([]*hotelpb.Hotel, len(domainHotels))
 	for i, val := range domainHotels {
 		grpcHotels[i] = &hotelpb.Hotel{

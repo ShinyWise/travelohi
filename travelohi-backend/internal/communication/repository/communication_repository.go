@@ -49,7 +49,6 @@ func (r *postgresCommunicationRepo) UpdateMessageStatus(ctx context.Context, mes
 func (r *postgresCommunicationRepo) GetMessages(ctx context.Context, conversationID string, limit, offset int32) ([]*communication.Message, error) {
 	var models []SupportMessageModel
 
-	// order by createdat desc
 	err := r.db.WithContext(ctx).
 		Where("conversation_id = ?", conversationID).
 		Order("created_at DESC").
@@ -97,20 +96,17 @@ func (r *postgresCommunicationRepo) GetActiveConversations(ctx context.Context, 
 
 	args := []interface{}{}
 
-	// apply search filter
 	if searchQuery != "" {
 		baseQuery += ` AND (u.first_name ILIKE ? OR u.last_name ILIKE ? OR (u.first_name || ' ' || u.last_name) ILIKE ? OR u.email ILIKE ?)`
 		searchPattern := "%" + searchQuery + "%"
 		args = append(args, searchPattern, searchPattern, searchPattern, searchPattern)
 	}
 
-	// calculate total active
 	countSQL := "SELECT COUNT(c.id) " + baseQuery
 	if err := r.db.WithContext(ctx).Raw(countSQL, args...).Scan(&total).Error; err != nil {
 		return nil, 0, err
 	}
 
-	// fetch preview data
 	selectSQL := `
 		SELECT 
 			c.id AS conversation_id,

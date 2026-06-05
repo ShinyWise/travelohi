@@ -101,7 +101,6 @@ func (r *postgresTelemetryRepo) GetPopularFlightDestinations(ctx context.Context
 		BookingCount       int64
 	}
 
-	// aggregate popular flight destinations
 	err := r.db.WithContext(ctx).Table("cart_items").
 		Select("flights.destination_airport, COUNT(cart_items.id) as booking_count").
 		Joins("JOIN flight_seats ON cart_items.reference_id = flight_seats.id").
@@ -132,7 +131,6 @@ func (r *postgresTelemetryRepo) GetPopularFlightDestinations(ctx context.Context
 func (r *postgresTelemetryRepo) GetPopularHotels(ctx context.Context) ([]*telemetry.PopularHotel, error) {
 	var results []*telemetry.PopularHotel
 
-	// aggregate popular hotels
 	err := r.db.WithContext(ctx).Table("cart_items").
 		Select("hotels.id as hotel_id, hotels.name, hotels.address as location, coalesce('data:image/jpeg;base64,' || encode(hotels.pictures[1], 'base64'), '') as image_url, COUNT(cart_items.id) as booking_count").
 		Joins("JOIN hotel_rooms ON cart_items.reference_id = hotel_rooms.id").

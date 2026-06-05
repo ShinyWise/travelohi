@@ -21,7 +21,6 @@ func NewPostgresFlightRepository(db *gorm.DB) flight.FlightRepository {
 	return &postgresFlightRepo{db: db}
 }
 
-// search flights
 func (r *postgresFlightRepo) SearchFlights(ctx context.Context, filter flight.FlightSearchFilter) ([]flight.Flight, int32, error) {
 	var flights []flight.Flight
 	var total int64
@@ -122,7 +121,6 @@ func (r *postgresFlightRepo) LockAndBookSeat(ctx context.Context, seatID string)
 	err := r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		var seat flight.FlightSeat
 
-		// query and lock
 		err := tx.Clauses(clause.Locking{
 			Strength: "UPDATE",
 			Options:  "NOWAIT",
@@ -132,12 +130,10 @@ func (r *postgresFlightRepo) LockAndBookSeat(ctx context.Context, seatID string)
 			return err
 		}
 
-		// business logic check
 		if seat.IsBooked {
 			return errors.New("seat is already permanently booked")
 		}
 
-		// state mutation
 		seat.IsBooked = true
 		if err := tx.Save(&seat).Error; err != nil {
 			return err

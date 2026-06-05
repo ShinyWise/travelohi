@@ -27,7 +27,6 @@ func (uc *AccountUseCase) InitProfile(ctx context.Context, account *account.Acco
 		return errors.New("[ERROR] Cannot initialize profile: ID and Email are required")
 	}
 
-	// initial balance
 	account.HiWalletBalance = 5000000
 	account.IsActive = false
 
@@ -61,7 +60,6 @@ func (uc *AccountUseCase) DeductWallet(ctx context.Context, userID string, amoun
 		return errors.New("deduction amount must be greater than zero")
 	}
 
-	// handle error insufficient funds
 	return uc.repo.DeductBalance(ctx, userID, amount)
 }
 
@@ -74,7 +72,6 @@ func (uc *AccountUseCase) RefundWallet(ctx context.Context, userID string, amoun
 }
 
 func (uc *AccountUseCase) InternalCreateBooking(ctx context.Context, booking *account.Booking) (*account.Booking, error) {
-	// extract room id if hotel room
 	if booking.ItemType == "hotel_room" {
 		parts := strings.Split(booking.DisplayName, "|")
 		if len(parts) > 1 {
@@ -83,7 +80,6 @@ func (uc *AccountUseCase) InternalCreateBooking(ctx context.Context, booking *ac
 		}
 
 		if booking.RoomID != "" {
-			// fetch total inventory limit
 			inventory, err := uc.bookingRepo.GetRoomInventory(ctx, booking.RoomID)
 			if err != nil {
 				return nil, err
@@ -95,14 +91,12 @@ func (uc *AccountUseCase) InternalCreateBooking(ctx context.Context, booking *ac
 				return nil, err
 			}
 
-			// Validate quota
 			if int(count) >= inventory {
 				return nil, errors.New("kamar penuh untuk tanggal yang dipilih")
 			}
 		}
 	}
 
-	// generate booking reference code
 	booking.BookingReferenceCode = "PNR-" + booking.ID[:8]
 	booking.Status = "ongoing"
 	nowStr := time.Now().Format("2006-01-02")
@@ -143,7 +137,6 @@ func (uc *AccountUseCase) GetETicket(ctx context.Context, userID, bookingID stri
 		return nil, "", "", "", errors.New("unauthorized access to booking")
 	}
 
-	// dummy e-ticket data
 	qrCodeData := "QR-" + booking.BookingReferenceCode
 	issueDate := booking.CreatedAt.Format("2006-01-02 15:04:05")
 	passengerName := "Placeholder Name"
@@ -157,7 +150,6 @@ func (uc *AccountUseCase) GetETicket(ctx context.Context, userID, bookingID stri
 }
 
 func (uc *AccountUseCase) RedeemWalletCoupon(ctx context.Context, userID string, couponCode string) error {
-	// check if user already used this promo
 	used, err := uc.repo.HasUserUsedCoupon(ctx, userID, couponCode)
 	if err != nil {
 		return err
@@ -166,23 +158,19 @@ func (uc *AccountUseCase) RedeemWalletCoupon(ctx context.Context, userID string,
 		return errors.New("you have already redeemed this coupon")
 	}
 
-	// validate promo code
 	discountAmount, err := uc.repo.GetPromoDiscount(ctx, couponCode)
 	if err != nil {
 		return err // Returns "invalid or inactive promo code"
 	}
 
-	// add balance
 	if err := uc.repo.AddBalance(ctx, userID, discountAmount); err != nil {
 		return err
 	}
 
-	// record usage
 	return uc.repo.RecordCouponUsage(ctx, userID, couponCode)
 }
 
 func (uc *AccountUseCase) GetExchangeRate(ctx context.Context) float64 {
-	// static exchange rate
 	return 20000.00 // 1 USD = 20,000 IDR
 }
 
@@ -192,7 +180,7 @@ func (uc *AccountUseCase) AddBankAccount(ctx context.Context, userID, bankName, 
 	}
 
 	bankAcc := &account.BankAccount{
-		ID:         "BANK-" + time.Now().Format("20060102150405") + "-" + strings.ToUpper(bankName[:2]), // simple ID generator
+		ID:         "BANK-" + time.Now().Format("20060102150405") + "-" + strings.ToUpper(bankName[:2]),
 		UserID:     userID,
 		BankName:   bankName,
 		CardNumber: cardNumber,

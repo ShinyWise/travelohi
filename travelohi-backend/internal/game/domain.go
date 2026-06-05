@@ -7,7 +7,6 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-// player wraps connection
 type Player struct {
 	UserID string
 	Conn   *websocket.Conn

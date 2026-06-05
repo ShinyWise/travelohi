@@ -52,7 +52,6 @@ func calculateNights(checkIn, checkOut string) int64 {
 }
 
 func (uc *cartUseCase) AddToCart(ctx context.Context, userID, itemType, referenceID, checkIn, checkOut string, quantity int32, luggageWeight int32) error {
-	// check duplicate for hotel rooms
 	if itemType == "hotel_room" {
 		exists, err := uc.repo.CheckItemInCart(ctx, userID, referenceID)
 		if err != nil {
@@ -63,14 +62,11 @@ func (uc *cartUseCase) AddToCart(ctx context.Context, userID, itemType, referenc
 		}
 	}
 
-	// extract metadata from incoming context
 	md, ok := metadata.FromIncomingContext(ctx)
 	if ok {
-		// append to outgoing context
 		ctx = metadata.NewOutgoingContext(ctx, md)
 	}
 
-	// lock seat and fetch price
 	var itemPrice int64 = 0
 
 	if itemType == "flight_seat" {
@@ -92,7 +88,6 @@ func (uc *cartUseCase) AddToCart(ctx context.Context, userID, itemType, referenc
 		itemPrice = pricePerNight * nights
 	}
 
-	// save to cart database
 	newItem := cart.CartItem{
 		ID:            uuid.New().String(),
 		UserID:        userID,
@@ -213,7 +208,7 @@ func (uc *cartUseCase) Checkout(ctx context.Context, userID, paymentMethod, cred
 	}
 
 	var discountAmount int64 = 0
-	
+
 	appliedPromoCode, err := uc.promoCache.GetUserPromo(ctx, userID)
 	if err == nil && appliedPromoCode != "" {
 		promo, err := uc.repo.GetPromoByCode(ctx, appliedPromoCode)

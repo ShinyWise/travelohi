@@ -1,4 +1,3 @@
--- Auth Service Table
 CREATE TABLE IF NOT EXISTS auths (
     id VARCHAR(255) PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -9,7 +8,6 @@ CREATE TABLE IF NOT EXISTS auths (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Account Service Table
 CREATE TABLE IF NOT EXISTS account_models (
     id VARCHAR(255) PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -84,14 +82,13 @@ CREATE TABLE IF NOT EXISTS bookings (
     status VARCHAR(50) DEFAULT 'ongoing'
 );
 
--- cart table
 DROP TABLE IF EXISTS cart_items;
 CREATE TABLE cart_items (
     id VARCHAR(255) PRIMARY KEY,
     user_id VARCHAR(255) NOT NULL,
     item_type VARCHAR(50) NOT NULL,
     reference_id VARCHAR(255) NOT NULL,
-    price BIGINT NOT NULL, -- ADDED THIS
+    price BIGINT NOT NULL,
     status VARCHAR(50) DEFAULT 'in_cart',
     quantity INT DEFAULT 1,
     check_in_date VARCHAR(50),
@@ -100,7 +97,6 @@ CREATE TABLE cart_items (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- flight engine table
 CREATE TABLE IF NOT EXISTS flights (
     id VARCHAR(255) PRIMARY KEY,
     airline_id VARCHAR(255),
@@ -130,7 +126,6 @@ CREATE TABLE IF NOT EXISTS airlines (
     logo BYTEA
 );
 
--- admin table
 ALTER TABLE account_models ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE;
 ALTER TABLE account_models ADD COLUMN IF NOT EXISTS is_banned BOOLEAN DEFAULT FALSE;
 
@@ -153,7 +148,6 @@ CREATE TABLE IF NOT EXISTS user_promo_usages (
     PRIMARY KEY (user_id, promo_code)
 );
 
--- track user search query
 CREATE TABLE IF NOT EXISTS search_histories (
     id VARCHAR(255) PRIMARY KEY,
     user_id VARCHAR(255) NOT NULL,
@@ -176,7 +170,6 @@ CREATE INDEX idx_global_search_count ON global_search_metrics(search_count DESC)
 
 
 
--- chat/conversation
 -- buat ngurus support
 CREATE TABLE IF NOT EXISTS support_conversations (
     id VARCHAR(255) PRIMARY KEY,
@@ -218,8 +211,6 @@ CREATE INDEX IF NOT EXISTS idx_booking_models_user ON booking_models(user_id);
 
 
 
--- game server 
--- record completed matches
 CREATE TABLE IF NOT EXISTS game_matches (
     id VARCHAR(255) PRIMARY KEY,
     player_one_id VARCHAR(255) NOT NULL,

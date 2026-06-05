@@ -38,7 +38,6 @@ func main() {
 	smtpUser := os.Getenv("SMTP_USER")
 	smtpPass := os.Getenv("SMTP_PASS")
 
-	// 1. infrastructure connections
 	dbConn, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("Failed to connect to Postgres: %v", err)
@@ -46,7 +45,6 @@ func main() {
 
 	memcachedClient := memcache.New(memcachedURL)
 
-	// 2. cross-service grpc client (flight service)
 	flightConn, err := grpc.NewClient(flightServiceURL, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("Failed to create Flight Service client: %v", err)
@@ -54,7 +52,6 @@ func main() {
 	defer flightConn.Close()
 	flightClient := flightpb.NewFlightServiceClient(flightConn)
 
-	// cross-service grpc client (account service)
 	accountConn, err := grpc.NewClient(accountServiceURL, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("Failed to create Account Service client: %v", err)
@@ -62,39 +59,31 @@ func main() {
 	defer accountConn.Close()
 	accountClient := accountpb.NewAccountServiceClient(accountConn)
 
-	// 3. dependency injection
 	tokenMaker := token.NewJWTMaker(jwtSecret)
 
-	// repositories
 	cartRepo := repository.NewPostgresCartRepository(dbConn)
 	cacheRepo := authrepo.NewMemcachedRepository(memcachedClient)
 	promoCacheRepo := repository.NewPromoMemcachedRepository(memcachedClient)
 
-	// mailer
 	smtpMailer := mailer.NewSMTPMailer(smtpHost, smtpPort, smtpUser, smtpPass)
 
-	// usecases
 	cartUC := usecase.NewCartUseCase(cartRepo, flightClient, accountClient, smtpMailer, promoCacheRepo)
 
-	// handlers
 	cartHandler := carthandler.NewCartHandler(cartUC)
 
 	// the bouncer (interceptor)
 	roleRepo := authrepo.NewPostgresRoleRepository(dbConn)
 	authInterceptor := interceptor.NewAuthInterceptor(tokenMaker, cacheRepo, roleRepo)
 
-	// background workers
 	workerCtx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	worker.StartCartSweeper(workerCtx, dbConn, flightClient)
 
-	// start grpc server
 	gRPCServer := grpc.NewServer(
 		grpc.UnaryInterceptor(authInterceptor.Unary()),
 	)
 	cartpb.RegisterCartServiceServer(gRPCServer, cartHandler)
 
-	// listen and serve on port 50055
 	listener, err := net.Listen("tcp", ":50055")
 	if err != nil {
 		log.Fatalf("Failed to listen on port 50055: %v", err)

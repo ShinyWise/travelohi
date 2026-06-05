@@ -200,7 +200,6 @@ func (r *PostgresHotelRepository) SearchHotels(ctx context.Context, filter hotel
 	var args []interface{}
 	args = append(args, checkOut, checkIn, searchParam, searchParam)
 
-	// Price filters
 	if filter.MinPrice > 0 {
 		sqlQuery += " AND h.starting_price >= ?"
 		args = append(args, filter.MinPrice)
@@ -210,20 +209,17 @@ func (r *PostgresHotelRepository) SearchHotels(ctx context.Context, filter hotel
 		args = append(args, filter.MaxPrice)
 	}
 
-	// Rating filter
 	if filter.MinRating > 0 {
 		sqlQuery += " AND h.rating_average >= ?"
 		args = append(args, filter.MinRating)
 	}
 
-	// Facilities filter
 	if len(filter.Facilities) > 0 {
 		facJSON, _ := json.Marshal(filter.Facilities)
 		sqlQuery += " AND h.facilities @> ?::jsonb"
 		args = append(args, string(facJSON))
 	}
 
-	// Sorting
 	allowedSorts := map[string]string{
 		"price":        "h.starting_price",
 		"rating":       "h.rating_average",

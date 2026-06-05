@@ -26,7 +26,6 @@ func StartCartSweeper(ctx context.Context, db *gorm.DB, flightClient flightpb.Fl
 	log.Println("🧹 Cart Sweeper Worker started in the background...")
 
 	go func() {
-		// run sweep every 1 minute
 		ticker := time.NewTicker(1 * time.Minute)
 		defer ticker.Stop()
 
@@ -53,9 +52,7 @@ func sweepExpiredCarts(ctx context.Context, db *gorm.DB, flightClient flightpb.F
 	}
 
 	for _, item := range expiredItems {
-		// cross-service grpc call
 		if item.ItemType == "flight_seat" {
-			// set strict timeout
 			reqCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
 
 			_, err := flightClient.InternalUnlockSeat(reqCtx, &flightpb.UnlockSeatRequest{
@@ -69,7 +66,6 @@ func sweepExpiredCarts(ctx context.Context, db *gorm.DB, flightClient flightpb.F
 			}
 		}
 
-		// finalize database state
 		err = db.WithContext(ctx).Model(&CartItemSweeperModel{}).Where("id = ?", item.ID).Update("status", "expired").Error
 		if err != nil {
 			log.Printf("❌ Sweeper Error: Unlocked seat %s, but failed to mark cart as expired: %v", item.ReferenceID, err)

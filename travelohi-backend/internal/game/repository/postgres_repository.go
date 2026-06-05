@@ -8,7 +8,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// gorm model
 type GameMatchModel struct {
 	ID              string    `gorm:"primaryKey;column:id;type:varchar(255)"`
 	PlayerOneID     string    `gorm:"column:player_one_id;type:varchar(255);not null"`

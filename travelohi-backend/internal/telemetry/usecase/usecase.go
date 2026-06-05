@@ -69,7 +69,6 @@ func (u *telemetryUseCase) GetRecentSearches(ctx context.Context, req *telemetry
 }
 
 func (u *telemetryUseCase) GetGlobalRecommendations(ctx context.Context, req *telemetrypb.GetGlobalRecommendationsRequest) (*telemetrypb.GetGlobalRecommendationsResponse, error) {
-	// cache first approach
 	cachedBytes, err := u.cache.Get(ctx, topSearchesCacheKey)
 	if err == nil && cachedBytes != nil {
 		var cachedQueries []string
@@ -80,13 +79,11 @@ func (u *telemetryUseCase) GetGlobalRecommendations(ctx context.Context, req *te
 		}
 	}
 
-	// fetch from database
 	topQueries, err := u.repo.GetTopGlobalSearches(ctx, 5)
 	if err != nil {
 		return nil, err
 	}
 
-	// update cache asynchronously
 	go func(queries []string) {
 		bgCtx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 		defer cancel()
@@ -104,7 +101,6 @@ func (u *telemetryUseCase) GetGlobalRecommendations(ctx context.Context, req *te
 const popularFlightsCacheKey = "telemetry:popular_flights"
 
 func (u *telemetryUseCase) GetPopularFlightDestinations(ctx context.Context, req *telemetrypb.GetPopularFlightsRequest) (*telemetrypb.GetPopularFlightsResponse, error) {
-	// check memcached first
 	cachedBytes, err := u.cache.Get(ctx, popularFlightsCacheKey)
 	if err == nil && cachedBytes != nil {
 		var cachedDests []*telemetrypb.GetPopularFlightsResponse_PopularDestination
@@ -115,13 +111,11 @@ func (u *telemetryUseCase) GetPopularFlightDestinations(ctx context.Context, req
 		}
 	}
 
-	// execute aggregation query
 	domainDests, err := u.repo.GetPopularFlightDestinations(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	// map to protobuf
 	var pbDests []*telemetrypb.GetPopularFlightsResponse_PopularDestination
 	for _, d := range domainDests {
 		pbDests = append(pbDests, &telemetrypb.GetPopularFlightsResponse_PopularDestination{
@@ -131,7 +125,6 @@ func (u *telemetryUseCase) GetPopularFlightDestinations(ctx context.Context, req
 		})
 	}
 
-	// update cache asynchronously
 	go func(dests []*telemetrypb.GetPopularFlightsResponse_PopularDestination) {
 		bgCtx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 		defer cancel()
@@ -149,7 +142,6 @@ func (u *telemetryUseCase) GetPopularFlightDestinations(ctx context.Context, req
 const popularHotelsCacheKey = "telemetry:popular_hotels"
 
 func (u *telemetryUseCase) GetPopularHotels(ctx context.Context, req *telemetrypb.GetPopularHotelsRequest) (*telemetrypb.GetPopularHotelsResponse, error) {
-	// check memcached first
 	cachedBytes, err := u.cache.Get(ctx, popularHotelsCacheKey)
 	if err == nil && cachedBytes != nil {
 		var cachedHotels []*telemetrypb.GetPopularHotelsResponse_PopularHotel
@@ -160,13 +152,11 @@ func (u *telemetryUseCase) GetPopularHotels(ctx context.Context, req *telemetryp
 		}
 	}
 
-	// execute aggregation query
 	domainHotels, err := u.repo.GetPopularHotels(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	// map to protobuf
 	var pbHotels []*telemetrypb.GetPopularHotelsResponse_PopularHotel
 	for _, h := range domainHotels {
 		pbHotels = append(pbHotels, &telemetrypb.GetPopularHotelsResponse_PopularHotel{
@@ -178,7 +168,6 @@ func (u *telemetryUseCase) GetPopularHotels(ctx context.Context, req *telemetryp
 		})
 	}
 
-	// update cache asynchronously
 	go func(hotels []*telemetrypb.GetPopularHotelsResponse_PopularHotel) {
 		bgCtx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 		defer cancel()

@@ -56,7 +56,6 @@ func (u *adminUseCase) InsertAirline(ctx context.Context, req *adminpb.InsertAir
 	if len(iataCode) < 2 || len(iataCode) > 3 {
 		return errors.New("IATA Code must be 2 or 3 characters long")
 	}
-	// regex check for uppercase letters
 	isLetter := regexp.MustCompile(`^[A-Z0-9]+$`).MatchString
 	if !isLetter(iataCode) {
 		return errors.New("IATA Code must only contain alphanumeric characters")
@@ -116,7 +115,6 @@ func (u *adminUseCase) GetAllPromos(ctx context.Context, req *adminpb.GetAllProm
 }
 
 func (u *adminUseCase) GetAllUsers(ctx context.Context, req *adminpb.GetAllUsersRequest) (*adminpb.GetAllUsersResponse, error) {
-	// default pagination
 	limit := req.GetLimit()
 	if limit <= 0 {
 		limit = 20
@@ -150,7 +148,6 @@ func (u *adminUseCase) BanUser(ctx context.Context, req *adminpb.BanUserRequest)
 		return err
 	}
 
-	// delete session if banned
 	if req.GetBanStatus() {
 		sessionKey := "session:" + req.GetUserId()
 		_ = u.cache.Delete(ctx, sessionKey)

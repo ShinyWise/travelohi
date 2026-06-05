@@ -36,7 +36,6 @@ func NewGameWebSocketHandler(matchUseCase game.MatchmakingUseCase, roomUseCase g
 }
 
 func (h *GameWebSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// authenticate via query parameter
 	tokenString := r.URL.Query().Get("token")
 	if tokenString == "" {
 		http.Error(w, "Unauthorized: missing token", http.StatusUnauthorized)
@@ -49,7 +48,6 @@ func (h *GameWebSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	// upgrade to websocket
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Printf("[Game Handler] Failed to upgrade websocket: %v", err)
@@ -61,7 +59,6 @@ func (h *GameWebSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		Conn:   conn,
 	}
 
-	// start listening loop
 	go h.listen(r.Context(), player)
 }
 
@@ -73,7 +70,6 @@ func (h *GameWebSocketHandler) listen(ctx context.Context, player *game.Player) 
 	}()
 
 	for {
-		// read message from websocket
 		messageType, payloadBytes, err := player.Conn.ReadMessage()
 		if err != nil {
 			log.Printf("[Game Handler] User %s disconnected: %v", player.UserID, err)
@@ -85,7 +81,6 @@ func (h *GameWebSocketHandler) listen(ctx context.Context, player *game.Player) 
 			continue
 		}
 
-		// unmarshal protobuf
 		var clientEvent gamepb.GameClientEvent
 		if err := proto.Unmarshal(payloadBytes, &clientEvent); err != nil {
 			log.Printf("[Game Handler] Failed to unmarshal protobuf from %s: %v", player.UserID, err)
@@ -99,7 +94,6 @@ func (h *GameWebSocketHandler) listen(ctx context.Context, player *game.Player) 
 			}
 
 		case *gamepb.GameClientEvent_Action:
-			// forward action to room usecase
 			actionPayload := clientEvent.GetAction()
 			if actionPayload != nil {
 				err := h.roomUseCase.ProcessAction(actionPayload.GetRoomId(), player.UserID, actionPayload.GetActionType())

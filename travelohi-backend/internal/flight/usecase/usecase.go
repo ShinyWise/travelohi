@@ -17,7 +17,6 @@ func NewFlightUseCase(repo flight.FlightRepository) flight.FlightUseCase {
 	return &flightUseCase{repo: repo}
 }
 
-// search flights
 func (uc *flightUseCase) SearchFlights(ctx context.Context, filter flight.FlightSearchFilter) ([]flight.Flight, int32, error) {
 	return uc.repo.SearchFlights(ctx, filter)
 }
@@ -30,14 +29,10 @@ func (uc *flightUseCase) GetAirlineByID(ctx context.Context, id string) (flight.
 	return uc.repo.GetAirlineByID(ctx, id)
 }
 
-// lock seat
 func (uc *flightUseCase) BookSeat(ctx context.Context, seatID string, userID string) (int64, error) {
 
-	// call the lock transaction
 	price, err := uc.repo.LockAndBookSeat(ctx, seatID)
-
 	if err != nil {
-		// translate pg lock error
 		if strings.Contains(err.Error(), "could not obtain lock") || strings.Contains(err.Error(), "already permanently booked") {
 			return 0, status.Error(codes.Aborted, "Seat is currently being reserved or is already booked.")
 		}

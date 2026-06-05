@@ -21,12 +21,10 @@ func NewNotificationDispatcher(repo admin.AdminRepository, m mailer.EmailSender)
 	}
 }
 
-// dispatches broadcast notification
 func (w *NotificationDispatcher) DispatchBroadcast(subject, body string) {
 	workerCtx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
 
 	go func() {
-		// clean up context
 		defer cancel()
 
 		log.Printf("[Worker: Notification] Starting broadcast dispatch: '%s'\n", subject)
@@ -39,7 +37,6 @@ func (w *NotificationDispatcher) DispatchBroadcast(subject, body string) {
 
 		log.Printf("[Worker: Notification] Found %d active subscribers. Commencing real dispatch...\n", len(subscribers))
 
-		// process queue
 		successCount := 0
 		for _, sub := range subscribers {
 			htmlBody := mailer.GenerateBroadcastEmail(subject, body)

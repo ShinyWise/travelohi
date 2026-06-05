@@ -41,17 +41,14 @@ func NewAuthInterceptor(tokenMaker token.Maker, cache auth.CacheRepository, role
 		// internal microservice call: perlu dipake buat authService pas register
 		"/travelohi.v1.account.AccountService/InitProfile": true,
 
-		// Hotel Service public endpoints
 		"/travelohi.v1.hotel.HotelService/SearchHotels":    true,
 		"/travelohi.v1.hotel.HotelService/GetHotelDetails": true,
 
-		// Flight Service public endpoints
 		"/travelohi.v1.flight.FlightService/SearchFlights":      true,
 		"/travelohi.v1.flight.FlightService/GetFlightDetails":   true,
 		"/travelohi.v1.flight.FlightService/GetFlightSeats":     true,
 		"/travelohi.v1.flight.FlightService/InternalUnlockSeat": true,
 
-		// Telemetry Service public recommendations
 		"/travelohi.v1.telemetry.TelemetryService/GetGlobalRecommendations":     true,
 		"/travelohi.v1.telemetry.TelemetryService/GetPopularFlightDestinations": true,
 		"/travelohi.v1.telemetry.TelemetryService/GetPopularHotels":             true,
@@ -74,24 +71,20 @@ func (i *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 		info *grpc.UnaryServerInfo,
 		handler grpc.UnaryHandler,
 	) (interface{}, error) {
-		// route filtering
 		if i.publicRoutes[info.FullMethod] {
 			return handler(ctx, req)
 		}
 
-		// metadata extraction
 		tokenString, err := token.ExtractTokenFromContext(ctx)
 		if err != nil {
 			return nil, status.Errorf(codes.Unauthenticated, "authorization token is not provided")
 		}
 
-		// cryptographic check
 		userID, sessionID, err := i.tokenMaker.VerifyToken(tokenString)
 		if err != nil {
 			return nil, status.Errorf(codes.Unauthenticated, "invalid or expired token")
 		}
 
-		// session validation
 		sessionKey := "session:" + userID
 		cachedSessionBytes, err := i.cache.Get(ctx, sessionKey)
 
@@ -103,7 +96,6 @@ func (i *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 			return nil, status.Errorf(codes.Unauthenticated, "session expired or logged in from another device")
 		}
 
-		// rbac validation
 		if strings.HasPrefix(info.FullMethod, "/travelohi.v1.admin.AdminService/") {
 			isAdmin := false
 
@@ -121,7 +113,6 @@ func (i *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 			}
 		}
 
-		// context injection
 		newCtx := context.WithValue(ctx, UserIDKey, userID)
 
 		return handler(newCtx, req)
@@ -137,7 +128,6 @@ func (w *wrappedStream) Context() context.Context {
 	return w.ctx
 }
 
-// stream returns grpc stream server interceptor
 func (i *AuthInterceptor) Stream() grpc.StreamServerInterceptor {
 	return func(
 		srv interface{},
@@ -145,26 +135,22 @@ func (i *AuthInterceptor) Stream() grpc.StreamServerInterceptor {
 		info *grpc.StreamServerInfo,
 		handler grpc.StreamHandler,
 	) error {
-		// route filtering
 		if i.publicRoutes[info.FullMethod] {
 			return handler(srv, ss)
 		}
 
 		ctx := ss.Context()
 
-		// metadata extraction
 		tokenString, err := token.ExtractTokenFromContext(ctx)
 		if err != nil {
 			return status.Errorf(codes.Unauthenticated, "authorization token is not provided")
 		}
 
-		// cryptographic check
 		userID, sessionID, err := i.tokenMaker.VerifyToken(tokenString)
 		if err != nil {
 			return status.Errorf(codes.Unauthenticated, "invalid or expired token")
 		}
 
-		// session validation
 		sessionKey := "session:" + userID
 		cachedSessionBytes, err := i.cache.Get(ctx, sessionKey)
 
@@ -176,7 +162,6 @@ func (i *AuthInterceptor) Stream() grpc.StreamServerInterceptor {
 			return status.Errorf(codes.Unauthenticated, "session expired or logged in from another device")
 		}
 
-		// rbac validation
 		if strings.HasPrefix(info.FullMethod, "/travelohi.v1.admin.AdminService/") {
 			isAdmin := false
 
@@ -194,7 +179,6 @@ func (i *AuthInterceptor) Stream() grpc.StreamServerInterceptor {
 			}
 		}
 
-		// context injection
 		newCtx := context.WithValue(ctx, UserIDKey, userID)
 		return handler(srv, &wrappedStream{ServerStream: ss, ctx: newCtx})
 	}
