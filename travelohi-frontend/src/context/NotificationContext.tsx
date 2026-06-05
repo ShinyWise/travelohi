@@ -34,7 +34,6 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         setUnreadChatCount(0);
     }, []);
 
-    // get active conversation
     useEffect(() => {
         if (!isAuthenticated || !userId || isAdmin) {
             setConversationId(null);
@@ -57,7 +56,6 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         fetchConversationId();
     }, [isAuthenticated, userId, isAdmin]);
 
-    // refresh conversation
     const refreshConversation = useCallback(async () => {
         if (!userId || isAdmin) return;
         try {
@@ -72,70 +70,110 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         }
     }, [userId, isAdmin]);
 
+    // websocket listener
     useEffect(() => {
-    if (!isAuthenticated || !userId || isAdmin || isChatActive || !conversationId) {
-        return;
-    }
-
-    let abortController = new AbortController();
-    let reconnectTimeout: any;
-
-    const connectStream = async () => {
-        try {
-            const token = localStorage.getItem("access_token");
-            const call = commClient.streamChat(
-                { conversationId: conversationId, userId: userId },
-                {
-                    abort: abortController.signal,
-                    meta: {
-                        authorization: `Bearer ${token}`
-                    }
-                }
-            );
-
-            for await (const response of call.responses) {
-                const payload = response.eventPayload;
-                if (payload.oneofKind === 'message') {
-                    const newMsg = (payload as any).message;
-                    if (!newMsg) continue;
-
-                    if (response.senderId !== userId) {
-                        setUnreadChatCount(prev => prev + 1);
-                        showToast(`Pesan Baru: "${newMsg.content.substring(0, 30)}${newMsg.content.length > 30 ? '...' : ''}"`, 'info');
-                    }
-                }
-            }
-            throw new Error("Stream closed by server");
-        } catch (err: any) {
-            if (err.name !== 'AbortError' && !abortController.signal.aborted) {
-                if (!isChatActiveRef.current) {
-                    console.warn("Background chat stream disconnected. Reconnecting in 3s...", err);
-                    reconnectTimeout = setTimeout(connectStream, 3000);
-                }
-            }
+        if (!isAuthenticated || !userId || isAdmin || isChatActive || !conversationId) {
+            return;
         }
-    };
 
-    connectStream();
+        let abortController = new AbortController();
+        let reconnectTimeout: any;
 
-    return () => {
-        abortController.abort();
-        clearTimeout(reconnectTimeout);
-    };
-}, [isAuthenticated, userId, isAdmin, isChatActive, conversationId, showToast]);
+        const connectStream = async () => {
+            try {
+                const token = localStorage.getItem("access_token");
+                const call = commClient.streamChat(
+                    { conversationId: conversationId, userId: userId },
+                    {
+                        abort: abortController.signal,
+                        meta: {
+                            authorization: `Bearer ${token}`
+                        }
+                    }
+                );
 
-return (
-    <NotificationContext.Provider value={{
-        unreadChatCount,
-        clearUnreadChat,
-        isChatActive,
-        setChatActive,
-        conversationId,
-        refreshConversation
-    }}>
-        {children}
-    </NotificationContext.Provider>
-);
+                for await (const response of call.responses) {
+                    const payload = response.eventPayload;
+                    if (payload.oneofKind === 'message') {
+                        const newMsg = (payload as any).message;
+                        if (!newMsg) continue;
+
+                        if (response.senderId !== userId) {
+                            setUnreadChatCount(prev => prev + 1);
+                            showToast("You have a new message!", 'info');
+                        }
+                    }
+                }
+                throw new Error("Stream closed by server");
+            } catch (err: any) {
+                if (err.name !== 'AbortError' && !abortController.signal.aborted) {
+                    if (!isChatActiveRef.current) {
+                        console.warn("Background chat stream disconnected. Reconnecting in 3s...", err);
+                        reconnectTimeout = setTimeout(connectStream, 3000);
+                    }
+                }
+            }
+        };
+
+        connectStream();
+
+        return () => {
+            abortController.abort();
+            clearTimeout(reconnectTimeout);
+        };
+    }, [isAuthenticated, userId, isAdmin, isChatActive, conversationId, showToast]);
+
+    // buat admin
+    useEffect(() => {
+        if (!isAuthenticated || !userId || !isAdmin) {
+            return;
+        }
+
+        let lastTotalUnread = 0;
+        let isFirstPoll = true;
+
+        const fetchUnread = async () => {
+            try {
+                const token = localStorage.getItem("access_token");
+                const { response } = await commClient.getActiveConversations(
+                    { searchQuery: "", limit: 100, offset: 0 },
+                    { meta: { authorization: `Bearer ${token}` } }
+                );
+
+                let currentTotalUnread = 0;
+                (response.conversations || []).forEach((c: any) => {
+                    currentTotalUnread += c.unreadCount || 0;
+                });
+
+                if (!isFirstPoll && currentTotalUnread > lastTotalUnread) {
+                    showToast("You have a new message!", "info");
+                }
+
+                lastTotalUnread = currentTotalUnread;
+                isFirstPoll = false;
+            } catch (err) {
+                // kosongin aja 
+            }
+        };
+
+        fetchUnread();
+        const pollInterval = setInterval(fetchUnread, 10000);
+
+        return () => clearInterval(pollInterval);
+    }, [isAuthenticated, userId, isAdmin, showToast]);
+
+    return (
+        <NotificationContext.Provider value={{
+            unreadChatCount,
+            clearUnreadChat,
+            isChatActive,
+            setChatActive,
+            conversationId,
+            refreshConversation
+        }}>
+            {children}
+        </NotificationContext.Provider>
+    );
 };
 
 export const useNotification = () => {
