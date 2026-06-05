@@ -10,7 +10,6 @@ main
 *.jpg
 
 # text
-*.txt
 *.md
 *.pdf
 

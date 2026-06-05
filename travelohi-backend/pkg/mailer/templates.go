@@ -39,9 +39,10 @@ func BaseEmailTemplate(title string, contentHTML string) string {
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
         .header {
-            background-color: #3b82f6;
+            background-color: #ffffff;
             padding: 24px;
             text-align: center;
+            border-bottom: 1px solid #e5e7eb;
         }
         .header img {
             max-height: 40px;
@@ -64,7 +65,7 @@ func BaseEmailTemplate(title string, contentHTML string) string {
         }
         .btn {
             display: inline-block;
-            background-color: #3b82f6;
+            background-color: #0ea5e9;
             color: #ffffff;
             text-decoration: none;
             padding: 12px 24px;
@@ -82,7 +83,7 @@ func BaseEmailTemplate(title string, contentHTML string) string {
             font-size: 32px;
             font-weight: 700;
             letter-spacing: 4px;
-            color: #3b82f6;
+            color: #0ea5e9;
             margin: 24px 0;
         }
     </style>
@@ -186,7 +187,7 @@ func GeneratePaymentSuccessEmail(transactionID string, totalAmount int64, items 
 			<tfoot>
 				<tr>
 					<td style="padding:12px;font-weight:700;color:#111827;">Total Paid</td>
-					<td style="padding:12px;font-weight:700;color:#3b82f6;text-align:right;font-size:18px;">Rp %s</td>
+					<td style="padding:12px;font-weight:700;color:#0ea5e9;text-align:right;font-size:18px;">Rp %s</td>
 				</tr>
 			</tfoot>
 		</table>
@@ -217,4 +218,3 @@ func formatAmount(amount int64) string {
 	}
 	return result
 }
-
