@@ -39,7 +39,7 @@ const ConversationSidebar: React.FC<Props> = ({
                 <Search size={18} className={styles.icon} />
                 <input
                     type="text"
-                    placeholder="Cari nama atau pesan..."
+                    placeholder="Cari nama atau email..."
                     value={searchQuery}
                     onChange={(e) => onSearchChange(e.target.value)}
                 />

@@ -99,9 +99,9 @@ func (r *postgresCommunicationRepo) GetActiveConversations(ctx context.Context, 
 
 	// apply search filter
 	if searchQuery != "" {
-		baseQuery += ` AND (u.first_name ILIKE ? OR u.last_name ILIKE ? OR u.email ILIKE ?)`
+		baseQuery += ` AND (u.first_name ILIKE ? OR u.last_name ILIKE ? OR (u.first_name || ' ' || u.last_name) ILIKE ? OR u.email ILIKE ?)`
 		searchPattern := "%" + searchQuery + "%"
-		args = append(args, searchPattern, searchPattern, searchPattern)
+		args = append(args, searchPattern, searchPattern, searchPattern, searchPattern)
 	}
 
 	// calculate total active
