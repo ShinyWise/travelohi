@@ -59,7 +59,6 @@ func (u *chatUseCase) SendEvent(ctx context.Context, event *communicationpb.Chat
 		}
 
 	case *communicationpb.ChatEvent_TypingIndicator:
-		// Nothing to save to DB, just passing it through
 	}
 
 	u.hub.RouteEvent(event)

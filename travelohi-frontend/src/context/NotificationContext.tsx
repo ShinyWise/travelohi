@@ -70,7 +70,6 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         }
     }, [userId, isAdmin]);
 
-    // websocket listener
     useEffect(() => {
         if (!isAuthenticated || !userId || isAdmin || isChatActive || !conversationId) {
             return;

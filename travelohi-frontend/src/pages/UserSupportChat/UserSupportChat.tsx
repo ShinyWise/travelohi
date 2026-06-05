@@ -31,13 +31,16 @@ const UserSupportChat: React.FC = () => {
     const offsetRef = useRef(0);
     const hasMoreHistoryRef = useRef(true);
     const isLoadingHistoryRef = useRef(false);
+    const activeConvRef = useRef<string | null>(activeConversationId);
 
     useEffect(() => { offsetRef.current = offset; }, [offset]);
     useEffect(() => { hasMoreHistoryRef.current = hasMoreHistory; }, [hasMoreHistory]);
     useEffect(() => { isLoadingHistoryRef.current = isLoadingHistory; }, [isLoadingHistory]);
+    useEffect(() => { activeConvRef.current = activeConversationId; }, [activeConversationId]);
     useEffect(() => { clearUnreadChat(); }, [clearUnreadChat, messages.length]);
 
     useEffect(() => {
+        if (conversationId === activeConvRef.current) return;
         setActiveConversationId(conversationId);
         setMessages([]);
         setOffset(0);

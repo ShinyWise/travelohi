@@ -63,7 +63,6 @@ const AdminSupportDashboard: React.FC = () => {
 
         fetchConversations();
 
-        // update every 5s
         const pollInterval = setInterval(fetchConversations, 5000);
 
         return () => clearInterval(pollInterval);
@@ -103,6 +102,7 @@ const AdminSupportDashboard: React.FC = () => {
                         <AdminChatWindow
                             conversationId={selectedConversation.id}
                             adminId={userId!}
+                            remoteUserId={selectedConversation.userId}
                             remoteUsername={selectedConversation.username}
                             remoteProfilePicUrl={selectedConversation.profilePicUrl}
                             onBack={isMobile ? handleBackToInbox : undefined}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import TypingIndicator from './TypingIndicator';
 import { CommunicationServiceClient } from '../../../proto/travelohi/v1/communication/communication.client';
+import { AccountServiceClient } from '../../../proto/travelohi/v1/account/account.client';
 import { transport } from '../../../utils/grpcClient';
 import { Check } from 'lucide-react';
 import styles from './AdminChatWindow.module.scss';
@@ -18,20 +19,38 @@ interface ChatMessage {
 interface Props {
     conversationId: string;
     adminId: string;
+    remoteUserId: string;
     remoteUsername: string;
     remoteProfilePicUrl?: string;
     onBack?: () => void;
 }
 
-const AdminChatWindow: React.FC<Props> = ({ conversationId, adminId, remoteUsername, remoteProfilePicUrl, onBack }) => {
+const AdminChatWindow: React.FC<Props> = ({ conversationId, adminId, remoteUserId, remoteUsername, remoteProfilePicUrl, onBack }) => {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [inputText, setInputText] = useState('');
     const [isTyping, setIsTyping] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [isClosing, setIsClosing] = useState(false);
     const [showCloseConfirm, setShowCloseConfirm] = useState(false);
+    const [remoteEmail, setRemoteEmail] = useState<string>('');
 
-    // pagination states
+    useEffect(() => {
+        setRemoteEmail('');
+        if (!remoteUserId) return;
+        const fetchRemoteEmail = async () => {
+            try {
+                const client = new AccountServiceClient(transport);
+                const { response } = await client.getProfile({ userId: remoteUserId });
+                if (response.profile) {
+                    setRemoteEmail(response.profile.email);
+                }
+            } catch (err) {
+                console.warn("Failed to load customer profile details:", err);
+            }
+        };
+        fetchRemoteEmail();
+    }, [remoteUserId]);
+
     const [offset, setOffset] = useState(0);
     const [hasMore, setHasMore] = useState(true);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -78,7 +97,6 @@ const AdminChatWindow: React.FC<Props> = ({ conversationId, adminId, remoteUsern
                 setHasMore(history.length === limit);
                 setIsLoading(false);
 
-                // scroll to bottom after initial load
                 setTimeout(scrollToBottom, 50);
 
                 //kirim read receipt
@@ -98,7 +116,6 @@ const AdminChatWindow: React.FC<Props> = ({ conversationId, adminId, remoteUsern
                     }
                 }
 
-                // connect stream
                 const connectStream = async () => {
                     try {
                         const token = localStorage.getItem("access_token");
@@ -114,7 +131,6 @@ const AdminChatWindow: React.FC<Props> = ({ conversationId, adminId, remoteUsern
 
                         streamCallRef.current = call;
 
-                        // receive stream event
                         for await (const res of call.responses) {
                             const payload = res.eventPayload;
                             switch (payload.oneofKind) {
@@ -148,7 +164,6 @@ const AdminChatWindow: React.FC<Props> = ({ conversationId, adminId, remoteUsern
                                         setMessages(prev => {
                                             if (prev.some(m => m.id === chatMsg.id)) return prev;
                                             
-                                            // auto-scroll only if already at/near bottom
                                             if (messageAreaRef.current) {
                                                 const area = messageAreaRef.current;
                                                 const isAtBottom = area.scrollHeight - area.scrollTop - area.clientHeight < 150;
@@ -236,7 +251,6 @@ const AdminChatWindow: React.FC<Props> = ({ conversationId, adminId, remoteUsern
     const handleScroll = () => {
         if (!messageAreaRef.current || isLoadingMore || !hasMore || isLoading) return;
 
-        // trigger when near top
         if (messageAreaRef.current.scrollTop < 100) {
             loadMoreMessages();
         }
@@ -271,7 +285,6 @@ const AdminChatWindow: React.FC<Props> = ({ conversationId, adminId, remoteUsern
             setOffset(prev => prev + limit);
             setHasMore(history.length === limit);
 
-            // Maintain scroll position after DOM update
             requestAnimationFrame(() => {
                 if (messageAreaRef.current) {
                     const newScrollHeight = messageAreaRef.current.scrollHeight;
@@ -381,7 +394,7 @@ const AdminChatWindow: React.FC<Props> = ({ conversationId, adminId, remoteUsern
                 />
                 <div className={styles.headerUserInfo}>
                     <h3>{remoteUsername}</h3>
-                    <span className={styles.headerSubtitle}>Customer</span>
+                    <span className={styles.headerSubtitle}>{remoteEmail || 'Customer'}</span>
                 </div>
             </div>
                 <div className={styles.headerActions}>
