@@ -157,6 +157,15 @@ func (uc *AccountUseCase) GetETicket(ctx context.Context, userID, bookingID stri
 }
 
 func (uc *AccountUseCase) RedeemWalletCoupon(ctx context.Context, userID string, couponCode string) error {
+	// check if user already used this promo
+	used, err := uc.repo.HasUserUsedCoupon(ctx, userID, couponCode)
+	if err != nil {
+		return err
+	}
+	if used {
+		return errors.New("you have already redeemed this coupon")
+	}
+
 	// validate promo code
 	discountAmount, err := uc.repo.GetPromoDiscount(ctx, couponCode)
 	if err != nil {
@@ -164,7 +173,12 @@ func (uc *AccountUseCase) RedeemWalletCoupon(ctx context.Context, userID string,
 	}
 
 	// add balance
-	return uc.repo.AddBalance(ctx, userID, discountAmount)
+	if err := uc.repo.AddBalance(ctx, userID, discountAmount); err != nil {
+		return err
+	}
+
+	// record usage
+	return uc.repo.RecordCouponUsage(ctx, userID, couponCode)
 }
 
 func (uc *AccountUseCase) GetExchangeRate(ctx context.Context) float64 {

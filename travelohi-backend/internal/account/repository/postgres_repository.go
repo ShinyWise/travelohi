@@ -186,6 +186,21 @@ func (r *PostgresAccountRepository) GetPromoDiscount(ctx context.Context, promoC
 	return discount, nil
 }
 
+func (r *PostgresAccountRepository) HasUserUsedCoupon(ctx context.Context, userID, promoCode string) (bool, error) {
+	var count int64
+	err := r.db.WithContext(ctx).Table("user_promo_usages").
+		Where("user_id = ? AND promo_code = ?", userID, promoCode).
+		Count(&count).Error
+	return count > 0, err
+}
+
+func (r *PostgresAccountRepository) RecordCouponUsage(ctx context.Context, userID, promoCode string) error {
+	return r.db.WithContext(ctx).Table("user_promo_usages").Create(map[string]interface{}{
+		"user_id":    userID,
+		"promo_code": promoCode,
+	}).Error
+}
+
 func (r *PostgresAccountRepository) AddBankAccount(ctx context.Context, bankAcc *account.BankAccount) error {
 	model := &BankAccountModel{
 		ID:         bankAcc.ID,

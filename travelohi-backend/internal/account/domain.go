@@ -53,6 +53,8 @@ type AccountRepository interface {
 	DeductBalance(ctx context.Context, userID string, amount int64) error
 	AddBalance(ctx context.Context, userID string, amount int64) error
 	GetPromoDiscount(ctx context.Context, promoCode string) (int64, error)
+	HasUserUsedCoupon(ctx context.Context, userID, promoCode string) (bool, error)
+	RecordCouponUsage(ctx context.Context, userID, promoCode string) error
 
 	// bank accounts
 	AddBankAccount(ctx context.Context, bankAcc *BankAccount) error
