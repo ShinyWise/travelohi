@@ -44,3 +44,5 @@ pgdata/
 *.env
 auth.env
 account.env
+github.txt
+LC170.zip

@@ -244,7 +244,7 @@ type BookingModel struct {
 
 func (BookingModel) TableName() string { return "booking_models" }
 
-var baseTime = time.Date(2026, 6, 1, 0, 0, 0, 0, time.UTC)
+var baseTime = time.Date(2027, 6, 1, 0, 0, 0, 0, time.UTC)
 
 func deterministicUUID(ns string, id interface{}) string {
 	return uuid.NewSHA1(uuid.NameSpaceDNS, []byte(fmt.Sprintf("%s-%v", ns, id))).String()

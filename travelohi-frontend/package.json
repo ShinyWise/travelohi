@@ -14,7 +14,7 @@
     "@protobuf-ts/grpcweb-transport": "^2.11.1",
     "@protobuf-ts/runtime-rpc": "^2.11.1",
     "@types/react-google-recaptcha": "^2.1.9",
-    "lucide-react": "^1.16.0",
+    "lucide-react": "^1.45.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-google-recaptcha": "^3.1.0",

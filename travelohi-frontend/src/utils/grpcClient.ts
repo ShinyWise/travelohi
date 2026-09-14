@@ -1,7 +1,7 @@
 import { GrpcWebFetchTransport } from "@protobuf-ts/grpcweb-transport";
 import type { RpcInterceptor, NextUnaryFn, UnaryCall, MethodInfo, RpcOptions } from "@protobuf-ts/runtime-rpc";
 
-const ENVOY_URL = import.meta.env.VITE_ENVOY_URL || "http://localhost:8080";
+const ENVOY_URL = import.meta.env.VITE_ENVOY_URL || window.location.origin;
 
 const authInterceptor: RpcInterceptor = {
     interceptUnary(next: NextUnaryFn, method: MethodInfo, input: object, options: RpcOptions): UnaryCall {
